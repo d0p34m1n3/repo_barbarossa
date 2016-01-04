@@ -1,0 +1,178 @@
+__author__ = 'kocat_000'
+
+import sys
+sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
+import contract_utilities.expiration as exp
+import opportunity_constructs.utilities as opUtil
+import contract_utilities.contract_meta_info as cmi
+import get_price.get_futures_price as gfp
+import shared.statistics as stats
+import shared.calendar_utilities as cu
+
+
+def get_futures_butterfly_signals(**kwargs):
+
+    ticker_list = kwargs['ticker_list']
+    date_to = kwargs['date_to']
+
+    if 'tr_dte_list' in kwargs.keys():
+        tr_dte_list = kwargs['tr_dte_list']
+    else:
+        tr_dte_list = [exp.get_futures_days2_expiration({'ticker': x,'date_to': date_to}) for x in ticker_list]
+
+    if 'aggregation_method' in kwargs.keys() and 'contracts_back' in kwargs.keys():
+        aggregation_method = kwargs['aggregation_method']
+        contracts_back = kwargs['contracts_back']
+    else:
+        amcb_output = opUtil.get_aggregation_method_contracts_back(cmi.get_contract_specs(ticker_list[0]))
+        aggregation_method = amcb_output['aggregation_method']
+        contracts_back = amcb_output['contracts_back']
+
+    if 'futures_data_dictionary' in kwargs.keys():
+        futures_data_dictionary = kwargs['futures_data_dictionary']
+    else:
+        futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in [cmi.get_contract_specs(ticker_list[0])['ticker_head']]}
+
+    if 'contract_multiplier' in kwargs.keys():
+        contract_multiplier = kwargs['contract_multiplier']
+    else:
+        contract_multiplier = cmi.contract_multiplier[cmi.get_contract_specs(ticker_list[0])['ticker_head']]
+
+    if 'datetime5_years_ago' in kwargs.keys():
+        datetime5_years_ago = kwargs['datetime5_years_ago']
+    else:
+        date5_years_ago = cu.doubledate_shift(date_to,5*365)
+        datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
+
+    aligned_output = opUtil.get_aligned_futures_data(contract_list=ticker_list,
+                                                          tr_dte_list=tr_dte_list,
+                                                          aggregation_method=aggregation_method,
+                                                          contracts_back=contracts_back,
+                                                          date_to=date_to,
+                                                          futures_data_dictionary=futures_data_dictionary)
+
+    current_data = aligned_output['current_data']
+    aligned_data = aligned_output['aligned_data']
+
+    month_diff_1 = 12*(current_data['c1']['ticker_year'][0]-current_data['c2']['ticker_year'][0])+(current_data['c1']['ticker_month'][0]-current_data['c2']['ticker_month'][0])
+    month_diff_2 = 12*(current_data['c2']['ticker_year'][0]-current_data['c3']['ticker_year'][0])+(current_data['c2']['ticker_month'][0]-current_data['c3']['ticker_month'][0])
+
+    weight_11 = 2*month_diff_2/(month_diff_1+month_diff_1)
+    weight_12 = -2
+    weight_13 = 2*month_diff_1/(month_diff_1+month_diff_1)
+
+    price_1 = current_data['c1']['close_price'][0]
+    price_2 = current_data['c2']['close_price'][0]
+    price_3 = current_data['c3']['close_price'][0]
+
+    linear_interp_price2 = (weight_11*aligned_data['c1']['close_price']+weight_13*aligned_data['c3']['close_price'])/2
+
+    price_ratio = linear_interp_price2/aligned_data['c2']['close_price']
+
+    linear_interp_price2_current = (weight_11*price_1+weight_13*price_3)/2
+
+    price_ratio_current = linear_interp_price2_current/price_2
+
+    q = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values, 'clean_num_obs': max(100, round(3*len(price_ratio.values)/4))})
+    qf = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values[-40:], 'clean_num_obs': 30})
+    weight1 = weight_11
+    weight2 = weight_12
+    weight3 = weight_13
+
+    last5_years_indx = aligned_data['settle_date']>=datetime5_years_ago
+    data_last5_years = aligned_data[last5_years_indx]
+
+    yield1 = 100*(aligned_data['c1']['close_price']-aligned_data['c2']['close_price'])/aligned_data['c2']['close_price']
+    yield2 = 100*(aligned_data['c2']['close_price']-aligned_data['c3']['close_price'])/aligned_data['c3']['close_price']
+
+    yield1_last5_years = yield1[last5_years_indx]
+    yield2_last5_years = yield2[last5_years_indx]
+
+    yield1_current = 100*(current_data['c1']['close_price'][0]-current_data['c2']['close_price'][0])/current_data['c2']['close_price'][0]
+    yield2_current = 100*(current_data['c2']['close_price'][0]-current_data['c3']['close_price'][0])/current_data['c3']['close_price'][0]
+
+    butterfly_price_current = current_data['c1']['close_price'][0]\
+                            -2*current_data['c2']['close_price'][0]\
+                              +current_data['c3']['close_price'][0]
+
+    yield_regress_output = stats.get_regression_results({'x':yield2, 'y':yield1,'x_current': yield2_current, 'y_current': yield1_current,
+                                                          'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
+    yield_regress_output_last5_years = stats.get_regression_results({'x':yield2_last5_years, 'y':yield1_last5_years,
+                                                             'x_current': yield2_current, 'y_current': yield1_current,
+                                                             'clean_num_obs': max(100, round(3*len(yield1_last5_years.values)/4))})
+
+    zscore1= yield_regress_output['zscore']
+    rsquared1= yield_regress_output['rsquared']
+
+    zscore2= yield_regress_output_last5_years['zscore']
+    rsquared2= yield_regress_output_last5_years['rsquared']
+
+    second_spread_weight_1 = yield_regress_output['beta']
+    second_spread_weight_2 = yield_regress_output_last5_years['beta']
+
+    butterfly_5_change = data_last5_years['c1']['change_5']\
+                             - (1+second_spread_weight_1)*data_last5_years['c2']['change_5']\
+                             + second_spread_weight_1*data_last5_years['c3']['change_5']
+
+    butterfly_5_change_current = current_data['c1']['change_5']\
+                             - (1+second_spread_weight_1)*current_data['c2']['change_5']\
+                             + second_spread_weight_1*current_data['c3']['change_5']
+
+    butterfly_1_change = data_last5_years['c1']['change_1']\
+                             - (1+second_spread_weight_1)*data_last5_years['c2']['change_1']\
+                             + second_spread_weight_1*data_last5_years['c3']['change_1']
+
+    percentile_vector = stats.get_number_from_quantile(y=butterfly_5_change.values,
+                                                       quantile_list=[1, 15, 85, 99],
+                                                       clean_num_obs=max(100, round(3*len(butterfly_5_change.values)/4)))
+
+    downside = contract_multiplier*(percentile_vector[0]+percentile_vector[1])/2
+    upside = contract_multiplier*(percentile_vector[2]+percentile_vector[3])/2
+    recent_5day_pnl = contract_multiplier*butterfly_5_change_current.values[0]
+
+    residuals = yield1-yield_regress_output['alpha']-yield_regress_output['beta']*yield2
+
+    regime_change_ind = (residuals[last5_years_indx].mean()-residuals.mean())/residuals.std()
+
+    yield1_quantile_list = stats.get_number_from_quantile(y=yield1, quantile_list=[10, 90])
+    yield2_quantile_list = stats.get_number_from_quantile(y=yield2, quantile_list=[10, 90])
+
+    noise_ratio = (yield1_quantile_list[1]-yield1_quantile_list[0])/(yield2_quantile_list[1]-yield2_quantile_list[0])
+
+    daily_noise_recent = stats.get_stdev(x=butterfly_1_change.values[-20:], clean_num_obs=15)
+    daily_noise_past = stats.get_stdev(x=butterfly_1_change.values, clean_num_obs=max(100, round(3*len(butterfly_1_change.values)/4)))
+
+    recent_vol_ratio = daily_noise_recent/daily_noise_past
+
+    alpha1 = yield_regress_output['alpha']
+
+    yield_change = (alpha1+second_spread_weight_1*yield2_current-yield1_current)/(1+second_spread_weight_1)
+
+    new_yield1 = yield1_current + yield_change
+    new_yield2 = yield2_current - yield_change
+
+    price_change1 = 100*((price_2*(new_yield1+100)/100)-price_1)/(200+new_yield1)
+    price_change2 = 100*((price_3*(new_yield2+100)/100)-price_2)/(200+new_yield2)
+
+    theo_pnl = contract_multiplier*(2*price_change1-2*second_spread_weight_1*price_change2)
+
+    return {'aligned_output': aligned_output, 'q': q, 'qf': qf,
+            'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
+            'zscore1': zscore1, 'rsquared1': rsquared1, 'zscore2': zscore2, 'rsquared2': rsquared2,
+            'theo_pnl': theo_pnl,
+            'regime_change_ind' : regime_change_ind,
+            'second_spread_weight_1': second_spread_weight_1, 'second_spread_weight_2': second_spread_weight_2,
+            'downside': downside, 'upside': upside,
+             'yield1': yield1, 'yield2': yield2, 'yield1_current': yield1_current, 'yield2_current': yield2_current,
+            'bf_price': butterfly_price_current, 'noise_ratio': noise_ratio,
+            'alpha1': alpha1, 'alpha2': yield_regress_output_last5_years['alpha'],
+            'residual_std1': yield_regress_output['residualstd'], 'residual_std2': yield_regress_output_last5_years['residualstd'],
+            'recent_vol_ratio': recent_vol_ratio, 'recent_5day_pnl': recent_5day_pnl,
+            'price_1': price_1, 'price_2': price_2, 'price_3': price_3}
+
+
+
+
+
+
+

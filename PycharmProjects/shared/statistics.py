@@ -1,0 +1,102 @@
+__author__ = 'kocat_000'
+
+import numpy as np
+import statsmodels.api as sm
+
+
+def get_stdev(**kwargs):
+
+    x = kwargs['x']
+
+    if 'clean_num_obs' in kwargs.keys():
+        clean_num_obs = kwargs['clean_num_obs']
+    else:
+        clean_num_obs = round(3*len(x)/4)
+
+    nan_indx = np.isnan(x)
+
+    if len(x)-nan_indx.sum() < clean_num_obs:
+        return float('NaN')
+
+    return np.nanstd(x)
+
+def get_quantile_from_number(quantile_input):
+
+    x = quantile_input['x']
+    y = quantile_input['y']
+
+    if 'clean_num_obs' in quantile_input.keys():
+        clean_num_obs = quantile_input['clean_num_obs']
+    else:
+        clean_num_obs = round(3*len(y)/4)
+
+    nan_indx = np.isnan(y)
+
+    if len(y)-nan_indx.sum() < clean_num_obs:
+        return float('NaN')
+
+    clean_y = [y[i] for i in range(len(y)) if not nan_indx[i]]
+
+    w = np.percentile(clean_y, range(1, 100))
+
+    return np.argmin(abs(x-w))+1
+
+
+def get_number_from_quantile(**kwargs):
+
+     y = kwargs['y']
+     quantile_list = kwargs['quantile_list']
+
+     if 'clean_num_obs' in kwargs.keys():
+        clean_num_obs = kwargs['clean_num_obs']
+     else:
+        clean_num_obs = round(3*len(y)/4)
+
+     nan_indx = np.isnan(y)
+
+     if len(y)-nan_indx.sum() < clean_num_obs:
+         return [float('NaN')]*len(quantile_list)
+
+     clean_y = [y[i] for i in range(len(y)) if not nan_indx[i]]
+
+     return np.percentile(clean_y, quantile_list)
+
+def get_regression_results(regression_input):
+
+    y = regression_input['y']
+    x = regression_input['x']
+
+    if 'clean_num_obs' in regression_input.keys():
+        clean_num_obs = regression_input['clean_num_obs']
+    else:
+        clean_num_obs = round(3*len(y)/4)
+
+    nan_indx_x = np.isnan(x)
+    nan_indx_y = np.isnan(y)
+
+    clean_y = [y[i] for i in range(len(y)) if not nan_indx_x[i] and not nan_indx_y[i]]
+    clean_x = [x[i] for i in range(len(y)) if not nan_indx_x[i] and not nan_indx_y[i]]
+
+    if len(clean_x) < clean_num_obs:
+        return {'alpha': float('NaN'), 'beta': float('NaN'), 'rsquared': float('NaN'), 'residualstd': float('NaN'),'zscore': float('NaN')}
+
+    x_current = clean_x[-1]
+    y_current = clean_y[-1]
+
+    if 'x_current' in regression_input.keys():
+        x_current = regression_input['x_current']
+
+    if 'y_current' in regression_input.keys():
+        y_current = regression_input['y_current']
+
+    results = sm.OLS(clean_y, sm.add_constant(clean_x), hasconst=True).fit()
+    parameters = results.params
+
+    zscore = (y_current-parameters[0]-parameters[1]*x_current)/np.sqrt(results.mse_resid)
+
+    return {'alpha': parameters[0], 'beta': parameters[1],
+            'rsquared': 100*results.rsquared,
+            'residualstd': np.sqrt(results.mse_resid),
+            'zscore': zscore}
+
+

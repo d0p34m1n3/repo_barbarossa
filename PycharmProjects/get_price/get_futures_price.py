@@ -1,0 +1,97 @@
+__author__ = 'kocat_000'
+
+import sys
+sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
+import my_sql_routines.my_sql_utilities as msu
+import shared.directory_names as dn
+import pandas as pd
+import shared.calendar_utilities as cu
+
+def get_futures_prices_4date(**kwargs):
+
+    date_to = kwargs['date_to']
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    sql_query = 'SELECT dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, ' + \
+    'sym.ticker_year, dp.cal_dte, dp.tr_dte, dp.close_price, dp.volume ' + \
+    'FROM symbol as sym ' + \
+    'INNER JOIN daily_price as dp ON dp.symbol_id = sym.id ' + \
+    'WHERE dp.price_date=' + str(date_to) + \
+    ' ORDER BY dp.ticker_head, dp.cal_dte '
+
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
+
+def get_futures_price_4ticker(**kwargs):
+
+    if 'ticker' in kwargs.keys():
+        filter_string = 'WHERE sym.ticker=\'' + kwargs['ticker'] + '\''
+    elif 'ticker_head' in kwargs.keys():
+        filter_string = 'WHERE dp.ticker_head=\'' + kwargs['ticker_head'] + '\''
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'tr_dte_min' in kwargs.keys():
+        filter_string = filter_string + ' and dp.tr_dte>=' + str(kwargs['tr_dte_min'])
+
+    if 'tr_dte_max' in kwargs.keys():
+        filter_string = filter_string + ' and dp.tr_dte<=' + str(kwargs['tr_dte_max'])
+
+    if 'ticker_month' in kwargs.keys():
+        filter_string = filter_string + ' and dp.ticker_month=' + str(kwargs['ticker_month'])
+
+    if 'date_from' in kwargs.keys():
+        filter_string = filter_string + ' and dp.price_date>=' + str(kwargs['date_from'])
+
+    if 'date_to' in kwargs.keys():
+        filter_string = filter_string + ' and dp.price_date<=' + str(kwargs['date_to'])
+
+    sql_query = 'SELECT dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, ' + \
+    'sym.ticker_year, dp.cal_dte, dp.tr_dte, dp.close_price, dp.volume ' + \
+    'FROM symbol as sym ' + \
+    'INNER JOIN daily_price as dp ON dp.symbol_id = sym.id ' + \
+    filter_string +  \
+    ' ORDER BY dp.price_date, dp.cal_dte'
+
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
+
+def get_futures_last_price_date_4ticker(**kwargs):
+
+    if 'ticker' in kwargs.keys():
+        sql_query = 'SELECT max(dp.price_date) FROM symbol as sym INNER JOIN daily_price as dp ON dp.symbol_id = sym.id WHERE sym.ticker=\'' + kwargs['ticker'] + '\''
+    elif 'ticker_head' in kwargs.keys():
+        sql_query = 'SELECT max(price_date) FROM futures_master.daily_price WHERE ticker_head=\'' + kwargs['ticker_head'] + '\''
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+    return int(data[0][0].strftime('%Y%m%d')) if data[0][0] is not None else None
+
+def get_futures_price_preloaded(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    data_out = pd.read_pickle(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+
+    if 'settle_date' in kwargs.keys():
+        data_out = data_out[data_out['settle_date']==cu.convert_doubledate_2datetime(kwargs['settle_date'])]
+    return data_out
+
