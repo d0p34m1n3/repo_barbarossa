@@ -1,15 +1,13 @@
 __author__ = 'kocat_000'
 
 import sys
-sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects\quandl')
-sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
-import get_data_quandl as gdq
+import quandl.get_data_quandl as gdq
 import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
-import contract_lists as cl
+import contract_utilities.contract_lists as cl
 import shared.calendar_utilities as cu
-import expiration as exp
+import contract_utilities.expiration as exp
 import pandas as pd
 import numpy as np
 import datetime
@@ -85,25 +83,27 @@ def load_price_data_4ticker(load_price_data_input):
     if 'con' not in load_price_data_input.keys():
         con.close()
 
-def load_entire_history(load_entire_history_input):
+def load_entire_history(**kwargs):
 
-    contract_list = cl.get_db_contract_list4year_range({'year_from': 1980, 'year_to': 2017})
-    # length of contract_list is 5966
+    contract_list = cl.get_db_contract_list_filtered(ticker_year_from=1980, ticker_year_to=2022)
+    # length of contract_list is 6594
 
-    if 'start_indx' in load_entire_history_input.keys():
-        start_indx = load_entire_history_input['start_indx']
+    if 'start_indx' in kwargs.keys():
+        start_indx = kwargs['start_indx']
     else:
         start_indx = 0
 
-    if 'end_indx' in load_entire_history_input.keys():
-        end_indx = load_entire_history_input['end_indx']
+    if 'end_indx' in kwargs.keys():
+        end_indx = kwargs['end_indx']
     else:
-        end_indx = 5966
+        end_indx = 6751
 
+    con = msu.get_my_sql_connection(**kwargs)
     load_price_data_input = dict()
+    load_price_data_input['con'] = con
 
-    if 'date_to' in load_entire_history_input.keys():
-        load_price_data_input['date_to'] = load_entire_history_input['date_to']
+    if 'date_to' in kwargs.keys():
+        load_price_data_input['date_to'] = kwargs['date_to']
 
     for i in range(start_indx, end_indx):
         load_price_data_input['symbol_id'] = contract_list[i][0]
@@ -112,7 +112,10 @@ def load_entire_history(load_entire_history_input):
         load_price_data_input['expiration_date'] = contract_list[i][2]
 
         load_price_data_4ticker(load_price_data_input)
-        print('No : ' + str(i) + ', ' +  contract_list[i][1] + ' loaded')
+        print('No : ' + str(i) + ', ' + contract_list[i][1] + ' loaded')
+
+    if 'con' not in kwargs.keys():
+        con.close()
 
 
 def update_futures_price_database(**kwargs):

@@ -11,11 +11,11 @@ import get_price.get_futures_price as gfp
 import opportunity_constructs.utilities as ut
 import pandas as pd
 
-def get_contract_list_4year_range(contract_list_input):
+def get_contract_list_4year_range(**kwargs):
 
     now = datetime.datetime.utcnow()
-    start_year = contract_list_input['start_year']
-    end_year = contract_list_input['end_year']
+    start_year = kwargs['start_year']
+    end_year = kwargs['end_year']
     tickerhead_list = cmi.futures_butterfly_strategy_tickerhead_list
     futures_contract_months = cmi.futures_contract_months
     contract_name_dict = cmi.contract_name
@@ -44,7 +44,7 @@ def get_db_contract_list_filtered(**kwargs):
         filter_string = 'expiration_date>=' + str(kwargs['expiration_date_from']) + ' and expiration_date<=' + str(kwargs['expiration_date_to'])
 
     if 'ticker_head' in kwargs.keys():
-        filter_string =  filter_string + ' and ticker_head=\'' + kwargs['ticker_head'] + '\''
+        filter_string = filter_string + ' and ticker_head=\'' + kwargs['ticker_head'] + '\''
 
     sql_query = sql_query + ' WHERE ' + filter_string + ' ORDER BY id ASC'
 

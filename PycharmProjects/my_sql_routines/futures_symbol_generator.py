@@ -1,20 +1,15 @@
 __author__ = 'kocat_000'
 
-import sys
-sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import mysql.connector
 from math import ceil
 import contract_utilities.contract_lists as cl
+import my_sql_routines.my_sql_utilities as msu
 
-def generate_futures_symbol_table(symbol_table_input):
-    db_host = '127.0.0.1'
-    db_user = 'ekocatulum'
-    db_pass = 'pompei1789'
-    db_name = 'futures_master'
+def generate_futures_symbol_table(**kwargs):
 
-    ticker_list = cl.get_contract_list_4year_range(symbol_table_input)
+    ticker_list = cl.get_contract_list_4year_range(**kwargs)
 
-    con = mysql.connector.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
+    con = msu.get_my_sql_connection(**kwargs)
 
     column_str = "ticker, ticker_head, ticker_year, ticker_month, expiration_date," \
              "instrument, name, ticker_class, currency, created_date, last_updated_date"
@@ -25,6 +20,10 @@ def generate_futures_symbol_table(symbol_table_input):
 
     for i in range(0, int(ceil(len(ticker_list) / 100.0))):
         cur.executemany(final_str, ticker_list[i*100:(i+1)*100])
+
     con.commit()
-    con.close()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
 
