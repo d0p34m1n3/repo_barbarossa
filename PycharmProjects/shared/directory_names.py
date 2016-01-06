@@ -16,7 +16,7 @@ def get_directory_name(**kwargs):
 
     ext = kwargs['ext']
 
-    if computer_name=='601-TREKW71':
+    if computer_name=='601-TREKW71' or computer_name=='601-TREKW72':
         root_dir = root_work
     else:
         root_dir = root_home
