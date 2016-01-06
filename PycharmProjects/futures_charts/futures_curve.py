@@ -9,7 +9,7 @@ import opportunity_constructs.futures_butterfly as fb
 import contract_utilities.expiration as exp
 import opportunity_constructs.utilities as opUtil
 import shared.calendar_utilities as cu
-
+import signals.futures_signals as fs
 
 def get_futures_curve_chart_4date(**kwargs):
 
@@ -17,6 +17,9 @@ def get_futures_curve_chart_4date(**kwargs):
     settle_date = kwargs['settle_date']
 
     data2_plot = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=settle_date)
+
+    if 'tr_dte_limit' in kwargs.keys():
+        data2_plot = data2_plot[data2_plot['tr_dte'] <= kwargs['tr_dte_limit']]
 
     ticker_year_short = data2_plot['ticker_year'] % 10
     month_letters = [cmi.letter_month_string[x-1] for x in data2_plot['ticker_month'].values]
@@ -36,24 +39,30 @@ def get_butterfly_panel_plot(**kwargs):
     bf_output = fb.generate_futures_butterfly_sheet_4date(date_to=report_date)
     butterflies = bf_output['butterflies']
 
-    contract_list = [butterflies['ticker1'][id],butterflies['ticker2'][id],butterflies['ticker3'][id]]
-    tr_dte_list = [butterflies['trDte1'][id],butterflies['trDte2'][id],butterflies['trDte3'][id]]
-    aggregation_method = butterflies['agg'][id]
-    contracts_back = butterflies['cBack'][id]
+    contract_list = [butterflies['ticker1'][id], butterflies['ticker2'][id], butterflies['ticker3'][id]]
+    tr_dte_list = [butterflies['trDte1'][id], butterflies['trDte2'][id], butterflies['trDte3'][id]]
+
+    if 'aggregation_method' in kwargs.keys():
+        aggregation_method = kwargs['aggregation_method']
+    else:
+        aggregation_method = butterflies['agg'][id]
+
+    if 'contracts_back' in kwargs.keys():
+        contracts_back = kwargs['contracts_back']
+    else:
+        contracts_back = butterflies['cBack'][id]
 
     post_report_date = exp.doubledate_shift_bus_days(double_date=report_date,shift_in_days=-20)
 
-    futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in [butterflies['tickerHead'][id]]}
+    bf_signals_output = fs.get_futures_butterfly_signals(ticker_list=contract_list,
+                                          tr_dte_list=tr_dte_list,
+                                          aggregation_method=aggregation_method,
+                                          contracts_back=contracts_back,
+                                          date_to=post_report_date,
+                                          contract_multiplier=butterflies['multiplier'][id],
+                                          use_last_as_current=True)
 
-    aligned_data_output = opUtil.get_aligned_futures_data(contract_list=contract_list,
-                                 tr_dte_list=tr_dte_list,
-                                aggregation_method = aggregation_method,
-                                contracts_back = contracts_back,
-                                futures_data_dictionary = futures_data_dictionary,date_to = post_report_date)
-    aligned_data = aligned_data_output['aligned_data']
-
-    yield1 = 100*(aligned_data['c1']['close_price']-aligned_data['c2']['close_price'])/aligned_data['c2']['close_price']
-    yield2 = 100*(aligned_data['c2']['close_price']-aligned_data['c3']['close_price'])/aligned_data['c3']['close_price']
+    aligned_data = bf_signals_output['aligned_output']['aligned_data']
 
     new_index = list(range(len(aligned_data.index)))
     contract_change_indx = (aligned_data['c1']['ticker_year']-aligned_data['c1']['ticker_year'].shift(1)!=0).values
@@ -71,12 +80,12 @@ def get_butterfly_panel_plot(**kwargs):
                      str(front_contract_year.values[x]) for x in new_index if contract_change_indx[x]]
     x_tick_values.append('X')
 
-    plt.plot(yield1-yield2*butterflies['second_spread_weight_1'][id])
+    plt.plot(aligned_data['residuals'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.grid()
     plt.show()
 
-    return aligned_data_output
+    return bf_signals_output
 
 def get_butterfly_scatter_plot(**kwargs):
 
@@ -88,33 +97,34 @@ def get_butterfly_scatter_plot(**kwargs):
 
     contract_list = [butterflies['ticker1'][id],butterflies['ticker2'][id],butterflies['ticker3'][id]]
     tr_dte_list = [butterflies['trDte1'][id],butterflies['trDte2'][id],butterflies['trDte3'][id]]
-    aggregation_method = butterflies['agg'][id]
-    contracts_back = butterflies['cBack'][id]
 
-    futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in [butterflies['tickerHead'][id]]}
+    if 'aggregation_method' in kwargs.keys():
+        aggregation_method = kwargs['aggregation_method']
+    else:
+        aggregation_method = butterflies['agg'][id]
 
-    aligned_data_output = opUtil.get_aligned_futures_data(contract_list=contract_list,
-                                 tr_dte_list=tr_dte_list,
-                                aggregation_method = aggregation_method,
-                                contracts_back = contracts_back,
-                                futures_data_dictionary = futures_data_dictionary,date_to = report_date)
-    aligned_data = aligned_data_output['aligned_data']
-    current_data = aligned_data_output['current_data']
+    if 'contracts_back' in kwargs.keys():
+        contracts_back = kwargs['contracts_back']
+    else:
+        contracts_back = butterflies['cBack'][id]
 
-    yield1 = 100*(aligned_data['c1']['close_price']-aligned_data['c2']['close_price'])/aligned_data['c2']['close_price']
-    yield2 = 100*(aligned_data['c2']['close_price']-aligned_data['c3']['close_price'])/aligned_data['c3']['close_price']
+    bf_signals_output = fs.get_futures_butterfly_signals(ticker_list=contract_list,
+                                          tr_dte_list=tr_dte_list,
+                                          aggregation_method=aggregation_method,
+                                          contracts_back=contracts_back,
+                                          date_to=report_date,
+                                          contract_multiplier=butterflies['multiplier'][id])
 
-    date5_years_ago = cu.doubledate_shift(report_date,5*365)
-    datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
+    last5_years_indx = bf_signals_output['last5_years_indx']
 
-    last5_years_indx = aligned_data['settle_date']>=datetime5_years_ago
-    data_last5_years = aligned_data[last5_years_indx]
+    yield1 = bf_signals_output['yield1']
+    yield2 = bf_signals_output['yield2']
+
+    yield1_current = bf_signals_output['yield1_current']
+    yield2_current = bf_signals_output['yield2_current']
 
     yield1_last5_years = yield1[last5_years_indx]
     yield2_last5_years = yield2[last5_years_indx]
-
-    yield1_current = 100*(current_data['c1']['close_price'][0]-current_data['c2']['close_price'][0])/current_data['c2']['close_price'][0]
-    yield2_current = 100*(current_data['c2']['close_price'][0]-current_data['c3']['close_price'][0])/current_data['c3']['close_price'][0]
 
     plt.scatter(yield2, yield1, color='b')
     plt.scatter(yield2_last5_years,yield1_last5_years, color='k')
@@ -123,5 +133,5 @@ def get_butterfly_scatter_plot(**kwargs):
     plt.grid()
     plt.show()
 
-    return aligned_data_output
+    return bf_signals_output
 

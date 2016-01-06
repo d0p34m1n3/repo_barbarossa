@@ -86,6 +86,7 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     rsquared2_list = [None]*num_butterflies
 
     regime_change_list = [None]*num_butterflies
+    contract_seasonality_list = [None]*num_butterflies
     yield1_list = [None]*num_butterflies
     yield2_list = [None]*num_butterflies
     bf_price_list = [None]*num_butterflies
@@ -136,6 +137,7 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         rsquared2_list[i] = bf_signals_output['rsquared2']
 
         regime_change_list[i] = bf_signals_output['regime_change_ind']
+        contract_seasonality_list[i] = bf_signals_output['contract_seasonality_ind']
         yield1_list[i] = bf_signals_output['yield1_current']
         yield2_list[i] = bf_signals_output['yield2_current']
         bf_price_list[i] = bf_signals_output['bf_price']
@@ -172,6 +174,7 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['r2'] = rsquared2_list
 
     butterflies['RC'] = regime_change_list
+    butterflies['seasonality'] = contract_seasonality_list
     butterflies['yield1'] = yield1_list
     butterflies['yield2'] = yield2_list
 
@@ -205,6 +208,7 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['r1'] = butterflies['r1'].round(2)
     butterflies['r2'] = butterflies['r2'].round(2)
     butterflies['RC'] = butterflies['RC'].round(2)
+    butterflies['seasonality'] = butterflies['seasonality'].round(2)
     butterflies['second_spread_weight_1'] = butterflies['second_spread_weight_1'].round(2)
     butterflies['second_spread_weight_2'] = butterflies['second_spread_weight_1'].round(2)
 

@@ -129,8 +129,8 @@ def update_futures_price_database(**kwargs):
 
     for key,value in cmi.relevant_max_cal_dte.items():
 
-        contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from = early_start_date,
-                                                            expiration_date_to = cu.doubledate_shift(run_date, -value),
+        contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from=early_start_date,
+                                                            expiration_date_to=cu.doubledate_shift(run_date, -value),
                                                             ticker_head=key, con=con))
     date_from_list = [gfp.get_futures_last_price_date_4ticker(ticker=x[1], con=con) for x in contract_list]
 

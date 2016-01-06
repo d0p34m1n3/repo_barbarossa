@@ -158,10 +158,10 @@ def create_strategy_output_dir(**kwargs):
     strategy_class = kwargs['strategy_class']
     report_date = kwargs['report_date']
 
-    output_folder = dn.strategy_output_folder
+    strategy_output_folder = dn.get_directory_name(ext='strategy_output')
 
     if strategy_class == 'futures_butterfly':
-        output_dir = dn.strategy_output_folder + '/futures_butterfly/' + cu.get_directory_extension(report_date)
+        output_dir = strategy_output_folder + '/futures_butterfly/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

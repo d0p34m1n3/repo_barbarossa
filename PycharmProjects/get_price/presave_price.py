@@ -1,7 +1,5 @@
 __author__ = 'kocat_000'
 
-import sys
-sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import os.path
 import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
@@ -13,12 +11,14 @@ import pandas as pd
 import numpy as np
 pd.options.mode.chained_assignment = None
 
+presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
+
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     ticker_head = kwargs['ticker_head']
 
-    if os.path.isfile(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
-        old_data = pd.read_pickle(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+    if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
+        old_data = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
         last_available_date = int(old_data['settle_date'].max().to_datetime().strftime('%Y%m%d'))
         date_from = cu.doubledate_shift(last_available_date, 60)
         data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head,date_from=date_from)
@@ -60,7 +60,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     data4_tickerhead = pd.concat(merged_dataframe_list)
 
-    if os.path.isfile(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
+    if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
         clean_data = data4_tickerhead[np.isfinite(data4_tickerhead['change_5'])]
         clean_data['frame_indx'] = 1
         old_data['frame_indx'] = 0
@@ -69,7 +69,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         merged_data.drop_duplicates(subset=['settle_date','cont_indx'],take_last=False,inplace=True)
         data4_tickerhead = merged_data.drop('frame_indx',1,inplace=False)
 
-    data4_tickerhead.to_pickle(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+    data4_tickerhead.to_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
 def generate_and_update_futures_data_files():
 

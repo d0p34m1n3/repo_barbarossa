@@ -28,6 +28,11 @@ def get_futures_butterfly_signals(**kwargs):
         aggregation_method = amcb_output['aggregation_method']
         contracts_back = amcb_output['contracts_back']
 
+    if 'use_last_as_current' in kwargs.keys():
+        use_last_as_current = kwargs['use_last_as_current']
+    else:
+        use_last_as_current = False
+
     if 'futures_data_dictionary' in kwargs.keys():
         futures_data_dictionary = kwargs['futures_data_dictionary']
     else:
@@ -49,21 +54,21 @@ def get_futures_butterfly_signals(**kwargs):
                                                           aggregation_method=aggregation_method,
                                                           contracts_back=contracts_back,
                                                           date_to=date_to,
-                                                          futures_data_dictionary=futures_data_dictionary)
-
+                                                          futures_data_dictionary=futures_data_dictionary,
+                                                          use_last_as_current=use_last_as_current)
     current_data = aligned_output['current_data']
     aligned_data = aligned_output['aligned_data']
 
-    month_diff_1 = 12*(current_data['c1']['ticker_year'][0]-current_data['c2']['ticker_year'][0])+(current_data['c1']['ticker_month'][0]-current_data['c2']['ticker_month'][0])
-    month_diff_2 = 12*(current_data['c2']['ticker_year'][0]-current_data['c3']['ticker_year'][0])+(current_data['c2']['ticker_month'][0]-current_data['c3']['ticker_month'][0])
+    month_diff_1 = 12*(current_data['c1']['ticker_year']-current_data['c2']['ticker_year'])+(current_data['c1']['ticker_month']-current_data['c2']['ticker_month'])
+    month_diff_2 = 12*(current_data['c2']['ticker_year']-current_data['c3']['ticker_year'])+(current_data['c2']['ticker_month']-current_data['c3']['ticker_month'])
 
     weight_11 = 2*month_diff_2/(month_diff_1+month_diff_1)
     weight_12 = -2
     weight_13 = 2*month_diff_1/(month_diff_1+month_diff_1)
 
-    price_1 = current_data['c1']['close_price'][0]
-    price_2 = current_data['c2']['close_price'][0]
-    price_3 = current_data['c3']['close_price'][0]
+    price_1 = current_data['c1']['close_price']
+    price_2 = current_data['c2']['close_price']
+    price_3 = current_data['c3']['close_price']
 
     linear_interp_price2 = (weight_11*aligned_data['c1']['close_price']+weight_13*aligned_data['c3']['close_price'])/2
 
@@ -88,12 +93,12 @@ def get_futures_butterfly_signals(**kwargs):
     yield1_last5_years = yield1[last5_years_indx]
     yield2_last5_years = yield2[last5_years_indx]
 
-    yield1_current = 100*(current_data['c1']['close_price'][0]-current_data['c2']['close_price'][0])/current_data['c2']['close_price'][0]
-    yield2_current = 100*(current_data['c2']['close_price'][0]-current_data['c3']['close_price'][0])/current_data['c3']['close_price'][0]
+    yield1_current = 100*(current_data['c1']['close_price']-current_data['c2']['close_price'])/current_data['c2']['close_price']
+    yield2_current = 100*(current_data['c2']['close_price']-current_data['c3']['close_price'])/current_data['c3']['close_price']
 
-    butterfly_price_current = current_data['c1']['close_price'][0]\
-                            -2*current_data['c2']['close_price'][0]\
-                              +current_data['c3']['close_price'][0]
+    butterfly_price_current = current_data['c1']['close_price']\
+                            -2*current_data['c2']['close_price']\
+                              +current_data['c3']['close_price']
 
     yield_regress_output = stats.get_regression_results({'x':yield2, 'y':yield1,'x_current': yield2_current, 'y_current': yield1_current,
                                                           'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
@@ -128,11 +133,12 @@ def get_futures_butterfly_signals(**kwargs):
 
     downside = contract_multiplier*(percentile_vector[0]+percentile_vector[1])/2
     upside = contract_multiplier*(percentile_vector[2]+percentile_vector[3])/2
-    recent_5day_pnl = contract_multiplier*butterfly_5_change_current.values[0]
+    recent_5day_pnl = contract_multiplier*butterfly_5_change_current
 
     residuals = yield1-yield_regress_output['alpha']-yield_regress_output['beta']*yield2
 
     regime_change_ind = (residuals[last5_years_indx].mean()-residuals.mean())/residuals.std()
+    contract_seasonality_ind = (residuals[aligned_data['c1']['ticker_month'] == current_data['c1']['ticker_month']].mean()-residuals.mean())/residuals.std()
 
     yield1_quantile_list = stats.get_number_from_quantile(y=yield1, quantile_list=[10, 90])
     yield2_quantile_list = stats.get_number_from_quantile(y=yield2, quantile_list=[10, 90])
@@ -156,11 +162,13 @@ def get_futures_butterfly_signals(**kwargs):
 
     theo_pnl = contract_multiplier*(2*price_change1-2*second_spread_weight_1*price_change2)
 
+    aligned_output['aligned_data']['residuals'] = residuals
+
     return {'aligned_output': aligned_output, 'q': q, 'qf': qf,
             'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
             'zscore1': zscore1, 'rsquared1': rsquared1, 'zscore2': zscore2, 'rsquared2': rsquared2,
             'theo_pnl': theo_pnl,
-            'regime_change_ind' : regime_change_ind,
+            'regime_change_ind' : regime_change_ind,'contract_seasonality_ind': contract_seasonality_ind,
             'second_spread_weight_1': second_spread_weight_1, 'second_spread_weight_2': second_spread_weight_2,
             'downside': downside, 'upside': upside,
              'yield1': yield1, 'yield2': yield2, 'yield1_current': yield1_current, 'yield2_current': yield2_current,
@@ -168,7 +176,7 @@ def get_futures_butterfly_signals(**kwargs):
             'alpha1': alpha1, 'alpha2': yield_regress_output_last5_years['alpha'],
             'residual_std1': yield_regress_output['residualstd'], 'residual_std2': yield_regress_output_last5_years['residualstd'],
             'recent_vol_ratio': recent_vol_ratio, 'recent_5day_pnl': recent_5day_pnl,
-            'price_1': price_1, 'price_2': price_2, 'price_3': price_3}
+            'price_1': price_1, 'price_2': price_2, 'price_3': price_3, 'last5_years_indx': last5_years_indx}
 
 
 

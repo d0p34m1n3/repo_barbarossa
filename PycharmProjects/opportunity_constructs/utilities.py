@@ -72,6 +72,11 @@ def get_aligned_futures_data(**kwargs):
     aggregation_method = kwargs['aggregation_method']
     contracts_back = kwargs['contracts_back']
 
+    if 'use_last_as_current' in kwargs.keys():
+        use_last_as_current = kwargs['use_last_as_current']
+    else:
+        use_last_as_current = False
+
     futures_data_dictionary = kwargs['futures_data_dictionary']
 
     date_to = kwargs['date_to']
@@ -107,7 +112,7 @@ def get_aligned_futures_data(**kwargs):
                                  'aggregation_method': aggregation_method,
                                   'contracts_back': contracts_back}) for x in contract_specs_list]
 
-    merged_dataframe_list =  [None]*contracts_back
+    merged_dataframe_list = [None]*contracts_back
 
     for i in range(contracts_back):
         if sum([(data_frame_list[j]['cont_indx']==cont_indx_list_rolls[j][i]).any() for j in range(len(contract_list))])<len(contract_list):
@@ -128,6 +133,9 @@ def get_aligned_futures_data(**kwargs):
     aligned_dataframe.sort(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
     aligned_dataframe.drop_duplicates('settle_date',inplace=True)
 
-    current_data = aligned_dataframe[aligned_dataframe['settle_date']==cu.convert_doubledate_2datetime(date_to)]
+    if use_last_as_current:
+        current_data = aligned_dataframe.iloc[-1]
+    else:
+        current_data = aligned_dataframe.loc[cu.convert_doubledate_2datetime(date_to)]
 
     return {'aligned_data': aligned_dataframe, 'current_data': current_data}

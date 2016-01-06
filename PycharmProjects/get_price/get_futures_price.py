@@ -89,7 +89,8 @@ def get_futures_last_price_date_4ticker(**kwargs):
 def get_futures_price_preloaded(**kwargs):
 
     ticker_head = kwargs['ticker_head']
-    data_out = pd.read_pickle(dn.presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+    presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
+    data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
     if 'settle_date' in kwargs.keys():
         data_out = data_out[data_out['settle_date']==cu.convert_doubledate_2datetime(kwargs['settle_date'])]
