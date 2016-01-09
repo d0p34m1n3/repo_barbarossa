@@ -111,8 +111,15 @@ def get_strategy_id_from_alias(**kwargs):
 def load_trades_2strategy(**kwargs):
 
     trade_frame = kwargs['trade_frame']
-    strategy_id = kwargs['strategy_id']
+    con = msu.get_my_sql_connection(**kwargs)
+
+    trade_frame['strategy_id'] = [get_strategy_id_from_alias(alias=trade_frame['alias'][x],con=con) for x in range(len(trade_frame.index))]
     now_date = dt.datetime.now().date()
+
+    if 'trade_date' in kwargs.keys():
+        trade_date = cu.convert_doubledate_2datetime(kwargs['trade_date'])
+    else:
+        trade_date = now_date
 
     column_str = "ticker, option_type, strike_price, strategy_id, trade_price, trade_quantity, trade_date, instrument, real_tradeQ, created_date, last_updated_date"
     insert_str = ("%s, " * 11)[:-2]
@@ -128,18 +135,16 @@ def load_trades_2strategy(**kwargs):
     trade_quantity_indx = column_names.index('trade_quantity')
     instrument_indx = column_names.index('instrument')
     real_tradeQ_indx = column_names.index('real_tradeQ')
+    strategy_id_indx = column_names.index('strategy_id')
 
-    tuples = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], strategy_id,
+    tuples = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], x[strategy_id_indx],
               x[trade_price_indx], x[trade_quantity_indx],
-              now_date,x[instrument_indx], x[real_tradeQ_indx],now_date,now_date]) for x in trade_frame.values]
-
-    con = msu.get_my_sql_connection(**kwargs)
+              trade_date,x[instrument_indx], x[real_tradeQ_indx],now_date,now_date]) for x in trade_frame.values]
 
     msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples, con=con)
 
     if 'con' not in kwargs.keys():
         con.close()
-
 
 def load_strategy_file(**kwargs):
 

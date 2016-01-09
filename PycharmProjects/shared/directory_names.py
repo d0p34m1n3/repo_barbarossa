@@ -4,6 +4,7 @@ import os
 
 root_home = r'C:\Users\kocat_000\quantFinance'
 root_work = r'C:\Research'
+tt_fill_directory = r'C:\tt\datfiles\Export'
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
                   'strategy_output': '/strategy_output',

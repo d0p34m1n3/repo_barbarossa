@@ -1,0 +1,3 @@
+
+(PAGE 20) Original data can be written as the product of two matrices: the scores and the loadings.
+Now simply pick lower number of scores and loadings to reconstruct.

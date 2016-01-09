@@ -1,5 +1,7 @@
 __author__ = 'kocat_000'
 
+import math as m
+
 full_letter_month_list = ['F', 'G', 'H', 'J', 'K', 'M', 'N', 'Q', 'U', 'V', 'X', 'Z']
 letter_month_string = 'FGHJKMNQUVXZ'
 
@@ -121,3 +123,13 @@ def get_contract_specs(ticker):
             'ticker_month_num': letter_month_string.find(ticker[-5])+1,
             'ticker_class': ticker_class[ticker[:-5]],
             'cont_indx': 100*int(ticker[-4:]) + letter_month_string.find(ticker[-5])+1}
+
+
+def get_month_seperation_from_cont_indx(cont_indx1, cont_indx2):
+
+    contract_month1 = cont_indx1%100
+    contract_month2 = cont_indx2%100
+    contract_year1 = m.floor(cont_indx1/100)
+    contract_year2 = m.floor(cont_indx2/100)
+
+    return 12*(contract_year1-contract_year2)+(contract_month1-contract_month2)

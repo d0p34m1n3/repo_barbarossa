@@ -11,6 +11,7 @@ import opportunity_constructs.utilities as opUtil
 import shared.calendar_utilities as cu
 import signals.futures_signals as fs
 
+
 def get_futures_curve_chart_4date(**kwargs):
 
     ticker_head = kwargs['ticker_head']
@@ -30,6 +31,7 @@ def get_futures_curve_chart_4date(**kwargs):
     plt.xticks(range(len(data2_plot.index)),tick_labels)
     plt.grid()
     plt.show()
+
 
 def get_butterfly_panel_plot(**kwargs):
 
@@ -83,9 +85,11 @@ def get_butterfly_panel_plot(**kwargs):
     plt.plot(aligned_data['residuals'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.grid()
+    plt.title('Contracts: ' + str(contract_list) + ', weight2: ' + str(bf_signals_output['second_spread_weight_1'].round(2)))
     plt.show()
 
     return bf_signals_output
+
 
 def get_butterfly_scatter_plot(**kwargs):
 
