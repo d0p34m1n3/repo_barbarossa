@@ -18,36 +18,18 @@ def get_rolling_curve_data(**kwargs):
 
     panel_data = gfp.get_futures_price_preloaded(ticker_head=ticker_head)
 
-    panel_data = panel_data.loc[(panel_data['settle_date'] >= date_from_datetime) & (panel_data['settle_date']<=date_to_datetime)]
+    panel_data = panel_data.loc[(panel_data['settle_date'] >= date_from_datetime) &
+                                (panel_data['settle_date'] <= date_to_datetime) &
+                                (panel_data['tr_dte']>= front_tr_dte_limit)]
 
-    unique_dates = panel_data['settle_date'].unique()
-    unique_dates.sort()
+    sorted_data = panel_data.sort(['settle_date', 'tr_dte'], ascending=[True, True])
+    grouped = sorted_data.groupby('settle_date')
 
-    num_obs = len(unique_dates)
+    rolling_data_list = []
 
-    success_indx = [False]*num_obs
+    for i in range(num_contracts):
 
-    data_list = []
+        rolling_data_list.append(grouped.nth(i))
 
-    for report_date in unique_dates:
-
-        data4day = panel_data[panel_data['settle_date'] == report_date]
-        data4day = data4day[data4day['tr_dte'] >= front_tr_dte_limit]
-
-        if len(data4day.index) < num_contracts:
-            continue
-
-        data4day = data4day.iloc[:num_contracts]
-
-        month_diff = [cmi.get_month_seperation_from_cont_indx(data4day.iloc[x+1]['cont_indx'],
-                                                              data4day.iloc[x]['cont_indx']) for x in range(len(data4day)-1)]
-
-        if not all([x==1 for x in month_diff]):
-            continue
-
-        data4day['no'] = range(1, len(data4day.index)+1)
-        data4day = data4day.pivot(index='settle_date', columns='no')
-        data_list.append(data4day)
-
-    return pd.concat(data_list)
+    return rolling_data_list
 

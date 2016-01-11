@@ -99,4 +99,24 @@ def get_regression_results(regression_input):
             'residualstd': np.sqrt(results.mse_resid),
             'zscore': zscore}
 
+def get_pca(**kwargs):
+
+    from sklearn.decomposition import PCA
+
+    data_input = kwargs['data_input']
+    n_components = kwargs['n_components']
+
+    pca = PCA(n_components=n_components)
+    scores = pca.fit_transform(data_input)
+    inverse_data = pca.inverse_transform(scores)
+
+    return {'scores': scores, 'loadings': pca.components_, 'model_fit' : inverse_data}
+
+
+
+
+
+
+
+
 
