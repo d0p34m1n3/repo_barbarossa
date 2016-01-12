@@ -3,6 +3,7 @@ __author__ = 'kocat_000'
 import sys
 sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import my_sql_routines.my_sql_utilities as msu
+import contract_utilities.contract_meta_info as cmi
 import shared.directory_names as dn
 import pandas as pd
 import shared.calendar_utilities as cu
@@ -88,11 +89,23 @@ def get_futures_last_price_date_4ticker(**kwargs):
 
 def get_futures_price_preloaded(**kwargs):
 
-    ticker_head = kwargs['ticker_head']
-    presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
-    data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+    if 'ticker_head' in kwargs.keys():
+        ticker_head = kwargs['ticker_head']
+    else:
+        ticker = kwargs['ticker']
+        ticker_head = cmi.get_contract_specs(ticker)['ticker_head']
+
+    if 'futures_data_dictionary' in kwargs.keys():
+        data_out = kwargs['futures_data_dictionary'][ticker_head]
+    else:
+        presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
+        data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
     if 'settle_date' in kwargs.keys():
         data_out = data_out[data_out['settle_date']==cu.convert_doubledate_2datetime(kwargs['settle_date'])]
+
+    if 'ticker' in kwargs.keys():
+        data_out = data_out[data_out['ticker']==ticker]
+
     return data_out
 

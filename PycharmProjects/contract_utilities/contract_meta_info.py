@@ -114,6 +114,11 @@ contract_multiplier = {'LN': 400,
                        'RB': 42000,
                        'NG': 10000,
                        'ED': 2500}
+t_cost = {'CL': 0.65,
+          'HO': 0.80,
+          'LC' : 0.61,
+          'RB': 0.80,
+          'C': 0.61}
 
 
 def get_contract_specs(ticker):

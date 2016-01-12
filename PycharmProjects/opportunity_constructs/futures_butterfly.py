@@ -4,16 +4,13 @@ import sys
 sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import contract_utilities.contract_lists as cl
 import shared.calendar_utilities as cu
-import shared.directory_names as dn
 import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
 import pandas as pd
-import numpy as np
-import opportunity_constructs.utilities as opUtil
-import shared.statistics as stats
 import signals.futures_signals as fs
 import os.path
 import ta.strategy as ts
+
 
 def get_futures_butterflies_4date(**kwargs):
 

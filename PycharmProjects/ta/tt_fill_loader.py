@@ -7,10 +7,26 @@ import contract_utilities.contract_meta_info as cmi
 import my_sql_routines.my_sql_utilities as msu
 pd.options.mode.chained_assignment = None
 import ta.strategy as ts
+import numpy as np
 
-conversion_from_tt_ticker_head = {'CL': 'CL', 'HO': 'HO'}
-trade_price_conversion_from_tt_multiplier =  {'CL': 1/100, 'HO': 1/10000}
+conversion_from_tt_ticker_head = {'CL': 'CL', 'HO': 'HO', 'RB': 'RB', 'ZC': 'C', 'LE': 'LC'}
 product_type_instrument_conversion = {'Future': 'F'}
+
+def convert_trade_price_from_tt(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    price = kwargs['price']
+
+    if ticker_head == 'CL':
+        converted_price = price/100
+    elif ticker_head in ['HO','RB']:
+        converted_price = price/10000
+    elif ticker_head in ['LC']:
+        converted_price = price/1000
+    elif ticker_head in ['C']:
+        converted_price = np.floor(price/10)+(price%10)*0.125
+
+    return converted_price
 
 def load_latest_tt_fills(**kwargs):
 
@@ -43,7 +59,7 @@ def get_formatted_tt_fills(**kwargs):
                             cmi.full_letter_month_list[fill_frame.loc[x,'ticker_month']-1] +
                             str(fill_frame.loc[x,'ticker_year']) for x in fill_frame.index]
 
-    fill_frame['trade_price'] = [fill_frame.loc[x,'Price']*trade_price_conversion_from_tt_multiplier[fill_frame.loc[x,'ticker_head']]
+    fill_frame['trade_price'] = [convert_trade_price_from_tt(price=fill_frame.loc[x,'Price'],ticker_head=fill_frame.loc[x,'ticker_head'])
                                  for x in fill_frame.index]
 
     fill_frame['PQ'] = fill_frame['trade_price']*fill_frame['Qty']

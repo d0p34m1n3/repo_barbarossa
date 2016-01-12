@@ -233,4 +233,28 @@ def doubledate_shift_bus_days(**kwargs):
 
     return int(shifted_datetime.strftime('%Y%m%d'))
 
+def get_bus_day_list(**kwargs):
+
+    if 'reference_tickerhead' in kwargs.keys():
+        reference_tickerhead = kwargs['reference_tickerhead']
+    else:
+        reference_tickerhead =const.reference_tickerhead_4business_calendar
+
+    if 'date_from' in kwargs.keys():
+        datetime_from = cu.convert_doubledate_2datetime(kwargs['date_from'])
+
+    if 'date_to' in kwargs.keys():
+        datetime_to = cu.convert_doubledate_2datetime(kwargs['date_to'])
+
+    bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(reference_tickerhead))
+
+    date_index = pd.date_range(start=datetime_from, end=datetime_to, freq=bday_us)
+
+    return [int(x.to_datetime().strftime('%Y%m%d')) for x in date_index]
+
+
+
+
+
+
 

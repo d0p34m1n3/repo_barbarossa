@@ -7,7 +7,7 @@ import pandas as pd
 import shared.converters as conv
 import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
-
+import time as tm
 
 def generate_db_strategy_from_strategy_sheet(**kwargs):
 
@@ -108,13 +108,35 @@ def get_strategy_id_from_alias(**kwargs):
 
     return strategy_id
 
+def get_strategy_info_from_alias(**kwargs):
+    alias = kwargs['alias']
+    con = msu.get_my_sql_connection(**kwargs)
+    cur = con.cursor()
+
+    query_string = 'SELECT * FROM strategy WHERE alias=\'' + alias + '\''
+    cur.execute(query_string)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return {'id': data[0][0],
+            'alias': data[0][1],
+            'open_date': data[0][2],
+            'close_date': data[0][3],
+            'pnl': data[0][4],
+            'created_date': data[0][5],
+            'last_updated_date': data[0][6],
+            'description_string': data[0][7]}
+
 def load_trades_2strategy(**kwargs):
 
     trade_frame = kwargs['trade_frame']
     con = msu.get_my_sql_connection(**kwargs)
 
     trade_frame['strategy_id'] = [get_strategy_id_from_alias(alias=trade_frame['alias'][x],con=con) for x in range(len(trade_frame.index))]
-    now_date = dt.datetime.now().date()
+    now_time = dt.datetime.now()
+    now_date = now_time.date()
 
     if 'trade_date' in kwargs.keys():
         trade_date = cu.convert_doubledate_2datetime(kwargs['trade_date'])
@@ -139,12 +161,34 @@ def load_trades_2strategy(**kwargs):
 
     tuples = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], x[strategy_id_indx],
               x[trade_price_indx], x[trade_quantity_indx],
-              trade_date,x[instrument_indx], x[real_tradeQ_indx],now_date,now_date]) for x in trade_frame.values]
+              trade_date,x[instrument_indx], x[real_tradeQ_indx],now_time,now_time]) for x in trade_frame.values]
 
     msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples, con=con)
 
     if 'con' not in kwargs.keys():
         con.close()
+
+def get_open_strategies(**kwargs):
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = int(tm.strftime('%Y%m%d'))
+
+    cur = con.cursor()
+
+    sql_query = 'SELECT * FROM futures_master.strategy WHERE close_date>=' + str(as_of_date)
+
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(data,columns=['id','alias','open_date','close_date','pnl','created_date','last_updated_date','description_string'])
+
 
 def load_strategy_file(**kwargs):
 
