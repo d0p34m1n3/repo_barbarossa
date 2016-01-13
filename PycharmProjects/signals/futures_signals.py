@@ -49,6 +49,12 @@ def get_futures_butterfly_signals(**kwargs):
         date5_years_ago = cu.doubledate_shift(date_to,5*365)
         datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
 
+    if 'datetime2_months_ago' in kwargs.keys():
+        datetime2_months_ago = kwargs['datetime2_months_ago']
+    else:
+        date2_months_ago = cu.doubledate_shift(date_to,60)
+        datetime2_months_ago = cu.convert_doubledate_2datetime(date2_months_ago)
+
     aligned_output = opUtil.get_aligned_futures_data(contract_list=ticker_list,
                                                           tr_dte_list=tr_dte_list,
                                                           aggregation_method=aggregation_method,
@@ -85,6 +91,7 @@ def get_futures_butterfly_signals(**kwargs):
     weight3 = weight_13
 
     last5_years_indx = aligned_data['settle_date']>=datetime5_years_ago
+    last2_months_indx = aligned_data['settle_date']>=datetime2_months_ago
     data_last5_years = aligned_data[last5_years_indx]
 
     yield1 = 100*(aligned_data['c1']['close_price']-aligned_data['c2']['close_price'])/aligned_data['c2']['close_price']
@@ -152,6 +159,14 @@ def get_futures_butterfly_signals(**kwargs):
 
     alpha1 = yield_regress_output['alpha']
 
+    residuals_last5_years = residuals[last5_years_indx]
+    residuals_last2_months = residuals[last2_months_indx]
+
+    residual_current = yield1_current-alpha1-second_spread_weight_1*yield2_current
+
+    z3 = (residual_current-residuals_last5_years.mean())/residuals.std()
+    z4 = (residual_current-residuals_last2_months.mean())/residuals.std()
+
     yield_change = (alpha1+second_spread_weight_1*yield2_current-yield1_current)/(1+second_spread_weight_1)
 
     new_yield1 = yield1_current + yield_change
@@ -162,11 +177,22 @@ def get_futures_butterfly_signals(**kwargs):
 
     theo_pnl = contract_multiplier*(2*price_change1-2*second_spread_weight_1*price_change2)
 
-    aligned_output['aligned_data']['residuals'] = residuals
+    aligned_data['residuals'] = residuals
+    aligned_output['aligned_data'] = aligned_data
+
+    grouped = aligned_data.groupby(aligned_data['c1']['cont_indx'])
+    aligned_data['shifted_residuals'] = grouped['residuals'].shift(-5)
+    aligned_data['residual_change'] = aligned_data['shifted_residuals']-aligned_data['residuals']
+
+    mean_reversion = stats.get_regression_results({'x':aligned_data['residuals'].values,
+                                                         'y':aligned_data['residual_change'].values,
+                                                          'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
+
 
     return {'aligned_output': aligned_output, 'q': q, 'qf': qf,
             'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
             'zscore1': zscore1, 'rsquared1': rsquared1, 'zscore2': zscore2, 'rsquared2': rsquared2,
+            'zscore3': z3, 'zscore4': z4,
             'theo_pnl': theo_pnl,
             'regime_change_ind' : regime_change_ind,'contract_seasonality_ind': contract_seasonality_ind,
             'second_spread_weight_1': second_spread_weight_1, 'second_spread_weight_2': second_spread_weight_2,
@@ -176,7 +202,9 @@ def get_futures_butterfly_signals(**kwargs):
             'alpha1': alpha1, 'alpha2': yield_regress_output_last5_years['alpha'],
             'residual_std1': yield_regress_output['residualstd'], 'residual_std2': yield_regress_output_last5_years['residualstd'],
             'recent_vol_ratio': recent_vol_ratio, 'recent_5day_pnl': recent_5day_pnl,
-            'price_1': price_1, 'price_2': price_2, 'price_3': price_3, 'last5_years_indx': last5_years_indx}
+            'price_1': price_1, 'price_2': price_2, 'price_3': price_3, 'last5_years_indx': last5_years_indx,
+            'mean_reversion_rsquared': mean_reversion['rsquared'],
+            'mean_reversion_signif' : (mean_reversion['conf_int'][1, :] < 0).all()}
 
 
 

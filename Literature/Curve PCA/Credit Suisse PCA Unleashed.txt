@@ -2,6 +2,8 @@
 (PAGE 4) The underlying data need to be correlated, mean-reverting, preferably non-overlapping,
 with sufficient points to ensure the robustness of the results.
 
+[PAGE 9]
+
 
 
 (PAGE 20) Original data can be written as the product of two matrices: the scores and the loadings.

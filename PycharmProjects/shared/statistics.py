@@ -78,7 +78,9 @@ def get_regression_results(regression_input):
     clean_x = [x[i] for i in range(len(y)) if not nan_indx_x[i] and not nan_indx_y[i]]
 
     if len(clean_x) < clean_num_obs:
-        return {'alpha': float('NaN'), 'beta': float('NaN'), 'rsquared': float('NaN'), 'residualstd': float('NaN'),'zscore': float('NaN')}
+        nan_matrix = np.empty((2,2))
+        nan_matrix[:] = np.NAN
+        return {'alpha': np.NAN, 'beta': np.NAN, 'conf_int': nan_matrix ,'rsquared': np.NAN, 'residualstd': np.NAN,'zscore': np.NAN}
 
     x_current = clean_x[-1]
     y_current = clean_y[-1]
@@ -95,6 +97,7 @@ def get_regression_results(regression_input):
     zscore = (y_current-parameters[0]-parameters[1]*x_current)/np.sqrt(results.mse_resid)
 
     return {'alpha': parameters[0], 'beta': parameters[1],
+            'conf_int': results.conf_int(),
             'rsquared': 100*results.rsquared,
             'residualstd': np.sqrt(results.mse_resid),
             'zscore': zscore}

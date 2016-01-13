@@ -78,6 +78,8 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
 
     zscore1_list = [None]*num_butterflies
     zscore2_list = [None]*num_butterflies
+    zscore3_list = [None]*num_butterflies
+    zscore4_list = [None]*num_butterflies
 
     rsquared1_list = [None]*num_butterflies
     rsquared2_list = [None]*num_butterflies
@@ -111,6 +113,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     price_2_list = [None]*num_butterflies
     price_3_list = [None]*num_butterflies
 
+    mean_reversion_rsquared_list = [None]*num_butterflies
+    mean_reversion_signif_list = [None]*num_butterflies
+
     futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in cmi.futures_butterfly_strategy_tickerhead_list}
 
     date5_years_ago = cu.doubledate_shift(date_to,5*365)
@@ -130,6 +135,8 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         qf_list[i] = bf_signals_output['qf']
         zscore1_list[i] = bf_signals_output['zscore1']
         zscore2_list[i] = bf_signals_output['zscore2']
+        zscore3_list[i] = bf_signals_output['zscore3']
+        zscore4_list[i] = bf_signals_output['zscore4']
         rsquared1_list[i] = bf_signals_output['rsquared1']
         rsquared2_list[i] = bf_signals_output['rsquared2']
 
@@ -161,11 +168,16 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         price_2_list[i] = bf_signals_output['price_2']
         price_3_list[i] = bf_signals_output['price_3']
 
+        mean_reversion_rsquared_list[i] = bf_signals_output['mean_reversion_rsquared']
+        mean_reversion_signif_list[i] = bf_signals_output['mean_reversion_signif']
+
     butterflies['Q'] = q_list
     butterflies['QF'] = qf_list
 
     butterflies['z1'] = zscore1_list
     butterflies['z2'] = zscore2_list
+    butterflies['z3'] = zscore3_list
+    butterflies['z4'] = zscore4_list
 
     butterflies['r1'] = rsquared1_list
     butterflies['r2'] = rsquared2_list
@@ -200,8 +212,13 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['price2'] = price_2_list
     butterflies['price3'] = price_3_list
 
+    butterflies['mean_reversion_rsquared'] = mean_reversion_rsquared_list
+    butterflies['mean_reversion_signif'] = mean_reversion_signif_list
+
     butterflies['z1'] = butterflies['z1'].round(2)
     butterflies['z2'] = butterflies['z2'].round(2)
+    butterflies['z3'] = butterflies['z3'].round(2)
+    butterflies['z4'] = butterflies['z4'].round(2)
     butterflies['r1'] = butterflies['r1'].round(2)
     butterflies['r2'] = butterflies['r2'].round(2)
     butterflies['RC'] = butterflies['RC'].round(2)
@@ -229,6 +246,8 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['price1'] = butterflies['price1'].round(4)
     butterflies['price2'] = butterflies['price2'].round(4)
     butterflies['price3'] = butterflies['price3'].round(4)
+
+    butterflies['mean_reversion_rsquared'] = butterflies['mean_reversion_rsquared'].round(2)
 
     butterflies.to_pickle(output_dir + '/summary.pkl')
 
