@@ -1,0 +1,19 @@
+
+(PAGE 4) The underlying data need to be correlated, mean-reverting, preferably non-overlapping,
+with sufficient points to ensure the robustness of the results.
+
+(PAGE 9) In the core bonds example, they have decided not to include the third factor which 
+represents the curveture effect. They claim this is a strategic decision as it's more valuable 
+for curveture effects to be captured as part of the residual.
+
+(PAGE 12) In practice, we find that the overall variance of a position on a yield curve can be
+constructed as a linear combination of the variance of the scores.
+
+(PAGE 18) PCA can be used to to construct a curve trade that is factor 1 neutral or a fly trade
+that's factor 1 and 2 neutral.
+
+(PAGE 20) Original data can be written as the product of two matrices: the scores and the loadings.
+Now simply pick lower number of scores and loadings to reconstruct.
+
+(PAGE 21) Hedge ratio calculation is pretty simplistic. Just calculate the individual asset variances
+and divide these to neutralize the total explained variance.

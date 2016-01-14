@@ -59,7 +59,6 @@ def generate_db_strategy_from_alias(**kwargs):
                      now_date, now_date, description_string)
 
     final_str = "INSERT INTO strategy (%s) VALUES (%s)" % (column_str, insert_str)
-
     cur.execute(final_str,tuple_to_load)
     con.commit()
 
@@ -211,6 +210,8 @@ def create_strategy_output_dir(**kwargs):
 
     if strategy_class == 'futures_butterfly':
         output_dir = strategy_output_folder + '/futures_butterfly/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'curve_pca':
+         output_dir = strategy_output_folder + '/curve_pca/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

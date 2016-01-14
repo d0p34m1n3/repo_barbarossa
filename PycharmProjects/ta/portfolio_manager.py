@@ -2,6 +2,9 @@
 import ta.strategy as ts
 import ta.pnl as tapnl
 import my_sql_routines.my_sql_utilities as msu
+import pandas as pd
+
+pd.options.mode.chained_assignment = None  # default='warn'
 
 def get_daily_pnl_snapshot(**kwargs):
 

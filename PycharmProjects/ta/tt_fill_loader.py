@@ -9,7 +9,7 @@ pd.options.mode.chained_assignment = None
 import ta.strategy as ts
 import numpy as np
 
-conversion_from_tt_ticker_head = {'CL': 'CL', 'HO': 'HO', 'RB': 'RB', 'ZC': 'C', 'LE': 'LC'}
+conversion_from_tt_ticker_head = {'CL': 'CL', 'HO': 'HO', 'RB': 'RB', 'ZC': 'C', 'LE': 'LC', 'HE': 'LN','IPE e-Brent':'B'}
 product_type_instrument_conversion = {'Future': 'F'}
 
 def convert_trade_price_from_tt(**kwargs):
@@ -17,11 +17,11 @@ def convert_trade_price_from_tt(**kwargs):
     ticker_head = kwargs['ticker_head']
     price = kwargs['price']
 
-    if ticker_head == 'CL':
+    if ticker_head in ['CL', 'B']:
         converted_price = price/100
     elif ticker_head in ['HO','RB']:
         converted_price = price/10000
-    elif ticker_head in ['LC']:
+    elif ticker_head in ['LC','LN']:
         converted_price = price/1000
     elif ticker_head in ['C']:
         converted_price = np.floor(price/10)+(price%10)*0.125
