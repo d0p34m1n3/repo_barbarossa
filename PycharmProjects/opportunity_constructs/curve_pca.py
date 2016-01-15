@@ -6,6 +6,7 @@ import shared.statistics as stats
 import ta.strategy as ts
 import os.path
 
+
 def get_curve_pca_report(**kwargs):
 
     ticker_head = kwargs['ticker_head']
@@ -28,6 +29,11 @@ def get_curve_pca_report(**kwargs):
                                          front_tr_dte_limit=10,
                                         date_from=date10_years_ago,
                                         date_to=date_to)
+
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+
+    if datetime_to != rolling_data[0].index[-1].to_datetime():
+        return {'pca_results': pd.DataFrame(), 'success': False}
 
     yield_raw = [(rolling_data[x]['close_price']-rolling_data[x+1]['close_price'])/rolling_data[x+1]['close_price']
                  for x in range(len(rolling_data)-1)]

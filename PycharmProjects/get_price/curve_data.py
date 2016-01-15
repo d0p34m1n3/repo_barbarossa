@@ -3,6 +3,7 @@ import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
 import shared.calendar_utilities as cu
 import pandas as pd
+import numpy as np
 
 
 def get_rolling_curve_data(**kwargs):
@@ -22,8 +23,16 @@ def get_rolling_curve_data(**kwargs):
                                 (panel_data['settle_date'] <= date_to_datetime) &
                                 (panel_data['tr_dte']>= front_tr_dte_limit)]
 
+    panel_data = panel_data[np.isfinite(panel_data['close_price'])]
     sorted_data = panel_data.sort(['settle_date', 'tr_dte'], ascending=[True, True])
-    grouped = sorted_data.groupby('settle_date')
+
+    filtered_data = sorted_data.groupby('settle_date').filter(lambda x:len(x)>=num_contracts)
+
+    filtered_data2 = filtered_data.groupby('settle_date').filter(lambda x:
+                                                            all([cmi.get_month_seperation_from_cont_indx(x['cont_indx'].values[i],
+                                                                                                         x['cont_indx'].values[i+1])==-1 for i in range(num_contracts-1)]))
+
+    grouped = filtered_data2.groupby('settle_date')
 
     rolling_data_list = []
 

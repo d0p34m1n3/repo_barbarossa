@@ -178,7 +178,7 @@ def get_open_strategies(**kwargs):
 
     cur = con.cursor()
 
-    sql_query = 'SELECT * FROM futures_master.strategy WHERE close_date>=' + str(as_of_date)
+    sql_query = 'SELECT * FROM futures_master.strategy WHERE close_date>=' + str(as_of_date) + ' and open_date<=' + str(as_of_date)
 
     cur.execute(sql_query)
     data = cur.fetchall()

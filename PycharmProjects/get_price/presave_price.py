@@ -14,13 +14,31 @@ pd.options.mode.chained_assignment = None
 
 presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
 
-dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 5, 31), True),
+dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
+                                  ('CLF2008', dt.datetime(2007, 4, 26), True),
+                                  ('CLF2008', dt.datetime(2007, 5, 1), True),
+                                  ('CLG2008', dt.datetime(2007, 5, 31), True),
                                   ('CLH2008', dt.datetime(2007, 5, 31), True),
+                                  ('CLM2008', dt.datetime(2007, 5, 31), True),
                                   ('CLG2008', dt.datetime(2007, 6, 21), True),
                                   ('CLN2008', dt.datetime(2007, 6, 21), True),
+                                  ('CLV2008', dt.datetime(2007, 6, 21), True),
                                   ('CLX2008', dt.datetime(2007, 6, 21), True),
-                                  ('CLX2008', dt.datetime(2007, 6, 25), True)],
-                                columns=['ticker','settle_date','discard'])
+                                  ('CLK2008', dt.datetime(2007, 6, 25), True),
+                                  ('CLX2008', dt.datetime(2007, 6, 25), True),
+                                  ('CLG2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLH2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLJ2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLK2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLM2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLN2008', dt.datetime(2007, 7, 18), True),
+                                  ('CLJ2008', dt.datetime(2007, 7, 19), True),
+                                  ('CLN2008', dt.datetime(2007, 7, 25), True),
+                                  ('CLQ2008', dt.datetime(2007, 7, 25), True),
+                                  ('CLG2008', dt.datetime(2007, 7, 26), True),
+                                  ('CLH2008', dt.datetime(2007, 7, 26), True),
+                                  ('CLU2008', dt.datetime(2007, 7, 30), True),
+                                  ('CLN2009', dt.datetime(2008, 10, 16), True)],columns=['ticker','settle_date','discard'])
 
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
@@ -61,6 +79,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         merged_dataframe_list[i]['ticker_head'] = contract_data['ticker_head'][contract_data.index[0]]
         merged_dataframe_list[i]['ticker_month'] = contract_data['ticker_month'][contract_data.index[0]]
         merged_dataframe_list[i]['ticker_year'] = contract_data['ticker_year'][contract_data.index[0]]
+        merged_dataframe_list[i]['cont_indx'] = contract_data['cont_indx'][contract_data.index[0]]
 
         merged_dataframe_list[i]['change1'] = merged_dataframe_list[i]['close_price'].shift(-2)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change2'] = merged_dataframe_list[i]['close_price'].shift(-3)-merged_dataframe_list[i]['close_price'].shift(-1)

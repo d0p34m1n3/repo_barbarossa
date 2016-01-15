@@ -79,13 +79,16 @@ def get_strategy_pnl(**kwargs):
 
     strategy_info = ts.get_strategy_info_from_alias(alias=alias, con=con)
 
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+
     open_date = int(strategy_info['open_date'].strftime('%Y%m%d'))
     close_date = int(strategy_info['close_date'].strftime('%Y%m%d'))
 
-    last_available_date = exp.doubledate_shift_bus_days()
-
-    if close_date>last_available_date:
-        close_date = last_available_date
+    if close_date>as_of_date:
+        close_date = as_of_date
 
     bus_day_list = exp.get_bus_day_list(date_from=open_date,date_to=close_date)
 

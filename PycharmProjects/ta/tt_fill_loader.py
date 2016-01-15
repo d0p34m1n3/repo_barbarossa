@@ -9,7 +9,13 @@ pd.options.mode.chained_assignment = None
 import ta.strategy as ts
 import numpy as np
 
-conversion_from_tt_ticker_head = {'CL': 'CL', 'HO': 'HO', 'RB': 'RB', 'ZC': 'C', 'LE': 'LC', 'HE': 'LN','IPE e-Brent':'B'}
+conversion_from_tt_ticker_head = {'CL': 'CL',
+                                  'HO': 'HO',
+                                  'RB': 'RB',
+                                  'ZC': 'C',
+                                  'ZS': 'S',
+                                  'NG':'NG',
+                                  'LE': 'LC', 'HE': 'LN','IPE e-Brent':'B'}
 product_type_instrument_conversion = {'Future': 'F'}
 
 def convert_trade_price_from_tt(**kwargs):
@@ -17,13 +23,15 @@ def convert_trade_price_from_tt(**kwargs):
     ticker_head = kwargs['ticker_head']
     price = kwargs['price']
 
-    if ticker_head in ['CL', 'B']:
+    if ticker_head in 'CL':
         converted_price = price/100
+    elif ticker_head == 'B':
+        converted_price = price
     elif ticker_head in ['HO','RB']:
         converted_price = price/10000
-    elif ticker_head in ['LC','LN']:
+    elif ticker_head in ['LC','LN','NG']:
         converted_price = price/1000
-    elif ticker_head in ['C']:
+    elif ticker_head in ['C','S']:
         converted_price = np.floor(price/10)+(price%10)*0.125
 
     return converted_price
@@ -50,7 +58,14 @@ def get_formatted_tt_fills(**kwargs):
 
     fill_frame = load_latest_tt_fills()
 
-    datetime_conversion = [dt.datetime.strptime(x,'%b%y') for x in fill_frame['Contract']]
+    str_indx = fill_frame['Contract'].values[0].find('-')
+
+    if str_indx==2:
+        date_format = '%y-%b'
+    elif str_indx==-1:
+        date_format = '%b%y'
+
+    datetime_conversion = [dt.datetime.strptime(x,date_format) for x in fill_frame['Contract']]
     fill_frame['ticker_year'] = [x.year for x in datetime_conversion]
     fill_frame['ticker_month'] = [x.month for x in datetime_conversion]
     fill_frame['ticker_head'] = [conversion_from_tt_ticker_head[x] for x in fill_frame['Product']]
@@ -93,8 +108,13 @@ def assign_trades_2strategies(**kwargs):
         if allocation_frame['criteria'][i]=='tickerhead':
 
             selected_trades = aggregate_trades[aggregate_trades['ticker_head']==allocation_frame['value'][i]]
-            combined_list[i] = selected_trades[['ticker','option_type','strike_price','trade_price','trade_quantity','instrument','real_tradeQ']]
-            combined_list[i]['alias'] = allocation_frame['alias'][i]
+
+        elif allocation_frame['criteria'][i]=='ticker':
+
+            selected_trades = aggregate_trades[aggregate_trades['ticker']==allocation_frame['value'][i]]
+
+        combined_list[i] = selected_trades[['ticker','option_type','strike_price','trade_price','trade_quantity','instrument','real_tradeQ']]
+        combined_list[i]['alias'] = allocation_frame['alias'][i]
 
     return pd.concat(combined_list).reset_index(drop=True)
 

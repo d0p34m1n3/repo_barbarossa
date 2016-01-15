@@ -1,34 +1,54 @@
 __author__ = 'kocat_000'
 
 import pandas as pd
+import numpy as np
+import opportunity_constructs.curve_pca as cpc
+pd.options.mode.chained_assignment = None  # default='warn'
 
-def backtest_curve_pca_4date(**kwargs):
+def backtest_curve_pca(**kwargs):
 
-    residuals = kwargs['residuals']
-    change_data = kwargs['change_data']
-    tr_dte_data = kwargs['tr_dte_data']
+    ticker_head = kwargs['ticker_head']
+    date_list = kwargs['date_list']
 
-    spread_residual_vec = []
-    spread_pnl_vec = []
-    front_tr_dte_vec = []
+    if 'use_existing_filesQ' in kwargs.keys():
+        use_existing_filesQ = kwargs['use_existing_filesQ']
+    else:
+        use_existing_filesQ = True
 
-    for i in range(len(residuals)):
-        spread_residual_vec.append(residuals[i])
-        spread_pnl_vec.append(change_data[i])
-        front_tr_dte_vec.append(tr_dte_data[i])
+    report_results_list = []
+    success_indx = []
 
-    data_frame = pd.DataFrame.from_items([('residual', spread_residual_vec),
-                         ('pnl5', spread_pnl_vec),
-                         ('front_tr_dte', front_tr_dte_vec)])
+    for date_to in date_list:
 
-    data_frame = data_frame[data_frame['front_tr_dte'] > 100]
+        report_out = cpc.get_curve_pca_report(ticker_head=ticker_head,date_to=date_to,use_existing_filesQ=use_existing_filesQ)
+        success_indx.append(report_out['success'])
 
-    data_frame.sort('residual',ascending=True, inplace=True)
+        if report_out['success']:
+            report_results_list.append(report_out['pca_results'])
 
-    long_frame = data_frame.iloc[0]
-    short_frame = data_frame.iloc[-1:]
 
-    return long_frame['pnl5'].sum()-short_frame['pnl5'].sum()
+    good_dates = [date_list[i] for i in range(len(date_list)) if success_indx[i]]
+
+    total_pnl_list = []
+
+    for i in range(len(good_dates)):
+
+        daily_report = report_results_list[i]
+        median_factor_load2 = daily_report['factor_load2'].median()
+
+        if median_factor_load2>0:
+            daily_report_filtered = daily_report[daily_report['factor_load2']>=0]
+        else:
+            daily_report_filtered = daily_report[daily_report['factor_load2']<=0]
+
+        daily_report_filtered.sort('z',ascending=True,inplace=True)
+        num_contract_4side = round(len(daily_report_filtered.index)/4)
+        long_side = daily_report_filtered.iloc[:num_contract_4side]
+        short_side = daily_report_filtered.iloc[-num_contract_4side:]
+        short_side_weight = long_side['factor_load1'].sum()/short_side['factor_load1'].sum()
+        total_pnl_list.append(np.nanmean(long_side['change5'])-short_side_weight*np.nanmean(short_side['change5']))
+
+    return pd.DataFrame({'pnl':total_pnl_list,'settle_date':good_dates })
 
 
 

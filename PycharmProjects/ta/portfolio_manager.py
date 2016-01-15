@@ -11,8 +11,7 @@ def get_daily_pnl_snapshot(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
 
     strategy_frame = ts.get_open_strategies(**kwargs)
-
-    pnl_output = [tapnl.get_strategy_pnl(alias=x,con=con) for x in strategy_frame['alias']]
+    pnl_output = [tapnl.get_strategy_pnl(alias=x,con=con,**kwargs) for x in strategy_frame['alias']]
 
     strategy_frame['daily_pnl'] = [x['daily_pnl'] for x in pnl_output]
     strategy_frame['total_pnl'] = [x['total_pnl'] for x in pnl_output]

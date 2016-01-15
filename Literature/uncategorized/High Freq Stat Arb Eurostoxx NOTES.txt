@@ -1,2 +1,9 @@
 
 (PAGE 2) There's mention of some potentially useful papers in literature review 2.1-2.4.
+
+(PAGE 4) Cointegration amounts to running a levels regression checking the residuals for stationarity.
+
+(PAGE 4) Rolling OLS is the least favoured in the literature due to the ghost effect, lagging effect and 
+drop-out effect.
+
+(PAGE 5) The average OLS rolling window length found using the genetic algorithm was 200 data points.
