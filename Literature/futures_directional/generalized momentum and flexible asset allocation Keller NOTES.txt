@@ -1,0 +1,4 @@
+
+This is an interesting paper, by ranking 7 funds based on their momentum, volatility and correlation;
+the paper claims that sharp ratio improves from 0.34 to 1.6. It's also interesting to note that
+they use 4 months as their momentum look back window.

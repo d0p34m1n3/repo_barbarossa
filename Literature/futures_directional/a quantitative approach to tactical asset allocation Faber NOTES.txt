@@ -1,0 +1,4 @@
+
+The basic claim of this paper is to generate equity-like returns with bond-like 
+volatility. Assets are hold only when monthly price>10 month SMA. Sharp ratio of
+diversivied portfolio goes from 0.75 to 1.20.

@@ -1,0 +1,8 @@
+
+There seems to be a structural expensiveness of the front month contracts caused by USO etf. If that's the case
+some of the following strategies might be profitable.
+
+(1) Ratio Calendar short front
+(2) Butterfly where one owns the front month that USO doesn't own. 
+Will only work when there's a front month contract that USO doesn't own.
+(3) Crude oil against Brent calendars.

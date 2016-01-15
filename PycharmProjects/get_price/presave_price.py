@@ -14,9 +14,13 @@ pd.options.mode.chained_assignment = None
 
 presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
 
-dirty_data_points = pd.DataFrame.from_items([('ticker', ['CLG2008','CLH2008']),
-                         ('settle_date', [dt.datetime(2007,5,31),dt.datetime(2007,5,31)]),
-                         ('discard',[True,True])])
+dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 5, 31), True),
+                                  ('CLH2008', dt.datetime(2007, 5, 31), True),
+                                  ('CLG2008', dt.datetime(2007, 6, 21), True),
+                                  ('CLN2008', dt.datetime(2007, 6, 21), True),
+                                  ('CLX2008', dt.datetime(2007, 6, 21), True),
+                                  ('CLX2008', dt.datetime(2007, 6, 25), True)],
+                                columns=['ticker','settle_date','discard'])
 
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
@@ -31,7 +35,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head)
 
     data4_tickerhead = pd.merge(data4_tickerhead, dirty_data_points, on=['settle_date', 'ticker'],how='left')
-    data4_tickerhead = data4_tickerhead[data4_tickerhead['discard'] !=True]
+    data4_tickerhead = data4_tickerhead[data4_tickerhead['discard'] != True]
     data4_tickerhead = data4_tickerhead.drop('discard', 1)
 
     data4_tickerhead['close_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['close_price'].values]

@@ -122,7 +122,7 @@ def update_futures_price_database(**kwargs):
 
     import time
     run_date = int(time.strftime('%Y%m%d'))
-    early_start_date = cu.doubledate_shift(run_date, 15)
+    early_start_date = cu.doubledate_shift(run_date, 45)   #15
     con = msu.get_my_sql_connection(**kwargs)
 
     contract_list = []
