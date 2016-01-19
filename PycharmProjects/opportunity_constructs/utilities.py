@@ -115,7 +115,7 @@ def get_aligned_futures_data(**kwargs):
     merged_dataframe_list = [None]*contracts_back
 
     for i in range(contracts_back):
-        if sum([(data_frame_list[j]['cont_indx']==cont_indx_list_rolls[j][i]).any() for j in range(len(contract_list))])<len(contract_list):
+        if sum([(data_frame_list[j]['cont_indx'] == cont_indx_list_rolls[j][i]).any() for j in range(len(contract_list))])<len(contract_list):
             continue
         contract_data_list = [None]*num_contracts
         for k in range(num_contracts):

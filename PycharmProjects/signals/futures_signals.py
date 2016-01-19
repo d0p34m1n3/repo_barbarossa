@@ -8,6 +8,8 @@ import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
 import shared.statistics as stats
 import shared.calendar_utilities as cu
+import numpy as np
+import pandas as pd
 
 
 def get_futures_butterfly_signals(**kwargs):
@@ -207,8 +209,122 @@ def get_futures_butterfly_signals(**kwargs):
             'mean_reversion_signif' : (mean_reversion['conf_int'][1, :] < 0).all()}
 
 
+def get_futures_spread_carry_signals(**kwargs):
+
+    ticker_list = kwargs['ticker_list']
+    date_to = kwargs['date_to']
+
+    if 'tr_dte_list' in kwargs.keys():
+        tr_dte_list = kwargs['tr_dte_list']
+    else:
+        tr_dte_list = [exp.get_futures_days2_expiration({'ticker': x,'date_to': date_to}) for x in ticker_list]
+
+    if 'aggregation_method' in kwargs.keys() and 'contracts_back' in kwargs.keys():
+        aggregation_method = kwargs['aggregation_method']
+        contracts_back = kwargs['contracts_back']
+    else:
+        amcb_output = opUtil.get_aggregation_method_contracts_back(cmi.get_contract_specs(ticker_list[0]))
+        aggregation_method = amcb_output['aggregation_method']
+        contracts_back = amcb_output['contracts_back']
+
+    if 'use_last_as_current' in kwargs.keys():
+        use_last_as_current = kwargs['use_last_as_current']
+    else:
+        use_last_as_current = False
+
+    if 'futures_data_dictionary' in kwargs.keys():
+        futures_data_dictionary = kwargs['futures_data_dictionary']
+    else:
+        futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in [cmi.get_contract_specs(ticker_list[0])['ticker_head']]}
+
+    if 'contract_multiplier' in kwargs.keys():
+        contract_multiplier = kwargs['contract_multiplier']
+    else:
+        contract_multiplier = cmi.contract_multiplier[cmi.get_contract_specs(ticker_list[0])['ticker_head']]
+
+    if 'datetime5_years_ago' in kwargs.keys():
+        datetime5_years_ago = kwargs['datetime5_years_ago']
+    else:
+        date5_years_ago = cu.doubledate_shift(date_to,5*365)
+        datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
+
+    if 'datetime2_months_ago' in kwargs.keys():
+        datetime2_months_ago = kwargs['datetime2_months_ago']
+    else:
+        date2_months_ago = cu.doubledate_shift(date_to,60)
+        datetime2_months_ago = cu.convert_doubledate_2datetime(date2_months_ago)
+
+    aligned_output = opUtil.get_aligned_futures_data(contract_list=ticker_list,
+                                                          tr_dte_list=tr_dte_list,
+                                                          aggregation_method=aggregation_method,
+                                                          contracts_back=contracts_back,
+                                                          date_to=date_to,
+                                                          futures_data_dictionary=futures_data_dictionary,
+                                                          use_last_as_current=use_last_as_current)
 
 
+    aligned_data = aligned_output['aligned_data']
+    current_data = aligned_output['current_data']
+
+    last5_years_indx = aligned_data['settle_date']>=datetime5_years_ago
+    data_last5_years = aligned_data[last5_years_indx]
+
+    ticker1_list = [current_data['c' + str(x+1)]['ticker'] for x in range(len(ticker_list)-1)]
+    ticker2_list = [current_data['c' + str(x+2)]['ticker'] for x in range(len(ticker_list)-1)]
+    yield_current_list = [100*(current_data['c' + str(x+1)]['close_price']-
+                           current_data['c' + str(x+2)]['close_price'])/
+                           current_data['c' + str(x+2)]['close_price']
+                            for x in range(len(ticker_list)-1)]
+
+    price_current_list = [current_data['c' + str(x+1)]['close_price']-current_data['c' + str(x+2)]['close_price']
+                            for x in range(len(ticker_list)-1)]
 
 
+    yield_history = [100*(aligned_data['c' + str(x+1)]['close_price']-
+                           aligned_data['c' + str(x+2)]['close_price'])/
+                           aligned_data['c' + str(x+2)]['close_price']
+                            for x in range(len(ticker_list)-1)]
 
+    change_5_history = [data_last5_years['c' + str(x+1)]['change_5']-
+                           data_last5_years['c' + str(x+2)]['change_5']
+                            for x in range(len(ticker_list)-1)]
+
+    change5 = [contract_multiplier*(current_data['c' + str(x+1)]['change5']-
+                           current_data['c' + str(x+2)]['change5'])
+                            for x in range(len(ticker_list)-1)]
+
+    front_tr_dte = [current_data['c' + str(x+1)]['tr_dte'] for x in range(len(ticker_list)-1)]
+
+    q_list = [stats.get_quantile_from_number({'x': yield_current_list[x],
+                                'y': yield_history[x].values,
+                                'clean_num_obs': max(100, round(3*len(yield_history[x].values)/4))})
+                                for x in range(len(ticker_list)-1)]
+
+    percentile_vector = [stats.get_number_from_quantile(y=change_5_history[x].values,
+                                                       quantile_list=[1, 15, 85, 99],
+                                                       clean_num_obs=max(100, round(3*len(change_5_history[x].values)/4)))
+                                                       for x in range(len(ticker_list)-1)]
+    q1 = [x[0] for x in percentile_vector]
+    q15 = [x[1] for x in percentile_vector]
+    q85 = [x[2] for x in percentile_vector]
+    q99 = [x[3] for x in percentile_vector]
+
+    downside = [contract_multiplier*(q1[x]+q15[x])/2 for x in range(len(q1))]
+    upside = [contract_multiplier*(q85[x]+q99[x])/2 for x in range(len(q1))]
+    carry = [contract_multiplier*(price_current_list[x]-price_current_list[x+1]) for x in range(len(q_list)-1)]
+    q_carry = [q_list[x]-q_list[x+1] for x in range(len(q_list)-1)]
+    reward_risk = [5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*abs(downside[x+1])) if carry[x]>0
+      else 5*abs(carry[x])/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
+
+    return pd.DataFrame.from_items([('ticker1',ticker1_list),
+                         ('ticker2',ticker2_list),
+                         ('ticker_head',cmi.get_contract_specs(ticker_list[0])['ticker_head']),
+                         ('front_tr_dte',front_tr_dte),
+                         ('carry',[np.NAN]+carry),
+                         ('q_carry',[np.NAN]+q_carry),
+                         ('reward_risk',[np.NAN]+reward_risk),
+                         ('price',price_current_list),
+                         ('q',q_list),
+                         ('upside',upside),
+                         ('downside',downside),
+                         ('change5',change5)])

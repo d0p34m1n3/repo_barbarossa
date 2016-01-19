@@ -23,6 +23,12 @@ def get_rolling_curve_data(**kwargs):
                                 (panel_data['settle_date'] <= date_to_datetime) &
                                 (panel_data['tr_dte']>= front_tr_dte_limit)]
 
+    if ticker_head=='ED':
+        panel_data = panel_data[panel_data['ticker_month']%3==0]
+        month_seperation = 3
+    else:
+        month_seperation = 1
+
     panel_data = panel_data[np.isfinite(panel_data['close_price'])]
     sorted_data = panel_data.sort(['settle_date', 'tr_dte'], ascending=[True, True])
 
@@ -30,7 +36,7 @@ def get_rolling_curve_data(**kwargs):
 
     filtered_data2 = filtered_data.groupby('settle_date').filter(lambda x:
                                                             all([cmi.get_month_seperation_from_cont_indx(x['cont_indx'].values[i],
-                                                                                                         x['cont_indx'].values[i+1])==-1 for i in range(num_contracts-1)]))
+                                                                                                         x['cont_indx'].values[i+1])==-month_seperation for i in range(num_contracts-1)]))
 
     grouped = filtered_data2.groupby('settle_date')
 
