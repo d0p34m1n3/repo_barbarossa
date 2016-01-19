@@ -69,6 +69,7 @@ def generate_db_strategy_from_alias(**kwargs):
 
     return strategy_id
 
+
 def get_trades_4strategy_alias(**kwargs):
 
     con = msu.get_my_sql_connection(**kwargs)

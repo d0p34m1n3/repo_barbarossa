@@ -2,10 +2,12 @@ __author__ = 'kocat_000'
 
 import contract_utilities.expiration as exp
 import opportunity_constructs.futures_butterfly as fb
+import opportunity_constructs.curve_pca as cpc
 import signals.futures_filters as ff
 import shared.directory_names as dn
 import pandas as pd
 import ta.strategy as ts
+
 
 def generate_futures_butterfly_formatted_output(**kwargs):
 
@@ -50,3 +52,47 @@ def generate_futures_butterfly_formatted_output(**kwargs):
 
     worksheet_all.autofilter(0, 0, len(butterflies_w_selected_columns.index),
                                    len(butterflies_w_selected_columns.columns))
+
+
+def generate_curve_pca_formatted_output(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='curve_pca', report_date=report_date)
+
+    ticker_head_list = ['CL', 'B']
+    selected_column_list = ['ticker1', 'ticker2', 'tr_dte_front', 'residuals', 'price', 'yield', 'z', 'factor_load1', 'factor_load2']
+    writer = pd.ExcelWriter(output_dir + '/curve_pca.xlsx', engine='xlsxwriter')
+
+    for ticker_head in ticker_head_list:
+
+        curve_pca_output = cpc.get_curve_pca_report(ticker_head=ticker_head, date_to=report_date)
+
+        if curve_pca_output['success']:
+
+            all_spreads = curve_pca_output['pca_results']
+            filter_out = ff.get_curve_pca_filters(data_frame_input=all_spreads, filter_list=['long1', 'short1'])
+            good_spreads = filter_out['selected_frame']
+
+            all_spreads = all_spreads[selected_column_list]
+            good_spreads = good_spreads[selected_column_list]
+
+            all_spreads.to_excel(writer, sheet_name=ticker_head + '-all')
+            good_spreads.to_excel(writer, sheet_name=ticker_head + '-good')
+
+            worksheet_good = writer.sheets[ticker_head + '-good']
+            worksheet_all = writer.sheets[ticker_head + '-all']
+
+            worksheet_good.freeze_panes(1, 0)
+            worksheet_all.freeze_panes(1, 0)
+
+            worksheet_good.autofilter(0, 0, len(good_spreads.index), len(selected_column_list))
+
+            worksheet_all.autofilter(0, 0, len(all_spreads.index), len(selected_column_list))
+
+
+
+

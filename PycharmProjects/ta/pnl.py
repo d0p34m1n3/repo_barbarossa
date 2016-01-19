@@ -7,6 +7,7 @@ import shared.calendar_utilities as cu
 import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
 
+
 def get_strategy_pnl_4day(**kwargs):
 
     alias = kwargs['alias']
@@ -41,9 +42,8 @@ def get_strategy_pnl_4day(**kwargs):
                                 futures_data_dictionary=futures_data_dictionary,
                                 settle_date=pnl_date)['close_price'].values[0] for x in trades_frame['ticker']]
 
-
-    position_frame = trades_frame[trades_frame['trade_date']<pnl_datetime]
-    intraday_frame = trades_frame[trades_frame['trade_date']==pnl_datetime]
+    position_frame = trades_frame[trades_frame['trade_date'] < pnl_datetime]
+    intraday_frame = trades_frame[trades_frame['trade_date'] == pnl_datetime]
 
     if len(position_frame)==0:
         position_pnl = 0

@@ -78,6 +78,12 @@ def get_curve_pca_report(**kwargs):
                              ('factor_load2',pca_out['loadings'][1]),
                              ('change5', change5_data[-1])])
 
+    pca_results['residuals'] = pca_results['residuals'].round(3)
+    pca_results['yield'] = pca_results['yield'].round(2)
+    pca_results['z'] = pca_results['z'].round(2)
+    pca_results['factor_load1'] = pca_results['factor_load1'].round(3)
+    pca_results['factor_load2'] = pca_results['factor_load2'].round(3)
+
     pca_results.to_pickle(output_dir + '/' + ticker_head + '.pkl')
 
     return {'pca_results': pca_results, 'success': True}
