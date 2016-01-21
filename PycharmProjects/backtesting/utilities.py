@@ -27,15 +27,6 @@ def get_backtesting_dates(**kwargs):
     return {'date_time_dates': dts,
             'double_dates': [int(x.strftime('%Y%m%d')) for x in dts]}
 
-def get_equal_length_bucket_limits(**kwargs):
-
-    min_value = kwargs['min_value']
-    max_value = kwargs['max_value']
-    num_buckets = kwargs['num_buckets']
-
-    bucket_step = (max_value-min_value)/num_buckets
-
-    return np.arange(min_value+bucket_step,max_value,bucket_step)
 
 
 
