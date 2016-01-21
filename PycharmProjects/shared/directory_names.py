@@ -7,6 +7,7 @@ root_work = r'C:\Research'
 tt_fill_directory = r'C:\tt\datfiles\Export'
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
+                  'ta': '/ta',
                   'strategy_output': '/strategy_output',
                   'backtest_results': '/backtest_results',
                   'daily': '/daily'}

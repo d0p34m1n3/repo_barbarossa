@@ -11,10 +11,10 @@ def get_futures_butterfly_filters(**kwargs):
     selection_indx = [False]*len(data_frame_input.index)
 
     if 'long1' in filter_list:
-        selection_indx = selection_indx|((data_frame_input['Q'] <= 15) & (data_frame_input['QF'] <= 40))
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -0.35) & (data_frame_input['QF'] <= 12))
 
     if 'short1' in filter_list:
-        selection_indx = selection_indx|((data_frame_input['Q'] >= 85) & (data_frame_input['QF'] >= 60))
+        selection_indx = selection_indx|((data_frame_input['z1'] >= 0.33) & (data_frame_input['QF'] >= 85))
 
     if 'long2' in filter_list:
         selection_indx = selection_indx|((data_frame_input['Q'] <= 15) & (data_frame_input['QF'] <= 40) &
