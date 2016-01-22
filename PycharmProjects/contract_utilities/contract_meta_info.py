@@ -117,12 +117,15 @@ contract_multiplier = {'LN': 400,
 t_cost = {'CL': 0.80,
           'NG':0.78,
           'B': 0.93,
+          'KC': 2.1,
           'HO': 0.80,
           'LC': 0.61,
           'LN': 0.61,
+          'FC': 0.61,
           'RB': 0.80,
           'C': 0.61,
-          'S': 0.61}
+          'S': 0.61,
+          'SM': 0.61}
 
 def get_contract_specs(ticker):
     return {'ticker_head': ticker[:-5],

@@ -8,6 +8,7 @@ import shared.converters as conv
 import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
 import time as tm
+import contract_utilities.expiration as exp
 
 def generate_db_strategy_from_strategy_sheet(**kwargs):
 
@@ -88,6 +89,36 @@ def get_trades_4strategy_alias(**kwargs):
     trade_frame = pd.DataFrame(data, columns=['id', 'ticker', 'option_type', 'strike_price', 'trade_price', 'trade_quantity', 'trade_date', 'instrument', 'real_tradeQ'])
     trade_frame['trade_price'] = [float(x) if x is not None else float('NaN') for x in trade_frame['trade_price'].values]
     return trade_frame
+
+def get_net_position_4strategy_alias(**kwargs):
+
+    alias = kwargs['alias']
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+
+    con = msu.get_my_sql_connection(**kwargs)
+    trades_frame = get_trades_4strategy_alias(alias=alias,con=con)
+
+    as_of_datetime = cu.convert_doubledate_2datetime(as_of_date)
+
+    trades_frame = trades_frame[trades_frame['trade_date']<=as_of_datetime]
+    grouped = trades_frame.groupby('ticker')
+
+    net_position = pd.DataFrame()
+
+    net_position['ticker'] = (grouped['ticker'].first()).values
+    net_position['qty'] = (grouped['trade_quantity'].sum()).values
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return net_position
+
 
 def get_strategy_id_from_alias(**kwargs):
     alias = kwargs['alias']
