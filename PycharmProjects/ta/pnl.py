@@ -6,6 +6,8 @@ import contract_utilities.expiration as exp
 import shared.calendar_utilities as cu
 import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
+import datetime as dt
+pd.options.mode.chained_assignment = None  # default='warn'
 
 
 def get_strategy_pnl_4day(**kwargs):
@@ -45,7 +47,7 @@ def get_strategy_pnl_4day(**kwargs):
     position_frame = trades_frame[trades_frame['trade_date'] < pnl_datetime]
     intraday_frame = trades_frame[trades_frame['trade_date'] == pnl_datetime]
 
-    if len(position_frame)==0:
+    if len(position_frame) == 0:
         position_pnl = 0
     else:
         position_frame['pnl'] = position_frame['contract_multiplier']*\
@@ -53,7 +55,7 @@ def get_strategy_pnl_4day(**kwargs):
                                 (position_frame['price']-position_frame['price_1'])
         position_pnl = position_frame['pnl'].sum()
 
-    if len(intraday_frame)==0:
+    if len(intraday_frame) == 0:
         intraday_pnl = 0
         t_cost = 0
     else:
@@ -114,10 +116,44 @@ def get_strategy_pnl(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return {'pnl_frame' : pnl_frame[['settle_date','position_pnl','intraday_pnl','t_cost','total_pnl']],
-            'daily_pnl' : pnl_frame['total_pnl'].values[-1],
-            'total_pnl' : pnl_frame['total_pnl'].sum()}
+    return {'pnl_frame': pnl_frame[['settle_date','position_pnl','intraday_pnl','t_cost','total_pnl']],
+            'daily_pnl': pnl_frame['total_pnl'].values[-1],
+            'total_pnl': pnl_frame['total_pnl'].sum()}
 
 
+def close_strategy(**kwargs):
 
+    alias = kwargs['alias']
+
+    if 'close_date' in kwargs.keys():
+        close_date = kwargs['close_date']
+    else:
+        close_date = exp.doubledate_shift_bus_days()
+
+    now_time = dt.datetime.now()
+    now_date = now_time.date()
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    net_position = ts.get_net_position_4strategy_alias(alias=alias, con=con, as_of_date=close_date)
+
+    if net_position.empty:
+
+        pnl_output = get_strategy_pnl(alias=alias, con=con, as_of_date=close_date)
+        total_pnl = pnl_output['total_pnl']
+        cur = con.cursor()
+
+        query_str = 'UPDATE strategy SET pnl=' + str(total_pnl) + \
+                  ', close_date=' + str(close_date) + \
+                  ', last_updated_date=' + now_date.strftime('%Y%m%d') + \
+                  ' WHERE alias=\'' + alias + '\''
+        cur.execute(query_str)
+        con.commit()
+
+    else:
+        print(alias + ' is not empty ! ')
+        return
+
+    if 'con' not in kwargs.keys():
+        con.close()
 

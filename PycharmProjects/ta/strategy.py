@@ -7,6 +7,7 @@ import pandas as pd
 import shared.converters as conv
 import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
+import contract_utilities.expiration as exp
 import time as tm
 
 def generate_db_strategy_from_strategy_sheet(**kwargs):
@@ -29,6 +30,37 @@ def generate_db_strategy_from_strategy_sheet(**kwargs):
                           conv.convert_from_dictionary_to_string(dictionary_input=strategy)
 
     return generate_db_strategy_from_alias(alias=strategy_alias, description_string=description_string)
+
+
+def get_net_position_4strategy_alias(**kwargs):
+
+    alias = kwargs['alias']
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+
+    con = msu.get_my_sql_connection(**kwargs)
+    trades_frame = get_trades_4strategy_alias(alias=alias,con=con)
+
+    as_of_datetime = cu.convert_doubledate_2datetime(as_of_date)
+
+    trades_frame = trades_frame[trades_frame['trade_date'] <= as_of_datetime]
+    grouped = trades_frame.groupby('ticker')
+
+    net_position = pd.DataFrame()
+
+    net_position['ticker'] = (grouped['ticker'].first()).values
+    net_position['qty'] = (grouped['trade_quantity'].sum()).values
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return net_position[net_position['qty'] != 0]
+
 
 def generate_db_strategy_from_alias(**kwargs):
 
@@ -89,6 +121,7 @@ def get_trades_4strategy_alias(**kwargs):
     trade_frame['trade_price'] = [float(x) if x is not None else float('NaN') for x in trade_frame['trade_price'].values]
     return trade_frame
 
+
 def get_strategy_id_from_alias(**kwargs):
     alias = kwargs['alias']
     con = msu.get_my_sql_connection(**kwargs)
@@ -107,6 +140,7 @@ def get_strategy_id_from_alias(**kwargs):
         con.close()
 
     return strategy_id
+
 
 def get_strategy_info_from_alias(**kwargs):
     alias = kwargs['alias']
@@ -167,6 +201,7 @@ def load_trades_2strategy(**kwargs):
 
     if 'con' not in kwargs.keys():
         con.close()
+
 
 def get_open_strategies(**kwargs):
 
