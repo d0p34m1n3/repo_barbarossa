@@ -109,6 +109,18 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     recent_vol_ratio_list = [None]*num_butterflies
     theo_pnl_list = [None]*num_butterflies
 
+    theo_pnl5_list = [None]*num_butterflies
+    theo_pnl10_list = [None]*num_butterflies
+    theo_pnl15_list = [None]*num_butterflies
+    theo_pnl20_list = [None]*num_butterflies
+    theo_pnl25_list = [None]*num_butterflies
+
+    ratio_target5_list = [None]*num_butterflies
+    ratio_target10_list = [None]*num_butterflies
+    ratio_target15_list = [None]*num_butterflies
+    ratio_target20_list = [None]*num_butterflies
+    ratio_target25_list = [None]*num_butterflies
+
     price_1_list = [None]*num_butterflies
     price_2_list = [None]*num_butterflies
     price_3_list = [None]*num_butterflies
@@ -164,6 +176,18 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         recent_vol_ratio_list[i] = bf_signals_output['recent_vol_ratio']
         theo_pnl_list[i] = bf_signals_output['theo_pnl']
 
+        theo_pnl5_list[i] = bf_signals_output['theo_pnl_list'][0]
+        theo_pnl10_list[i] = bf_signals_output['theo_pnl_list'][1]
+        theo_pnl15_list[i] = bf_signals_output['theo_pnl_list'][2]
+        theo_pnl20_list[i] = bf_signals_output['theo_pnl_list'][3]
+        theo_pnl25_list[i] = bf_signals_output['theo_pnl_list'][4]
+
+        ratio_target5_list[i] = bf_signals_output['ratio_target_list'][0]
+        ratio_target10_list[i] = bf_signals_output['ratio_target_list'][1]
+        ratio_target15_list[i] = bf_signals_output['ratio_target_list'][2]
+        ratio_target20_list[i] = bf_signals_output['ratio_target_list'][3]
+        ratio_target25_list[i] = bf_signals_output['ratio_target_list'][4]
+
         price_1_list[i] = bf_signals_output['price_1']
         price_2_list[i] = bf_signals_output['price_2']
         price_3_list[i] = bf_signals_output['price_3']
@@ -207,6 +231,18 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['recent_5day_pnl'] = recent_5day_pnl_list
     butterflies['recent_vol_ratio'] = recent_vol_ratio_list
     butterflies['theo_pnl'] = theo_pnl_list
+
+    butterflies['theo_pnl5'] = theo_pnl5_list
+    butterflies['theo_pnl10'] = theo_pnl10_list
+    butterflies['theo_pnl15'] = theo_pnl15_list
+    butterflies['theo_pnl20'] = theo_pnl20_list
+    butterflies['theo_pnl25'] = theo_pnl25_list
+
+    butterflies['ratio_target5'] = ratio_target5_list
+    butterflies['ratio_target10'] = ratio_target10_list
+    butterflies['ratio_target15'] = ratio_target15_list
+    butterflies['ratio_target20'] = ratio_target20_list
+    butterflies['ratio_target25'] = ratio_target25_list
 
     butterflies['price1'] = price_1_list
     butterflies['price2'] = price_2_list

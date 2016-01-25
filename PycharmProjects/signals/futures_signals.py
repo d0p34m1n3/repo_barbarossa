@@ -8,6 +8,7 @@ import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
 import shared.statistics as stats
 import shared.calendar_utilities as cu
+import signals.utils as su
 import numpy as np
 import pandas as pd
 
@@ -190,8 +191,17 @@ def get_futures_butterfly_signals(**kwargs):
                                                          'y':aligned_data['residual_change'].values,
                                                           'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
 
+    theo_spread_move_output = su.calc_theo_spread_move_from_ratio_normalization(ratio_time_series=price_ratio.values[-40:],
+                                                  starting_quantile=qf,
+                                                  num_price=linear_interp_price2_current,
+                                                  den_price=current_data['c2']['close_price'],
+                                                  favorable_quantile_move_list=[5, 10, 15, 20, 25])
+
+    theo_pnl_list = [x*contract_multiplier*2  for x in theo_spread_move_output['theo_spread_move_list']]
 
     return {'aligned_output': aligned_output, 'q': q, 'qf': qf,
+            'theo_pnl_list': theo_pnl_list,
+            'ratio_target_list': theo_spread_move_output['ratio_target_list'],
             'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
             'zscore1': zscore1, 'rsquared1': rsquared1, 'zscore2': zscore2, 'rsquared2': rsquared2,
             'zscore3': z3, 'zscore4': z4,
@@ -293,6 +303,14 @@ def get_futures_spread_carry_signals(**kwargs):
                            current_data['c' + str(x+2)]['change5'])
                             for x in range(len(ticker_list)-1)]
 
+    change10 = [contract_multiplier*(current_data['c' + str(x+1)]['change10']-
+                           current_data['c' + str(x+2)]['change10'])
+                            for x in range(len(ticker_list)-1)]
+
+    change20 = [contract_multiplier*(current_data['c' + str(x+1)]['change20']-
+                           current_data['c' + str(x+2)]['change20'])
+                            for x in range(len(ticker_list)-1)]
+
     front_tr_dte = [current_data['c' + str(x+1)]['tr_dte'] for x in range(len(ticker_list)-1)]
 
     q_list = [stats.get_quantile_from_number({'x': yield_current_list[x],
@@ -314,7 +332,7 @@ def get_futures_spread_carry_signals(**kwargs):
     carry = [contract_multiplier*(price_current_list[x]-price_current_list[x+1]) for x in range(len(q_list)-1)]
     q_carry = [q_list[x]-q_list[x+1] for x in range(len(q_list)-1)]
     reward_risk = [5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*abs(downside[x+1])) if carry[x]>0
-      else 5*abs(carry[x])/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
+      else 5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
 
     return pd.DataFrame.from_items([('ticker1',ticker1_list),
                          ('ticker2',ticker2_list),
@@ -327,4 +345,6 @@ def get_futures_spread_carry_signals(**kwargs):
                          ('q',q_list),
                          ('upside',upside),
                          ('downside',downside),
-                         ('change5',change5)])
+                         ('change5',change5),
+                         ('change10',change10),
+                         ('change20',change20)])

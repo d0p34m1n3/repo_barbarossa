@@ -26,6 +26,26 @@ def get_futures_butterfly_filters(**kwargs):
 
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
 
+def get_spread_carry_filters(**kwargs):
+
+    data_frame_input = kwargs['data_frame_input']
+    filter_list = kwargs['filter_list']
+
+    selection_indx = [False]*len(data_frame_input.index)
+
+    if 'long1' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['q_carry'] >= 19) &
+                                         ([x not in ['CL','B','ED'] for x in data_frame_input['tickerHead']]))
+
+    if 'short1' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['q_carry'] <= -9) &
+                                         ([x not in ['CL','B','ED'] for x in data_frame_input['tickerHead']]))
+
+        selection_indx = selection_indx|((data_frame_input['reward_risk'] <= -0.06) &
+                                         ([x in ['CL','B','ED'] for x in data_frame_input['tickerHead']]))
+
+    return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
+
 
 def get_curve_pca_filters(**kwargs):
 

@@ -5,7 +5,6 @@ sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import opportunity_constructs.constants as const
 import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
-import contract_utilities.expiration as exp
 import shared.calendar_utilities as cu
 import pandas as pd
 
@@ -69,25 +68,18 @@ def get_cont_indx_list_history(utilities_input):
 def get_aligned_futures_data(**kwargs):
 
     contract_list = kwargs['contract_list']
+    tr_dte_list = kwargs['tr_dte_list']
     aggregation_method = kwargs['aggregation_method']
     contracts_back = kwargs['contracts_back']
-    date_to = kwargs['date_to']
 
     if 'use_last_as_current' in kwargs.keys():
         use_last_as_current = kwargs['use_last_as_current']
     else:
         use_last_as_current = False
 
-    if 'tr_dte_list' in kwargs.keys():
-        tr_dte_list = kwargs['tr_dte_list']
-    else:
-        tr_dte_list = [exp.get_futures_days2_expiration({'ticker': x,'date_to': date_to}) for x in contract_list]
+    futures_data_dictionary = kwargs['futures_data_dictionary']
 
-    if 'futures_data_dictionary' in kwargs.keys():
-        futures_data_dictionary = kwargs['futures_data_dictionary']
-    else:
-        ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in contract_list]
-        futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in ticker_head_list}
+    date_to = kwargs['date_to']
 
     date_from = cu.doubledate_shift(date_to, 2*3650)
 

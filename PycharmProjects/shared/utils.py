@@ -24,6 +24,11 @@ def bucket_data(**kwargs):
     data_input = kwargs['data_input']
     bucket_var = kwargs['bucket_var']
 
+    if 'ascending_q' in kwargs.keys():
+        ascending_q = kwargs['ascending_q']
+    else:
+        ascending_q = True
+
     if 'num_buckets' in kwargs.keys():
         num_buckets = kwargs['num_buckets']
     else:
@@ -49,5 +54,9 @@ def bucket_data(**kwargs):
             bucket_data = data_input.loc[data_input[bucket_var] > bucket_limits[i-1]]
 
         bucket_data_list.append(bucket_data)
+
+    if not ascending_q:
+        bucket_data_list.reverse()
+        bucket_limits = np.flipud(bucket_limits)
 
     return {'bucket_data_list' : bucket_data_list, 'bucket_limits' : bucket_limits}

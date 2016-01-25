@@ -44,9 +44,6 @@ def backtest_futures_butterfly_4date(**kwargs):
     butterfly_pnl_long1 = [0]*num_butterflies
     butterfly_pnl_short1 = [0]*num_butterflies
 
-    qty_long_list = [0]*num_butterflies
-    qty_short_list = [0]*num_butterflies
-
     for i in range(num_butterflies):
         ticker_head_current = butterflies['tickerHead'][i]
         futures_data = futures_data_dictionary[ticker_head_current]
@@ -85,9 +82,6 @@ def backtest_futures_butterfly_4date(**kwargs):
         butterfly_pnl_long1[i] = quantity_long*bf_unit_pnl1
         butterfly_pnl_short1[i] = quantity_short*bf_unit_pnl1
 
-        qty_long_list[i] = quantity_long
-        qty_short_list[i] = abs(quantity_short)
-
     butterflies['pnl_long5'] = butterfly_pnl_long5
     butterflies['pnl_short5'] = butterfly_pnl_short5
 
@@ -97,18 +91,11 @@ def backtest_futures_butterfly_4date(**kwargs):
     butterflies['pnl_long1'] = butterfly_pnl_long1
     butterflies['pnl_short1'] = butterfly_pnl_short1
 
-    butterflies['qty_long'] = qty_long_list
-    butterflies['qty_shot'] = qty_short_list
-
     butterflies['report_date'] = report_date
 
     butterflies['pnl_final'] = butterflies['pnl_long5']
-    butterflies['qty_final'] = butterflies['qty_long']
 
-    butterflies.loc[butterflies['z1'] >= 0.1, 'pnl_final'] = butterflies.loc[butterflies['z1'] >= 0.1, 'pnl_short5']
-    butterflies.loc[butterflies['z1'] >= 0.1, 'qty_final'] = butterflies.loc[butterflies['z1'] >= 0.1, 'qty_shot']
-
-    butterflies['total_contracts_traded'] = 4*(butterflies['qty_final']*(1+butterflies['second_spread_weight_1']))
+    butterflies.loc[butterflies['Q'] >= 55, 'pnl_final'] = butterflies.loc[butterflies['Q'] >= 55, 'pnl_short5']
 
     butterflies.to_pickle(output_dir + '/backtest_results.pkl')
 

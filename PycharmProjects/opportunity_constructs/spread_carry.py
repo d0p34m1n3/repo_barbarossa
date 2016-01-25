@@ -75,14 +75,14 @@ def generate_spread_carry_sheet_4date(**kwargs):
 
     output_dir = ts.create_strategy_output_dir(strategy_class='spread_carry', report_date=report_date)
 
+    if os.path.isfile(output_dir + '/summary.pkl'):
+        spread_report = pd.read_pickle(output_dir + '/summary.pkl')
+        return {'spread_report': spread_report,'success': True}
+
     if 'futures_data_dictionary' in kwargs.keys():
         futures_data_dictionary = kwargs['futures_data_dictionary']
     else:
         futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in max_tr_dte_limits.keys()}
-
-    if os.path.isfile(output_dir + '/summary.pkl'):
-        spread_report = pd.read_pickle(output_dir + '/summary.pkl')
-        return {'spread_report': spread_report,'success': True}
 
     spread_list = [get_spread_carry_4tickerhead(ticker_head=x,report_date=report_date,futures_data_dictionary=futures_data_dictionary) for x in max_tr_dte_limits.keys()]
 
@@ -95,6 +95,8 @@ def generate_spread_carry_sheet_4date(**kwargs):
     spread_report['reward_risk'] = spread_report['reward_risk'].round(2)
     spread_report['upside'] = spread_report['upside'].round(2)
     spread_report['downside'] = spread_report['downside'].round(2)
+
+    spread_report.rename(columns={'ticker_head': 'tickerHead'}, inplace=True)
 
     spread_report.to_pickle(output_dir + '/summary.pkl')
 
