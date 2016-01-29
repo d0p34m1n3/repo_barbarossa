@@ -8,6 +8,9 @@ import shared.directory_names as dn
 import pandas as pd
 import ta.strategy as ts
 
+xls_file_names = {'futures_butterfly': 'butterflies',
+                  'curve_pca': 'curve_pca'}
+
 
 def generate_futures_butterfly_formatted_output(**kwargs):
 
@@ -36,7 +39,7 @@ def generate_futures_butterfly_formatted_output(**kwargs):
                                                   'RC', 'seasonality', 'second_spread_weight_1', 'upside', 'downside',
                                                   'recent_vol_ratio', 'recent_5day_pnl']]
 
-    writer = pd.ExcelWriter(output_dir + '/butterflies.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(output_dir + '/' + xls_file_names['futures_butterfly'] + '.xlsx', engine='xlsxwriter')
 
     butterflies_w_selected_columns.to_excel(writer, sheet_name='all')
     good_butterflies_w_selected_columns.to_excel(writer, sheet_name='good')
@@ -64,8 +67,8 @@ def generate_curve_pca_formatted_output(**kwargs):
     output_dir = ts.create_strategy_output_dir(strategy_class='curve_pca', report_date=report_date)
 
     ticker_head_list = ['CL', 'B']
-    selected_column_list = ['ticker1', 'ticker2', 'tr_dte_front', 'residuals', 'price', 'yield', 'z', 'factor_load1', 'factor_load2']
-    writer = pd.ExcelWriter(output_dir + '/curve_pca.xlsx', engine='xlsxwriter')
+    selected_column_list = ['ticker1', 'ticker2', 'monthSpread', 'tr_dte_front', 'residuals', 'price', 'yield', 'z', 'factor_load1', 'factor_load2']
+    writer = pd.ExcelWriter(output_dir + '/' + xls_file_names['curve_pca'] + '.xlsx', engine='xlsxwriter')
 
     for ticker_head in ticker_head_list:
 

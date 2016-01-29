@@ -11,6 +11,7 @@ import get_price.get_futures_price as gfp
 import opportunity_constructs.utilities as ut
 import pandas as pd
 
+
 def get_contract_list_4year_range(**kwargs):
 
     now = datetime.datetime.utcnow()
@@ -32,6 +33,7 @@ def get_contract_list_4year_range(**kwargs):
 
     return ticker_list
 
+
 def get_db_contract_list_filtered(**kwargs):
 
     con = msu.get_my_sql_connection(**kwargs)
@@ -46,6 +48,9 @@ def get_db_contract_list_filtered(**kwargs):
     if 'ticker_head' in kwargs.keys():
         filter_string = filter_string + ' and ticker_head=\'' + kwargs['ticker_head'] + '\''
 
+    if 'ticker_month' in kwargs.keys():
+        filter_string = filter_string + ' and ticker_month=' + str(kwargs['ticker_month'])
+
     sql_query = sql_query + ' WHERE ' + filter_string + ' ORDER BY id ASC'
 
     cur = con.cursor()
@@ -55,6 +60,7 @@ def get_db_contract_list_filtered(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
     return data
+
 
 def symbol_id_ticker_conversion(**kwargs):
 
@@ -67,7 +73,7 @@ def symbol_id_ticker_conversion(**kwargs):
     cur.execute('SELECT * FROM futures_master.symbol WHERE ticker=\'' + ticker + '\'')
     data = cur.fetchall()
 
-    if data[0][2]==ticker:
+    if data[0][2] == ticker:
         output = data[0][0]
 
     if 'con' not in kwargs.keys():
@@ -75,12 +81,13 @@ def symbol_id_ticker_conversion(**kwargs):
 
     return output
 
-def generate_futures_list_dataframe(futures_list_input):
-    date_to = futures_list_input['date_to']
-    futures_dataframe = gfp.get_futures_prices_4date(date_to=date_to)
+
+def generate_futures_list_dataframe(**kwargs):
+
+    futures_dataframe = gfp.get_futures_prices_4date(**kwargs)
 
     futures_dataframe['ticker_class'] = [cmi.ticker_class[ticker_head] for ticker_head in futures_dataframe['ticker_head']]
-    futures_dataframe['multiplier'] =  [cmi.contract_multiplier[ticker_head] for ticker_head in futures_dataframe['ticker_head']]
+    futures_dataframe['multiplier'] = [cmi.contract_multiplier[ticker_head] for ticker_head in futures_dataframe['ticker_head']]
 
     additional_tuple = [ut.get_aggregation_method_contracts_back({'ticker_class': ticker_class, 'ticker_head': ticker_head})
                         for ticker_class, ticker_head in zip(futures_dataframe['ticker_class'],futures_dataframe['ticker_head'])]

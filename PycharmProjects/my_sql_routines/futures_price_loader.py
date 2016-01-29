@@ -122,16 +122,19 @@ def update_futures_price_database(**kwargs):
 
     import time
     run_date = int(time.strftime('%Y%m%d'))
-    early_start_date = cu.doubledate_shift(run_date, 45)   #15
+    early_start_date = cu.doubledate_shift(run_date, 15)   #45
     con = msu.get_my_sql_connection(**kwargs)
 
     contract_list = []
 
-    for key,value in cmi.relevant_max_cal_dte.items():
+    for ticker_head in cmi.futures_contract_months.keys():
+        for ticker_month in cmi.futures_contract_months[ticker_head]:
+            ticker_month_num = cmi.letter_month_string.find(ticker_month)+1
+            max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)
+            contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from=early_start_date,
+                                                            expiration_date_to=cu.doubledate_shift(run_date, -max_cal_dte),
+                                                            ticker_head=ticker_head, ticker_month=ticker_month_num, con=con))
 
-        contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from=early_start_date,
-                                                            expiration_date_to=cu.doubledate_shift(run_date, -value),
-                                                            ticker_head=key, con=con))
     date_from_list = [gfp.get_futures_last_price_date_4ticker(ticker=x[1], con=con) for x in contract_list]
 
     load_price_data_input = dict()
@@ -145,7 +148,7 @@ def update_futures_price_database(**kwargs):
         load_price_data_input['date_from'] = date_from_list[i]
 
         load_price_data_4ticker(load_price_data_input)
-        print('No : ' + str(i) + ', ' +  contract_list[i][1] + ' loaded')
+        print('No : ' + str(i) + ', ' + contract_list[i][1] + ' loaded')
 
     if 'con' not in kwargs.keys():
         con.close()

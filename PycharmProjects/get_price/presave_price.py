@@ -3,6 +3,7 @@ __author__ = 'kocat_000'
 import os.path
 import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
+import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.expiration as exp
 from pandas.tseries.offsets import CustomBusinessDay
 import shared.calendar_utilities as cu
@@ -40,17 +41,20 @@ dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
                                   ('CLU2008', dt.datetime(2007, 7, 30), True),
                                   ('CLN2009', dt.datetime(2008, 10, 16), True)],columns=['ticker','settle_date','discard'])
 
+
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     ticker_head = kwargs['ticker_head']
+
+    con = msu.get_my_sql_connection(**kwargs)
 
     if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
         old_data = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
         last_available_date = int(old_data['settle_date'].max().to_datetime().strftime('%Y%m%d'))
         date_from = cu.doubledate_shift(last_available_date, 60)
-        data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head,date_from=date_from)
+        data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head, date_from=date_from, con=con)
     else:
-        data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head)
+        data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head, con=con)
 
     data4_tickerhead = pd.merge(data4_tickerhead, dirty_data_points, on=['settle_date', 'ticker'],how='left')
     data4_tickerhead = data4_tickerhead[data4_tickerhead['discard'] != True]
@@ -102,9 +106,13 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     data4_tickerhead.to_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
-def generate_and_update_futures_data_files():
+    if 'con' not in kwargs.keys():
+        con.close()
+
+
+def generate_and_update_futures_data_files(**kwargs):
 
     for ticker_head in cmi.futures_butterfly_strategy_tickerhead_list:
-        generate_and_update_futures_data_file_4tickerhead(ticker_head=ticker_head)
+        generate_and_update_futures_data_file_4tickerhead(ticker_head=ticker_head,**kwargs)
 
 

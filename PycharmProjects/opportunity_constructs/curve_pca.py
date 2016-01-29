@@ -25,50 +25,91 @@ def get_curve_pca_report(**kwargs):
         return {'pca_results': pca_results, 'success': True}
 
     date10_years_ago = cu.doubledate_shift(date_to, 10*365)
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
 
     if ticker_head == 'ED':
+
         num_contracts = 12
-    else:
-        num_contracts = 18
 
-
-    rolling_data = cd.get_rolling_curve_data(ticker_head=ticker_head, num_contracts=num_contracts,
+        rolling_data = cd.get_rolling_curve_data(ticker_head=ticker_head, num_contracts=num_contracts,
                                          front_tr_dte_limit=10,
                                         date_from=date10_years_ago,
                                         date_to=date_to)
 
-    datetime_to = cu.convert_doubledate_2datetime(date_to)
+        if datetime_to != rolling_data[0].index[-1].to_datetime():
+            return {'pca_results': pd.DataFrame(), 'success': False}
 
-    if datetime_to != rolling_data[0].index[-1].to_datetime():
-        return {'pca_results': pd.DataFrame(), 'success': False}
+        merged_data = pd.concat(rolling_data, axis=1, join='inner')
+        total_range = list(range(len(rolling_data)))
+        index_exclude = [len(total_range)-1]
+        month_spread = [3]*(len(rolling_data)-1)
 
-    if ticker_head == 'ED':
-        yield_raw = [rolling_data[x]['close_price']-rolling_data[x+1]['close_price'] for x in range(len(rolling_data)-1)]
-    else:
-        yield_raw = [(rolling_data[x]['close_price']-rolling_data[x+1]['close_price'])/rolling_data[x+1]['close_price'] for x in range(len(rolling_data)-1)]
+    elif ticker_head in ['CL', 'B']:
 
+        num_monthly_contracts = 18
+
+        if ticker_head == 'CL':
+            num_semiannual_contracts = 6
+        elif ticker_head == 'B':
+            num_semiannual_contracts = 8
+
+        rolling_data_monthly = cd.get_rolling_curve_data(ticker_head=ticker_head, num_contracts=num_monthly_contracts,
+                                         front_tr_dte_limit=10,
+                                        date_from=date10_years_ago,
+                                        date_to=date_to)
+
+        rolling_data_semiannual = cd.get_rolling_curve_data(ticker_head=ticker_head, num_contracts=num_semiannual_contracts,
+                                         front_tr_dte_limit=10,
+                                        date_from=date10_years_ago,
+                                        month_separation=6,
+                                        date_to=date_to)
+
+        if datetime_to != rolling_data_monthly[0].index[-1].to_datetime() or datetime_to != rolling_data_semiannual[0].index[-1].to_datetime():
+            return {'pca_results': pd.DataFrame(), 'success': False}
+
+        rolling_data_merged = pd.concat(rolling_data_semiannual, axis=1)
+        annual_select = rolling_data_merged['ticker_month'].iloc[-1] % 12 == 0
+        rolling_data_annual = [rolling_data_semiannual[x] for x in range(len(rolling_data_semiannual)) if annual_select.values[x]]
+
+        merged_data = pd.concat(rolling_data_monthly+rolling_data_semiannual+rolling_data_annual, axis=1, join='inner')
+        total_range = list(range(len(rolling_data_monthly)+len(rolling_data_semiannual)+len(rolling_data_annual)))
+        index_exclude = [len(rolling_data_monthly)-1,len(rolling_data_monthly)+len(rolling_data_semiannual)-1, len(total_range)-1]
+
+        month_spread = [1]*(len(rolling_data_monthly)-1)+[6]*(len(rolling_data_semiannual)-1)+[12]*(len(rolling_data_annual)-1)
+
+    yield_raw = [(merged_data['close_price'].ix[:, x]-merged_data['close_price'].ix[:, x+1]) /
+                 merged_data['close_price'].ix[:, x+1] for x in total_range if x not in index_exclude]
     yield_merged = pd.concat(yield_raw, axis=1)
     yield_data = 100*yield_merged.values
 
-    change5_raw = [rolling_data[x]['change5']-rolling_data[x+1]['change5'] for x in range(len(rolling_data)-1)]
+    change5_raw = [(merged_data['change5'].ix[:, x]-merged_data['change5'].ix[:, x+1]) /
+                   merged_data['change5'].ix[:, x+1] for x in total_range
+                   if x not in index_exclude]
+
     change5_merged = pd.concat(change5_raw, axis=1)
     change5_data = change5_merged.values
 
-    tr_dte_raw = [rolling_data[x]['tr_dte'] for x in range(len(rolling_data)-1)]
-    tr_dte__merged = pd.concat(tr_dte_raw, axis=1)
-    tr_dte_data = tr_dte__merged.values
+    tr_dte_raw = [merged_data['tr_dte'].ix[:, x] for x in total_range if x not in index_exclude]
+    tr_dte_merged = pd.concat(tr_dte_raw, axis=1)
+    tr_dte_data = tr_dte_merged.values
+
+    ticker_month_raw = [merged_data['ticker_month'].ix[:, x] for x in total_range if x not in index_exclude]
+    ticker_month_merged = pd.concat(ticker_month_raw, axis=1)
+    ticker_month_data = ticker_month_merged.values
+
+    ticker1_list = [merged_data['ticker'].ix[-1, x] for x in total_range if x not in index_exclude]
+    ticker2_list = [merged_data['ticker'].ix[-1, x+1] for x in total_range if x not in index_exclude]
+
+    price_list = [(merged_data['close_price'].ix[-1, x]-merged_data['close_price'].ix[-1, x+1]) for x in total_range
+                  if x not in index_exclude]
 
     pca_out = stats.get_pca(data_input=yield_data, n_components=2)
 
     residuals = yield_data-pca_out['model_fit']
 
-    ticker1_list = [rolling_data[x]['ticker'][-1] for x in range(len(rolling_data)-1)]
-    ticker2_list = [rolling_data[x+1]['ticker'][-1] for x in range(len(rolling_data)-1)]
-
-    price_list = [rolling_data[x]['close_price'][-1]-rolling_data[x+1]['close_price'][-1] for x in range(len(rolling_data)-1)]
-
     pca_results = pd.DataFrame.from_items([('ticker1',ticker1_list),
                              ('ticker2',ticker2_list),
+                             ('monthSpread',month_spread),
                              ('tr_dte_front', tr_dte_data[-1]),
                              ('residuals',residuals[-1]),
                              ('price',price_list),

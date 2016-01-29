@@ -15,31 +15,36 @@ conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'ZC': 'C',
                                   'ZS': 'S',
                                   'ZM': 'SM',
-                                  'NG':'NG',
-                                  'LE': 'LC', 'HE': 'LN', 'GF': 'FC' ,
-                                  'IPE e-Brent':'B',
-                                  'Coffee C': 'KC'}
+                                  'ZL': 'BO',
+                                  'KE': 'KW',
+                                  'NG': 'NG',
+                                  'LE': 'LC', 'HE': 'LN', 'GF': 'FC',
+                                  'IPE e-Brent': 'B',
+                                  'Coffee C': 'KC',
+                                  'Sugar No 11': 'SB'}
 product_type_instrument_conversion = {'Future': 'F'}
+
 
 def convert_trade_price_from_tt(**kwargs):
 
     ticker_head = kwargs['ticker_head']
     price = kwargs['price']
 
-    if ticker_head in 'CL':
+    if ticker_head in ['CL','BO']:
         converted_price = price/100
-    elif ticker_head in ['B','KC']:
+    elif ticker_head in ['B', 'KC', 'SB']:
         converted_price = price
     elif ticker_head in ['HO','RB']:
         converted_price = price/10000
     elif ticker_head in ['LC','LN','FC','NG']:
         converted_price = price/1000
-    elif ticker_head in ['C','S']:
+    elif ticker_head in ['C','S','KW']:
         converted_price = np.floor(price/10)+(price%10)*0.125
     elif ticker_head == 'SM':
         converted_price = price/10
 
     return converted_price
+
 
 def load_latest_tt_fills(**kwargs):
 
@@ -58,6 +63,7 @@ def load_latest_tt_fills(**kwargs):
     tt_export_frame_filtered = tt_export_frame[tt_export_frame['Product Type']=='Future']
 
     return tt_export_frame_filtered
+
 
 def get_formatted_tt_fills(**kwargs):
 
@@ -100,6 +106,7 @@ def get_formatted_tt_fills(**kwargs):
 
     return {'raw_trades': fill_frame, 'aggregate_trades': aggregate_trades}
 
+
 def assign_trades_2strategies(**kwargs):
 
     tt_fill_out = get_formatted_tt_fills()
@@ -112,16 +119,17 @@ def assign_trades_2strategies(**kwargs):
 
         if allocation_frame['criteria'][i]=='tickerhead':
 
-            selected_trades = aggregate_trades[aggregate_trades['ticker_head']==allocation_frame['value'][i]]
+            selected_trades = aggregate_trades[aggregate_trades['ticker_head'] == allocation_frame['value'][i]]
 
         elif allocation_frame['criteria'][i]=='ticker':
 
-            selected_trades = aggregate_trades[aggregate_trades['ticker']==allocation_frame['value'][i]]
+            selected_trades = aggregate_trades[aggregate_trades['ticker'] == allocation_frame['value'][i]]
 
         combined_list[i] = selected_trades[['ticker','option_type','strike_price','trade_price','trade_quantity','instrument','real_tradeQ']]
         combined_list[i]['alias'] = allocation_frame['alias'][i]
 
     return pd.concat(combined_list).reset_index(drop=True)
+
 
 def load_tt_trades(**kwargs):
 

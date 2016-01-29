@@ -29,7 +29,7 @@ futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
 futures_butterfly_strategy_tickerhead_list = ['LN', 'LC', 'FC',
                                               'C', 'S', 'SM', 'BO', 'W', 'KW',
                                               'SB', 'KC', 'CC', 'CT', 'OJ',
-                                              'CL', 'B' , 'HO', 'RB', 'NG', 'ED']
+                                              'CL', 'B', 'HO', 'RB', 'NG', 'ED']
 
 contract_name = {'LN': 'Lean Hog',
                  'LC': 'Live Cattle',
@@ -72,6 +72,29 @@ relevant_max_cal_dte = {'LN': 720,
                         'RB': 720,
                         'NG': 720,
                         'ED': 1440}
+
+
+def get_max_cal_dte(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    ticker_month = kwargs['ticker_month']
+
+    if ticker_head in ['LN', 'LC', 'FC', 'C', 'S', 'SM', 'BO', 'W', 'KW', 'SB', 'KC', 'CC', 'CT', 'OJ', 'HO', 'RB', 'NG']:
+        max_cal_dte = 720
+    elif ticker_head == 'ED':
+        max_cal_dte = 1440
+    elif ticker_head == 'CL':
+        if ticker_month in [6, 12]:
+            max_cal_dte = 1080
+        else:
+            max_cal_dte = 720
+    elif ticker_head == 'B':
+        if ticker_month in [6, 12]:
+            max_cal_dte = 1440
+        else:
+            max_cal_dte = 720
+
+    return max_cal_dte
 
 ticker_class = {'LN': 'Livestock',
                 'LC': 'Livestock',
@@ -125,8 +148,11 @@ t_cost = {'CL': 0.80,
           'C': 0.61,
           'S': 0.61,
           'SM': 0.61,
+          'BO': 0.61,
+          'KW': 0.61,
           'KC': 2.1,
-          'CC': 2.1}
+          'CC': 2.1,
+          'SB': 2.1}
 
 def get_contract_specs(ticker):
     return {'ticker_head': ticker[:-5],

@@ -8,6 +8,7 @@ import shared.directory_names as dn
 import pandas as pd
 import shared.calendar_utilities as cu
 
+
 def get_futures_prices_4date(**kwargs):
 
     date_to = kwargs['date_to']

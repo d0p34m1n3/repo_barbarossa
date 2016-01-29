@@ -14,8 +14,7 @@ import ta.strategy as ts
 
 def get_futures_butterflies_4date(**kwargs):
 
-    date_to = kwargs['date_to']
-    futures_dataframe = cl.generate_futures_list_dataframe({'date_to': date_to})
+    futures_dataframe = cl.generate_futures_list_dataframe(**kwargs)
 
     if 'volume_filter' in kwargs.keys():
         volume_filter = kwargs['volume_filter']
@@ -29,13 +28,13 @@ def get_futures_butterflies_4date(**kwargs):
     for ticker_head_i in unique_ticker_heads:
         ticker_head_data = futures_dataframe[futures_dataframe['ticker_head']==ticker_head_i]
 
-        if len(ticker_head_data.index)>=3:
+        if len(ticker_head_data.index) >= 3:
             tuples = tuples + [(ticker_head_data.index[i-1], ticker_head_data.index[i],ticker_head_data.index[i+1]) for i in range(1, len(ticker_head_data.index)-1)]
 
-        if len(ticker_head_data.index)>=5:
+        if len(ticker_head_data.index) >= 5:
             tuples = tuples + [(ticker_head_data.index[i-2], ticker_head_data.index[i],ticker_head_data.index[i+2]) for i in range(2, len(ticker_head_data.index)-2)]
 
-        if len(ticker_head_data.index)>=7:
+        if len(ticker_head_data.index) >= 7:
             tuples = tuples + [(ticker_head_data.index[i-3], ticker_head_data.index[i],ticker_head_data.index[i+3]) for i in range(3, len(ticker_head_data.index)-3)]
 
     return pd.DataFrame([(futures_dataframe['ticker'][indx[0]],
@@ -62,12 +61,10 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         butterflies = pd.read_pickle(output_dir + '/summary.pkl')
         return {'butterflies': butterflies,'success': True}
 
-    if 'volume_filter' in kwargs.keys():
-        volume_filter = kwargs['volume_filter']
-    else:
-        volume_filter = 100
+    if 'volume_filter' not in kwargs.keys():
+        kwargs['volume_filter'] = 100
 
-    butterflies = get_futures_butterflies_4date(date_to=date_to, volume_filter= volume_filter)
+    butterflies = get_futures_butterflies_4date(**kwargs)
 
     butterflies = butterflies[butterflies['trDte1'] >= 35]
     butterflies.reset_index(drop=True,inplace=True)

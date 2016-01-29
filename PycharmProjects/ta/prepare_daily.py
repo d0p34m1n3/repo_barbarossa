@@ -3,22 +3,45 @@ import contract_utilities.expiration as exp
 import ta.strategy as ts
 import shutil as sutil
 import shared.directory_names as dn
+import formats.futures_strategy_formats as fsf
 
 daily_dir = dn.get_directory_name(ext='daily')
 
-def prepare_futures_butterfly(**kwargs):
 
+def prepare_strategy_daily(**kwargs):
+
+    strategy_class = kwargs['strategy_class']
     report_date = exp.doubledate_shift_bus_days()
-    output_dir = ts.create_strategy_output_dir(strategy_class='futures_butterfly', report_date=report_date)
 
-    sutil.copyfile(output_dir + '/butterflies.xlsx', daily_dir + '/butterfly_' + str(report_date) + '.xlsx')
+    output_dir = ts.create_strategy_output_dir(strategy_class=strategy_class, report_date=report_date)
 
-def prepare_curve_pca(**kwargs):
+    sutil.copyfile(output_dir + '/' + fsf.xls_file_names[strategy_class] + '.xlsx',
+                   daily_dir + '/' + fsf.xls_file_names[strategy_class] + '_' + str(report_date) + '.xlsx')
 
-    report_date = exp.doubledate_shift_bus_days()
-    output_dir = ts.create_strategy_output_dir(strategy_class='curve_pca', report_date=report_date)
 
-    sutil.copyfile(output_dir + '/curve_pca.xlsx', daily_dir + '/curve_pca_' + str(report_date) + '.xlsx')
+def move_from_dated_folder_2daily_folder(**kwargs):
+
+    ext = kwargs['ext']
+    file_name_raw = kwargs['file_name']
+
+    file_name_split = file_name_raw.split('.')
+
+    if len(file_name_split) == 1:
+        file_name = file_name_raw
+        file_ext = '.xlsx'
+    else:
+        file_name = file_name_split[0]
+        file_ext = file_name_split[1]
+
+    if 'folder_date' in kwargs.keys():
+        folder_date = kwargs['folder_date']
+    else:
+        folder_date = exp.doubledate_shift_bus_days()
+
+    dated_folder = dn.get_dated_directory_extension(folder_date=folder_date, ext=ext)
+
+    sutil.copyfile(dated_folder + '/' + file_name + file_ext,
+                   daily_dir + '/' + file_name + '_' + str(folder_date) + file_ext)
 
 
 

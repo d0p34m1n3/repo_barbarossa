@@ -73,6 +73,7 @@ def get_strategy_pnl_4day(**kwargs):
             'intraday_pnl': int(intraday_pnl),
             't_cost': int(t_cost)}
 
+
 def get_strategy_pnl(**kwargs):
 
     alias = kwargs['alias']

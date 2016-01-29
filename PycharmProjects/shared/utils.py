@@ -1,12 +1,20 @@
 
 import numpy as np
 import shared.statistics as stats
+from itertools import chain
+
 
 def list_and(*args):
     return [all(tuple) for tuple in zip(*args)]
 
+
 def list_or(*args):
     return [any(tuple) for tuple in zip(*args)]
+
+
+def flatten_list(input_list):
+    return list(chain.from_iterable(input_list))
+
 
 def get_equal_length_partition(**kwargs):
 

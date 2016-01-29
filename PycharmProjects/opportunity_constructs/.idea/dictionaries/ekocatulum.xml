@@ -2,6 +2,8 @@
   <dictionary name="ekocatulum">
     <words>
       <w>intraday</w>
+      <w>xlsx</w>
+      <w>xlsxwriter</w>
     </words>
   </dictionary>
 </component>
