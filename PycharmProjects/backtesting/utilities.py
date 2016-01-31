@@ -27,6 +27,33 @@ def get_backtesting_dates(**kwargs):
     return {'date_time_dates': dts,
             'double_dates': [int(x.strftime('%Y%m%d')) for x in dts]}
 
+def find_exit_point(**kwargs):
+
+    time_series = kwargs['time_series']
+    trigger_value = kwargs['trigger_value']
+    trigger_direction = kwargs['trigger_direction']
+
+    if 'max_exit_point' in kwargs.keys():
+        max_exit_point = kwargs['max_exit_point']
+    else:
+        max_exit_point = len(time_series)-1
+
+    if trigger_direction == 'going_down':
+        exit_vector = time_series<trigger_value
+    elif trigger_direction == 'going_up':
+        exit_vector = time_series>trigger_value
+
+    obs_indx = [x for x in range(1,len(time_series)) if exit_vector[x-1] and exit_vector[x]]
+
+    if not obs_indx:
+        exit_point = max_exit_point
+    else:
+        exit_point = min(obs_indx[0],max_exit_point)
+
+    return exit_point
+
+
+
 
 
 
