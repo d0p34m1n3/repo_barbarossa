@@ -1,5 +1,7 @@
 
 import my_sql_routines.my_sql_utilities as msu
+import contract_utilities.contract_meta_info as cmi
+import get_price.get_futures_price as gfp
 import contract_utilities.expiration as exp
 import ta.strategy as ts
 import ta.strategy_followup as sf
@@ -7,6 +9,7 @@ import shared.converters as sc
 import ta.portfolio_manager as pm
 import risk.historical_risk as hr
 import shared.directory_names as dn
+from openpyxl import load_workbook
 import pandas as pd
 
 
@@ -61,5 +64,46 @@ def generate_futures_butterfly_followup_report(**kwargs):
 
     if 'con' not in kwargs.keys():
         con.close()
+
+    return writer
+
+
+def generate_spread_carry_followup_report(**kwargs):
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+        kwargs['as_of_date'] = as_of_date
+
+    ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
+
+    if 'writer' in kwargs.keys():
+        writer = kwargs['writer']
+    else:
+        writer = pd.ExcelWriter(ta_output_dir + '/followup.xlsx', engine='xlsxwriter')
+
+    strategy_frame = ts.get_open_strategies(**kwargs)
+
+    strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=strategy_frame['description_string'][x])['strategy_class']
+                           for x in range(len(strategy_frame.index))]
+
+    spread_carry_indx = [x == 'spread_carry' for x in strategy_class_list]
+    spread_carry_frame = strategy_frame[spread_carry_indx]
+
+    results = [sf.get_results_4strategy(alias=spread_carry_frame['alias'].iloc[x],
+                                        strategy_info_output=spread_carry_frame.iloc[x])
+               for x in range(len(spread_carry_frame.index))]
+
+    results_frame_list = [results[x]['results_frame'] for x in range(len(results)) if results[x]['success']]
+    spread_carry_followup_frame = pd.concat(results_frame_list)
+
+    spread_carry_followup_frame.to_excel(writer, sheet_name='sc')
+    worksheet_sc = writer.sheets['sc']
+    worksheet_sc.freeze_panes(1, 0)
+
+    worksheet_sc.autofilter(0, 0, len(spread_carry_followup_frame.index),
+                              len(spread_carry_followup_frame.columns))
+
 
 

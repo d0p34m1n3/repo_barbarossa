@@ -6,6 +6,7 @@ import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.contract_meta_info as cmi
 import shared.directory_names as dn
 import pandas as pd
+import datetime as dt
 import shared.calendar_utilities as cu
 
 
@@ -103,7 +104,11 @@ def get_futures_price_preloaded(**kwargs):
         data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
     if 'settle_date' in kwargs.keys():
-        data_out = data_out[data_out['settle_date']==cu.convert_doubledate_2datetime(kwargs['settle_date'])]
+        settle_date = kwargs['settle_date']
+        if isinstance(settle_date,int):
+            data_out = data_out[data_out['settle_date'] == cu.convert_doubledate_2datetime(settle_date)]
+        elif isinstance(settle_date,dt.datetime):
+            data_out = data_out[data_out['settle_date'] == settle_date]
 
     if 'settle_date_from_exclusive' in kwargs.keys():
         data_out = data_out[data_out['settle_date']>cu.convert_doubledate_2datetime(kwargs['settle_date_from_exclusive'])]

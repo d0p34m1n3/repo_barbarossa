@@ -101,6 +101,7 @@ def backtest_futures_butterfly_4date(**kwargs):
 
     return butterflies
 
+
 def backtest_futures_butterfly(**kwargs):
 
     futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in cmi.futures_butterfly_strategy_tickerhead_list}
