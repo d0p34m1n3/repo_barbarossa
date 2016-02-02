@@ -39,7 +39,9 @@ dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
                                   ('CLG2008', dt.datetime(2007, 7, 26), True),
                                   ('CLH2008', dt.datetime(2007, 7, 26), True),
                                   ('CLU2008', dt.datetime(2007, 7, 30), True),
-                                  ('CLN2009', dt.datetime(2008, 10, 16), True)],columns=['ticker','settle_date','discard'])
+                                  ('CLN2009', dt.datetime(2008, 10, 16), True),
+                                  ('EDZ2017', dt.datetime(2014, 2, 24), True)
+                                  ],columns=['ticker','settle_date','discard'])
 
 
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):

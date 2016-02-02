@@ -39,13 +39,15 @@ def get_indicator_rr_table(**kwargs):
     trade_data = kwargs['trade_data']
     indicator_name = kwargs['indicator_name']
     strategy_class = kwargs['strategy_class']
+    long_pnl_field = kwargs['long_pnl_field']
+    short_pnl_field = kwargs['short_pnl_field']
 
     if 'num_buckets' in kwargs.keys():
         num_buckets = kwargs['num_buckets']
     else:
         num_buckets = 9
 
-    trade_data = trade_data[np.isfinite(trade_data['pnl_long5'])]
+    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field])) & (np.isfinite(trade_data[short_pnl_field]))]
 
     signal_correlation = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_name)
     ascending_q = True if signal_correlation<0 else False
@@ -62,9 +64,9 @@ def get_indicator_rr_table(**kwargs):
         bucket_data = bucket_data_list[i]
 
         if i <= (num_buckets/2):
-            signed_pnl = bucket_data['pnl_long5']
+            signed_pnl = bucket_data[long_pnl_field]
         else:
-            signed_pnl = bucket_data['pnl_short5']
+            signed_pnl = bucket_data[short_pnl_field]
 
         stats_output = get_summary_stats(signed_pnl.values)
         mean_pnl_list.append(stats_output['mean_pnl'])
@@ -85,13 +87,15 @@ def get_indicator_rr_double_table(**kwargs):
     trade_data = kwargs['trade_data']
     indicator_list = kwargs['indicator_list']
     strategy_class = kwargs['strategy_class']
+    long_pnl_field = kwargs['long_pnl_field']
+    short_pnl_field = kwargs['short_pnl_field']
 
     if 'num_buckets' in kwargs.keys():
         num_buckets = kwargs['num_buckets']
     else:
         num_buckets = 3
 
-    trade_data = trade_data[np.isfinite(trade_data['pnl_long5'])]
+    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field])) & (np.isfinite(trade_data[short_pnl_field]))]
 
     signal_correlation1 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[0])
     signal_correlation2 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[1])
@@ -132,9 +136,9 @@ def get_indicator_rr_double_table(**kwargs):
         for j in range(len(bucket_data_list2)):
 
             if i <= (num_buckets/2):
-                signed_pnl = bucket_data_list2[j]['pnl_long5']
+                signed_pnl = bucket_data_list2[j][long_pnl_field]
             else:
-                signed_pnl = bucket_data_list2[j]['pnl_short5']
+                signed_pnl = bucket_data_list2[j][short_pnl_field]
 
             stats_output = get_summary_stats(signed_pnl.values)
             mean_pnl_list.append(stats_output['mean_pnl'])
@@ -150,8 +154,10 @@ def get_indicator_ranking(**kwargs):
     trade_data = kwargs['trade_data']
     indicator_list = kwargs['indicator_list']
     strategy_class = kwargs['strategy_class']
+    long_pnl_field = kwargs['long_pnl_field']
+    short_pnl_field = kwargs['short_pnl_field']
 
-    trade_data = trade_data[np.isfinite(trade_data['pnl_long5'])]
+    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field])) & (np.isfinite(trade_data[short_pnl_field]))]
 
     long_rr_list = []
     short_rr_list = []
@@ -159,12 +165,16 @@ def get_indicator_ranking(**kwargs):
     for i in range(len(indicator_list)):
 
         if isinstance(indicator_list[i],list):
-            q_rr_table = get_indicator_rr_double_table(trade_data=trade_data,indicator_list=[indicator_list[i][0],
+            q_rr_table = get_indicator_rr_double_table(trade_data=trade_data, indicator_list=[indicator_list[i][0],
                                                                                 indicator_list[i][1]],
+                                                       long_pnl_field=long_pnl_field,
+                                                       short_pnl_field=short_pnl_field,
                                                        strategy_class=strategy_class)
 
         else:
             q_rr_table = get_indicator_rr_table(trade_data=trade_data, indicator_name=indicator_list[i],
+                                                long_pnl_field=long_pnl_field,
+                                                       short_pnl_field=short_pnl_field,
                                                 strategy_class=strategy_class)
         long_rr_list.append(q_rr_table['reward_risk'].iloc[0])
         short_rr_list.append(q_rr_table['reward_risk'].iloc[-1])
@@ -180,6 +190,8 @@ def rank_indicators(**kwargs):
     trade_data = kwargs['trade_data']
     indicator_list_raw = kwargs['indicator_list']
     strategy_class = kwargs['strategy_class']
+    long_pnl_field = kwargs['long_pnl_field']
+    short_pnl_field = kwargs['short_pnl_field']
 
     selection_indx = [True]*len(trade_data.index)
 
@@ -193,12 +205,15 @@ def rank_indicators(**kwargs):
 
     for i in range(len(indicator_list_raw)):
         for j in range(len(indicator_list_raw)):
-            if i==j:
+            if i == j:
                 continue
             indicator_list.append([indicator_list_raw[i],
                                indicator_list_raw[j]])
 
-    indicator_ranking_total = get_indicator_ranking(trade_data=trade_data, indicator_list=indicator_list,strategy_class=strategy_class)
+    indicator_ranking_total = get_indicator_ranking(trade_data=trade_data, indicator_list=indicator_list,
+                                                    long_pnl_field=long_pnl_field,
+                                                         short_pnl_field=short_pnl_field,
+                                                    strategy_class=strategy_class)
     indicator_ranking_total.sort('ranking',ascending=False,inplace=True)
 
     ticker_head_list = list(trade_data['tickerHead'].unique())
@@ -209,6 +224,8 @@ def rank_indicators(**kwargs):
         data_4tickerhead = trade_data[trade_data['tickerHead'] == ticker_head_list[i]]
         indicator_ranking_output = get_indicator_ranking(trade_data=data_4tickerhead,
                                                  indicator_list=indicator_list,
+                                                         long_pnl_field=long_pnl_field,
+                                                         short_pnl_field=short_pnl_field,
                                                          strategy_class=strategy_class)
 
         ranking_list.append(indicator_ranking_output['ranking'].values)
