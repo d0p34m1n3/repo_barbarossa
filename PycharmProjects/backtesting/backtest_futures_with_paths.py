@@ -47,14 +47,13 @@ def get_backtest_summary_4_date(**kwargs):
     hold_pnl10long  = [np.NAN]*num_trades
     hold_pnl20long  = [np.NAN]*num_trades
 
-    hold_pnl1short  = [np.NAN]*num_trades
-    hold_pnl2short  = [np.NAN]*num_trades
-    hold_pnl5short  = [np.NAN]*num_trades
-    hold_pnl10short  = [np.NAN]*num_trades
-    hold_pnl20short  = [np.NAN]*num_trades
+    hold_pnl1short = [np.NAN]*num_trades
+    hold_pnl2short = [np.NAN]*num_trades
+    hold_pnl5short = [np.NAN]*num_trades
+    hold_pnl10short = [np.NAN]*num_trades
+    hold_pnl20short = [np.NAN]*num_trades
 
     for i in range(num_trades):
-        i=164
         sheet_entry = strategy_sheet.iloc[i]
 
         data_list = []
@@ -74,9 +73,7 @@ def get_backtest_summary_4_date(**kwargs):
                      merged_data['close_price'].iloc[:,2]*sheet_entry['weight3'])
         ratio_path = mid_price/(-sheet_entry['weight2']*merged_data['close_price'].iloc[:,1])
 
-        return merged_data
-
-        if len(ratio_path.index)<20:
+        if len(ratio_path.index) < 20:
             continue
 
         quantity_long = round(10000/abs(sheet_entry['downside']))

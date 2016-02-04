@@ -21,23 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="backtest_futures_with_paths.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="123" column="0" selection-start-line="118" selection-start-column="23" selection-end-line="118" selection-end-column="34" />
-              <folding>
-                <element signature="e#26#81#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="presave_price.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="presave_price.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+            <state vertical-scroll-proportion="0.42406458">
+              <caret line="44" column="79" selection-start-line="44" selection-start-column="79" selection-end-line="44" selection-end-column="79" />
               <folding />
             </state>
           </provider>
@@ -63,11 +51,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="futures_filters.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="futures_filters.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../signals/futures_filters.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.28654125">
+            <state vertical-scroll-proportion="0.0">
               <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="backtest_futures_butterfly.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -147,23 +145,23 @@
         <option value="$PROJECT_DIR$/../backtesting/backtest_spread_carry.py" />
         <option value="$PROJECT_DIR$/../backtesting/utilities.py" />
         <option value="$PROJECT_DIR$/../ta/pnl.py" />
-        <option value="$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py" />
         <option value="$PROJECT_DIR$/../get_price/get_futures_price.py" />
         <option value="$PROJECT_DIR$/../ta/strategy_followup.py" />
         <option value="$PROJECT_DIR$/../formats/strategy_followup_formats.py" />
         <option value="$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py" />
         <option value="$PROJECT_DIR$/../signals/utils.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_stats.py" />
+        <option value="$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py" />
         <option value="$PROJECT_DIR$/../get_price/presave_price.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="44" />
-    <option name="y" value="107" />
-    <option name="width" value="1089" />
-    <option name="height" value="1519" />
+    <option name="x" value="606" />
+    <option name="y" value="45" />
+    <option name="width" value="1243" />
+    <option name="height" value="1500" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -190,8 +188,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -212,10 +208,12 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../signals/futures_filters.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py" />
     <property name="SearchEverywhereHistoryKey" value="doubledate_shift_bus_days&#9;null&#9;null" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -358,10 +356,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="44" y="107" width="1089" height="1519" extended-state="0" />
+    <frame x="606" y="45" width="1243" height="1500" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.09506058" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10187449" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -676,13 +674,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.6426117">
-          <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/curve_pca.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3768614">
@@ -720,28 +711,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="123" column="0" selection-start-line="118" selection-start-column="23" selection-end-line="118" selection-end-column="34" />
-          <folding>
-            <element signature="e#26#81#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../formats/futures_strategy_formats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6765557">
           <caret line="61" column="38" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -763,8 +736,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../signals/futures_filters.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.28654125">
+        <state vertical-scroll-proportion="0.0">
           <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46148202">
+          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding>
+            <element signature="e#26#81#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42406458">
+          <caret line="44" column="79" selection-start-line="44" selection-start-column="79" selection-end-line="44" selection-end-column="79" />
           <folding />
         </state>
       </provider>
