@@ -1,2 +1,22 @@
 
-(PAGE 9)
+(PAGE 35) Looking at Auto-Correlation function is a good way to detect predictability.
+
+(PAGE 37) Stationarity can be tested with Dickey-Fuller and Augmented-Dickey-Fuller tests. 
+
+(PAGE 39) Variance ratio test can be used to detect devieations from random walk.
+
+(PAGE 40) In order to correct for spurious mean-reversion which is induced by the cointegrating
+regression itself, the stationarity tests used in the identification of cointegrating relationships
+are modified versions of standard tests for stationarity.
+
+(PAGE 55) Adding appropropriate complexity to a model will reduce the error component which is due to
+model bias, but at the price of increasing the error component which is due to model variance. 
+The minimal error, and hence optimal performance, will lie at a particular level of complexity which achieves
+the best balance of bias against variance.
+
+(PAGE 66) Reinforcement learning offers a systematic framework for optimising trading systems in terms of the
+actual trading performance or "Payoff" which they produce, rather than in terms of statistical measures of
+performance accuracy which my not necessarily translate directly into trading performance.
+
+
+(PAGE 67)
