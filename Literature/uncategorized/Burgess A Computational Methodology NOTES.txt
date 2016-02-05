@@ -18,5 +18,22 @@ the best balance of bias against variance.
 actual trading performance or "Payoff" which they produce, rather than in terms of statistical measures of
 performance accuracy which my not necessarily translate directly into trading performance.
 
+(PAGE 68) Some interesting literature review is covered through page 75
 
-(PAGE 67)
+(PAGE 76) Papers about combinations
+
+(PAGE 78) For Cac/Dax, Dicky-Fuller fails to reject random walk although the variance-ratio test and
+the performance of a simple implicit statistical arbitrage trading rule strongly rejects random walk.
+
+(PAGE 79) The most straightforward way to exploit statistical arbitrage opportunities in the form of
+temporary deviations between assets that are correlated in the long term would simply be to buy the
+underpriced asset and sell the overpriced asset whenever a sufficiently large mispricing occurs.
+However such an approach incurs unquantified risks in that short term dynamics and exogenous factors
+may be acting to increase the deviation, leading to short term loses or "draw downs" before the longer
+term relationship is restored. A more principled approach is to use the "mispricing" information as
+the basis of a predictive model of the relative returns on the two assets.
+
+(PAGE 72) Introducing non linear models seem to improve the performance quite q bit for a simple cointegration
+approach.
+
+(PAGE 87)

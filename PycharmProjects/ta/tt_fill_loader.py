@@ -21,6 +21,7 @@ conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'LE': 'LC', 'HE': 'LN', 'GF': 'FC',
                                   'IPE e-Brent': 'B',
                                   'Coffee C': 'KC',
+                                  'Cocoa': 'CC',
                                   'Sugar No 11': 'SB'}
 product_type_instrument_conversion = {'Future': 'F'}
 
@@ -32,7 +33,7 @@ def convert_trade_price_from_tt(**kwargs):
 
     if ticker_head in ['CL','BO']:
         converted_price = price/100
-    elif ticker_head in ['B', 'KC', 'SB']:
+    elif ticker_head in ['B', 'KC', 'SB','CC']:
         converted_price = price
     elif ticker_head in ['HO','RB']:
         converted_price = price/10000
