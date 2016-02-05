@@ -15,9 +15,16 @@ pd.options.mode.chained_assignment = None
 
 presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
 
-dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
+dirty_data_points = pd.DataFrame([('CLZ2011', dt.datetime(2007, 1, 3), True),
+                                  ('CLZ2010', dt.datetime(2007, 1, 4), True),
+                                  ('CLZ2011', dt.datetime(2007, 1, 4), True),
+                                  ('CLZ2012', dt.datetime(2007, 1, 18), True),
+                                  ('CLZ2010', dt.datetime(2007, 1, 29), True),
+                                  ('CLZ2009', dt.datetime(2007, 2, 15), True),
+                                  ('CLG2008', dt.datetime(2007, 4, 25), True),
                                   ('CLF2008', dt.datetime(2007, 4, 26), True),
                                   ('CLF2008', dt.datetime(2007, 5, 1), True),
+                                  ('CLZ2008', dt.datetime(2007, 5, 21), True),
                                   ('CLG2008', dt.datetime(2007, 5, 31), True),
                                   ('CLH2008', dt.datetime(2007, 5, 31), True),
                                   ('CLM2008', dt.datetime(2007, 5, 31), True),
@@ -27,6 +34,8 @@ dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
                                   ('CLX2008', dt.datetime(2007, 6, 21), True),
                                   ('CLK2008', dt.datetime(2007, 6, 25), True),
                                   ('CLX2008', dt.datetime(2007, 6, 25), True),
+                                  ('CLV2008', dt.datetime(2007, 7, 12), True),
+                                  ('CLX2008', dt.datetime(2007, 7, 12), True),
                                   ('CLU2009', dt.datetime(2007, 7, 16), True),
                                   ('CLG2008', dt.datetime(2007, 7, 18), True),
                                   ('CLH2008', dt.datetime(2007, 7, 18), True),
@@ -39,9 +48,17 @@ dirty_data_points = pd.DataFrame([('CLG2008', dt.datetime(2007, 4, 25), True),
                                   ('CLQ2008', dt.datetime(2007, 7, 25), True),
                                   ('CLG2008', dt.datetime(2007, 7, 26), True),
                                   ('CLH2008', dt.datetime(2007, 7, 26), True),
+                                  ('CLU2008', dt.datetime(2007, 7, 26), True),
                                   ('CLU2008', dt.datetime(2007, 7, 30), True),
+                                  ('CLU2008', dt.datetime(2007, 7, 31), True),
+                                  ('CLN2008', dt.datetime(2007, 8, 6), True),
+                                  ('CLV2008', dt.datetime(2007, 9, 10), True),
                                   ('CLN2009', dt.datetime(2008, 10, 16), True),
-                                  ('EDZ2017', dt.datetime(2014, 2, 24), True)
+                                  ('EDZ2017', dt.datetime(2014, 2, 24), True),
+                                  ('HOF2008', dt.datetime(2007, 1, 3), True),
+                                  ('HOF2008', dt.datetime(2007, 1, 4), True),
+                                  ('HOX2007', dt.datetime(2007, 2, 1), True),
+                                  ('KCU2008', dt.datetime(2008, 2, 19), True)
                                   ],columns=['ticker','settle_date','discard'])
 
 

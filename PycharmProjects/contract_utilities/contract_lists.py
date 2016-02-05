@@ -8,6 +8,7 @@ import contract_utilities.expiration as exp
 import datetime
 import my_sql_routines.my_sql_utilities as msu
 import get_price.get_futures_price as gfp
+import get_price.presave_price as psp
 import opportunity_constructs.utilities as ut
 import pandas as pd
 
@@ -85,6 +86,10 @@ def symbol_id_ticker_conversion(**kwargs):
 def generate_futures_list_dataframe(**kwargs):
 
     futures_dataframe = gfp.get_futures_prices_4date(**kwargs)
+
+    futures_dataframe = pd.merge(futures_dataframe, psp.dirty_data_points, on=['settle_date', 'ticker'], how='left')
+    futures_dataframe = futures_dataframe[futures_dataframe['discard'] != True]
+    futures_dataframe = futures_dataframe.drop('discard', 1)
 
     futures_dataframe['ticker_class'] = [cmi.ticker_class[ticker_head] for ticker_head in futures_dataframe['ticker_head']]
     futures_dataframe['multiplier'] = [cmi.contract_multiplier[ticker_head] for ticker_head in futures_dataframe['ticker_head']]

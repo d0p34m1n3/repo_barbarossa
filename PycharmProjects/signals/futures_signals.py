@@ -215,6 +215,7 @@ def get_futures_butterfly_signals(**kwargs):
             'residual_std1': yield_regress_output['residualstd'], 'residual_std2': yield_regress_output_last5_years['residualstd'],
             'recent_vol_ratio': recent_vol_ratio, 'recent_5day_pnl': recent_5day_pnl,
             'price_1': price_1, 'price_2': price_2, 'price_3': price_3, 'last5_years_indx': last5_years_indx,
+            'price_ratio': price_ratio,
             'mean_reversion_rsquared': mean_reversion['rsquared'],
             'mean_reversion_signif' : (mean_reversion['conf_int'][1, :] < 0).all()}
 

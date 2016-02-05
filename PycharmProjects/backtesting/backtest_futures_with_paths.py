@@ -79,10 +79,10 @@ def get_backtest_summary_4_date(**kwargs):
         quantity_long = round(10000/abs(sheet_entry['downside']))
         quantity_short = -round(10000/abs(sheet_entry['upside']))
 
-        if sheet_entry['QF']>50:
+        if sheet_entry['QF'] > 50:
             trigger_direction = 'going_down'
             quantity = quantity_short
-        elif sheet_entry['QF']<50:
+        elif sheet_entry['QF'] < 50:
             trigger_direction = 'going_up'
             quantity = quantity_long
         else:
@@ -110,6 +110,7 @@ def get_backtest_summary_4_date(**kwargs):
         holding_period25[i] = exit25
 
         path_path_list = []
+        hold_pnl_list = []
 
         for exit_indx in [exit5,exit10,exit15,exit20,exit25]:
 
@@ -119,20 +120,13 @@ def get_backtest_summary_4_date(**kwargs):
 
             path_path_list.append(raw_pnl*sheet_entry['multiplier']*quantity)
 
-        raw_pnl_hold1 = merged_data['change1'].iloc[0,0]-(1+sheet_entry['second_spread_weight_1'])*merged_data['change1'].iloc[0,1]\
-                        +sheet_entry['second_spread_weight_1']*merged_data['change1'].iloc[0,2]
+        for hold_indx in [1, 2, 5, 10, 20]:
 
-        raw_pnl_hold2 = merged_data['change2'].iloc[0,0]-(1+sheet_entry['second_spread_weight_1'])*merged_data['change2'].iloc[0,1]\
-                        +sheet_entry['second_spread_weight_1']*merged_data['change2'].iloc[0,2]
+            hold_pnl = (merged_data['close_price'].iloc[hold_indx, 0]-merged_data['close_price'].iloc[0, 0])\
+                       -(1+sheet_entry['second_spread_weight_1'])*(merged_data['close_price'].iloc[hold_indx, 1]-merged_data['close_price'].iloc[0, 1])\
+                       +(sheet_entry['second_spread_weight_1'])*(merged_data['close_price'].iloc[hold_indx, 2]-merged_data['close_price'].iloc[0, 2])
 
-        raw_pnl_hold5 = merged_data['change5'].iloc[0,0]-(1+sheet_entry['second_spread_weight_1'])*merged_data['change5'].iloc[0,1]\
-                        +sheet_entry['second_spread_weight_1']*merged_data['change5'].iloc[0,2]
-
-        raw_pnl_hold10 = merged_data['change10'].iloc[0,0]-(1+sheet_entry['second_spread_weight_1'])*merged_data['change10'].iloc[0,1]\
-                        +sheet_entry['second_spread_weight_1']*merged_data['change10'].iloc[0,2]
-
-        raw_pnl_hold20 = merged_data['change20'].iloc[0,0]-(1+sheet_entry['second_spread_weight_1'])*merged_data['change20'].iloc[0,1]\
-                        +sheet_entry['second_spread_weight_1']*merged_data['change20'].iloc[0,2]
+            hold_pnl_list.append(hold_pnl*sheet_entry['multiplier'])
 
         path_pnl5[i] = path_path_list[0]
         path_pnl10[i] = path_path_list[1]
@@ -140,17 +134,17 @@ def get_backtest_summary_4_date(**kwargs):
         path_pnl20[i] = path_path_list[3]
         path_pnl25[i] = path_path_list[4]
 
-        hold_pnl1long[i] = raw_pnl_hold1*sheet_entry['multiplier']*quantity_long
-        hold_pnl2long[i] = raw_pnl_hold2*sheet_entry['multiplier']*quantity_long
-        hold_pnl5long[i] = raw_pnl_hold5*sheet_entry['multiplier']*quantity_long
-        hold_pnl10long[i] = raw_pnl_hold10*sheet_entry['multiplier']*quantity_long
-        hold_pnl20long[i] = raw_pnl_hold20*sheet_entry['multiplier']*quantity_long
+        hold_pnl1long[i] = hold_pnl_list[0]*quantity_long
+        hold_pnl2long[i] = hold_pnl_list[1]*quantity_long
+        hold_pnl5long[i] = hold_pnl_list[2]*quantity_long
+        hold_pnl10long[i] = hold_pnl_list[3]*quantity_long
+        hold_pnl20long[i] = hold_pnl_list[4]*quantity_long
 
-        hold_pnl1short[i] = raw_pnl_hold1*sheet_entry['multiplier']*quantity_short
-        hold_pnl2short[i] = raw_pnl_hold2*sheet_entry['multiplier']*quantity_short
-        hold_pnl5short[i] = raw_pnl_hold5*sheet_entry['multiplier']*quantity_short
-        hold_pnl10short[i] = raw_pnl_hold10*sheet_entry['multiplier']*quantity_short
-        hold_pnl20short[i] = raw_pnl_hold20*sheet_entry['multiplier']*quantity_short
+        hold_pnl1short[i] = hold_pnl_list[0]*quantity_short
+        hold_pnl2short[i] = hold_pnl_list[1]*quantity_short
+        hold_pnl5short[i] = hold_pnl_list[2]*quantity_short
+        hold_pnl10short[i] = hold_pnl_list[3]*quantity_short
+        hold_pnl20short[i] = hold_pnl_list[4]*quantity_short
 
     strategy_sheet['holding_period5'] = holding_period5
     strategy_sheet['holding_period10'] = holding_period10

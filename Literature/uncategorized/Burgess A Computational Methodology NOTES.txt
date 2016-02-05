@@ -36,4 +36,10 @@ the basis of a predictive model of the relative returns on the two assets.
 (PAGE 72) Introducing non linear models seem to improve the performance quite q bit for a simple cointegration
 approach.
 
-(PAGE 87)
+(PAGE 87) A disadvantage of cointegration is the low-power of standard unit root cointegration tests at 
+detecting predictable components. This weakness of cointegration methodology may in principle be overcome by
+replacing the unit root tests with more powerful tests based on concepts such as the variance ratio, however
+the distribution statistics for such tests is not known and certainly would be expected to be nonstandard
+due to biases induced by the cointegrating regression.
+
+(PAGE 95)
