@@ -12,8 +12,6 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 def get_daily_pnl_snapshot(**kwargs):
 
-    con = msu.get_my_sql_connection(**kwargs)
-
     if 'as_of_date' not in kwargs.keys():
         as_of_date = exp.doubledate_shift_bus_days()
         kwargs['as_of_date'] = as_of_date
@@ -27,13 +25,10 @@ def get_daily_pnl_snapshot(**kwargs):
         return strategy_frame
 
     strategy_frame = ts.get_open_strategies(**kwargs)
-    pnl_output = [tapnl.get_strategy_pnl(alias=x,con=con,**kwargs) for x in strategy_frame['alias']]
+    pnl_output = [tapnl.get_strategy_pnl(alias=x,**kwargs) for x in strategy_frame['alias']]
 
     strategy_frame['daily_pnl'] = [x['daily_pnl'] for x in pnl_output]
     strategy_frame['total_pnl'] = [x['total_pnl'] for x in pnl_output]
-
-    if 'con' not in kwargs.keys():
-        con.close()
 
     strategy_frame = strategy_frame[['alias','daily_pnl','total_pnl']]
     strategy_frame.sort('daily_pnl',ascending=False,inplace=True)
