@@ -42,4 +42,69 @@ replacing the unit root tests with more powerful tests based on concepts such as
 the distribution statistics for such tests is not known and certainly would be expected to be nonstandard
 due to biases induced by the cointegrating regression.
 
-(PAGE 95)
+(PAGE 97) Rather than imposing the strict requirement of stationarity, we instead employ a broader range of
+tests which are capable of identifying both trending and mean-reverting behavior and which are robust to the
+presence of nonstationary component in the time-series dynamics.
+
+(page 98) Tests based on the autocorrelation function are most appropriate at detecting short-term effects such 
+as momentum or short-term correction effects. In contrast, unit-root tests and standard variance ratio tests
+are most appropriate for observing long term effects, such as distinguishing between stationary and nonstationary 
+behavior. Tests based on the overall shape of the variance ratio profile are capable of recognising combinations
+of short-term and long-term dynamics which are particulary amenable to statistical arbitrage 
+
+(PAGE 100) Formula for implicit statistical arbitrage strategy.
+
+(PAGE 101) Model free variable selection using nonparametric regression.
+
+(PAGE 103) The methodology which we have developed avoids the problem of excessive bias by using flexible neural
+network models and avoids excessive estimation variance by using statistical significance testing to control
+the specification of the neural network models.
+
+(PAGE 104) Model selection algorithms are explained.
+
+(PAGE 106) Formula for conditional statistical arbirage strategy.
+
+(PAGE 107) The advantage of employing statistical arbitrage strategies based upon flexible forecasting models 
+is that  other deterministic components of the dynamics can be accounted for, in addition to the basic tendency
+of mean-reversion. By capturing these additional components in the forecasting model it may be possible both
+to decrease risk and increase profitability. A decrease in risk may occur because otherwise unfavorable effects,
+such as a short-term momentum acting to temporarily increase the mispricing, can be accounted for in the model forecasts.
+An increase in profits may occur because the overall accuracy of the forecasting model will improve due to capturing 
+a larger part of the deterministic component in the underlying dynamics.
+
+(PAGE 113) The key elements of the specification of each of the three components of a statistical arbitrage model
+(mispricing model, forecasting model and trading rule) are grouped together as a set of "meta parameters". The "fitness"
+of the set of meta-parameters is evalueated in terms of the actual trading performance of the overall model, thus
+serving to avoid the criterion risk which would arise from seperate optimisation of the different model components.
+This process can be seen as avoiding the forecasting bottleneck by allowing feedback from the trading performance to 
+be passed back to the other model components, thus closing the modelling loop and allowing joint optimisation of all
+model components with respect to a single set of criteria.
+
+(PAGE 116) Whilst the object of cointegration testing is to identify combinations of time-series which are stationary,
+our statistical arbitrage modelling is concerned with the more general case of combinations of time-series which simply
+contain a predictable component. This generalisation of the cointegration framework is both necessary and useful because
+the requirement for strict stationarity is over-restrictive and would cause many potential opportunities for statistical
+arbitrage to be overlooked.
+
+(PAGE 121) Definition of a syntetic asset model.
+
+(PAGE 127) Aside from cointegration, once can use factor models and PCA. However the author is focusing on cointegration.
+
+(PAGE 137) One can use Kalman Filter to estimate time varying cointegration vector.
+
+(PAGE 140) 400 daily observations are used to select 5 stocks that are the best candidates to replicate a target asset.
+
+(PAGE 146) The reason why standard cointegration tests will in some cases fail to identify potential opportunities 
+for statistical arbitrage is simple: it is not the purpose for which the tests are designed. Whilst the object of 
+cointegration testing is to identify combinations of time-series which are stationary, statistical arbirage modelling
+is concerned with the more general case of combinations of time-series which contain a stationary component, or indeed
+any other deterministic component.
+
+(PAGE 147) The Box-Lyung statistic (Q-BL)
+
+(PAGE 147) Unit Root Tests for Stationarity: Dickey-Fuller (DF) and Cointegrating Regression Durbin-Watson (CRDW)
+
+
+
+
+(PAGE 129)
