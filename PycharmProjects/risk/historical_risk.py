@@ -41,7 +41,7 @@ def get_historical_risk_4strategy(**kwargs):
 
     amcb_output = [opUtil.get_aggregation_method_contracts_back(cmi.get_contract_specs(x)) for x in net_position['ticker']]
 
-    aggregation_method = pd.DataFrame(amcb_output)['aggregation_method'].min()
+    aggregation_method = pd.DataFrame(amcb_output)['aggregation_method'].max()
 
     if aggregation_method == 12:
         contracts_back = const.annualContractsBack

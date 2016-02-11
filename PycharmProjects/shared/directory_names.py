@@ -10,6 +10,7 @@ tt_fill_directory = r'C:\tt\datfiles\Export'
 
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
+                  'raw_options_data': '/data/options_data_raw',
                   'ta': '/ta',
                   'strategy_output': '/strategy_output',
                   'backtest_results': '/backtest_results',

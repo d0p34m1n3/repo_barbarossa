@@ -2,12 +2,15 @@ __author__ = 'kocat_000'
 
 import datetime as dt
 
+
 def convert_doubledate_2datetime(double_date):
     return dt.datetime.strptime(str(double_date), '%Y%m%d')
+
 
 def doubledate_shift(double_date, shift_in_days):
     shifted_datetime = convert_doubledate_2datetime(double_date)-dt.timedelta(shift_in_days)
     return int(shifted_datetime.strftime('%Y%m%d'))
+
 
 def convert_datestring_format(cu_input):
     date_string = cu_input['date_string']
@@ -22,6 +25,11 @@ def convert_datestring_format(cu_input):
 
     return datestring_out
 
+
+def get_doubledate(**kwargs):
+
+    datetime_out = dt.datetime.now()
+    return int(datetime_out.strftime('%Y%m%d'))
 
 def get_directory_extension(date_to):
 

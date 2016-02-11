@@ -23,7 +23,11 @@ def generate_futures_butterfly_followup_report(**kwargs):
         as_of_date = exp.doubledate_shift_bus_days()
         kwargs['as_of_date'] = as_of_date
 
-    ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
+    if 'writer' in kwargs.keys():
+        writer = kwargs['writer']
+    else:
+        ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
+        writer = pd.ExcelWriter(ta_output_dir + '/followup.xlsx', engine='xlsxwriter')
 
     strategy_frame = ts.get_open_strategies(**kwargs)
 
@@ -54,7 +58,7 @@ def generate_futures_butterfly_followup_report(**kwargs):
 
     butterfly_followup_frame['z1'] = butterfly_followup_frame['z1'].round(2)
 
-    writer = pd.ExcelWriter(ta_output_dir + '/followup.xlsx', engine='xlsxwriter')
+
     butterfly_followup_frame.to_excel(writer, sheet_name='butterflies')
     worksheet_butterflies = writer.sheets['butterflies']
     worksheet_butterflies.freeze_panes(1, 0)
@@ -104,6 +108,8 @@ def generate_spread_carry_followup_report(**kwargs):
 
     worksheet_sc.autofilter(0, 0, len(spread_carry_followup_frame.index),
                               len(spread_carry_followup_frame.columns))
+
+    writer.save()
 
 
 

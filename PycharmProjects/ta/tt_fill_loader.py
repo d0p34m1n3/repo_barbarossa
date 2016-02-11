@@ -12,6 +12,7 @@ import numpy as np
 conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'HO': 'HO',
                                   'RB': 'RB',
+                                  'GE': 'ED',
                                   'ZC': 'C',
                                   'ZW': 'W',
                                   'ZS': 'S',
@@ -32,7 +33,7 @@ def convert_trade_price_from_tt(**kwargs):
     ticker_head = kwargs['ticker_head']
     price = kwargs['price']
 
-    if ticker_head in ['CL','BO']:
+    if ticker_head in ['CL', 'BO', 'ED']:
         converted_price = price/100
     elif ticker_head in ['B', 'KC', 'SB', 'CC']:
         converted_price = price
