@@ -1,9 +1,10 @@
 
 import pickle as pickle
+import pandas as pd
 
 def read_cme_settle_txt_files(**kwargs):
 
-    with open(r'C:\Research\data\options_data_raw\2016\201602\20160210\commodity.pkl','rb') as handle:
+    with open(r'C:\Research\data\options_data_raw\2016\201602\20160211\commodity.pkl','rb') as handle:
         raw_data = pickle.load(handle)
 
     title_list = []
@@ -54,6 +55,8 @@ def read_cme_settle_txt_files(**kwargs):
 
         total_volume_list.append((sum([int(volume_column[x]) if filter_2[x] else 0 for x in range(len(volume_column))])))
 
+    title_frame = pd.DataFrame([process_title(x) for x in title_list])
+
     return {'decoded_data': decoded_data,
             'data_start_list': data_start_list,
             'data_end_list': data_end_list,
@@ -64,15 +67,15 @@ def read_cme_settle_txt_files(**kwargs):
             'month_strike_list': month_strike_list,
             'filter_1_list': filter_1_list,
             'filter_2_list': filter_2_list,
-            'total_volume_list': total_volume_list}
+            'total_volume_list': total_volume_list,
+            'title_frame': title_frame}
 
 
 def process_title(title_input):
 
-    properties_output = {}
     title_list = title_input.split(' ')
 
-    print(title_input)
+    #print(title_input)
 
     if any(x in title_input for x in ['OPTIONS', 'OPTION', 'Options']):
         if 'Calendar Spread Options' in title_input:
@@ -182,9 +185,10 @@ def process_title(title_input):
     else:
         maturity_string = []
 
-
-
-    return {'ticker_head': ticker_head, 'option_type': option_type,'maturity_string': maturity_string}
+    return {'ticker_head': ticker_head,
+            'option_type': option_type,
+            'asset_type': asset_type,
+            'maturity_string': maturity_string}
 
 
 

@@ -15,6 +15,67 @@ import time as tm
 import datetime as dt
 import math as m
 
+
+def get_options_expiration(ticker):
+
+    contract_specs = cmf.get_contract_specs(ticker)
+    ticker_head = contract_specs['ticker_head']
+    ticker_class = cmf.ticker_class[ticker_head]
+    ticker_year = contract_specs['ticker_year']
+    ticker_month_num = contract_specs['ticker_month_num']
+
+    bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(ticker_head))
+
+    if ticker_class == 'Ag':
+
+        prev_output = get_prev_ticker_year_month(ticker_year, ticker_month_num)
+        ticker_year_prev = prev_output['ticker_year_prev']
+        ticker_month_num_prev = prev_output['ticker_month_num_prev']
+
+        dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32)
+        dts = dts[dts.month == ticker_month_num_prev]
+
+        bu_dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32, freq=bday_us)
+        bu_dts = bu_dts[bu_dts.month == ticker_month_num_prev]
+
+        fridays = dts[dts.dayofweek == 4]
+
+        selected_fridays = fridays[fridays <= bu_dts[-3]]
+
+        if selected_fridays[-1] in bu_dts:
+            dts = selected_fridays
+        else:
+            dts = bu_dts[bu_dts < selected_fridays[-1]]
+        exp_indx = -1
+
+    elif ticker_head == 'LC':
+
+        bu_dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32, freq=bday_us)
+        fridays = bu_dts[bu_dts.dayofweek == 4]
+        dts = fridays
+        exp_indx = 0
+    elif ticker_head == 'LN':
+        dts = pd.date_range(pd.datetime(ticker_year,ticker_month_num, 1), periods=15, freq=bday_us)
+        exp_indx = 9
+    elif ticker_head == 'CL':
+        prev_output = get_prev_ticker_year_month(ticker_year, ticker_month_num)
+        ticker_year_prev = prev_output['ticker_year_prev']
+        ticker_month_num_prev = prev_output['ticker_month_num_prev']
+        dts = pd.date_range(start=pd.datetime(ticker_year_prev,ticker_month_num_prev,1), end=pd.datetime(ticker_year_prev, ticker_month_num_prev, 25), freq=bday_us)
+        exp_indx = -7
+    elif ticker_head == 'NG':
+        prev_output = get_prev_ticker_year_month(ticker_year,ticker_month_num)
+        ticker_year_prev = prev_output['ticker_year_prev']
+        ticker_month_num_prev = prev_output['ticker_month_num_prev']
+        dts = pd.date_range(start=pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), end=pd.datetime(ticker_year, ticker_month_num, 1), freq=bday_us)
+        if pd.datetime(ticker_year,ticker_month_num,1) in dts:
+            exp_indx = -5
+        else:
+            exp_indx = -4
+
+    return dts[exp_indx].to_datetime()
+
+
 def get_futures_expiration(ticker):
     contract_specs = cmf.get_contract_specs(ticker)
     ticker_head = contract_specs['ticker_head']
@@ -24,7 +85,7 @@ def get_futures_expiration(ticker):
 
     bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(ticker_head))
 
-    if ticker_class ==  'Ag':
+    if ticker_class == 'Ag':
         dts = pd.date_range(start=pd.datetime(ticker_year,ticker_month_num,10), end=pd.datetime(ticker_year, ticker_month_num, 15), freq=bday_us)
         if pd.datetime(ticker_year,ticker_month_num,15) in dts:
             exp_indx = -2
@@ -82,7 +143,7 @@ def get_futures_expiration(ticker):
         ticker_year_prev = prev_output['ticker_year_prev']
         ticker_month_num_prev = prev_output['ticker_month_num_prev']
         dts = pd.date_range(pd.datetime(ticker_year_prev,ticker_month_num_prev, 1), periods=32, freq=bday_us)
-        dts = dts[dts.month==ticker_month_num_prev]
+        dts = dts[dts.month == ticker_month_num_prev]
         exp_indx = -1
     elif ticker_head == 'NG':
         prev_output = get_prev_ticker_year_month(ticker_year,ticker_month_num)
@@ -107,7 +168,7 @@ def get_futures_expiration(ticker):
         dts = dts[dts.month==ticker_month_num_prev]
         exp_indx = -1
     elif ticker_head == 'B':
-        if 100*ticker_year+ticker_month_num<=201602:
+        if 100*ticker_year+ticker_month_num <= 201602:
             prev_output = get_prev_ticker_year_month(ticker_year,ticker_month_num)
             ticker_year_prev = prev_output['ticker_year_prev']
             ticker_month_num_prev = prev_output['ticker_month_num_prev']
