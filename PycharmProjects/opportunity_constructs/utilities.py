@@ -108,6 +108,7 @@ def get_aligned_futures_data(**kwargs):
 
         selection_indx = (futures_data_frame['tr_dte'] >= tr_dte_list[i]-tr_days_half_band_width_selected)& \
                              (futures_data_frame['tr_dte'] <= tr_dte_list[i]+tr_days_half_band_width_selected)& \
+                             (futures_data_frame['cal_dte']>=0)& \
                              (futures_data_frame['settle_date'] >= date_from_datetime) & \
                              (futures_data_frame['settle_date'] <= date_to_datetime)
 
