@@ -26,7 +26,7 @@ def get_options_expiration(ticker):
 
     bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(ticker_head))
 
-    if ticker_class == 'Ag':
+    if ticker_class == 'Ag' or ticker_class == 'Treasury':
 
         prev_output = get_prev_ticker_year_month(ticker_year, ticker_month_num)
         ticker_year_prev = prev_output['ticker_year_prev']
@@ -72,6 +72,52 @@ def get_options_expiration(ticker):
             exp_indx = -5
         else:
             exp_indx = -4
+    elif ticker_head == 'ES':
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+        dts = dts[dts.dayofweek == 4]
+        exp_indx = 2
+    elif ticker_class == 'FX':
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+        fridays = dts[dts.dayofweek == 4]
+        wednesdays = dts[dts.dayofweek == 2]
+        dts = fridays[fridays < wednesdays[2]]
+        exp_indx = -2
+    elif ticker_class == 'STIR':
+
+        if (ticker_month_num % 3) or ticker_head in ['E0', 'E2', 'E3', 'E4', 'E5']:
+            dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+            fridays = dts[dts.dayofweek == 4]
+            wednesdays = dts[dts.dayofweek == 2]
+            dts = fridays[fridays < wednesdays[2]]
+            exp_indx = -1
+        else:
+            dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+            dts = dts[dts.month == ticker_month_num]
+            wednesday_list = dts[dts.dayofweek == 2]
+            dts = pd.date_range(start=pd.datetime(ticker_year, ticker_month_num, 1), end=wednesday_list[2], freq=bday_us)
+            exp_indx = -3
+    elif ticker_head == 'GC':
+
+        prev_output = get_prev_ticker_year_month(ticker_year, ticker_month_num)
+        ticker_year_prev = prev_output['ticker_year_prev']
+        ticker_month_num_prev = prev_output['ticker_month_num_prev']
+
+        dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32)
+        dts = dts[dts.month == ticker_month_num_prev]
+
+        bu_dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32, freq=bday_us)
+        bu_dts = bu_dts[bu_dts.month == ticker_month_num_prev]
+
+        bu_dts = bu_dts[bu_dts < dts[-1]]
+
+        cal_days_after = dts[bu_dts[-4] < dts]
+
+        if cal_days_after[0] in bu_dts:
+            dts = bu_dts
+            exp_indx = -4
+        else:
+            dts = bu_dts
+            exp_indx = -5
 
     return dts[exp_indx].to_datetime()
 
@@ -156,7 +202,7 @@ def get_futures_expiration(ticker):
             exp_indx = -3
     elif ticker_head == 'ED':
         dts = pd.date_range(pd.datetime(ticker_year,ticker_month_num, 1), periods=32)
-        dts = dts[dts.month==ticker_month_num]
+        dts = dts[dts.month == ticker_month_num]
         wednesday_list = dts[dts.dayofweek == 2]
         dts = pd.date_range(start=pd.datetime(ticker_year,ticker_month_num, 1), end=wednesday_list[2], freq=bday_us)
         exp_indx = -3
