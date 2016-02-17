@@ -104,7 +104,96 @@ any other deterministic component.
 
 (PAGE 147) Unit Root Tests for Stationarity: Dickey-Fuller (DF) and Cointegrating Regression Durbin-Watson (CRDW)
 
+(PAGE 166) Of the variance ratio projections, only the first principal components turn out to be substantially 
+correlated with any of the standard tests. Not only are they correlated with each other (0.562), but also with 
+the basic variance ratio statistics and, in the case of VP100c1, the stationarity tests of DW and CRDW. From this
+we can take two main messages: the first principal components of the variance ratio profiles are perhaps the best
+tests overall, and the subsequent principal components can be used to identify classes of potentially predictable
+dynamics which are likely to be completely missed by standard predictability tests-be they stationarity tests,
+autocorrelation tests or even variance ratio tests.
+
+(PAGE 167) Regression induces a certain amount of spurious "mean-reversion" in the residuals and the impact of this
+on the distribution of the test statistics must be corrected if they are to detect truly deterministic components
+rather than spurious artefacts of the construction methodology itself. A further complication arises in the case of
+the extended stepwise methodology for use in high-dimensional problems, because the "selection bias" inherent in 
+choosing the best m out of n>m regressors must also be accounted for.
+
+(PAGE 168) The proposed solution is for the above mentioned probelms is to do Monte Carlo to calculate critical values
+from running regressions.
+
+(PAGE 172) So we generate the appropirate  emprical distributions of our test statistics prior to performing the modelling
+procedure itself, and such that the experimental parameters (number of regressors, size of the pool from which the regressors
+are chosen, and sample size) match those which will be used in the modelling procedure. This approach is rather computationally
+intensive, given that the number of simulations required is of the order of 1000s or 10000s depending on the accuracy required,
+but is quite within the capabilities of standard PCs.
+
+(PAGE 177) Implicit statistical arbitrage (ISA) trading strategies described.
+
+(PAGE 182) The raw insample profit, ISAPROF(IS), generalises less well to out-of-sample profit (correlation of %28) than does the 
+risk-adjusted insample profit, ISASR(IS) (correlation to out-of-sample profit = 38%) suggesting that the best indicator of
+continued profitability is the consistency of the in-sample performance rather than the mere magnitude of profits.
+
+(PAGE 183) Sharp ratio's will be improved by choosing models with better in sample perforamances.
+
+(PAGE 184) A general rule of thumb amongst practitioners when evaluating Sharpe Ratio statistics for trading models, is that 
+(annualised) values of below 1 are uninteresting, between 1 and 2 indicates that a model shows promise, but only values of 2
+or more are considered noteworthy.
+
+(PAGE 185) Sharp ratios will improve by combining models in a portfolio, (notice models here means simple different target assets in
+cointegrating regression or different number of regressors)
+
+(PAGE 188) When the trading signal varies with the square of the mispricing, sharpe ratio increases.
+
+(PAGE 194) Kalman filter implementation helps to improve the consistency of German-France index pair trading.
+There's an optimal level of adaptability that makes it the most profitable.
+
+(PAGE 211) The lack of statistical significance measures that can be applied on an insample basis reduces the effectiveness of
+neural modelling in situations where only small samples of noisy data are available. In such cases, leaving data aside for 
+purposes of selection or validation may seriously degrade the quality of the model fit itself.
+
+(PAGE 213) Equivalent kernel representation of linear regression
+
+(PAGE 218) The representational power of neural networks arises from an ability to parsimoniously exploit the degrees of freedom
+within the model, in a way which is in some sense optimally related to local properties of the data itself, rather than according
+to some external global parameterisation such as "bandwidth" parameters used in kernel smoothing techniques of nonparametric statistics.
+
+(PAGE 223) Basic methodology for detecting potentially nonlinear relationships.
+
+(PAGE 225) Detecting nonlinear relationship comes down to an f test of regression results.
+
+(PAGE 226) Non linear relationship test needs to be adjusted when ridge regression is used.
+
+(PAGE 227) Non linear relationship test needs to be adjsted when neural networks are used.
+
+(PAGE 227) Linear, Polynomial, Bin-Smoother, Radial Basis Function and MLP Network
+
+(PAGE 234) Among the single estimator tests the most powerful ones are the Radial Basis and MLP.
+On a general level the results indicate that, for sample sizes in the order of a few hundred 
+observations, it is relatively easy to detect significant relationships when they account
+for as much as 0.33 of the total variance of the target time-series. When the magnitude of the
+pedictable component is of the order of 0.10 it is still possible to identify relationships with
+95% plus effectiveness, but typically only when the nature of the estimator closely reflects
+that of he underlying relationship. In cases where the predictable component is of the order of
+0.033 the situation is much more difficult, with an average identification rate of only around 30%.
+
+(PAGE 234) Joint tests which are conducted by applying all five types of estimator to the data, and
+taking the most significant statistic as an indicator of a presence of a relationship are substantially
+more powerful than the single-estimator tests, partiuclarly for the lower levels of predictability.
+
+(PAGE 236) False positive for non linearity tests (these are partial F-Tests(page 230)) 
+increases as the magnitude of the predictable component decreaes, indicating that at low levels of predictability 
+it is particularly difficult to distinguish between linear and nonlinear effects.
+
+(PAGE 237) For detecting nonlinear relationships the two types of neural network model perform similarly well, and
+substantially better than both the polynomial and, least effective of all, the bin-smoother. The overall detection
+rate is highest for the joint statistic; however, this improved performance does come at the price of a slight increase
+in the corresponding false positive rate.
+
+(PAGE 237) For datasets of a typical size of a few hundred observations the practical limit of effectiveness for forecasting
+models is when the potentially predictable component accounts for somewhere around 0.033 of the total variance.
+Furthermore, in cases close to this borderline it may be preferable to increase the p-value in the acknowledgement of the 
+uncertainity in the variable selection procedure, and to err on the side of caution even at the price of risking the inclusion
+of insignificant variables in the model estimation procedure proper.
 
 
-
-(PAGE 129)
+[PAGE 238]
