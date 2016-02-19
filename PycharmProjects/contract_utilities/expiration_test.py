@@ -709,8 +709,24 @@ option_expiration_test = (('CH2016', pd.datetime(2016, 2, 19)),
                           ('GCZ2019', pd.datetime(2019, 11, 25)),
                           ('GCM2020', pd.datetime(2020, 5, 26)),
                           ('GCZ2020', pd.datetime(2020, 11, 24)),
-                          ('GCM2021', pd.datetime(2020, 5, 26)),
-                          ('GCZ2021', pd.datetime(2020, 11, 24)))
+                          ('GCM2021', pd.datetime(2021, 5, 25)),
+                          ('GCZ2021', pd.datetime(2021, 11, 23)),
+                          ('SIH2016', pd.datetime(2016, 2, 24)),
+                          ('SIJ2016', pd.datetime(2016, 3, 28)),
+                          ('SIK2016', pd.datetime(2016, 4, 26)),
+                          ('SIM2016', pd.datetime(2016, 5, 25)),
+                          ('SIN2016', pd.datetime(2016, 6, 27)),
+                          ('SIQ2016', pd.datetime(2016, 7, 26)),
+                          ('SIU2016', pd.datetime(2016, 8, 25)),
+                          ('SIZ2016', pd.datetime(2016, 11, 22)),
+                          ('SIN2017', pd.datetime(2017, 6, 27)),
+                          ('SIZ2017', pd.datetime(2017, 11, 27)),
+                          ('SIN2018', pd.datetime(2018, 6, 26)),
+                          ('SIZ2018', pd.datetime(2018, 11, 27)),
+                          ('SIN2019', pd.datetime(2019, 6, 25)),
+                          ('SIZ2019', pd.datetime(2019, 11, 25)),
+                          ('SIN2020', pd.datetime(2020, 6, 25)),
+                          ('SIZ2020', pd.datetime(2020, 11, 24)))
 
 
 #success_indx = [exp.get_futures_expiration(expiration_test[i][0]) == expiration_test[i][1] for i in range(len(expiration_test))]

@@ -35,6 +35,29 @@ def get_contract_list_4year_range(**kwargs):
     return ticker_list
 
 
+def get_option_contract_list_4year_range(**kwargs):
+
+    now = datetime.datetime.utcnow()
+    start_year = kwargs['start_year']
+    end_year = kwargs['end_year']
+    tickerhead_list = cmi.option_tickerhead_list
+    contract_name_dict = cmi.contract_name
+    ticker_class_dict = cmi.ticker_class
+    year_list = range(start_year,end_year)
+
+    ticker_list = []
+    for i in tickerhead_list:
+        contract_months = cmi.get_option_contract_months(ticker_head=i)
+        for j in contract_months:
+            for k in year_list:
+                ticker = i+j+str(k)
+                print(ticker)
+                ticker_list.append((ticker,i,k,cmi.letter_month_string.find(j)+1,exp.get_options_expiration(ticker),
+                                'options',contract_name_dict[i],ticker_class_dict[i],'USD',now,now))
+
+    return ticker_list
+
+
 def get_db_contract_list_filtered(**kwargs):
 
     con = msu.get_my_sql_connection(**kwargs)
@@ -51,6 +74,9 @@ def get_db_contract_list_filtered(**kwargs):
 
     if 'ticker_month' in kwargs.keys():
         filter_string = filter_string + ' and ticker_month=' + str(kwargs['ticker_month'])
+
+    if 'instrument' in kwargs.keys():
+        filter_string = filter_string + ' and instrument=\'' + kwargs['instrument'] + '\''
 
     sql_query = sql_query + ' WHERE ' + filter_string + ' ORDER BY id ASC'
 

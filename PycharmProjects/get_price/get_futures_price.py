@@ -8,6 +8,7 @@ import shared.directory_names as dn
 import pandas as pd
 import datetime as dt
 import shared.calendar_utilities as cu
+import os.path
 
 
 def get_futures_prices_4date(**kwargs):
@@ -101,7 +102,12 @@ def get_futures_price_preloaded(**kwargs):
         data_out = kwargs['futures_data_dictionary'][ticker_head]
     else:
         presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
-        data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+
+        if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
+            data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+        else:
+            data_out = pd.DataFrame()
+            return data_out
 
     if 'settle_date' in kwargs.keys():
         settle_date = kwargs['settle_date']

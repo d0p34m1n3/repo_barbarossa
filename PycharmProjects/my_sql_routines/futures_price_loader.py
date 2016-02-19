@@ -8,10 +8,12 @@ import get_price.get_futures_price as gfp
 import contract_utilities.contract_lists as cl
 import shared.calendar_utilities as cu
 import contract_utilities.expiration as exp
+import read_exchange_files.process_cme_futures as pcf
 import pandas as pd
 import numpy as np
 import datetime
 from pandas.tseries.offsets import CustomBusinessDay
+
 
 def load_price_data_4ticker(load_price_data_input):
 
@@ -133,7 +135,8 @@ def update_futures_price_database(**kwargs):
             max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)
             contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from=early_start_date,
                                                             expiration_date_to=cu.doubledate_shift(run_date, -max_cal_dte),
-                                                            ticker_head=ticker_head, ticker_month=ticker_month_num, con=con))
+                                                            ticker_head=ticker_head, ticker_month=ticker_month_num, con=con,
+                                                                  instrument='futures'))
 
     date_from_list = [gfp.get_futures_last_price_date_4ticker(ticker=x[1], con=con) for x in contract_list]
 
@@ -152,6 +155,66 @@ def update_futures_price_database(**kwargs):
 
     if 'con' not in kwargs.keys():
         con.close()
+
+
+def update_futures_price_database_from_cme_file(**kwargs):
+
+    ticker_head_list = ['ED']
+
+    import time
+    con = msu.get_my_sql_connection(**kwargs)
+    run_date = int(time.strftime('%Y%m%d'))
+    run_date = 20160218
+    data_vendor_id = 2
+
+    for ticker_head in ticker_head_list:
+
+        contract_list = []
+
+        cme_output = pcf.process_cme_futures_4tickerhead(ticker_head=ticker_head, report_date=run_date)
+        settle_frame = cme_output['settle_frame']
+
+        for ticker_month in cmi.futures_contract_months[ticker_head]:
+            ticker_month_num = cmi.letter_month_string.find(ticker_month)+1
+            max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)
+
+            contract_list.extend(cl.get_db_contract_list_filtered(expiration_date_from=run_date,
+                                                            expiration_date_to=cu.doubledate_shift(run_date, -max_cal_dte),
+                                                            ticker_head=ticker_head, ticker_month=ticker_month_num, con=con,
+                                                                  instrument='futures'))
+
+        contract_frame = pd.DataFrame(contract_list, columns=['symbol_id', 'ticker', 'expiration_date'])
+        merged_frame = pd.merge(contract_frame,settle_frame, how='inner', on='ticker')
+
+        column_names = merged_frame.columns.tolist()
+
+        symbol_id_indx = column_names.index('symbol_id')
+        ticker_month_indx = column_names.index('ticker_month')
+        open_indx = column_names.index('open')
+        high_indx = column_names.index('high')
+        low_indx = column_names.index('low')
+        settle_indx = column_names.index('settle')
+        volume_indx = column_names.index('volume')
+        interest_indx = column_names.index('interest')
+
+        tuples = [tuple([data_vendor_id, x[symbol_id_indx],
+                     ticker_head,
+                     x[ticker_month_indx],
+                     x[date_indx].to_datetime().date(),
+                     (expiration_date-x[date_indx].to_datetime().date()).days,
+                     len([y for y in dts if y > x[date_indx].to_datetime().date()]),
+                     now, now,
+                     None if np.isnan(x[open_indx]) else x[open_indx],
+                     None if np.isnan(x[high_indx]) else x[high_indx],
+                     None if np.isnan(x[low_indx]) else x[low_indx],
+                     None if np.isnan(x[settle_indx]) else x[settle_indx],
+                     None if np.isnan(x[volume_indx]) else x[volume_indx],
+                     None if np.isnan(x[interest_indx]) else x[interest_indx]]) for x in merged_frame.values]
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return {'contract_list': contract_list, 'settle_frame': settle_frame}
 
 
 

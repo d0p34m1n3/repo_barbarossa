@@ -26,10 +26,32 @@ futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
                            'RB': full_letter_month_list,
                            'NG': full_letter_month_list}
 
+option_ticker_head_list = {'LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+                           'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W',
+                           'CL', 'NG', 'ED', 'E0', 'E2', 'E3', 'E4', 'E5'}
+
+
+def get_option_contract_months(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    contract_months = []
+
+    if ticker_head == 'LN':
+        contract_months = ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z']
+    elif ticker_head in option_ticker_head_list:
+        contract_months = full_letter_month_list
+
+    return contract_months
+
 futures_butterfly_strategy_tickerhead_list = ['LN', 'LC', 'FC',
                                               'C', 'S', 'SM', 'BO', 'W', 'KW',
                                               'SB', 'KC', 'CC', 'CT', 'OJ',
                                               'CL', 'B', 'HO', 'RB', 'NG', 'ED']
+
+option_tickerhead_list = ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+                          'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
+                          'ED', 'E0', 'E2', 'E3', 'E4', 'E5']
+
 
 contract_name = {'LN': 'Lean Hog',
                  'LC': 'Live Cattle',
@@ -50,7 +72,24 @@ contract_name = {'LN': 'Lean Hog',
                  'HO': 'NY Harbor ULSD',
                  'RB': 'RBOB Gasoline',
                  'NG': 'Henry Hub Natural Gas',
-                 'ED': 'Eurodollar'}
+                 'ED': 'Eurodollar',
+                 'E0': 'Eurodollar 1 Year Mid-Curve Options',
+                 'E2': 'Eurodollar 2 Year Mid-Curve Options',
+                 'E3': 'Eurodollar 3 Year Mid-Curve Options',
+                 'E4': 'Eurodollar 4 Year Mid-Curve Options',
+                 'E5': 'Eurodollar 5 Year Mid-Curve Options',
+                 'ES': 'E-mini S&P 500',
+                 'EC': 'Euro FX',
+                 'JY': 'Japanese Yen',
+                 'AD': 'Australian Dollar',
+                 'CD': 'Canadian Dollar',
+                 'BP': 'British Pound',
+                 'TY': '10-Year T-Note',
+                 'US': 'US Treasury Bond',
+                 'FV': '5-Year T-Note',
+                 'TU': '2-Year T-Note',
+                 'GC': 'Gold',
+                 'SI': 'Silver'}
 
 relevant_max_cal_dte = {'LN': 720,
                         'LC': 720,

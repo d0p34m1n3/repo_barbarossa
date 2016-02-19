@@ -42,6 +42,9 @@ CREATE TABLE `symbol` (
   KEY `index_exchange_id` (`exchange_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+ALTER TABLE `symbol`
+ADD UNIQUE INDEX `unique_ticker` (`ticker`,`instrument`);
+
 CREATE TABLE `daily_price` (
   `id` int NOT NULL AUTO_INCREMENT,
   `data_vendor_id` int NOT NULL,

@@ -96,7 +96,7 @@ def get_options_expiration(ticker):
             wednesday_list = dts[dts.dayofweek == 2]
             dts = pd.date_range(start=pd.datetime(ticker_year, ticker_month_num, 1), end=wednesday_list[2], freq=bday_us)
             exp_indx = -3
-    elif ticker_head == 'GC':
+    elif ticker_class == 'Metal':
 
         prev_output = get_prev_ticker_year_month(ticker_year, ticker_month_num)
         ticker_year_prev = prev_output['ticker_year_prev']
@@ -108,16 +108,22 @@ def get_options_expiration(ticker):
         bu_dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32, freq=bday_us)
         bu_dts = bu_dts[bu_dts.month == ticker_month_num_prev]
 
-        bu_dts = bu_dts[bu_dts < dts[-1]]
-
         cal_days_after = dts[bu_dts[-4] < dts]
+
+        #return {'dts': dts, 'bu_dts': bu_dts}
 
         if cal_days_after[0] in bu_dts:
             dts = bu_dts
             exp_indx = -4
         else:
-            dts = bu_dts
-            exp_indx = -5
+            cal_days_after = dts[bu_dts[-5] < dts]
+
+            if cal_days_after[0] in bu_dts:
+                dts = bu_dts
+                exp_indx = -5
+            else:
+                dts = bu_dts
+                exp_indx = -6
 
     return dts[exp_indx].to_datetime()
 

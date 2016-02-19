@@ -5,9 +5,15 @@ from math import ceil
 import contract_utilities.contract_lists as cl
 import my_sql_routines.my_sql_utilities as msu
 
-def generate_futures_symbol_table(**kwargs):
 
-    ticker_list = cl.get_contract_list_4year_range(**kwargs)
+def generate_symbol_table(**kwargs):
+
+    instrument = kwargs['instrument']
+
+    if instrument == 'futures':
+        ticker_list = cl.get_contract_list_4year_range(**kwargs)
+    elif instrument == 'options':
+        ticker_list = cl.get_option_contract_list_4year_range(**kwargs)
 
     con = msu.get_my_sql_connection(**kwargs)
 
