@@ -195,5 +195,41 @@ Furthermore, in cases close to this borderline it may be preferable to increase 
 uncertainity in the variable selection procedure, and to err on the side of caution even at the price of risking the inclusion
 of insignificant variables in the model estimation procedure proper.
 
+(PAGE 244) The objective of our estimation procedures is to generate models which are neither too low in complexity (overly biased)
+nor too high in complexity (overly susceptible to variance) whilst simultaneously ensuring that the complexity is exploited
+in an appropriate manner. The essence of our methodolgy is to avoid the problem of excessive bias by using flexible neural
+network models and avoid excessive estimation variance by using statistical testing to control the specification of the
+neural network models.
 
-[PAGE 238]
+(PAGE 256) Details of the regularisation-based algorithm -- there might be some typos here.
+
+(PAGE 258) Details of the constructive algorithm for neurl model estimation.
+
+(PAGE 260) Details of the deconstructive algorithm for neural model estimation.
+
+(PAGE 265) The deconstructive algorithm is comparatively robust to the increasing dimensionality because its variable 
+selection procedure is capable of identifying structure involving arbitrarily high-order interaction effects between
+the variables.
+
+(PAGE 274-276) Description of candidate variables.
+
+(PAGE 279) Over the set of 90 synthetic assets, the total number of selected variables was 121 (mispricings) +
+100 (direct exogenous) + 203 (indirect exogenous) = 424, an average of 4.7 per model.
+
+(PAGE 295) The deconstructive version of the neural estimation methodology produces the most consistent risk-adjusted
+performance, corresponding to a 50% improvement over a set of linear models.
+
+(PAGE 299) All model selection criteria based upon model fit can be expressed as functions of two measures: the amount
+of insample variance which is captured by the model, and the number of degrees of freedom absorbed by the model.
+
+(PAGE 312) The inclusion of transaction costs at 50 basis points (0.5%) creates a sufficient downward bias in performance
+that the simple (equally weighted) model combination strategy is no longer successful. However, a subset selection 
+criterion based on performance during the first subperiod achieves consistently profiable performance. 
+
+(PAGE 315) The more sophisticated "portfolio of models" approach improves performance by allowing the correlation structure
+of the model performances to be exploited, and has the additional advantage of being applicable on an "after cost" basis.
+
+
+
+[PAGE 324]
+
