@@ -229,7 +229,13 @@ criterion based on performance during the first subperiod achieves consistently 
 (PAGE 315) The more sophisticated "portfolio of models" approach improves performance by allowing the correlation structure
 of the model performances to be exploited, and has the additional advantage of being applicable on an "after cost" basis.
 
+(PAGE 333) Details of the population-based algorithm for joint optimisation of a set of models
+
+(PAGE 341) The use of a population-based approach is not sufficient in itself to guarantee that the potential advantages
+of diversification are realised in practice. In contrast the joint optimisation algorithm actively encourages diversity
+by evaluating models in terms of the added-value which they provide to the existing portfolio.
 
 
-[PAGE 324]
+
+[PAGE 341]
 
