@@ -46,7 +46,7 @@ def load_price_data_4ticker(load_price_data_input):
     dts = pd.date_range(start=price_data.index[0], end=expiration_date, freq=bday_us)
     dts = [x.date() for x in dts]
 
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
 
     price_data['price_date'] = pd.Series(price_data.index, index=price_data.index)
 
@@ -129,7 +129,7 @@ def update_futures_price_database(**kwargs):
 
     contract_list = []
 
-    for ticker_head in cmi.futures_contract_months.keys():
+    for ticker_head in cmi.futures_butterfly_strategy_tickerhead_list:
         for ticker_month in cmi.futures_contract_months[ticker_head]:
             ticker_month_num = cmi.letter_month_string.find(ticker_month)+1
             max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)
@@ -159,17 +159,26 @@ def update_futures_price_database(**kwargs):
 
 def update_futures_price_database_from_cme_file(**kwargs):
 
-    ticker_head_list = ['ED']
+    ticker_head_list = ['ED', 'C', 'S', 'SM', 'BO', 'W', 'KW', 'LC', 'LN', 'FC',
+                        'ES', 'NQ', 'AD', 'CD', 'EC', 'JY', 'BP',
+                        'FV', 'TU', 'TY', 'US', 'GC', 'SI', 'CL', 'NG', 'HO', 'RB']
 
     import time
     con = msu.get_my_sql_connection(**kwargs)
     run_date = int(time.strftime('%Y%m%d'))
-    run_date = 20160218
+    #run_date = 20160225
     data_vendor_id = 2
+    now = datetime.datetime.now()
+    run_datetime = cu.convert_doubledate_2datetime(run_date)
 
     for ticker_head in ticker_head_list:
 
         contract_list = []
+
+        bday_us = CustomBusinessDay(calendar=exp.get_calendar_4ticker_head(ticker_head))
+
+        if not exp.is_business_day(double_date=run_date, reference_tickerhead=ticker_head):
+            continue
 
         cme_output = pcf.process_cme_futures_4tickerhead(ticker_head=ticker_head, report_date=run_date)
         settle_frame = cme_output['settle_frame']
@@ -185,6 +194,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
 
         contract_frame = pd.DataFrame(contract_list, columns=['symbol_id', 'ticker', 'expiration_date'])
         merged_frame = pd.merge(contract_frame,settle_frame, how='inner', on='ticker')
+        merged_frame.sort('expiration_date', ascending=True, inplace=True)
 
         column_names = merged_frame.columns.tolist()
 
@@ -196,13 +206,16 @@ def update_futures_price_database_from_cme_file(**kwargs):
         settle_indx = column_names.index('settle')
         volume_indx = column_names.index('volume')
         interest_indx = column_names.index('interest')
+        expiration_indx = column_names.index('expiration_date')
+
+        dts = pd.date_range(start=run_datetime, end=merged_frame['expiration_date'].iloc[-1], freq=bday_us)
 
         tuples = [tuple([data_vendor_id, x[symbol_id_indx],
                      ticker_head,
                      x[ticker_month_indx],
-                     x[date_indx].to_datetime().date(),
-                     (expiration_date-x[date_indx].to_datetime().date()).days,
-                     len([y for y in dts if y > x[date_indx].to_datetime().date()]),
+                     run_datetime.date(),
+                    (x[expiration_indx]-run_datetime.date()).days,
+                     len([y for y in dts if y.to_datetime().date() < x[expiration_indx]]),
                      now, now,
                      None if np.isnan(x[open_indx]) else x[open_indx],
                      None if np.isnan(x[high_indx]) else x[high_indx],
@@ -211,10 +224,14 @@ def update_futures_price_database_from_cme_file(**kwargs):
                      None if np.isnan(x[volume_indx]) else x[volume_indx],
                      None if np.isnan(x[interest_indx]) else x[interest_indx]]) for x in merged_frame.values]
 
+        column_str = "data_vendor_id, symbol_id, ticker_head, ticker_month, price_date,cal_dte, tr_dte, created_date,last_updated_date, open_price, high_price, low_price, close_price, volume, open_interest"
+        insert_str = ("%s, " * 15)[:-2]
+        final_str = "REPLACE INTO daily_price (%s) VALUES (%s)" % (column_str, insert_str)
+        msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples, con=con)
+
     if 'con' not in kwargs.keys():
         con.close()
 
-    return {'contract_list': contract_list, 'settle_frame': settle_frame}
 
 
 

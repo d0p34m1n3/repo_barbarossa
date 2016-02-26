@@ -4,6 +4,7 @@ import shared.directory_names as dn
 import shared.downloads as sd
 import shared.calendar_utilities as cu
 import pickle as pickle
+import my_sql_routines.futures_price_loader as fpl
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
 equity_address = 'ftp://ftp.cmegroup.com/pub/settle/stleqt'
@@ -52,3 +53,8 @@ with open(options_data_dir + '/nymex_futures.pkl', 'wb') as handle:
 
 with open(options_data_dir + '/nymex_options.pkl', 'wb') as handle:
         pickle.dump(nymex_options_output, handle)
+
+try:
+        fpl.update_futures_price_database_from_cme_file()
+except Exception:
+    pass

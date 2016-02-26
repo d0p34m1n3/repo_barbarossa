@@ -3,6 +3,7 @@ __author__ = 'kocat_000'
 import math as m
 
 full_letter_month_list = ['F', 'G', 'H', 'J', 'K', 'M', 'N', 'Q', 'U', 'V', 'X', 'Z']
+quarterly_month_list = ['H', 'M', 'U', 'Z']
 letter_month_string = 'FGHJKMNQUVXZ'
 
 futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
@@ -24,7 +25,20 @@ futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
                            'B' : full_letter_month_list,
                            'HO': full_letter_month_list,
                            'RB': full_letter_month_list,
-                           'NG': full_letter_month_list}
+                           'NG': full_letter_month_list,
+                           'ES': quarterly_month_list,
+                           'NQ': quarterly_month_list,
+                           'EC': quarterly_month_list,
+                           'JY': quarterly_month_list,
+                           'AD': quarterly_month_list,
+                           'CD': quarterly_month_list,
+                           'BP': quarterly_month_list,
+                           'TY': quarterly_month_list,
+                           'US': quarterly_month_list,
+                           'FV': quarterly_month_list,
+                           'TU': quarterly_month_list,
+                           'GC': full_letter_month_list,
+                           'SI': full_letter_month_list}
 
 option_ticker_head_list = {'LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
                            'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W',
@@ -47,6 +61,12 @@ futures_butterfly_strategy_tickerhead_list = ['LN', 'LC', 'FC',
                                               'C', 'S', 'SM', 'BO', 'W', 'KW',
                                               'SB', 'KC', 'CC', 'CT', 'OJ',
                                               'CL', 'B', 'HO', 'RB', 'NG', 'ED']
+
+cme_futures_tickerhead_list = ['LN', 'LC', 'FC',
+                               'C', 'S', 'SM', 'BO', 'W', 'KW',
+                               'CL', 'B', 'HO', 'RB', 'NG', 'ED',
+                               'ES', 'NQ', 'EC', 'JY', 'AD', 'CD', 'BP',
+                               'TY', 'US', 'FV', 'TU', 'GC', 'SI']
 
 option_tickerhead_list = ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
                           'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
@@ -79,6 +99,7 @@ contract_name = {'LN': 'Lean Hog',
                  'E4': 'Eurodollar 4 Year Mid-Curve Options',
                  'E5': 'Eurodollar 5 Year Mid-Curve Options',
                  'ES': 'E-mini S&P 500',
+                 'NQ': 'E-mini Nasdaq 100',
                  'EC': 'Euro FX',
                  'JY': 'Japanese Yen',
                  'AD': 'Australian Dollar',
@@ -132,6 +153,10 @@ def get_max_cal_dte(**kwargs):
             max_cal_dte = 1440
         else:
             max_cal_dte = 720
+    elif ticker_head in ['ES', 'NQ', 'TY', 'US', 'FV', 'TU', 'GC', 'SI']:
+        max_cal_dte = 360
+    elif ticker_head in ['EC', 'JY', 'AD', 'CD', 'BP']:
+        max_cal_dte = 720
 
     return max_cal_dte
 
@@ -139,6 +164,7 @@ ticker_class = {'LN': 'Livestock',
                 'LC': 'Livestock',
                 'FC': 'Livestock',
                 'ES': 'Index',
+                'NQ': 'Index',
                 'EC': 'FX',
                 'JY': 'FX',
                 'AD': 'FX',
@@ -192,7 +218,20 @@ contract_multiplier = {'LN': 400,
                        'HO': 42000,
                        'RB': 42000,
                        'NG': 10000,
-                       'ED': 2500}
+                       'ED': 2500,
+                       'ES': 50,
+                       'NQ': 20,
+                       'AD': 100000,
+                       'CD': 100000,
+                       'EC': 125000,
+                       'JY': 1.25,
+                       'BP': 62500,
+                       'FV': 1000,
+                       'TU': 2000,
+                       'TY': 1000,
+                       'US': 1000,
+                       'GC': 100,
+                       'SI': 5000}
 t_cost = {'CL': 0.80,
           'NG': 0.78,
           'B': 0.93,

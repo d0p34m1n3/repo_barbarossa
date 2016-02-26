@@ -8,6 +8,7 @@ import shared.converters as conv
 import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.expiration as exp
+import get_price.get_futures_price as gfp
 import time as tm
 
 def generate_db_strategy_from_strategy_sheet(**kwargs):
@@ -49,11 +50,19 @@ def get_net_position_4strategy_alias(**kwargs):
     as_of_datetime = cu.convert_doubledate_2datetime(as_of_date)
 
     trades_frame = trades_frame[trades_frame['trade_date'] <= as_of_datetime]
-    grouped = trades_frame.groupby('ticker')
+
+    trades_frame['full_ticker'] = [trades_frame['ticker'].iloc[x] if trades_frame['instrument'].iloc[x] == 'F' else
+                                   trades_frame['ticker'].iloc[x] + '_' + trades_frame['option_type'].iloc[x] + str(trades_frame['strike_price'].iloc[x])
+                                   for x in range(len(trades_frame.index))]
+
+    grouped = trades_frame.groupby('full_ticker')
 
     net_position = pd.DataFrame()
 
     net_position['ticker'] = (grouped['ticker'].first()).values
+    net_position['option_type'] = (grouped['option_type'].first()).values
+    net_position['strike_price'] = (grouped['strike_price'].first()).values
+    net_position['instrument'] = (grouped['instrument'].first()).values
     net_position['qty'] = (grouped['trade_quantity'].sum()).values
 
     if 'con' not in kwargs.keys():
@@ -163,6 +172,7 @@ def get_strategy_info_from_alias(**kwargs):
             'last_updated_date': data[0][6],
             'description_string': data[0][7]}
 
+
 def load_trades_2strategy(**kwargs):
 
     trade_frame = kwargs['trade_frame']
@@ -198,6 +208,62 @@ def load_trades_2strategy(**kwargs):
               trade_date,x[instrument_indx], x[real_tradeQ_indx],now_time,now_time]) for x in trade_frame.values]
 
     msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples, con=con)
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+
+def move_position_from_strategy_2_strategy(**kwargs):
+
+    strategy_from = kwargs['strategy_from']
+    strategy_to = kwargs['strategy_to']
+
+    now_time = dt.datetime.now()
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'con' not in kwargs.keys():
+        kwargs['con'] = con
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+        kwargs['as_of_date'] = as_of_date
+
+    net_position_frame = get_net_position_4strategy_alias(alias=strategy_from, **kwargs)
+
+    target_strategy_id = get_strategy_id_from_alias(alias=strategy_to, **kwargs)
+    source_strategy_id = get_strategy_id_from_alias(alias=strategy_from, **kwargs)
+
+    net_position_frame['trade_price'] = \
+        [float(gfp.get_futures_price_4ticker(ticker=x,date_from=as_of_date,date_to=as_of_date,con=con)['close_price'][0]) for x in net_position_frame['ticker']]
+
+    column_names = net_position_frame.columns.tolist()
+
+    ticker_indx = column_names.index('ticker')
+    option_type_indx = column_names.index('option_type')
+    strike_price_indx = column_names.index('strike_price')
+    trade_price_indx = column_names.index('trade_price')
+    trade_quantity_indx = column_names.index('qty')
+    instrument_indx = column_names.index('instrument')
+
+    column_str = "ticker, option_type, strike_price, strategy_id, trade_price, trade_quantity, trade_date, instrument, real_tradeQ, created_date, last_updated_date"
+    insert_str = ("%s, " * 11)[:-2]
+
+    final_str = "INSERT INTO trades (%s) VALUES (%s)" % (column_str, insert_str)
+
+    tuples_target = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], target_strategy_id,
+              x[trade_price_indx], x[trade_quantity_indx],
+              as_of_date,x[instrument_indx], True,now_time,now_time]) for x in net_position_frame.values]
+
+    msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples_target, con=con)
+
+    tuples_source = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], source_strategy_id,
+              x[trade_price_indx], -x[trade_quantity_indx],
+              as_of_date,x[instrument_indx], True,now_time,now_time]) for x in net_position_frame.values]
+
+    msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples_source, con=con)
 
     if 'con' not in kwargs.keys():
         con.close()

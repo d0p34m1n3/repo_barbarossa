@@ -33,6 +33,7 @@ def get_futures_prices_4date(**kwargs):
 
     return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
 
+
 def get_futures_price_4ticker(**kwargs):
 
     if 'ticker' in kwargs.keys():
@@ -73,6 +74,7 @@ def get_futures_price_4ticker(**kwargs):
 
     return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
 
+
 def get_futures_last_price_date_4ticker(**kwargs):
 
     if 'ticker' in kwargs.keys():
@@ -89,6 +91,7 @@ def get_futures_last_price_date_4ticker(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
     return int(data[0][0].strftime('%Y%m%d')) if data[0][0] is not None else None
+
 
 def get_futures_price_preloaded(**kwargs):
 

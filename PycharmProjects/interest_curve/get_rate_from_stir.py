@@ -1,0 +1,58 @@
+
+import get_price.get_futures_price as gfp
+import contract_utilities.expiration as exp
+import shared.calendar_utilities as cu
+import numpy as np
+
+# check this function again, it's not that straightforward
+
+def get_simple_rate(**kwargs):
+
+    as_of_date = kwargs['as_of_date']
+    date_to = kwargs['date_to']
+
+    if 'date_from' in kwargs.keys():
+        date_from = kwargs['date_from']
+    else:
+        date_from = as_of_date
+
+    if 'ticker_head' in kwargs.keys():
+        ticker_head = kwargs['ticker_head']
+    else:
+        ticker_head = 'ED'
+
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+    datetime_from = cu.convert_doubledate_2datetime(date_from)
+
+    price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
+    price_frame.sort('tr_dte', ascending=True, inplace=True)
+    price_frame['exp_date'] = [exp.get_futures_expiration(x) for x in price_frame['ticker']]
+    price_frame['implied_rate'] = 100-price_frame['close_price']
+
+    price_frame_first = price_frame[price_frame['exp_date'] <= datetime_from]
+    price_frame_middle = price_frame[(price_frame['exp_date'] > datetime_from) & (price_frame['exp_date'] < datetime_to)]
+
+    if price_frame_middle.empty:
+        rate_output = price_frame_first['implied_rate'].iloc[-1]
+        return rate_output
+
+    if price_frame_first.empty:
+        first_rate = price_frame['implied_rate'].iloc[0]
+        first_period = price_frame['cal_dte'].iloc[0]
+    else:
+        first_rate = price_frame_first['implied_rate'].iloc[-1]
+        first_period = (price_frame_middle['exp_date'].iloc[0].to_datetime()-datetime_from).days
+
+    last_rate = price_frame_middle['implied_rate'].iloc[-1]
+    last_period = (datetime_to-price_frame_middle['exp_date'].iloc[-1].to_datetime()).days
+
+    middle_discount = [1+(price_frame_middle['implied_rate'].iloc[x]*
+        (price_frame_middle['cal_dte'].iloc[x+1]-price_frame_middle['cal_dte'].iloc[x])/36500) for x in range(len(price_frame_middle.index)-1)]
+
+    total_discount = np.prod(np.array(middle_discount))*(1+(first_rate*first_period/36500))*(1+(last_rate*last_period/36500))
+
+    total_period = (price_frame_middle['cal_dte'].iloc[-1]-price_frame_middle['cal_dte'].iloc[0])+first_period+last_period
+
+    rate_output = (total_discount-1)*365/total_period
+
+    return rate_output

@@ -18,7 +18,12 @@ def get_contract_list_4year_range(**kwargs):
     now = datetime.datetime.utcnow()
     start_year = kwargs['start_year']
     end_year = kwargs['end_year']
-    tickerhead_list = cmi.futures_butterfly_strategy_tickerhead_list
+
+    if 'tickerhead_list' in kwargs.keys():
+        tickerhead_list = kwargs['tickerhead_list']
+    else:
+        tickerhead_list = cmi.cme_futures_tickerhead_list
+
     futures_contract_months = cmi.futures_contract_months
     contract_name_dict = cmi.contract_name
     ticker_class_dict = cmi.ticker_class

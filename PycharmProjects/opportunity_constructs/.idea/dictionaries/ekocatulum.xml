@@ -2,6 +2,7 @@
   <dictionary name="ekocatulum">
     <words>
       <w>bday</w>
+      <w>doubledate</w>
       <w>indx</w>
       <w>intraday</w>
       <w>openpyxl</w>

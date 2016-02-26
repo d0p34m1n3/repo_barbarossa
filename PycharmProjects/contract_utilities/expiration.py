@@ -72,7 +72,7 @@ def get_options_expiration(ticker):
             exp_indx = -5
         else:
             exp_indx = -4
-    elif ticker_head == 'ES':
+    elif ticker_head in ['ES', 'NQ']:
         dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
         dts = dts[dts.dayofweek == 4]
         exp_indx = 2
@@ -206,18 +206,39 @@ def get_futures_expiration(ticker):
             exp_indx = -4
         else:
             exp_indx = -3
+    elif ticker_head in ['ES', 'NQ']:
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+        dts = dts[dts.dayofweek == 4]
+        exp_indx = 2
+    elif ticker_class == 'FX':
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32)
+        wednesdays = dts[dts.dayofweek == 2]
+        dts = pd.date_range(start=pd.datetime(ticker_year, ticker_month_num, 1), end=wednesdays[2], freq=bday_us)
+        exp_indx = -3
+    elif ticker_head in ['TY', 'US']:
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32, freq=bday_us)
+        dts = dts[dts.month == ticker_month_num]
+        exp_indx = -8
+    elif ticker_head in ['FV', 'TU']:
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32, freq=bday_us)
+        dts = dts[dts.month == ticker_month_num]
+        exp_indx = -1
     elif ticker_head == 'ED':
         dts = pd.date_range(pd.datetime(ticker_year,ticker_month_num, 1), periods=32)
         dts = dts[dts.month == ticker_month_num]
         wednesday_list = dts[dts.dayofweek == 2]
         dts = pd.date_range(start=pd.datetime(ticker_year,ticker_month_num, 1), end=wednesday_list[2], freq=bday_us)
         exp_indx = -3
+    elif ticker_class == 'Metal':
+        dts = pd.date_range(pd.datetime(ticker_year, ticker_month_num, 1), periods=32, freq=bday_us)
+        dts = dts[dts.month == ticker_month_num]
+        exp_indx = -3
     elif ticker_head == 'SB':
         prev_output = get_prev_ticker_year_month(ticker_year,ticker_month_num)
         ticker_year_prev = prev_output['ticker_year_prev']
         ticker_month_num_prev = prev_output['ticker_month_num_prev']
         dts = pd.date_range(pd.datetime(ticker_year_prev, ticker_month_num_prev, 1), periods=32, freq=bday_us)
-        dts = dts[dts.month==ticker_month_num_prev]
+        dts = dts[dts.month == ticker_month_num_prev]
         exp_indx = -1
     elif ticker_head == 'B':
         if 100*ticker_year+ticker_month_num <= 201602:
@@ -255,7 +276,7 @@ def get_futures_expiration(ticker):
         exp_indx = -17
     elif ticker_head == 'OJ':
         dts = pd.date_range(pd.datetime(ticker_year,ticker_month_num, 1), periods=32, freq=bday_us)
-        dts = dts[dts.month==ticker_month_num]
+        dts = dts[dts.month == ticker_month_num]
         exp_indx = -15
 
 
@@ -311,8 +332,8 @@ def get_calendar_4ticker_head(ticker_head):
             USThanksgivingDay,
             Holiday('Christmas', month=12, day=25, observance=nearest_workday)]
 
-
     return trading_calendar()
+
 
 def doubledate_shift_bus_days(**kwargs):
 
@@ -345,6 +366,24 @@ def doubledate_shift_bus_days(**kwargs):
         shifted_datetime = dts[-shift_in_days]
 
     return int(shifted_datetime.strftime('%Y%m%d'))
+
+
+def is_business_day(**kwargs):
+
+    double_date = kwargs['double_date']
+
+    if 'reference_tickerhead' in kwargs.keys():
+        reference_tickerhead = kwargs['reference_tickerhead']
+    else:
+        reference_tickerhead = const.reference_tickerhead_4business_calendar
+
+    bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(reference_tickerhead))
+    double_date_datetime = cu.convert_doubledate_2datetime(double_date)
+
+    dts_aux = pd.date_range(double_date_datetime, periods=1, freq=bday_us)
+
+    return double_date_datetime in dts_aux
+
 
 def get_bus_day_list(**kwargs):
 

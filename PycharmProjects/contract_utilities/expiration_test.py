@@ -358,7 +358,61 @@ expiration_test = (('SMV2015',pd.datetime(2015,10,14)),
                    ('EDH2025',pd.datetime(2025, 3, 17)),
                    ('EDM2025',pd.datetime(2025, 6, 16)),
                    ('EDU2025',pd.datetime(2025, 9, 15)),
-                   ('EDZ2025',pd.datetime(2025, 12, 15)))
+                   ('EDZ2025',pd.datetime(2025, 12, 15)),
+                   ('ESH2016',pd.datetime(2016, 3, 18)),
+                   ('ESM2016',pd.datetime(2016, 6, 17)),
+                   ('ESU2016',pd.datetime(2016, 9, 16)),
+                   ('ESZ2016',pd.datetime(2016, 12, 16)),
+                   ('ESH2017',pd.datetime(2017, 3, 17)),
+                   ('ECH2016',pd.datetime(2016, 3, 14)),
+                   ('ECM2016',pd.datetime(2016, 6, 13)),
+                   ('ECU2016',pd.datetime(2016, 9, 19)),
+                   ('ECZ2016',pd.datetime(2016, 12, 19)),
+                   ('ECH2017',pd.datetime(2017, 3, 13)),
+                   ('ECM2017',pd.datetime(2017, 6, 19)),
+                   ('ECU2017',pd.datetime(2017, 9, 18)),
+                   ('ECZ2017',pd.datetime(2017, 12, 18)),
+                   ('ECH2018',pd.datetime(2018, 3, 19)),
+                   ('ECM2018',pd.datetime(2018, 6, 18)),
+                   ('ECU2018',pd.datetime(2018, 9, 17)),
+                   ('ECZ2018',pd.datetime(2018, 12, 17)),
+                   ('ECH2019',pd.datetime(2019, 3, 18)),
+                   ('ECM2019',pd.datetime(2019, 6, 17)),
+                   ('ECU2019',pd.datetime(2019, 9, 16)),
+                   ('ECZ2019',pd.datetime(2019, 12, 16)),
+                   ('ECH2020',pd.datetime(2020, 3, 16)),
+                   ('ECM2020',pd.datetime(2020, 6, 15)),
+                   ('ECU2020',pd.datetime(2020, 9, 14)),
+                   ('ECZ2020',pd.datetime(2020, 12, 14)),
+                   ('ECH2021',pd.datetime(2021, 3, 15)),
+                   ('TYH2016',pd.datetime(2016, 3, 21)),
+                   ('TYM2016',pd.datetime(2016, 6, 21)),
+                   ('TYU2016',pd.datetime(2016, 9, 21)),
+                   ('FVH2016',pd.datetime(2016, 3, 31)),
+                   ('FVM2016',pd.datetime(2016, 6, 30)),
+                   ('FVU2016',pd.datetime(2016, 9, 30)),
+                   ('GCG2016',pd.datetime(2016, 2, 25)),
+                   ('GCH2016',pd.datetime(2016, 3, 29)),
+                   ('GCJ2016',pd.datetime(2016, 4, 27)),
+                   ('GCK2016',pd.datetime(2016, 5, 26)),
+                   ('GCM2016',pd.datetime(2016, 6, 28)),
+                   ('GCQ2016',pd.datetime(2016, 8, 29)),
+                   ('GCV2016',pd.datetime(2016, 10, 27)),
+                   ('GCZ2016',pd.datetime(2016, 12, 28)),
+                   ('GCG2017',pd.datetime(2017, 2, 24)),
+                   ('GCJ2017',pd.datetime(2017, 4, 26)),
+                   ('GCM2017',pd.datetime(2017, 6, 28)),
+                   ('GCQ2017',pd.datetime(2017, 8, 29)),
+                   ('GCV2017',pd.datetime(2017, 10, 27)),
+                   ('GCZ2017',pd.datetime(2017, 12, 27)),
+                   ('GCM2018',pd.datetime(2018, 6, 27)),
+                   ('GCZ2018',pd.datetime(2018, 12, 27)),
+                   ('GCM2019',pd.datetime(2019, 6, 26)),
+                   ('GCZ2019',pd.datetime(2019, 12, 27)),
+                   ('GCM2020',pd.datetime(2020, 6, 26)),
+                   ('GCZ2020',pd.datetime(2020, 12, 29)),
+                   ('GCM2021',pd.datetime(2021, 6, 28)),
+                   ('GCZ2021',pd.datetime(2021, 12, 28)))
 
 option_expiration_test = (('CH2016', pd.datetime(2016, 2, 19)),
                           ('CJ2016', pd.datetime(2016, 3, 24)),
@@ -729,10 +783,10 @@ option_expiration_test = (('CH2016', pd.datetime(2016, 2, 19)),
                           ('SIZ2020', pd.datetime(2020, 11, 24)))
 
 
-#success_indx = [exp.get_futures_expiration(expiration_test[i][0]) == expiration_test[i][1] for i in range(len(expiration_test))]
-success_indx = [exp.get_options_expiration(option_expiration_test[i][0]) == option_expiration_test[i][1] for i in range(len(option_expiration_test))]
-#failed = [expiration_test[i] for i in range(len(expiration_test)) if not success_indx[i]]
-failed = [option_expiration_test[i] for i in range(len(option_expiration_test)) if not success_indx[i]]
+success_indx = [exp.get_futures_expiration(expiration_test[i][0]) == expiration_test[i][1] for i in range(len(expiration_test))]
+#success_indx = [exp.get_options_expiration(option_expiration_test[i][0]) == option_expiration_test[i][1] for i in range(len(option_expiration_test))]
+failed = [expiration_test[i] for i in range(len(expiration_test)) if not success_indx[i]]
+#failed = [option_expiration_test[i] for i in range(len(option_expiration_test)) if not success_indx[i]]
 
 if not failed:
     print('TEST PASSED!')
