@@ -1,10 +1,11 @@
 
 import get_price.get_futures_price as gfp
 import contract_utilities.expiration as exp
+import shared.directory_names as dn
+import os.path
 import shared.calendar_utilities as cu
 import numpy as np
-
-# check this function again, it's not that straightforward
+import pandas as pd
 
 def get_simple_rate(**kwargs):
 
@@ -21,24 +22,34 @@ def get_simple_rate(**kwargs):
     else:
         ticker_head = 'ED'
 
+    ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date,ext='ta')
+
+    file_name = ta_output_dir + '/' + ticker_head + '_interest_curve.pkl'
+
+    if os.path.isfile(file_name):
+        price_frame = pd.read_pickle(file_name)
+    else:
+        price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
+        price_frame.sort('tr_dte', ascending=True, inplace=True)
+        price_frame['exp_date'] = [exp.get_futures_expiration(x) for x in price_frame['ticker']]
+        price_frame['implied_rate'] = 100-price_frame['close_price']
+        price_frame.to_pickle(file_name)
+
+
     datetime_to = cu.convert_doubledate_2datetime(date_to)
     datetime_from = cu.convert_doubledate_2datetime(date_from)
 
-    price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
-    price_frame.sort('tr_dte', ascending=True, inplace=True)
-    price_frame['exp_date'] = [exp.get_futures_expiration(x) for x in price_frame['ticker']]
-    price_frame['implied_rate'] = 100-price_frame['close_price']
 
     price_frame_first = price_frame[price_frame['exp_date'] <= datetime_from]
     price_frame_middle = price_frame[(price_frame['exp_date'] > datetime_from) & (price_frame['exp_date'] < datetime_to)]
 
     if price_frame_middle.empty:
-        rate_output = price_frame_first['implied_rate'].iloc[-1]
-        return rate_output
+        rate_output = price_frame_first['implied_rate'].iloc[-1]/100
+        return {'rate_output': rate_output, 'price_frame': price_frame[['ticker','cal_dte','exp_date','implied_rate']]}
 
     if price_frame_first.empty:
-        first_rate = price_frame['implied_rate'].iloc[0]
-        first_period = price_frame['cal_dte'].iloc[0]
+        first_rate = price_frame_middle['implied_rate'].iloc[0]
+        first_period = (price_frame_middle['exp_date'].iloc[0].to_datetime()-datetime_from).days
     else:
         first_rate = price_frame_first['implied_rate'].iloc[-1]
         first_period = (price_frame_middle['exp_date'].iloc[0].to_datetime()-datetime_from).days
@@ -55,4 +66,4 @@ def get_simple_rate(**kwargs):
 
     rate_output = (total_discount-1)*365/total_period
 
-    return rate_output
+    return {'rate_output': rate_output, 'price_frame': price_frame[['ticker','cal_dte','exp_date','implied_rate']]}

@@ -71,7 +71,10 @@ def get_curve_pca_report(**kwargs):
         annual_select = rolling_data_merged['ticker_month'].iloc[-1] % 12 == 0
         rolling_data_annual = [rolling_data_semiannual[x] for x in range(len(rolling_data_semiannual)) if annual_select.values[x]]
 
+
+
         merged_data = pd.concat(rolling_data_monthly+rolling_data_semiannual+rolling_data_annual, axis=1, join='inner')
+
         total_range = list(range(len(rolling_data_monthly)+len(rolling_data_semiannual)+len(rolling_data_annual)))
         index_exclude = [len(rolling_data_monthly)-1,len(rolling_data_monthly)+len(rolling_data_semiannual)-1, len(total_range)-1]
 
@@ -82,8 +85,7 @@ def get_curve_pca_report(**kwargs):
     yield_merged = pd.concat(yield_raw, axis=1)
     yield_data = 100*yield_merged.values
 
-    change5_raw = [(merged_data['change5'].ix[:, x]-merged_data['change5'].ix[:, x+1]) /
-                   merged_data['change5'].ix[:, x+1] for x in total_range
+    change5_raw = [(merged_data['change5'].ix[:, x]-merged_data['change5'].ix[:, x+1]) for x in total_range
                    if x not in index_exclude]
 
     change5_merged = pd.concat(change5_raw, axis=1)
@@ -111,6 +113,7 @@ def get_curve_pca_report(**kwargs):
                              ('ticker2',ticker2_list),
                              ('monthSpread',month_spread),
                              ('tr_dte_front', tr_dte_data[-1]),
+                             ('ticker_month_front', ticker_month_data[-1]),
                              ('residuals',residuals[-1]),
                              ('price',price_list),
                              ('yield',yield_data[-1]),

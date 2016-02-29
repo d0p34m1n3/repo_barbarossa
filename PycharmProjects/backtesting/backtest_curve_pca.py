@@ -41,6 +41,14 @@ def backtest_curve_pca(**kwargs):
     for i in range(len(good_dates)):
 
         daily_report = report_results_list[i]
+
+        #daily_report = daily_report[daily_report['monthSpread']==1]
+        #daily_report = daily_report[3:]
+
+        daily_report = daily_report[(daily_report['tr_dte_front']>80)&(daily_report['monthSpread']!=1)]
+
+
+
         median_factor_load2 = daily_report['factor_load2'].median()
 
         if median_factor_load2>0:
