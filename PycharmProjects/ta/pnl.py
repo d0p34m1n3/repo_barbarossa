@@ -154,7 +154,7 @@ def get_strategy_pnl(**kwargs):
 
     pnl_per_tickerhead_list = [x['pnl_per_tickerhead'] for x in pnl_path]
     pnl_per_tickerhead = pd.concat(pnl_per_tickerhead_list, axis=1)
-    pnl_per_tickerhead = pnl_per_tickerhead['pnl_total']
+    pnl_per_tickerhead = pnl_per_tickerhead[['pnl_total']]
     pnl_per_tickerhead = pnl_per_tickerhead.transpose()
 
     if len(unique_ticker_head_list)>1:

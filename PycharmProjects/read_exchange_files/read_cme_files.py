@@ -2,6 +2,7 @@
 import pickle as pickle
 import pandas as pd
 import shared.directory_names as dn
+import os.path
 
 
 def read_cme_settle_txt_files(**kwargs):
@@ -10,6 +11,10 @@ def read_cme_settle_txt_files(**kwargs):
     report_date = kwargs['report_date']
 
     options_data_dir = dn.get_dated_directory_extension(folder_date=report_date, ext='raw_options_data')
+
+    if os.path.isfile(options_data_dir + '/' + file_name + '_formatted.pkl'):
+        output_dictionary = pd.read_pickle(options_data_dir + '/' + file_name + '_formatted.pkl')
+        return output_dictionary
 
     with open(options_data_dir + '/' + file_name + '.pkl', 'rb') as handle:
         raw_data = pickle.load(handle)
@@ -74,7 +79,7 @@ def read_cme_settle_txt_files(**kwargs):
         low_column = [x[low_indx:(low_indx+9)] for x in data_list[i]]
 
         month_strike_column = [x[month_strike_indx:(month_strike_indx+5)] for x in data_list[i]]
-        month_strike_column_filtered = [x for x in month_strike_column if x != 'TOTAL']
+        month_strike_column_filtered = [x.strip() for x in month_strike_column if x != 'TOTAL']
 
         settle_column_filtered = [settle_column[x].strip() for x in range(len(settle_column)) if month_strike_column[x] != 'TOTAL']
         volume_column_filtered = [volume_column[x].strip() for x in range(len(volume_column)) if month_strike_column[x] != 'TOTAL']
@@ -104,7 +109,7 @@ def read_cme_settle_txt_files(**kwargs):
 
     title_frame = pd.DataFrame([process_title(x) for x in title_list])
 
-    return {'decoded_data': decoded_data,
+    output_dictionary = {'decoded_data': decoded_data,
             'data_start_list': data_start_list,
             'data_end_list': data_end_list,
             'title_list': title_list,
@@ -122,6 +127,11 @@ def read_cme_settle_txt_files(**kwargs):
             'filter_2_list': filter_2_list,
             'total_volume_list': total_volume_list,
             'title_frame': title_frame}
+
+    with open(options_data_dir + '/' + file_name + '_formatted.pkl', 'wb') as handle:
+        pickle.dump(output_dictionary, handle)
+
+    return output_dictionary
 
 
 def process_title(title_input):

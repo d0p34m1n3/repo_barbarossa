@@ -40,10 +40,6 @@ futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
                            'GC': full_letter_month_list,
                            'SI': full_letter_month_list}
 
-option_ticker_head_list = {'LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
-                           'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W',
-                           'CL', 'NG', 'ED', 'E0', 'E2', 'E3', 'E4', 'E5'}
-
 
 def get_option_contract_months(**kwargs):
 
@@ -52,7 +48,7 @@ def get_option_contract_months(**kwargs):
 
     if ticker_head == 'LN':
         contract_months = ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z']
-    elif ticker_head in option_ticker_head_list:
+    elif ticker_head in option_tickerhead_list:
         contract_months = full_letter_month_list
 
     return contract_months
@@ -68,9 +64,11 @@ cme_futures_tickerhead_list = ['LN', 'LC', 'FC',
                                'ES', 'NQ', 'EC', 'JY', 'AD', 'CD', 'BP',
                                'TY', 'US', 'FV', 'TU', 'GC', 'SI']
 
-option_tickerhead_list = ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+cme_option_tickerhead_list = ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
                           'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
                           'ED', 'E0', 'E2', 'E3', 'E4', 'E5']
+
+option_tickerhead_list = cme_option_tickerhead_list
 
 
 contract_name = {'LN': 'Lean Hog',

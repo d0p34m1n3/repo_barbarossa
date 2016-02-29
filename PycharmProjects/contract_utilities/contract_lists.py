@@ -10,6 +10,7 @@ import my_sql_routines.my_sql_utilities as msu
 import get_price.get_futures_price as gfp
 import get_price.presave_price as psp
 import opportunity_constructs.utilities as ut
+import shared.calendar_utilities as cu
 import pandas as pd
 
 
@@ -45,7 +46,7 @@ def get_option_contract_list_4year_range(**kwargs):
     now = datetime.datetime.utcnow()
     start_year = kwargs['start_year']
     end_year = kwargs['end_year']
-    tickerhead_list = cmi.option_tickerhead_list
+    tickerhead_list = cmi.cme_option_tickerhead_list
     contract_name_dict = cmi.contract_name
     ticker_class_dict = cmi.ticker_class
     year_list = range(start_year,end_year)
@@ -131,6 +132,29 @@ def generate_futures_list_dataframe(**kwargs):
     additional_dataframe = pd.DataFrame(additional_tuple,
                                     columns = ['aggregation_method', 'contracts_back'],index=futures_dataframe.index)
     return pd.concat([futures_dataframe, additional_dataframe],axis=1)
+
+
+def generate_liquid_options_list_dataframe(**kwargs):
+
+    settle_date = kwargs['settle_date']
+    con = msu.get_my_sql_connection(**kwargs)
+
+    contract_list = []
+
+    for ticker_head in cmi.futures_butterfly_strategy_tickerhead_list:
+        for ticker_month in cmi.get_option_contract_months(ticker_head=ticker_head):
+            ticker_month_num = cmi.letter_month_string.find(ticker_month)+1
+            max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)
+            contract_list.extend(get_db_contract_list_filtered(expiration_date_from=settle_date,
+                                                            expiration_date_to=cu.doubledate_shift(settle_date, -max_cal_dte),
+                                                            ticker_head=ticker_head, ticker_month=ticker_month_num, con=con,
+                                                                  instrument='options'))
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(contract_list,columns=['id', 'ticker', 'expiration_date'])
+
 
 
 

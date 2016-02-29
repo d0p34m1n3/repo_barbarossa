@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import contract_utilities.contract_meta_info as cmi
 import read_exchange_files.read_cme_files as rcf
+import read_exchange_files.cme_utilities as cmeu
 import datetime as dt
 
 
@@ -14,24 +15,9 @@ def process_cme_futures_4tickerhead(**kwargs):
 
     ticker_class = cmi.ticker_class[ticker_head]
 
-    if ticker_class in ['STIR', 'Treasury']:
-        file_name = 'interest_rate'
-        file_type = 'txt'
-    elif ticker_class in ['Ag', 'Livestock']:
-        file_name = 'commodity'
-        file_type = 'txt'
-    elif ticker_class == 'Index':
-        file_name = 'equity'
-        file_type = 'txt'
-    elif ticker_class == 'FX':
-        file_name = 'fx'
-        file_type = 'txt'
-    elif ticker_class == 'Metal':
-        file_name = 'comex_futures'
-        file_type = 'csv'
-    elif ticker_class == 'Energy':
-        file_name = 'nymex_futures'
-        file_type = 'csv'
+    name_type_output = cmeu.get_file_name_type_from_tickerclass(ticker_class)
+    file_name = name_type_output['file_name']
+    file_type = name_type_output['file_type']
 
     settle_frame = pd.DataFrame()
 
@@ -55,7 +41,6 @@ def process_cme_futures_4tickerhead(**kwargs):
 
         datetime_conversion = [dt.datetime.strptime(x.replace('JLY', 'JUL'), '%b%y') for x in contact_month_strings]
 
-
         settle_frame['ticker_year'] = [x.year for x in datetime_conversion]
         settle_frame['ticker_month'] = [x.month for x in datetime_conversion]
 
@@ -69,7 +54,6 @@ def process_cme_futures_4tickerhead(**kwargs):
 
         settle_frame['volume'] = volume_filtered_list[selected_frame.index[0]]
         settle_frame['interest'] = interest_filtered_list[selected_frame.index[0]]
-
 
     elif file_type == 'csv':
         data_read_out = rcf.read_cme_future_settle_csv_files(file_name=file_name, report_date=report_date)

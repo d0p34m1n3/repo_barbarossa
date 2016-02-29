@@ -67,8 +67,31 @@ CREATE TABLE `daily_price` (
   KEY `index_synbol_id` (`symbol_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
 ALTER TABLE `daily_price`
 ADD UNIQUE INDEX `ticker_day` (`symbol_id`,`price_date`);
+
+
+CREATE TABLE `daily_option_price` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `data_vendor_id` int NOT NULL,
+  `ticker_head` varchar(32) NOT NULL,
+  `ticker_month` int NOT NULL,
+  `ticker` varchar(32) NOT NULL,
+  `option_type` varchar(32) NOT NULL,
+  `strike` decimal(19,4) NULL,
+  `price_date` datetime NOT NULL,
+  `cal_dte` int NOT NULL,
+  `tr_dte` int NOT NULL,
+  `created_date` datetime NOT NULL,
+  `last_updated_date` datetime NOT NULL,
+  `close_price` decimal(19,4) NULL,
+  `volume` bigint NULL,
+  `open_interest` bigint NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ticker_day` (`ticker`,`option_type`,`strike`,`price_date`),
+  KEY `index_data_vendor_id` (`data_vendor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `strategy` (
 `id` int NOT NULL AUTO_INCREMENT,
@@ -82,6 +105,8 @@ CREATE TABLE `strategy` (
 PRIMARY KEY (`id`),
 UNIQUE KEY (`alias`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
 
 
 CREATE TABLE `trades` (
