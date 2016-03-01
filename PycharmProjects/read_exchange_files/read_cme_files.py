@@ -36,9 +36,9 @@ def read_cme_settle_txt_files(**kwargs):
 
     for indx in range(len(decoded_data)):
 
-        if any(x in decoded_data[indx] for x in ['OPTIONS', 'OPTION', 'Options', 'FUTURE', 'Future',
+        if any(x in decoded_data[indx] for x in ['OPTIONS', 'OPTION', 'Options', 'Option' , 'FUTURE', 'Future',
                                                  'CSO', 'AIRASIA', 'SYNTH', 'BURSA', 'SPRD', 'Spread',
-                                                 'CROSSRATE']):
+                                                 'CROSSRATE', 'WEEKLY', 'CALL', 'PUT']):
             title_list.append(decoded_data[indx])
 
             if len(data_start_list) == 0:
@@ -140,7 +140,7 @@ def process_title(title_input):
 
     #print(title_input)
 
-    if any(x in title_input for x in ['OPTIONS', 'OPTION', 'Options']):
+    if any(x in title_input for x in ['OPTIONS', 'OPTION', 'Options', 'Option']):
         if 'Calendar Spread Options' in title_input:
             asset_type = 'calendar_spread_option'
         else:
@@ -182,16 +182,16 @@ def process_title(title_input):
         title_indx = title_list.index('OYC')+2
     elif title_list[0] == 'BO' and asset_type == 'futures':
         ticker_head = 'BO'
-    elif 'Wheat' in title_input and asset_type == 'options':
+    elif title_list[0] == 'WZ' and asset_type == 'options':
         ticker_head = 'W'
-        title_indx = title_list.index('Wheat')
-    elif 'WHEAT' in title_input and asset_type == 'options':
-        ticker_head = 'W'
-        title_indx = title_list.index('WHEAT')
+        title_indx = 2
     elif title_list[0] == 'W' and asset_type == 'futures':
         ticker_head = 'W'
     elif title_list[0] == 'KEF' and asset_type == 'futures':
         ticker_head = 'KW'
+    elif title_list[0] == 'OKE' and asset_type == 'options':
+        ticker_head = 'KW'
+        title_indx = 2
     elif 'LEAN HOG' in title_input and asset_type == 'options':
         ticker_head = 'LN'
         title_indx = title_list.index('OH')+2
@@ -247,14 +247,41 @@ def process_title(title_input):
         ticker_head = 'KW'
         if asset_type == 'options':
             title_indx = title_list.index('KWO')+2
-    elif title_list[0] == 'ED':
+    elif title_list[0] == 'ED' and asset_type == 'futures':
         ticker_head = 'ED'
+    elif title_list[0] == 'ZE' and asset_type == 'options':
+        ticker_head = 'ED'
+        title_indx = 2
+    elif title_list[0] == 'E0' and asset_type == 'options':
+        ticker_head = 'E0'
+        title_indx = 2
+    elif title_list[0] == 'E2' and asset_type == 'options':
+        ticker_head = 'E2'
+        title_indx = 2
+    elif title_list[0] == 'E3' and asset_type == 'options':
+        ticker_head = 'E3'
+        title_indx = 2
+    elif title_list[0] == 'E4' and asset_type == 'options':
+        ticker_head = 'E4'
+        title_indx = 2
+    elif title_list[0] == 'E5' and asset_type == 'options':
+        ticker_head = 'E5'
+        title_indx = 2
     elif title_list[0] == 'ES' and asset_type == 'futures':
         ticker_head = 'ES'
+    elif title_list[0] == 'EZ' and asset_type == 'options':
+        ticker_head = 'ES'
+        title_indx = 2
     elif title_list[0] == 'NQ' and asset_type == 'futures':
         ticker_head = 'NQ'
+    elif title_list[0] == 'QZ' and asset_type == 'options':
+        ticker_head = 'NQ'
+        title_indx = 2
     elif title_list[0] == 'AD' and asset_type == 'futures':
         ticker_head = 'AD'
+    elif title_list[0] == 'ZA' and asset_type == 'options':
+        ticker_head = 'AD'
+        title_indx = 2
     elif title_list[0] == 'CD' and asset_type == 'futures':
         ticker_head = 'CD'
     elif title_list[0] == 'EC' and asset_type == 'futures':

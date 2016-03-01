@@ -40,6 +40,18 @@ futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
                            'GC': full_letter_month_list,
                            'SI': full_letter_month_list}
 
+option_cabinet_values = {'ED': 0.0025,
+                         'E0': 0.0025,
+                         'E2': 0.0025,
+                         'E3': 0.0025,
+                         'E4': 0.0025,
+                         'E5': 0.0025,
+                         'LC': 0.0125,
+                         'LN': 0.0125,
+                         'FC': 0.0125,
+                         'ES': 0.05,
+                         'NQ': 0.05}
+
 
 def get_option_contract_months(**kwargs):
 
