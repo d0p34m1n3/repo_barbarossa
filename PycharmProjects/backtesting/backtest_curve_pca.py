@@ -27,7 +27,10 @@ def backtest_curve_pca(**kwargs):
         success_indx.append(report_out['success'])
 
         if report_out['success']:
-            report_results_list.append(report_out['pca_results'])
+
+            pca_results = report_out['pca_results']
+            pca_results['report_date'] = date_to
+            report_results_list.append(pca_results)
 
 
     good_dates = [date_list[i] for i in range(len(date_list)) if success_indx[i]]
@@ -45,7 +48,7 @@ def backtest_curve_pca(**kwargs):
         #daily_report = daily_report[daily_report['monthSpread']==1]
         #daily_report = daily_report[3:]
 
-        daily_report = daily_report[(daily_report['tr_dte_front']>80)&(daily_report['monthSpread']!=1)]
+        daily_report = daily_report[(daily_report['tr_dte_front']>80)&(daily_report['monthSpread']==1)]
 
 
 

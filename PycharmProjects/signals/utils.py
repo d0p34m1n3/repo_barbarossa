@@ -51,6 +51,9 @@ def get_signal_correlation(**kwargs):
             correlation = -1
         elif signal_name in ['q_carry','reward_risk'] :
             correlation = 1
+    elif strategy_class == 'curve_pca':
+        if signal_name == 'z':
+            correlation = 1
 
     return correlation
 
