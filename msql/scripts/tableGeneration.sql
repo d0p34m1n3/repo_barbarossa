@@ -71,12 +71,18 @@ CREATE TABLE `daily_price` (
 ALTER TABLE `daily_price`
 ADD UNIQUE INDEX `ticker_day` (`symbol_id`,`price_date`);
 
+ALTER TABLE `daily_price` MODIFY `open_price` decimal(19,8) NULL
+ALTER TABLE `daily_price` MODIFY `high_price` decimal(19,8) NULL
+ALTER TABLE `daily_price` MODIFY `low_price` decimal(19,8) NULL
+ALTER TABLE `daily_price` MODIFY `close_price` decimal(19,8) NULL
+
 
 CREATE TABLE `daily_option_price` (
   `id` int NOT NULL AUTO_INCREMENT,
   `data_vendor_id` int NOT NULL,
   `ticker_head` varchar(32) NOT NULL,
   `ticker_month` int NOT NULL,
+  `ticker_year` int NOT NULL,
   `ticker` varchar(32) NOT NULL,
   `option_type` varchar(32) NOT NULL,
   `strike` decimal(19,4) NULL,
