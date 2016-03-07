@@ -130,7 +130,7 @@ def generate_futures_list_dataframe(**kwargs):
                         for ticker_class, ticker_head in zip(futures_dataframe['ticker_class'],futures_dataframe['ticker_head'])]
 
     additional_dataframe = pd.DataFrame(additional_tuple,
-                                    columns=['aggregation_method', 'contracts_back'],index=futures_dataframe.index)
+                                    columns = ['aggregation_method', 'contracts_back'],index=futures_dataframe.index)
     return pd.concat([futures_dataframe, additional_dataframe],axis=1)
 
 
@@ -141,7 +141,7 @@ def generate_liquid_options_list_dataframe(**kwargs):
 
     contract_list = []
 
-    for ticker_head in cmi.option_tickerhead_list:
+    for ticker_head in cmi.futures_butterfly_strategy_tickerhead_list:
         for ticker_month in cmi.get_option_contract_months(ticker_head=ticker_head):
             ticker_month_num = cmi.letter_month_string.find(ticker_month)+1
             max_cal_dte = cmi.get_max_cal_dte(ticker_head=ticker_head, ticker_month=ticker_month_num)

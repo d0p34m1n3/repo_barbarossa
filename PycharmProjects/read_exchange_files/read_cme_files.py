@@ -153,11 +153,14 @@ def process_title(title_input):
     if 'WHEAT-CORN' in title_input:
         ticker_head = 'CW'
         title_indx = title_list.index('WHEAT-CORN')
+    elif 'CORN' in title_input and asset_type == 'options':
+        ticker_head = 'C'
+        title_indx = title_list.index('CORN')
+    elif 'Corn' in title_input and asset_type == 'options':
+        ticker_head = 'C'
+        title_indx = title_list.index('Corn')
     elif title_list[0] == 'C' and asset_type == 'futures':
         ticker_head = 'C'
-    elif title_list[0] == 'PY' and asset_type == 'options':
-        ticker_head = 'C'
-        title_indx = 2
     elif 'SOYBEAN CRUSH' in title_input:
         ticker_head = 'crush'
         title_indx = title_list.index('BCO')+2
@@ -281,44 +284,20 @@ def process_title(title_input):
         title_indx = 2
     elif title_list[0] == 'CD' and asset_type == 'futures':
         ticker_head = 'CD'
-    elif title_list[0] == 'OV' and asset_type == 'options':
-        ticker_head = 'CD'
-        title_indx = 2
     elif title_list[0] == 'EC' and asset_type == 'futures':
         ticker_head = 'EC'
-    elif title_list[0] == 'ZC' and asset_type == 'options':
-        ticker_head = 'EC'
-        title_indx = 2
     elif title_list[0] == 'JY' and asset_type == 'futures':
         ticker_head = 'JY'
-    elif title_list[0] == 'OJ' and asset_type == 'options':
-        ticker_head = 'JY'
-        title_indx = 2
     elif title_list[0] == 'NB' and asset_type == 'futures':
         ticker_head = 'BP'
-    elif title_list[0] == 'OB' and asset_type == 'options':
-        ticker_head = 'BP'
-        title_indx = 2
     elif title_list[0] == 'FV' and asset_type == 'futures':
         ticker_head = 'FV'
-    elif title_list[0] == 'FP' and asset_type == 'options':
-        ticker_head = 'FV'
-        title_indx = 2
     elif title_list[0] == 'TU' and asset_type == 'futures':
         ticker_head = 'TU'
-    elif title_list[0] == 'TUC' and asset_type == 'options':
-        ticker_head = 'TU'
-        title_indx = 2
     elif title_list[0] == 'TYF' and asset_type == 'futures':
         ticker_head = 'TY'
-    elif title_list[0] == 'TC' and asset_type == 'options':
-        ticker_head = 'TY'
-        title_indx = 2
     elif title_list[0] == 'US' and asset_type == 'futures':
         ticker_head = 'US'
-    elif title_list[0] == 'CG' and asset_type == 'options':
-        ticker_head = 'US'
-        title_indx = 2
     else:
         ticker_head = ''
 
@@ -339,23 +318,10 @@ def process_title(title_input):
             'asset_type': asset_type,
             'maturity_string': maturity_string}
 
-
 def convert_from_cme_product_symbol_2tickerhead(product_symbol):
 
     if product_symbol in ['GC', 'SI', 'CL', 'NG', 'HO', 'RB']:
         ticker_head = product_symbol
-    elif product_symbol == 'OG':
-        ticker_head = 'GC'
-    elif product_symbol == 'SO':
-        ticker_head = 'SI'
-    elif product_symbol == 'LO':
-        ticker_head = 'CL'
-    elif product_symbol == 'ON':
-        ticker_head = 'NG'
-    elif product_symbol == 'OB':
-        ticker_head = 'RB'
-    elif product_symbol == 'OH':
-        ticker_head = 'HO'
     else:
         ticker_head = ''
 
@@ -363,21 +329,6 @@ def convert_from_cme_product_symbol_2tickerhead(product_symbol):
 
 
 def read_cme_future_settle_csv_files(**kwargs):
-
-    file_name = kwargs['file_name']
-    report_date = kwargs['report_date']
-
-    options_data_dir = dn.get_dated_directory_extension(folder_date=report_date, ext='raw_options_data')
-
-    with open(options_data_dir + '/' + file_name + '.pkl', 'rb') as handle:
-        raw_data = pickle.load(handle)
-
-    raw_data['ticker_head'] = [convert_from_cme_product_symbol_2tickerhead(x) for x in raw_data['PRODUCT SYMBOL']]
-
-    return raw_data
-
-
-def read_cme_option_settle_csv_files(**kwargs):
 
     file_name = kwargs['file_name']
     report_date = kwargs['report_date']

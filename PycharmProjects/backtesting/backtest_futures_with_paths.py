@@ -41,17 +41,35 @@ def get_backtest_summary_4_date(**kwargs):
     path_pnl20 = [np.NAN]*num_trades
     path_pnl25 = [np.NAN]*num_trades
 
-    hold_pnl1long  = [np.NAN]*num_trades
-    hold_pnl2long  = [np.NAN]*num_trades
-    hold_pnl5long  = [np.NAN]*num_trades
-    hold_pnl10long  = [np.NAN]*num_trades
-    hold_pnl20long  = [np.NAN]*num_trades
+    hold_pnl1long = [np.NAN]*num_trades
+    hold_pnl2long = [np.NAN]*num_trades
+    hold_pnl5long = [np.NAN]*num_trades
+    hold_pnl10long = [np.NAN]*num_trades
+    hold_pnl20long = [np.NAN]*num_trades
 
     hold_pnl1short = [np.NAN]*num_trades
     hold_pnl2short = [np.NAN]*num_trades
     hold_pnl5short = [np.NAN]*num_trades
     hold_pnl10short = [np.NAN]*num_trades
     hold_pnl20short = [np.NAN]*num_trades
+
+    path_pnl5_per_contract = [np.NAN]*num_trades
+    path_pnl10_per_contract = [np.NAN]*num_trades
+    path_pnl15_per_contract = [np.NAN]*num_trades
+    path_pnl20_per_contract = [np.NAN]*num_trades
+    path_pnl25_per_contract = [np.NAN]*num_trades
+
+    hold_pnl1long_per_contract = [np.NAN]*num_trades
+    hold_pnl2long_per_contract = [np.NAN]*num_trades
+    hold_pnl5long_per_contract = [np.NAN]*num_trades
+    hold_pnl10long_per_contract = [np.NAN]*num_trades
+    hold_pnl20long_per_contract = [np.NAN]*num_trades
+
+    hold_pnl1short_per_contract = [np.NAN]*num_trades
+    hold_pnl2short_per_contract = [np.NAN]*num_trades
+    hold_pnl5short_per_contract = [np.NAN]*num_trades
+    hold_pnl10short_per_contract = [np.NAN]*num_trades
+    hold_pnl20short_per_contract = [np.NAN]*num_trades
 
     for i in range(num_trades):
         sheet_entry = strategy_sheet.iloc[i]
@@ -64,7 +82,7 @@ def get_backtest_summary_4_date(**kwargs):
                                     futures_data_dictionary=futures_data_dictionary,
                                     settle_date_from_exclusive=report_date)
 
-            ticker_frame.set_index('settle_date',drop=False,inplace=True)
+            ticker_frame.set_index('settle_date', drop=False, inplace=True)
             data_list.append(ticker_frame)
 
         merged_data = pd.concat(data_list, axis=1, join='inner')
@@ -79,6 +97,8 @@ def get_backtest_summary_4_date(**kwargs):
         quantity_long = round(10000/abs(sheet_entry['downside']))
         quantity_short = -round(10000/abs(sheet_entry['upside']))
 
+        contracts_traded_per_unit = 4*(1+sheet_entry['second_spread_weight_1'])
+
         if sheet_entry['QF'] > 50:
             trigger_direction = 'going_down'
             quantity = quantity_short
@@ -87,6 +107,8 @@ def get_backtest_summary_4_date(**kwargs):
             quantity = quantity_long
         else:
             quantity = np.NAN
+
+        total_contracts_traded_per_unit = abs(quantity)*contracts_traded_per_unit
 
         exit5 = bu.find_exit_point(time_series=ratio_path,trigger_value=sheet_entry['ratio_target5'],
                                    trigger_direction=trigger_direction,max_exit_point=20)
@@ -134,17 +156,35 @@ def get_backtest_summary_4_date(**kwargs):
         path_pnl20[i] = path_path_list[3]
         path_pnl25[i] = path_path_list[4]
 
+        path_pnl5_per_contract[i] = path_path_list[0]/total_contracts_traded_per_unit
+        path_pnl10_per_contract[i] = path_path_list[1]/total_contracts_traded_per_unit
+        path_pnl15_per_contract[i] = path_path_list[2]/total_contracts_traded_per_unit
+        path_pnl20_per_contract[i] = path_path_list[3]/total_contracts_traded_per_unit
+        path_pnl25_per_contract[i] = path_path_list[4]/total_contracts_traded_per_unit
+
         hold_pnl1long[i] = hold_pnl_list[0]*quantity_long
         hold_pnl2long[i] = hold_pnl_list[1]*quantity_long
         hold_pnl5long[i] = hold_pnl_list[2]*quantity_long
         hold_pnl10long[i] = hold_pnl_list[3]*quantity_long
         hold_pnl20long[i] = hold_pnl_list[4]*quantity_long
 
+        hold_pnl1long_per_contract[i] = hold_pnl_list[0]/contracts_traded_per_unit
+        hold_pnl2long_per_contract[i] = hold_pnl_list[1]/contracts_traded_per_unit
+        hold_pnl5long_per_contract[i] = hold_pnl_list[2]/contracts_traded_per_unit
+        hold_pnl10long_per_contract[i] = hold_pnl_list[3]/contracts_traded_per_unit
+        hold_pnl20long_per_contract[i] = hold_pnl_list[4]/contracts_traded_per_unit
+
         hold_pnl1short[i] = hold_pnl_list[0]*quantity_short
         hold_pnl2short[i] = hold_pnl_list[1]*quantity_short
         hold_pnl5short[i] = hold_pnl_list[2]*quantity_short
         hold_pnl10short[i] = hold_pnl_list[3]*quantity_short
         hold_pnl20short[i] = hold_pnl_list[4]*quantity_short
+
+        hold_pnl1short_per_contract[i] = -hold_pnl_list[0]/contracts_traded_per_unit
+        hold_pnl2short_per_contract[i] = -hold_pnl_list[1]/contracts_traded_per_unit
+        hold_pnl5short_per_contract[i] = -hold_pnl_list[2]/contracts_traded_per_unit
+        hold_pnl10short_per_contract[i] = -hold_pnl_list[3]/contracts_traded_per_unit
+        hold_pnl20short_per_contract[i] = -hold_pnl_list[4]/contracts_traded_per_unit
 
     strategy_sheet['holding_period5'] = holding_period5
     strategy_sheet['holding_period10'] = holding_period10
@@ -158,17 +198,35 @@ def get_backtest_summary_4_date(**kwargs):
     strategy_sheet['path_pnl20'] = path_pnl20
     strategy_sheet['path_pnl25'] = path_pnl25
 
+    strategy_sheet['path_pnl5_per_contract'] = path_pnl5_per_contract
+    strategy_sheet['path_pnl10_per_contract'] = path_pnl10_per_contract
+    strategy_sheet['path_pnl15_per_contract'] = path_pnl15_per_contract
+    strategy_sheet['path_pnl20_per_contract'] = path_pnl20_per_contract
+    strategy_sheet['path_pnl25_per_contract'] = path_pnl25_per_contract
+
     strategy_sheet['hold_pnl1long'] = hold_pnl1long
     strategy_sheet['hold_pnl2long'] = hold_pnl2long
     strategy_sheet['hold_pnl5long'] = hold_pnl5long
     strategy_sheet['hold_pnl10long'] = hold_pnl10long
     strategy_sheet['hold_pnl20long'] = hold_pnl20long
 
+    strategy_sheet['hold_pnl1long_per_contract'] = hold_pnl1long_per_contract
+    strategy_sheet['hold_pnl2long_per_contract'] = hold_pnl2long_per_contract
+    strategy_sheet['hold_pnl5long_per_contract'] = hold_pnl5long_per_contract
+    strategy_sheet['hold_pnl10long_per_contract'] = hold_pnl10long_per_contract
+    strategy_sheet['hold_pnl20long_per_contract'] = hold_pnl20long_per_contract
+
     strategy_sheet['hold_pnl1short'] = hold_pnl1short
     strategy_sheet['hold_pnl2short'] = hold_pnl2short
     strategy_sheet['hold_pnl5short'] = hold_pnl5short
     strategy_sheet['hold_pnl10short'] = hold_pnl10short
     strategy_sheet['hold_pnl20short'] = hold_pnl20short
+
+    strategy_sheet['hold_pnl1short_per_contract'] = hold_pnl1short_per_contract
+    strategy_sheet['hold_pnl2short_per_contract'] = hold_pnl2short_per_contract
+    strategy_sheet['hold_pnl5short_per_contract'] = hold_pnl5short_per_contract
+    strategy_sheet['hold_pnl10short_per_contract'] = hold_pnl10short_per_contract
+    strategy_sheet['hold_pnl20short_per_contract'] = hold_pnl20short_per_contract
 
     strategy_sheet['report_date'] = report_date
 
@@ -178,17 +236,35 @@ def get_backtest_summary_4_date(**kwargs):
     strategy_sheet['hold_pnl10'] = [np.NAN]*num_trades
     strategy_sheet['hold_pnl20'] = [np.NAN]*num_trades
 
-    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1short']
-    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl2'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl2short']
-    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl5'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl5short']
-    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl10'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl10short']
-    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl20'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl20short']
+    strategy_sheet['hold_pnl1_per_contract'] = [np.NAN]*num_trades
+    strategy_sheet['hold_pnl2_per_contract'] = [np.NAN]*num_trades
+    strategy_sheet['hold_pnl5_per_contract'] = [np.NAN]*num_trades
+    strategy_sheet['hold_pnl10_per_contract'] = [np.NAN]*num_trades
+    strategy_sheet['hold_pnl20_per_contract'] = [np.NAN]*num_trades
 
-    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl1'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl1long']
-    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl2'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl2long']
-    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl5'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl5long']
-    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl10'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl10long']
-    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl20'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl20long']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1short']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl2'] = strategy_sheet.loc[strategy_sheet['QF'] > 50,'hold_pnl2short']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl5'] = strategy_sheet.loc[strategy_sheet['QF'] > 50,'hold_pnl5short']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl10'] = strategy_sheet.loc[strategy_sheet['QF'] > 50,'hold_pnl10short']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl20'] = strategy_sheet.loc[strategy_sheet['QF'] > 50,'hold_pnl20short']
+
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl1'] = strategy_sheet.loc[strategy_sheet['QF'] < 50,'hold_pnl1long']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl2'] = strategy_sheet.loc[strategy_sheet['QF'] < 50,'hold_pnl2long']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl5'] = strategy_sheet.loc[strategy_sheet['QF'] < 50,'hold_pnl5long']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl10'] = strategy_sheet.loc[strategy_sheet['QF'] < 50,'hold_pnl10long']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl20'] = strategy_sheet.loc[strategy_sheet['QF'] < 50,'hold_pnl20long']
+
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl1short_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl2_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl2short_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl5_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl5short_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl10_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl10short_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl20_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] > 50, 'hold_pnl20short_per_contract']
+
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl1_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl1long_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl2_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl2long_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl5_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl5long_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl10_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl10long_per_contract']
+    strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl20_per_contract'] = strategy_sheet.loc[strategy_sheet['QF'] < 50, 'hold_pnl20long_per_contract']
 
     strategy_sheet.to_pickle(output_dir + '/backtest_results.pkl')
 

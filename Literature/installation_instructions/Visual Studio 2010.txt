@@ -1,0 +1,7 @@
+
+This will be necessary to compile stuff with python 3.4 as python 3.4 
+is originally compiled with Visual Studio 2010. 
+Microsoft doesn't have Visual Studio 2010 on their webpage. So one can
+download an iso file from http://getintopc.com/
+
+To open the iso file one needs to download a free iso opener from http://www.isoopener.com/
