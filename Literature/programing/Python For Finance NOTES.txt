@@ -1,2 +1,5 @@
 
-[PAGE 16]
+
+(PAGE 21) A very good demostration of how to speed up vector operations using numpy tricks.
+
+[PAGE 26]
