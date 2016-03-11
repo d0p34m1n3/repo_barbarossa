@@ -11,7 +11,7 @@ def get_futures_butterfly_filters(**kwargs):
     selection_indx = [False]*len(data_frame_input.index)
 
     if 'long1' in filter_list:
-        selection_indx = selection_indx|((data_frame_input['z1'] <= -0.12) & (data_frame_input['QF'] <= 12))
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -1.2) & (data_frame_input['QF'] <= 12))
 
     if 'short1' in filter_list:
         selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) & (data_frame_input['QF'] >= 85))
@@ -60,22 +60,26 @@ def get_curve_pca_filters(**kwargs):
 
     selection_indx = [False]*len(data_frame_input.index)
 
-    median_factor_load2 = data_frame_input['factor_load2'].median()
+    #median_factor_load2 = data_frame_input['factor_load2'].median()
 
-    if median_factor_load2 > 0:
-        daily_report_filtered = data_frame_input[data_frame_input['factor_load2'] >= 0]
-    else:
-        daily_report_filtered = data_frame_input[data_frame_input['factor_load2'] <= 0]
+    #if median_factor_load2 > 0:
+    #    daily_report_filtered = data_frame_input[data_frame_input['factor_load2'] >= 0]
+    #else:
+    #    daily_report_filtered = data_frame_input[data_frame_input['factor_load2'] <= 0]
+
+    daily_report_filtered = data_frame_input[(data_frame_input['tr_dte_front'] > 80) & (data_frame_input['monthSpread'] == 1)]
 
     daily_report_filtered.sort('z', ascending=True, inplace=True)
     num_contract_4side = round(len(daily_report_filtered.index)/4)
 
     if 'long1' in filter_list:
         selected_trades = daily_report_filtered.iloc[:num_contract_4side]
-        selection_indx = su.list_or(selection_indx, [x in selected_trades['ticker1'].values for x in data_frame_input['ticker1'].values])
+        selection_indx = su.list_or(selection_indx, su.list_and([x in selected_trades['ticker1'].values for x in data_frame_input['ticker1'].values],
+                                                                [x == 1 for x in data_frame_input['monthSpread'].values]))
     if 'short1' in filter_list:
         selected_trades = daily_report_filtered.iloc[-num_contract_4side:]
-        selection_indx = su.list_or(selection_indx, [x in selected_trades['ticker1'].values for x in data_frame_input['ticker1'].values])
+        selection_indx = su.list_or(selection_indx, su.list_and([x in selected_trades['ticker1'].values for x in data_frame_input['ticker1'].values],
+                                                                [x == 1 for x in data_frame_input['monthSpread'].values]))
 
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
 
