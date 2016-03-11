@@ -1,10 +1,11 @@
 
-
 import shared.directory_names as dn
 import shared.downloads as sd
 import shared.calendar_utilities as cu
 import pickle as pickle
 import my_sql_routines.futures_price_loader as fpl
+import my_sql_routines.options_price_loader as opl
+import my_sql_routines.my_sql_utilities as msu
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
 equity_address = 'ftp://ftp.cmegroup.com/pub/settle/stleqt'
@@ -54,7 +55,16 @@ with open(options_data_dir + '/nymex_futures.pkl', 'wb') as handle:
 with open(options_data_dir + '/nymex_options.pkl', 'wb') as handle:
         pickle.dump(nymex_options_output, handle)
 
+con = msu.get_my_sql_connection()
+
 try:
-        fpl.update_futures_price_database_from_cme_file()
+    fpl.update_futures_price_database_from_cme_file(con=con)
 except Exception:
     pass
+
+try:
+    opl.update_options_price_database_from_cme_files(con=con, settle_date=folder_date)
+except Exception:
+    pass
+
+con = msu.get_my_sql_connection()

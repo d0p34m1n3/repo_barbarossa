@@ -15,7 +15,7 @@ def process_cme_futures_4tickerhead(**kwargs):
 
     ticker_class = cmi.ticker_class[ticker_head]
 
-    name_type_output = cmeu.get_file_name_type_from_tickerclass(ticker_class)
+    name_type_output = cmeu.get_file_name_type_from_tickerclass(ticker_class, 'futures')
     file_name = name_type_output['file_name']
     file_type = name_type_output['file_type']
 
@@ -71,8 +71,8 @@ def process_cme_futures_4tickerhead(**kwargs):
         settle_frame['volume'] = selected_frame['EST. VOL']
         settle_frame['interest'] = selected_frame['PRIOR INT']
 
-        settle_frame['volume'] = settle_frame['volume'].replace('',0)
-        settle_frame['interest'] = settle_frame['interest'].replace('',0)
+        settle_frame['volume'] = settle_frame['volume'].replace('', 0)
+        settle_frame['interest'] = settle_frame['interest'].replace('', 0)
 
     settle_frame['ticker'] = [ticker_head +
                             cmi.full_letter_month_list[settle_frame.loc[x, 'ticker_month']-1] +

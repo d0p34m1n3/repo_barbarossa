@@ -67,7 +67,7 @@ def generate_curve_pca_formatted_output(**kwargs):
     output_dir = ts.create_strategy_output_dir(strategy_class='curve_pca', report_date=report_date)
 
     ticker_head_list = ['CL', 'B']
-    selected_column_list = ['ticker1', 'ticker2', 'monthSpread', 'tr_dte_front', 'residuals', 'price', 'yield', 'z', 'factor_load1', 'factor_load2']
+    selected_column_list = ['ticker1', 'ticker2', 'monthSpread', 'tr_dte_front', 'residuals', 'price', 'yield', 'z', 'z2', 'factor_load1', 'factor_load2']
     writer = pd.ExcelWriter(output_dir + '/' + xls_file_names['curve_pca'] + '.xlsx', engine='xlsxwriter')
 
     for ticker_head in ticker_head_list:

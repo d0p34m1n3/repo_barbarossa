@@ -1,0 +1,11 @@
+
+I've a really hard time to install quantlib for Python 3.4.
+
+Installing quantlib itself wasn't that hard. However following the instructions on this webpage:
+
+https://vineetv.wordpress.com/2015/07/07/installing-quantlib-python-windows/
+
+didn't really solve my problems. What solved my problems was to download binaries from:
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/ and simply installing them using pip.
+

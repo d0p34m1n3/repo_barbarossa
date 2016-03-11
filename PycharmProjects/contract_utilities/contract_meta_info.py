@@ -50,7 +50,16 @@ option_cabinet_values = {'ED': 0.0025,
                          'LN': 0.0125,
                          'FC': 0.0125,
                          'ES': 0.05,
-                         'NQ': 0.05}
+                         'NQ': 0.05,
+                         'TU': 1/128,
+                         'FV': 1/128,
+                         'TY': 1/64,
+                         'US': 1/64,
+                         'EC': 0.00005,
+                         'JY': 5,
+                         'AD': 0.00005,
+                         'CD': 0.00005,
+                         'BP': 0.0001}
 
 
 def get_option_contract_months(**kwargs):
@@ -151,7 +160,7 @@ def get_max_cal_dte(**kwargs):
 
     if ticker_head in ['LN', 'LC', 'FC', 'C', 'S', 'SM', 'BO', 'W', 'KW', 'SB', 'KC', 'CC', 'CT', 'OJ', 'HO', 'RB', 'NG']:
         max_cal_dte = 720
-    elif ticker_head == 'ED':
+    elif ticker_head in ['ED', 'E0','E2', 'E3', 'E4', 'E5']:
         max_cal_dte = 1440
     elif ticker_head == 'CL':
         if ticker_month in [6, 12]:
@@ -259,7 +268,8 @@ t_cost = {'CL': 0.80,
           'ED': 0.29,
           'KC': 2.1,
           'CC': 2.1,
-          'SB': 2.1}
+          'SB': 2.1,
+          'CT': 2.1}
 
 def get_contract_specs(ticker):
     return {'ticker_head': ticker[:-5],

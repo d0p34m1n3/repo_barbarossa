@@ -6,7 +6,7 @@ import numpy as np
 import shared.statistics as stats
 import ta.strategy as ts
 import os.path
-
+import signals.futures_signals as fs
 
 def get_curve_pca_report(**kwargs):
 
@@ -71,8 +71,6 @@ def get_curve_pca_report(**kwargs):
         annual_select = rolling_data_merged['ticker_month'].iloc[-1] % 12 == 0
         rolling_data_annual = [rolling_data_semiannual[x] for x in range(len(rolling_data_semiannual)) if annual_select.values[x]]
 
-
-
         merged_data = pd.concat(rolling_data_monthly+rolling_data_semiannual+rolling_data_annual, axis=1, join='inner')
 
         total_range = list(range(len(rolling_data_monthly)+len(rolling_data_semiannual)+len(rolling_data_annual)))
@@ -90,6 +88,18 @@ def get_curve_pca_report(**kwargs):
 
     change5_merged = pd.concat(change5_raw, axis=1)
     change5_data = change5_merged.values
+
+    change10_raw = [(merged_data['change10'].ix[:, x]-merged_data['change10'].ix[:, x+1]) for x in total_range
+                   if x not in index_exclude]
+
+    change10_merged = pd.concat(change10_raw, axis=1)
+    change10_data = change10_merged.values
+
+    change20_raw = [(merged_data['change20'].ix[:, x]-merged_data['change20'].ix[:, x+1]) for x in total_range
+                   if x not in index_exclude]
+
+    change20_merged = pd.concat(change20_raw, axis=1)
+    change20_data = change20_merged.values
 
     tr_dte_raw = [merged_data['tr_dte'].ix[:, x] for x in total_range if x not in index_exclude]
     tr_dte_merged = pd.concat(tr_dte_raw, axis=1)
@@ -120,11 +130,21 @@ def get_curve_pca_report(**kwargs):
                              ('z', (residuals[-1]-residuals.mean(axis=0))/residuals.std(axis=0)),
                              ('factor_load1',pca_out['loadings'][0]),
                              ('factor_load2',pca_out['loadings'][1]),
-                             ('change5', change5_data[-1])])
+                             ('change5', change5_data[-1]),
+                             ('change10', change10_data[-1]),
+                             ('change20', change20_data[-1])])
+
+    # notice that this date_to needs to me removed once we are done with backtesting
+    seasonality_adjustment = fs.get_pca_seasonality_adjustments(ticker_head=ticker_head,date_to=date_to)
+
+    pca_results = pd.merge(pca_results, seasonality_adjustment,how='left',on=['monthSpread','ticker_month_front'])
+    pca_results['z2'] = pca_results['z']-pca_results['z_seasonal_mean']
 
     pca_results['residuals'] = pca_results['residuals'].round(3)
     pca_results['yield'] = pca_results['yield'].round(2)
     pca_results['z'] = pca_results['z'].round(2)
+    pca_results['z2'] = pca_results['z2'].round(2)
+    pca_results['z_seasonal_mean'] = pca_results['z_seasonal_mean'].round(2)
     pca_results['factor_load1'] = pca_results['factor_load1'].round(3)
     pca_results['factor_load2'] = pca_results['factor_load2'].round(3)
 

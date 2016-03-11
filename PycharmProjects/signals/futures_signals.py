@@ -5,12 +5,14 @@ sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import contract_utilities.expiration as exp
 import opportunity_constructs.utilities as opUtil
 import contract_utilities.contract_meta_info as cmi
+import shared.directory_names as dn
 import get_price.get_futures_price as gfp
 import shared.statistics as stats
 import shared.calendar_utilities as cu
 import signals.utils as su
 import numpy as np
 import pandas as pd
+import os.path
 
 
 def get_futures_butterfly_signals(**kwargs):
@@ -349,3 +351,50 @@ def get_futures_spread_carry_signals(**kwargs):
                          ('change5',change5),
                          ('change10',change10),
                          ('change20',change20)])
+
+
+def get_pca_seasonality_adjustments(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+
+    if 'file_date_to' in kwargs.keys():
+        file_date_to = kwargs['file_date_to']
+    else:
+        file_date_to = 20160219
+
+    if 'years_back' in kwargs.keys():
+        years_back = kwargs['years_back']
+    else:
+        years_back = 10
+
+    if 'date_to' in kwargs.keys():
+        date_to = kwargs['date_to']
+    else:
+        date_to = file_date_to
+
+    date5_years_ago = cu.doubledate_shift(date_to, 5*365)
+
+    backtest_output_dir = dn.get_directory_name(ext='backtest_results')
+
+    file_name = ticker_head + '_' + str(file_date_to) + '_' + str(years_back) + '_z'
+
+    if os.path.isfile(backtest_output_dir + '/curve_pca/' + file_name + '.pkl'):
+        backtest_results = pd.read_pickle(backtest_output_dir + '/curve_pca/' + file_name + '.pkl')
+    else:
+        return pd.DataFrame.from_items([('monthSpread',[1]*12+[6]*2),
+                        ('ticker_month_front',list(range(1,13))+[6]+[12]),
+                        ('z_seasonal_mean',[0]*14)])
+
+    entire_report = pd.concat(backtest_results['report_results_list'])
+    selected_report = entire_report[(entire_report['report_date'] <= date_to) & (entire_report['report_date'] >= date5_years_ago)]
+    selected_report = selected_report[(selected_report['tr_dte_front'] > 80)&(selected_report['monthSpread'] < 12)]
+
+    grouped = selected_report.groupby(['monthSpread','ticker_month_front'])
+
+    seasonality_adjustment = pd.DataFrame()
+    seasonality_adjustment['monthSpread'] = (grouped['monthSpread'].first()).values
+    seasonality_adjustment['ticker_month_front'] = (grouped['ticker_month_front'].first()).values
+    seasonality_adjustment['z_seasonal_mean'] = (grouped['z'].mean()).values
+
+    return seasonality_adjustment
+

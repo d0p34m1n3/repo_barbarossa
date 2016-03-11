@@ -4,6 +4,7 @@ import sys
 sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects')
 import contract_utilities.contract_meta_info as cmf
 import shared.calendar_utilities as cu
+import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
 from pandas.tseries.holiday import get_calendar, HolidayCalendarFactory,\
     AbstractHolidayCalendar, USMartinLutherKingJr, USPresidentsDay, GoodFriday, USMemorialDay, USLaborDay, \
@@ -127,6 +128,23 @@ def get_options_expiration(ticker):
 
     return dts[exp_indx].to_datetime()
 
+
+def get_expiration_from_db(**kwargs):
+
+    # instrument=options or futures
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    sql_query = 'SELECT expiration_date FROM futures_master.symbol WHERE instrument=\'' + kwargs['instrument'] + '\' and ticker=\'' + kwargs['ticker'] + '\''
+
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return data[0][0]
 
 def get_futures_expiration(ticker):
     contract_specs = cmf.get_contract_specs(ticker)
@@ -293,6 +311,20 @@ def get_futures_days2_expiration(expiration_input):
     dts = pd.date_range(start=cu.convert_doubledate_2datetime(date_to), end=expiration_date, freq=bday_us)
 
     return len(dts)-1
+
+
+def get_days2_expiration(**kwargs):
+
+    date_to = kwargs['date_to']
+
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+    expiration_datetime =  get_expiration_from_db(**kwargs)
+
+    return {'datetime_to': datetime_to, 'expiration_datetime': expiration_datetime}
+
+
+
+
 
 
 def get_prev_ticker_year_month(ticker_year,ticker_month_num):
