@@ -23,12 +23,17 @@ def get_directory_name(**kwargs):
 
     ext = kwargs['ext']
 
-    if computer_name=='601-TREKW71' or computer_name=='601-TREKW72':
+    if computer_name == '601-TREKW71' or computer_name == '601-TREKW72':
         root_dir = root_work
     else:
         root_dir = root_home
 
-    return root_dir + extension_dict[ext]
+    directory_name = root_dir + extension_dict[ext]
+
+    if not os.path.exists(directory_name):
+        os.makedirs(directory_name)
+
+    return directory_name
 
 
 def get_dated_directory_extension(**kwargs):
