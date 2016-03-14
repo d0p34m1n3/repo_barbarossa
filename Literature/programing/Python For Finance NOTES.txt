@@ -2,4 +2,8 @@
 
 (PAGE 21) A very good demostration of how to speed up vector operations using numpy tricks.
 
-[PAGE 26]
+(PAGE 30) How to use conda to create seperate environment and install different versions there.
+
+(PAGE 32) Python Quant Platform seems like a potentially useful way of deploying python via web browser.
+
+[PAGE 34]

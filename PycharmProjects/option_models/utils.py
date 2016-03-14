@@ -15,10 +15,12 @@ def option_model_wrapper(**kwargs):
     ticker = kwargs['ticker']
     calculation_date = kwargs['calculation_date']
 
-    expiration_datetime = exp.get_expiration_from_db(ticker=ticker, instrument='futures', con=con)
+    expiration_datetime = exp.get_expiration_from_db(ticker=ticker, instrument='options', con=con)
     expiration_date = int(expiration_datetime.strftime('%Y%m%d'))
 
     interest_rate = grfs.get_simple_rate(as_of_date=calculation_date, date_to=expiration_date)['rate_output']
+
+    print(interest_rate)
 
     option_greeks = qom.get_option_greeks(risk_free_rate=interest_rate, expiration_date=expiration_date,**kwargs)
 
