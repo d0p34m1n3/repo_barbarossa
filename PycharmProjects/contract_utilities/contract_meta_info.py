@@ -62,6 +62,20 @@ option_cabinet_values = {'ED': 0.0025,
                          'BP': 0.0001}
 
 
+def get_option_exercise_type(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+
+    if ticker_head in ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+                       'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
+                       'ED', 'E0', 'E2', 'E3', 'E4', 'E5']:
+        exercise_type = 'A'
+    else:
+        exercise_type = None
+
+    return exercise_type
+
+
 def get_option_contract_months(**kwargs):
 
     ticker_head = kwargs['ticker_head']
@@ -81,16 +95,27 @@ futures_butterfly_strategy_tickerhead_list = ['LN', 'LC', 'FC',
 
 cme_futures_tickerhead_list = ['LN', 'LC', 'FC',
                                'C', 'S', 'SM', 'BO', 'W', 'KW',
-                               'CL', 'B', 'HO', 'RB', 'NG', 'ED',
+                               'CL', 'HO', 'RB', 'NG', 'ED',
                                'ES', 'NQ', 'EC', 'JY', 'AD', 'CD', 'BP',
                                'TY', 'US', 'FV', 'TU', 'GC', 'SI']
 
 cme_option_tickerhead_list = ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
-                          'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
-                          'ED', 'E0', 'E2', 'E3', 'E4', 'E5']
+                              'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
+                              'ED', 'E0', 'E2', 'E3', 'E4', 'E5']
 
 option_tickerhead_list = cme_option_tickerhead_list
 
+
+def get_tickerhead_list(list_name):
+
+    if list_name == 'butterfly':
+        tickerhead_list = futures_butterfly_strategy_tickerhead_list
+    elif list_name == 'cme_futures':
+        tickerhead_list = cme_futures_tickerhead_list
+    elif list_name == 'cme_options':
+        tickerhead_list = cme_option_tickerhead_list
+
+    return tickerhead_list
 
 contract_name = {'LN': 'Lean Hog',
                  'LC': 'Live Cattle',
@@ -238,6 +263,11 @@ contract_multiplier = {'LN': 400,
                        'RB': 42000,
                        'NG': 10000,
                        'ED': 2500,
+                       'E0': 2500,
+                       'E2': 2500,
+                       'E3': 2500,
+                       'E4': 2500,
+                       'E5': 2500,
                        'ES': 50,
                        'NQ': 20,
                        'AD': 100000,

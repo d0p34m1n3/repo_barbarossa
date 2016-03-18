@@ -159,9 +159,7 @@ def update_futures_price_database(**kwargs):
 
 def update_futures_price_database_from_cme_file(**kwargs):
 
-    ticker_head_list = ['ED', 'C', 'S', 'SM', 'BO', 'W', 'KW', 'LC', 'LN', 'FC',
-                        'ES', 'NQ', 'AD', 'CD', 'EC', 'JY', 'BP',
-                        'FV', 'TU', 'TY', 'US', 'GC', 'SI', 'CL', 'NG', 'HO', 'RB']
+    ticker_head_list = cmi.cme_futures_tickerhead_list
 
     import time
     con = msu.get_my_sql_connection(**kwargs)

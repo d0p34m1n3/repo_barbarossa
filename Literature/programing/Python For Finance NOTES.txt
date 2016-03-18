@@ -6,4 +6,6 @@
 
 (PAGE 32) Python Quant Platform seems like a potentially useful way of deploying python via web browser.
 
-[PAGE 34]
+(PAGE 36) Different interfaces to use ipython.
+
+[PAGE 43]

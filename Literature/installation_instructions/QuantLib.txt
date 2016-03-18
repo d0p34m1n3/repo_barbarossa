@@ -1,7 +1,11 @@
 
 I've a really hard time to install quantlib for Python 3.4.
 
-Installing quantlib itself wasn't that hard. However following the instructions on this webpage:
+Installing quantlib itself wasn't that hard. One needs to add some path names this youtube vidoe seems to be enough:
+
+https://www.youtube.com/watch?v=uWMT78XJFJE
+
+However following the instructions on this webpage:
 
 https://vineetv.wordpress.com/2015/07/07/installing-quantlib-python-windows/
 

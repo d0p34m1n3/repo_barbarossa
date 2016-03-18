@@ -15,18 +15,94 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="get_options_price.py" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/../get_price/get_options_price.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.0">
+                    <caret line="72" column="59" selection-start-line="97" selection-start-column="4" selection-end-line="98" selection-end-column="19" />
+                    <folding>
+                      <element signature="e#26#61#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../option_models/utils.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.35088968">
+                    <caret line="29" column="5" selection-start-line="29" selection-start-column="4" selection-end-line="30" selection-end-column="19" />
+                    <folding>
+                      <element signature="e#2#48#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file leaf-file-name="get_futures_price.py" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.0">
+                    <caret line="95" column="31" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="31" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file leaf-file-name="expiration.py" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.0">
+                    <caret line="131" column="26" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="26" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+    <window id="3">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file leaf-file-name="option_models_test.py" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../option_models/option_models_test.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.7893586">
+                    <caret line="150" column="194" selection-start-line="150" selection-start-column="194" selection-end-line="150" selection-end-column="194" />
+                    <folding>
+                      <element signature="e#1#52#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="opportunity_constructs" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="futures_filters.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../signals/futures_filters.py">
+      <file leaf-file-name="skew_calc.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../option_models/skew_calc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="0.13309608">
+              <caret line="11" column="31" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="31" />
+              <folding>
+                <element signature="e#1#47#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -35,59 +111,17 @@
         <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="362" column="6" selection-start-line="362" selection-start-column="4" selection-end-line="363" selection-end-column="19" />
-              <folding>
-                <element signature="e#26#40#0" expanded="true" />
-              </folding>
+              <caret line="323" column="0" selection-start-line="323" selection-start-column="0" selection-end-line="323" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calendar_utilities.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../shared/calendar_utilities.py">
+      <file leaf-file-name="get_rate_from_stir.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="32" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="expiration.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.871533">
-              <caret line="312" column="14" selection-start-line="312" selection-start-column="14" selection-end-line="312" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="get_futures_price.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="80" column="139" selection-start-line="80" selection-start-column="137" selection-end-line="80" selection-end-column="140" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="futures_signals.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../signals/futures_signals.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="342" column="55" selection-start-line="342" selection-start-column="55" selection-end-line="342" selection-end-column="55" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="curve_pca.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/curve_pca.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.9259257">
-              <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
+              <caret line="10" column="19" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -105,35 +139,26 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../ta/prepare_daily.py" />
-        <option value="$PROJECT_DIR$/../formats/risk_pnl_formats.py" />
-        <option value="$PROJECT_DIR$/../get_price/curve_data.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_spread_carry.py" />
         <option value="$PROJECT_DIR$/../backtesting/utilities.py" />
         <option value="$PROJECT_DIR$/../ta/strategy_followup.py" />
         <option value="$PROJECT_DIR$/../signals/utils.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_stats.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_futures_butterfly.py" />
-        <option value="$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py" />
         <option value="$PROJECT_DIR$/../ta/portfolio_manager.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py" />
         <option value="$PROJECT_DIR$/../shared/downloads.py" />
         <option value="$PROJECT_DIR$/../shared/options_data_load_job.py" />
-        <option value="$PROJECT_DIR$/../shared/directory_names.py" />
         <option value="$PROJECT_DIR$/../shared/calendar_utilities.py" />
         <option value="$PROJECT_DIR$/../scheduled_jobs/read_cme_files.py" />
         <option value="$PROJECT_DIR$/../formats/strategy_followup_formats.py" />
         <option value="$PROJECT_DIR$/../risk/historical_risk.py" />
-        <option value="$PROJECT_DIR$/../get_price/presave_price.py" />
         <option value="$PROJECT_DIR$/../ta/strategy.py" />
         <option value="$PROJECT_DIR$/../contract_utilities/expiration_test.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/futures_symbol_generator.py" />
         <option value="$PROJECT_DIR$/../get_price/get_futures_price.py" />
-        <option value="$PROJECT_DIR$/futures_butterfly.py" />
         <option value="$PROJECT_DIR$/utilities.py" />
-        <option value="$PROJECT_DIR$/../my_sql_routines/futures_price_loader.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/get_rate_from_ed.py" />
-        <option value="$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py" />
         <option value="$PROJECT_DIR$/../ta/pnl.py" />
         <option value="$PROJECT_DIR$/../../repo_barbarossa/PycharmProjects/my_sql_routines/options_price_loader.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/process_cme_options.py" />
@@ -142,10 +167,8 @@
         <option value="$PROJECT_DIR$/../ta/tt_fill_loader.py" />
         <option value="$PROJECT_DIR$/../contract_utilities/contract_lists.py" />
         <option value="$PROJECT_DIR$/../read_exchange_files/read_cme_files.py" />
-        <option value="$PROJECT_DIR$/../contract_utilities/contract_meta_info.py" />
         <option value="$PROJECT_DIR$/../read_exchange_files/process_cme_options.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/options_price_loader.py" />
-        <option value="$PROJECT_DIR$/../scheduled_jobs/options_data_load_job.py" />
         <option value="$PROJECT_DIR$/../signals/quantlib_option_models.py" />
         <option value="$PROJECT_DIR$/../signals/futures_signals.py" />
         <option value="$PROJECT_DIR$/../backtesting/backtest_curve_pca.py" />
@@ -153,17 +176,28 @@
         <option value="$PROJECT_DIR$/../signals/futures_filters.py" />
         <option value="$PROJECT_DIR$/curve_pca.py" />
         <option value="$PROJECT_DIR$/../interest_curve/utils.py" />
-        <option value="$PROJECT_DIR$/../option_models/utils.py" />
-        <option value="$PROJECT_DIR$/../option_models/quantlib_option_models.py" />
         <option value="$PROJECT_DIR$/../contract_utilities/expiration.py" />
+        <option value="$PROJECT_DIR$/futures_butterfly.py" />
+        <option value="$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py" />
+        <option value="$PROJECT_DIR$/../shared/directory_names.py" />
+        <option value="$PROJECT_DIR$/../my_sql_routines/futures_price_loader.py" />
+        <option value="$PROJECT_DIR$/../contract_utilities/contract_meta_info.py" />
+        <option value="$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py" />
+        <option value="$PROJECT_DIR$/../get_price/presave_price.py" />
+        <option value="$PROJECT_DIR$/../scheduled_jobs/options_data_load_job.py" />
+        <option value="$PROJECT_DIR$/../option_models/option_models_test.py" />
+        <option value="$PROJECT_DIR$/../get_price/get_options_price.py" />
+        <option value="$PROJECT_DIR$/../option_models/utils.py" />
+        <option value="$PROJECT_DIR$/../option_models/skew_calc.py" />
+        <option value="$PROJECT_DIR$/../option_models/quantlib_option_models.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="36" />
-    <option name="y" value="44" />
-    <option name="width" value="1179" />
-    <option name="height" value="1507" />
+    <option name="x" value="44" />
+    <option name="y" value="718" />
+    <option name="width" value="1299" />
+    <option name="height" value="1542" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -190,6 +224,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -210,12 +246,10 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../shared/calendar_utilities.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../get_price/presave_price.py" />
     <property name="SearchEverywhereHistoryKey" value="doubledate_shift_bus_days&#9;null&#9;null" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -358,10 +392,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="36" y="44" width="1179" height="1507" extended-state="0" />
+    <frame x="44" y="718" width="1299" height="1542" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14961307" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14341387" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -402,62 +436,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+backtesting/@backtestingConstants/backtestingConstants.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.09231963">
-          <caret line="7" column="47" selection-start-line="7" selection-start-column="47" selection-end-line="7" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/generateAlignedTimeSeries4Backtesting2.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="205" column="22" selection-start-line="237" selection-start-column="4" selection-end-line="237" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+volStrategies/getOptionDataColumnNames.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="27" selection-start-line="24" selection-start-column="1" selection-end-line="26" selection-end-column="141" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlibJobs/precalcAlignedTimeSeriesOutput2.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7626628">
-          <caret line="254" column="61" selection-start-line="254" selection-start-column="61" selection-end-line="254" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="414" column="54" selection-start-line="414" selection-start-column="54" selection-end-line="414" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_spread_carry.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.41159207">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../backtesting/backtest_futures_with_paths.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.4820249">
-          <caret line="26" column="79" selection-start-line="26" selection-start-column="79" selection-end-line="26" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../formats/strategy_followup_formats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.77886176">
-          <caret line="102" column="62" selection-start-line="102" selection-start-column="44" selection-end-line="102" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../ta/strategy_followup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.29593495">
@@ -507,13 +485,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/futures_butterfly.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6509573">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../my_sql_routines/my_sql_utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -542,41 +513,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_lists.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="143" column="49" selection-start-line="143" selection-start-column="49" selection-end-line="143" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../scheduled_jobs/options_data_load_job.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.88082904">
-          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="37" selection-start-line="61" selection-start-column="37" selection-end-line="61" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../my_sql_routines/futures_price_loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="185" column="69" selection-start-line="185" selection-start-column="69" selection-end-line="185" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../ta/portfolio_manager.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -588,13 +524,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="128" column="45" selection-start-line="128" selection-start-column="45" selection-end-line="128" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../shared/directory_names.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="22" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -616,7 +545,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="22" column="61" selection-start-line="22" selection-start-column="61" selection-end-line="22" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -624,9 +552,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding>
-            <element signature="e#26#44#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -634,7 +559,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -642,9 +566,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="4" selection-end-column="14" />
-          <folding>
-            <element signature="e#1#24#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -652,7 +573,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="115" column="8" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -660,7 +580,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.71143913">
           <caret line="117" column="101" selection-start-line="117" selection-start-column="86" selection-end-line="117" selection-end-column="101" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -668,7 +587,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4391144">
           <caret line="37" column="26" selection-start-line="34" selection-start-column="4" selection-end-line="37" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -676,17 +594,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8405904">
           <caret line="67" column="10" selection-start-line="67" selection-start-column="8" selection-end-line="67" selection-end-column="114" />
-          <folding>
-            <element signature="e#26#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08782288">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -694,9 +601,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.23837638">
           <caret line="19" column="53" selection-start-line="16" selection-start-column="4" selection-end-line="19" selection-end-column="53" />
-          <folding>
-            <element signature="e#26#69#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -704,19 +608,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8405904">
           <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding>
-            <element signature="e#1#52#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../option_models/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.27601478">
-          <caret line="22" column="17" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="17" />
-          <folding>
-            <element signature="e#2#48#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -724,23 +615,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="32" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="139" selection-start-line="80" selection-start-column="137" selection-end-line="80" selection-end-column="140" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/curve_pca.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.9259257">
+        <state vertical-scroll-proportion="0.0">
           <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -748,25 +629,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="342" column="55" selection-start-line="342" selection-start-column="55" selection-end-line="342" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="362" column="6" selection-start-line="362" selection-start-column="4" selection-end-line="363" selection-end-column="19" />
-          <folding>
-            <element signature="e#26#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../signals/futures_filters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -774,23 +636,184 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.52693725">
           <caret line="96" column="4" selection-start-line="94" selection-start-column="4" selection-end-line="97" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_lists.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.64129615">
+          <caret line="143" column="49" selection-start-line="143" selection-start-column="49" selection-end-line="143" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.012527634">
+          <caret line="414" column="54" selection-start-line="414" selection-start-column="54" selection-end-line="414" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/futures_butterfly.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="243" column="55" selection-start-line="243" selection-start-column="55" selection-end-line="243" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../shared/directory_names.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="69" selection-start-line="13" selection-start-column="69" selection-end-line="13" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../scheduled_jobs/options_data_load_job.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.049707603">
+          <caret line="4" column="23" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17397662">
+          <caret line="14" column="42" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../signals/futures_filters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9005848">
+          <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../my_sql_routines/futures_price_loader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.45321637">
+          <caret line="161" column="54" selection-start-line="161" selection-start-column="54" selection-end-line="161" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="10" column="19" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../option_models/quantlib_option_models.py">
+    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/optionPortfolioAnalyticsWrapper.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.037638377">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="166" column="59" selection-start-line="166" selection-start-column="32" selection-end-line="166" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/BacktestingApp/mainIntradayRisk.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="238" column="30" selection-start-line="238" selection-start-column="4" selection-end-line="238" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/BacktestingApp/optPortfolioAnalitics.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/mainPnLScalloper.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.586206">
+          <caret line="1245" column="36" selection-start-line="1245" selection-start-column="36" selection-end-line="1245" selection-end-column="104" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../option_models/option_models_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7893586">
+          <caret line="150" column="194" selection-start-line="150" selection-start-column="194" selection-end-line="150" selection-end-column="194" />
+          <folding>
+            <element signature="e#1#52#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../get_price/get_options_price.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="72" column="59" selection-start-line="97" selection-start-column="4" selection-end-line="98" selection-end-column="19" />
+          <folding>
+            <element signature="e#26#61#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="95" column="31" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.871533">
-          <caret line="312" column="14" selection-start-line="312" selection-start-column="14" selection-end-line="312" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="131" column="26" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="26" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="64" column="28" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../get_price/presave_price.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="323" column="0" selection-start-line="323" selection-start-column="0" selection-end-line="323" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../option_models/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.35088968">
+          <caret line="29" column="5" selection-start-line="29" selection-start-column="4" selection-end-line="30" selection-end-column="19" />
+          <folding>
+            <element signature="e#2#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../option_models/quantlib_option_models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.58929914">
+          <caret line="46" column="5" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
+          <folding>
+            <element signature="e#1#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../option_models/skew_calc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13309608">
+          <caret line="11" column="31" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="31" />
+          <folding>
+            <element signature="e#1#47#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

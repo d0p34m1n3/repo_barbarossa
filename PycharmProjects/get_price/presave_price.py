@@ -329,7 +329,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
         contract_data = data4_tickerhead[data4_tickerhead['cont_indx']==unique_cont_indx_list[i]]
 
-        contract_full_dates = full_dates[(full_dates>=contract_data['settle_date'].min()) & (full_dates<=contract_data['settle_date'].max())]
+        contract_full_dates = full_dates[(full_dates >= contract_data['settle_date'].min()) & (full_dates<=contract_data['settle_date'].max())]
         full_date_frame = pd.DataFrame(contract_full_dates, columns=['settle_date'])
         merged_dataframe_list[i] = pd.merge(full_date_frame,contract_data,on='settle_date',how='left')
 
@@ -354,9 +354,9 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         clean_data['frame_indx'] = 1
         old_data['frame_indx'] = 0
         merged_data = pd.concat([old_data,clean_data],ignore_index=True)
-        merged_data.sort(['cont_indx','settle_date','frame_indx'],ascending=[True,True,False],inplace=True)
-        merged_data.drop_duplicates(subset=['settle_date','cont_indx'],take_last=False,inplace=True)
-        data4_tickerhead = merged_data.drop('frame_indx',1,inplace=False)
+        merged_data.sort(['cont_indx', 'settle_date', 'frame_indx'], ascending=[True, True, False], inplace=True)
+        merged_data.drop_duplicates(subset=['settle_date', 'cont_indx'], take_last=False, inplace=True)
+        data4_tickerhead = merged_data.drop('frame_indx', 1, inplace=False)
 
     data4_tickerhead.to_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
 
@@ -366,7 +366,9 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
 def generate_and_update_futures_data_files(**kwargs):
 
-    for ticker_head in cmi.futures_butterfly_strategy_tickerhead_list:
-        generate_and_update_futures_data_file_4tickerhead(ticker_head=ticker_head,**kwargs)
+    ticker_head_list = cmi.get_tickerhead_list(kwargs['ticker_head_list'])
+
+    for ticker_head in ticker_head_list:
+        generate_and_update_futures_data_file_4tickerhead(ticker_head=ticker_head, **kwargs)
 
 

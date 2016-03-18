@@ -1,8 +1,10 @@
 __author__ = 'kocat_000'
 
 import shared.directory_names as dn
+import my_sql_routines.my_sql_utilities as msu
 import scipy.io
 import pandas as pd
+import os
 
 def get_column_names_4option_data():
 
@@ -64,8 +66,36 @@ def load_aligend_options_data_file(**kwargs):
 
     file_dir = ticker_head + '_' + str(delta_center) + '_' + model + '_20_510204060_' + str(tr_dte_center) + contract_month_str + '.mat'
 
-    mat_output = scipy.io.loadmat(option_data_dir+'/'+file_dir)
+    if os.path.isfile(option_data_dir+'/'+file_dir):
+        mat_output = scipy.io.loadmat(option_data_dir+'/'+file_dir)
+        data_frame_out = pd.DataFrame(mat_output['alignedDataMatrix'], columns=column_names)
+    else:
+        data_frame_out = pd.DataFrame(columns=column_names)
 
-    return pd.DataFrame(mat_output['alignedDataMatrix'],columns=column_names)
+    return data_frame_out
 
 
+def get_options_price_from_db(**kwargs):
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'ticker' in kwargs.keys():
+        filter_string = 'WHERE ticker=\'' + kwargs['ticker'] + '\''
+    elif 'ticker_head' in kwargs.keys():
+        filter_string = 'WHERE ticker_head=\'' + kwargs['ticker_head'] + '\''
+    else:
+        filter_string
+
+    if 'settle_date' in kwargs.keys():
+        filter_string = filter_string + ' and price_date=' + str(kwargs['settle_date'])
+
+    sql_query = 'SELECT option_type, strike, cal_dte, tr_dte, close_price FROM daily_option_price ' + filter_string
+
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(data,columns=['option_type', 'strike', 'cal_dte', 'tr_dte', 'close_price'])

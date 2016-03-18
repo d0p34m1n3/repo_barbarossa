@@ -7,6 +7,7 @@ import shared.calendar_utilities as cu
 import numpy as np
 import pandas as pd
 
+
 def get_simple_rate(**kwargs):
 
     as_of_date = kwargs['as_of_date']
@@ -30,22 +31,28 @@ def get_simple_rate(**kwargs):
         price_frame = pd.read_pickle(file_name)
     else:
         price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
+        price_frame = price_frame[price_frame['close_price'].notnull()]
+
         price_frame.sort('tr_dte', ascending=True, inplace=True)
         price_frame['exp_date'] = [exp.get_futures_expiration(x) for x in price_frame['ticker']]
         price_frame['implied_rate'] = 100-price_frame['close_price']
         price_frame.to_pickle(file_name)
 
+    if price_frame.empty:
+        return {'rate_output': np.NaN, 'price_frame': pd.DataFrame(columns=['ticker', 'cal_dte','exp_date','implied_rate'])}
 
     datetime_to = cu.convert_doubledate_2datetime(date_to)
     datetime_from = cu.convert_doubledate_2datetime(date_from)
-
 
     price_frame_first = price_frame[price_frame['exp_date'] <= datetime_from]
     price_frame_middle = price_frame[(price_frame['exp_date'] > datetime_from) & (price_frame['exp_date'] < datetime_to)]
 
     if price_frame_middle.empty:
-        rate_output = price_frame_first['implied_rate'].iloc[-1]/100
-        return {'rate_output': rate_output, 'price_frame': price_frame[['ticker','cal_dte','exp_date','implied_rate']]}
+        if not price_frame_first.empty:
+            rate_output = price_frame_first['implied_rate'].iloc[-1]/100
+        else:
+            rate_output = price_frame['implied_rate'].iloc[0]/100
+        return {'rate_output': rate_output, 'price_frame': price_frame[['ticker', 'cal_dte','exp_date','implied_rate']]}
 
     if price_frame_first.empty:
         first_rate = price_frame_middle['implied_rate'].iloc[0]
@@ -66,4 +73,4 @@ def get_simple_rate(**kwargs):
 
     rate_output = (total_discount-1)*365/total_period
 
-    return {'rate_output': rate_output, 'price_frame': price_frame[['ticker','cal_dte','exp_date','implied_rate']]}
+    return {'rate_output': rate_output, 'price_frame': price_frame[['ticker', 'cal_dte', 'exp_date','implied_rate']]}

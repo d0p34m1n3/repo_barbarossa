@@ -6,6 +6,7 @@ import pickle as pickle
 import my_sql_routines.futures_price_loader as fpl
 import my_sql_routines.options_price_loader as opl
 import my_sql_routines.my_sql_utilities as msu
+import get_price.presave_price as pp
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
 equity_address = 'ftp://ftp.cmegroup.com/pub/settle/stleqt'
@@ -59,6 +60,7 @@ con = msu.get_my_sql_connection()
 
 try:
     fpl.update_futures_price_database_from_cme_file(con=con)
+    pp.generate_and_update_futures_data_files(ticker_head_list='cme_futures')
 except Exception:
     pass
 

@@ -13,7 +13,7 @@ import ta.prepare_daily as prep
 con = msu.get_my_sql_connection()
 
 fpl.update_futures_price_database(con=con)
-pp.generate_and_update_futures_data_files()
+pp.generate_and_update_futures_data_files(ticker_head_list='butterfly')
 
 report_date = exp.doubledate_shift_bus_days()
 fb.generate_futures_butterfly_sheet_4date(date_to=report_date, con=con)

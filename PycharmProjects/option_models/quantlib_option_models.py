@@ -2,6 +2,7 @@
 import QuantLib as ql
 import shared.calendar_utilities as cu
 import math as m
+import numpy as np
 
 day_count_obj = ql.Actual365Fixed()
 calendar_obj = ql.UnitedStates()
@@ -22,21 +23,55 @@ def get_option_greeks(**kwargs):
     exercise_type = kwargs['exercise_type'].upper()
     dividend_rate = 0
 
+    expiration_datetime = cu.convert_doubledate_2datetime(expiration_date)
+    calculation_datetime = cu.convert_doubledate_2datetime(calculation_date)
+
+    expiration_date_obj = ql.Date(expiration_datetime.day, expiration_datetime.month, expiration_datetime.year)
+    calculation_date_obj = ql.Date(calculation_datetime.day, calculation_datetime.month, calculation_datetime.year)
+
+    nan_greeks = {'option_price': np.NaN,
+            'implied_vol': np.NaN,
+            'delta': np.NaN,
+            'vega': np.NaN,
+            'theta': np.NaN,
+            'cal_dte': day_count_obj.dayCount(calculation_date_obj, expiration_date_obj),
+            'gamma': np.NaN}
+
+    #print(underlying)
+    #print(kwargs['option_price'])
+    #print(option_type)
+    #print(exercise_type)
+    #print(risk_free_rate)
+    #print(expiration_date)
+    #print(calculation_date)
+    #print(strike)
+
+    if 'option_price' in kwargs.keys():
+        if option_type == 'C':
+            if kwargs['option_price']+strike<=underlying:
+                nan_greeks['delta'] = 1
+                return nan_greeks
+        elif option_type == 'P':
+            if kwargs['option_price']<=strike-underlying:
+                nan_greeks['delta'] = -1
+                return nan_greeks
+
     if 'implied_vol' in kwargs.keys():
         implied_vol = kwargs['implied_vol']
     else:
         implied_vol = 0.15
+
+    if 'engine_name' in kwargs.keys():
+        engine_name = kwargs['engine_name']
+    else:
+        engine_name = 'baw'
 
     if option_type == 'C':
         option_type_obj = ql.Option.Call
     elif option_type == 'P':
         option_type_obj = ql.Option.Put
 
-    expiration_datetime = cu.convert_doubledate_2datetime(expiration_date)
-    calculation_datetime = cu.convert_doubledate_2datetime(calculation_date)
 
-    expiration_date_obj = ql.Date(expiration_datetime.day, expiration_datetime.month, expiration_datetime.year)
-    calculation_date_obj = ql.Date(calculation_datetime.day, calculation_datetime.month, calculation_datetime.year)
 
     ql.Settings.instance().evaluationDate = calculation_date_obj
 
@@ -45,42 +80,52 @@ def get_option_greeks(**kwargs):
     elif exercise_type == 'A':
         exercise_obj = ql.AmericanExercise(calculation_date_obj, expiration_date_obj)
 
-    underlying_obj = ql.QuoteHandle(ql.SimpleQuote(underlying/m.exp(day_count_obj.yearFraction(calculation_date_obj,expiration_date_obj)*risk_free_rate)))
+    #print('years to expitation: ' + str(day_count_obj.yearFraction(calculation_date_obj, expiration_date_obj)))
+
+    #print('spot: ' + str(underlying/m.exp(day_count_obj.yearFraction(calculation_date_obj, expiration_date_obj)*risk_free_rate)))
+
+    #underlying_obj = ql.QuoteHandle(ql.SimpleQuote(underlying/m.exp(day_count_obj.yearFraction(calculation_date_obj, expiration_date_obj)*risk_free_rate)))
+    underlying_obj = ql.QuoteHandle(ql.SimpleQuote(underlying))
 
     flat_ts_obj = ql.YieldTermStructureHandle(ql.FlatForward(calculation_date_obj, risk_free_rate, day_count_obj))
 
     dividend_yield_obj = ql.YieldTermStructureHandle(ql.FlatForward(calculation_date_obj, dividend_rate, day_count_obj))
     flat_vol_ts_obj = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(calculation_date_obj, calendar_obj, implied_vol, day_count_obj))
 
-    bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
-    #bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
+    #bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
+    bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
 
     payoff = ql.PlainVanillaPayoff(option_type_obj, strike)
     option_obj = ql.VanillaOption(payoff, exercise_obj)
-    option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
 
-    #time_steps = 100
-    #grid_points = 100
-    #option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process,time_steps,grid_points))
+    if engine_name == 'baw':
+        option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
+    elif engine_name == 'fda':
+        option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
+    option_price = option_obj.NPV()
 
     if 'option_price' in kwargs.keys():
         implied_vol = option_obj.impliedVolatility(kwargs['option_price'], bsm_process)
         flat_vol_ts_obj = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(calculation_date_obj, calendar_obj, implied_vol, day_count_obj))
-        bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
-        #bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
-        option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
-        #option_obj.setPricingEngine(ql.JuQuadraticApproximationEngine(bsm_process))
+        #bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
+        bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
 
-        #time_steps = 1000
-        #grid_points = 1000
-        #option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process,time_steps,grid_points))
+        if engine_name == 'baw':
+            option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
+        elif engine_name == 'fda':
+            option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
 
+        option_price = option_obj.NPV()
 
-    return {'option_price': option_obj.NPV(),
+    option_obj = ql.VanillaOption(payoff, ql.EuropeanExercise(expiration_date_obj))
+    option_obj.setPricingEngine(ql.AnalyticEuropeanEngine(bsm_process))
+
+    return {'option_price': option_price,
             'implied_vol': implied_vol,
             'delta': option_obj.delta(),
             'vega': option_obj.vega(),
             'theta': option_obj.thetaPerDay(),
+            'cal_dte': day_count_obj.dayCount(calculation_date_obj, expiration_date_obj),
             'gamma': option_obj.gamma()}
 
 
