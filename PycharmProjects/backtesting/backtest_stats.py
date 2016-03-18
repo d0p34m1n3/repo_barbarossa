@@ -24,10 +24,10 @@ def get_summary_stats(pnl_series):
     output['mean_pnl'] = np.nanmean(pnl_series)
 
     if len(pnl_series) >= 10:
-        output['downside20'] = stats.get_number_from_quantile(y=pnl_series, quantile_list=20)
+        output['downside20'] = stats.get_number_from_quantile(y=pnl_series, quantile_list=[20])[0]
 
     if len(pnl_series) >= 40:
-        output['downside5'] = stats.get_number_from_quantile(y=pnl_series, quantile_list=5)
+        output['downside5'] = stats.get_number_from_quantile(y=pnl_series, quantile_list=[5])[0]
 
     output['reward_risk'] = output['mean_pnl']/abs(output['downside20'] )
 

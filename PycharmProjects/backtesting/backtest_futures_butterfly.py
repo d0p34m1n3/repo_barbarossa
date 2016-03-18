@@ -21,7 +21,7 @@ def construct_futures_butterfly_portfolio(**kwargs):
     backtest_output = kwargs['backtest_output']
     pnl_field = kwargs['pnl_field']
 
-    if rule_no in [1, 3]:
+    if rule_no in [1, 3, 4, 5, 6]:
         stop_loss = -100000000000
     elif rule_no == 2:
         stop_loss = -1000

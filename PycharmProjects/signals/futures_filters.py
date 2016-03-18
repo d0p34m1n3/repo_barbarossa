@@ -30,6 +30,40 @@ def get_futures_butterfly_filters(**kwargs):
         selection_indx = selection_indx|((data_frame_input['Q'] >= 85) & (data_frame_input['QF'] >= 60) &
                                          (data_frame_input['recent_5day_pnl'] < 2*data_frame_input['upside']))
 
+    if 'long4' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -1.2) &
+                                         (data_frame_input['QF'] <= 12) &
+                                         (data_frame_input['second_spread_weight_1'] > 0.5) &
+                                         (data_frame_input['second_spread_weight_1'] < 1.5))
+
+    if 'short4' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) &
+                                         (data_frame_input['QF'] >= 85) &
+                                         (data_frame_input['second_spread_weight_1'] > 0.5) &
+                                         (data_frame_input['second_spread_weight_1'] < 1.5))
+
+    if 'long5' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -1.2) &
+                                         (data_frame_input['QF'] <= 12) &
+                                         (data_frame_input['tickerHead'] != 'S') &
+                                         (data_frame_input['tickerHead'] != 'RB'))
+
+    if 'short5' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) &
+                                         (data_frame_input['QF'] >= 85) &
+                                           (data_frame_input['tickerHead'] != 'S') &
+                                         (data_frame_input['tickerHead'] != 'RB'))
+
+    if 'long6' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -1.2) &
+                                         (data_frame_input['QF'] <= 12) &
+                                         (data_frame_input['mean_reversion_signif'] == True))
+
+    if 'short6' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) &
+                                         (data_frame_input['QF'] >= 85) &
+                                         (data_frame_input['mean_reversion_signif'] == True))
+
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
 
 def get_spread_carry_filters(**kwargs):

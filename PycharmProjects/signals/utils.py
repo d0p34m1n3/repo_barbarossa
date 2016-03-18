@@ -46,6 +46,8 @@ def get_signal_correlation(**kwargs):
     if strategy_class == 'futures_butterfly':
         if signal_name in ['Q', 'QF', 'z1', 'z2', 'z3', 'z4']:
             correlation = -1
+        elif signal_name == 'mom5':
+            correlation = 1
     elif strategy_class == 'spread_carry':
         if signal_name == 'q':
             correlation = -1
