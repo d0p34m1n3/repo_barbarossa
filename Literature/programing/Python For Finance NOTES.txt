@@ -8,4 +8,19 @@
 
 (PAGE 36) Different interfaces to use ipython.
 
-[PAGE 43]
+(PAGE 43) Markdown an latex format in ipython.
+
+(PAGE 44) Time and prun functions magic functions seem useful
+
+(PAGE 63) The majority of numpy code is implemented in C or Fortran, which makes NumPy, when used in the right way,
+faster than pure Python.
+
+(PAGE 72) numpy.where seems to be a useful tool for logical indexing.
+
+(PAGE 86) When parsing string objects, consider using regular expressions, which can bring both convenience and performance
+to such operations.
+
+(PAGE 107) Depending on the specific shape of the data structures, care should be taken with regard to the memory layout of arrays.
+Choosing the right approach here can speed up code execution by a factor of two or more.
+
+[PAGE 129]
