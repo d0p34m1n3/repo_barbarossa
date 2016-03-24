@@ -84,12 +84,22 @@ def get_options_price_from_db(**kwargs):
     elif 'ticker_head' in kwargs.keys():
         filter_string = 'WHERE ticker_head=\'' + kwargs['ticker_head'] + '\''
     else:
-        filter_string
+        filter_string = ''
 
     if 'settle_date' in kwargs.keys():
         filter_string = filter_string + ' and price_date=' + str(kwargs['settle_date'])
 
-    sql_query = 'SELECT option_type, strike, cal_dte, tr_dte, close_price FROM daily_option_price ' + filter_string
+    if 'delta_target' in kwargs.keys():
+
+        filter_string = filter_string + ' and abs(' + str(kwargs['delta_target']) + '-delta) = ' +\
+        '(SELECT min(abs('+ str(kwargs['delta_target']) + '-delta)) FROM daily_option_price ' + filter_string + ')'
+
+    if 'column_names' in kwargs.keys():
+        column_names = kwargs['column_names']
+    else:
+        column_names = ['id', 'option_type', 'strike', 'cal_dte', 'tr_dte', 'close_price', 'volume', 'open_interest']
+
+    sql_query = 'SELECT ' + ",".join(column_names) + ' FROM daily_option_price ' + filter_string
 
     cur = con.cursor()
     cur.execute(sql_query)
@@ -98,4 +108,7 @@ def get_options_price_from_db(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return pd.DataFrame(data,columns=['option_type', 'strike', 'cal_dte', 'tr_dte', 'close_price'])
+    return pd.DataFrame(data, columns=column_names)
+
+
+

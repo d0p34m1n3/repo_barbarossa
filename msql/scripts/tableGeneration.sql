@@ -130,6 +130,25 @@ CREATE TABLE `daily_option_price` (
   KEY `index_data_vendor_id` (`data_vendor_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `option_ticker_indicators`(
+`id` int NOT NULL AUTO_INCREMENT,
+`ticker` varchar(32) NOT NULL,
+`ticker_head` varchar(32) NOT NULL,
+`ticker_month` int NOT NULL,
+`ticker_year` int NOT NULL,
+`cal_dte` int NULL,
+`tr_dte` int NULL,
+`atm_vol` decimal(15,8) NULL,
+`close2close_vol20` decimal(15,8) NULL,
+`price_date` datetime NOT NULL,
+`created_date` datetime NOT NULL,
+`last_updated_date` datetime NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE KEY `ticker_day` (`ticker`,`price_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE `strategy` (
 `id` int NOT NULL AUTO_INCREMENT,
 `alias` varchar(255) NOT NULL,

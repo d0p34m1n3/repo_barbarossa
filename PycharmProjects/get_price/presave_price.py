@@ -293,7 +293,7 @@ dirty_data_points = pd.DataFrame([('BM2006', dt.datetime(2005, 11, 18), True),
                                   ('NGX2007', dt.datetime(2007, 4, 3), True),
                                   ('NGX2007', dt.datetime(2007, 4, 4), True),
                                   ('KCU2008', dt.datetime(2008, 2, 19), True)
-                                  ],columns=['ticker','settle_date','discard'])
+                                  ],columns=['ticker', 'settle_date', 'discard'])
 
 
 def generate_and_update_futures_data_file_4tickerhead(**kwargs):
@@ -316,7 +316,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     data4_tickerhead['close_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['close_price'].values]
 
-    data4_tickerhead['cont_indx']= 100*data4_tickerhead['ticker_year']+data4_tickerhead['ticker_month']
+    data4_tickerhead['cont_indx'] = 100*data4_tickerhead['ticker_year']+data4_tickerhead['ticker_month']
     unique_cont_indx_list = data4_tickerhead['cont_indx'].unique()
     num_contracts = len(unique_cont_indx_list)
     unique_cont_indx_list = np.sort(unique_cont_indx_list)

@@ -36,9 +36,9 @@ def read_cme_settle_txt_files(**kwargs):
 
     for indx in range(len(decoded_data)):
 
-        if any(x in decoded_data[indx] for x in ['OPTIONS', 'OPTION', 'Options', 'Option' , 'FUTURE', 'Future',
+        if any(x in decoded_data[indx] for x in ['OPTIONS', 'OPTION', 'Options', 'Option', 'FUTURE', 'Future',
                                                  'CSO', 'AIRASIA', 'SYNTH', 'BURSA', 'SPRD', 'Spread',
-                                                 'CROSSRATE', 'WEEKLY', 'CALL', 'PUT']):
+                                                 'CROSSRATE', 'WEEKLY', 'CALL', 'PUT','UTILITIES']):
             title_list.append(decoded_data[indx])
 
             if len(data_start_list) == 0:

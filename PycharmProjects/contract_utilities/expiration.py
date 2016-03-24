@@ -318,13 +318,9 @@ def get_days2_expiration(**kwargs):
     date_to = kwargs['date_to']
 
     datetime_to = cu.convert_doubledate_2datetime(date_to)
-    expiration_datetime =  get_expiration_from_db(**kwargs)
+    expiration_datetime = get_expiration_from_db(**kwargs)
 
     return {'datetime_to': datetime_to, 'expiration_datetime': expiration_datetime}
-
-
-
-
 
 
 def get_prev_ticker_year_month(ticker_year,ticker_month_num):
@@ -335,6 +331,7 @@ def get_prev_ticker_year_month(ticker_year,ticker_month_num):
         ticker_month_num_prev = ticker_month_num-1
         ticker_year_prev = ticker_year
     return {'ticker_year_prev': ticker_year_prev, 'ticker_month_num_prev': ticker_month_num_prev}
+
 
 def get_calendar_4ticker_head(ticker_head):
 

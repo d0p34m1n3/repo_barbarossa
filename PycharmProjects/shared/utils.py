@@ -16,6 +16,13 @@ def flatten_list(input_list):
     return list(chain.from_iterable(input_list))
 
 
+def get_closest(**kwargs):
+    list_input = kwargs['list_input']
+    target_value = kwargs['target_value']
+
+    return min(list_input, key=lambda x: abs(x-target_value))
+
+
 def get_equal_length_partition(**kwargs):
 
     min_value = kwargs['min_value']

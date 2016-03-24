@@ -29,12 +29,14 @@ def get_option_greeks(**kwargs):
     expiration_date_obj = ql.Date(expiration_datetime.day, expiration_datetime.month, expiration_datetime.year)
     calculation_date_obj = ql.Date(calculation_datetime.day, calculation_datetime.month, calculation_datetime.year)
 
+    cal_dte = day_count_obj.dayCount(calculation_date_obj, expiration_date_obj)
+
     nan_greeks = {'option_price': np.NaN,
             'implied_vol': np.NaN,
             'delta': np.NaN,
             'vega': np.NaN,
             'theta': np.NaN,
-            'cal_dte': day_count_obj.dayCount(calculation_date_obj, expiration_date_obj),
+            'cal_dte': cal_dte,
             'gamma': np.NaN}
 
     #print(underlying)
@@ -48,13 +50,27 @@ def get_option_greeks(**kwargs):
 
     if 'option_price' in kwargs.keys():
         if option_type == 'C':
-            if kwargs['option_price']+strike<=underlying:
+            if kwargs['option_price']+strike-underlying <= 10**(-12):
                 nan_greeks['delta'] = 1
                 return nan_greeks
         elif option_type == 'P':
-            if kwargs['option_price']<=strike-underlying:
+            if kwargs['option_price']-strike+underlying <= 10**(-12):
                 nan_greeks['delta'] = -1
                 return nan_greeks
+
+    if cal_dte == 0:
+        if option_type == 'C':
+            if strike <= underlying:
+                nan_greeks['delta'] = 1
+            else:
+                nan_greeks['delta'] = 0
+        elif option_type == 'P':
+            if strike >= underlying:
+                nan_greeks['delta'] = -1
+            else:
+                nan_greeks['delta'] = 0
+
+        return nan_greeks
 
     if 'implied_vol' in kwargs.keys():
         implied_vol = kwargs['implied_vol']
@@ -70,8 +86,6 @@ def get_option_greeks(**kwargs):
         option_type_obj = ql.Option.Call
     elif option_type == 'P':
         option_type_obj = ql.Option.Put
-
-
 
     ql.Settings.instance().evaluationDate = calculation_date_obj
 
@@ -105,17 +119,20 @@ def get_option_greeks(**kwargs):
     option_price = option_obj.NPV()
 
     if 'option_price' in kwargs.keys():
-        implied_vol = option_obj.impliedVolatility(kwargs['option_price'], bsm_process)
-        flat_vol_ts_obj = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(calculation_date_obj, calendar_obj, implied_vol, day_count_obj))
-        #bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
-        bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
+        try:
+            implied_vol = option_obj.impliedVolatility(kwargs['option_price'], bsm_process)
+            flat_vol_ts_obj = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(calculation_date_obj, calendar_obj, implied_vol, day_count_obj))
+            #bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
+            bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
 
-        if engine_name == 'baw':
-            option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
-        elif engine_name == 'fda':
-            option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
+            if engine_name == 'baw':
+                option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
+            elif engine_name == 'fda':
+                option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
 
-        option_price = option_obj.NPV()
+            option_price = option_obj.NPV()
+        except Exception:
+            return nan_greeks
 
     option_obj = ql.VanillaOption(payoff, ql.EuropeanExercise(expiration_date_obj))
     option_obj.setPricingEngine(ql.AnalyticEuropeanEngine(bsm_process))
@@ -125,7 +142,7 @@ def get_option_greeks(**kwargs):
             'delta': option_obj.delta(),
             'vega': option_obj.vega(),
             'theta': option_obj.thetaPerDay(),
-            'cal_dte': day_count_obj.dayCount(calculation_date_obj, expiration_date_obj),
+            'cal_dte': cal_dte,
             'gamma': option_obj.gamma()}
 
 

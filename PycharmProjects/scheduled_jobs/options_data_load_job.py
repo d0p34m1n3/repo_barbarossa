@@ -5,6 +5,7 @@ import shared.calendar_utilities as cu
 import pickle as pickle
 import my_sql_routines.futures_price_loader as fpl
 import my_sql_routines.options_price_loader as opl
+import my_sql_routines.options_greek_loader as ogl
 import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
 
@@ -59,7 +60,7 @@ with open(options_data_dir + '/nymex_options.pkl', 'wb') as handle:
 con = msu.get_my_sql_connection()
 
 try:
-    fpl.update_futures_price_database_from_cme_file(con=con)
+    fpl.update_futures_price_database_from_cme_file(con=con, settle_date=folder_date)
     pp.generate_and_update_futures_data_files(ticker_head_list='cme_futures')
 except Exception:
     pass
@@ -69,4 +70,9 @@ try:
 except Exception:
     pass
 
-con = msu.get_my_sql_connection()
+try:
+    ogl.update_options_greeks_4date(con=con, settle_date=folder_date)
+except Exception:
+    pass
+
+con.close()

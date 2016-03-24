@@ -82,6 +82,7 @@ def get_butterfly_panel_plot(**kwargs):
                      str(front_contract_year.values[x]) for x in new_index if contract_change_indx[x]]
     x_tick_values.append('X')
 
+    plt.figure(figsize=(16, 7))
     plt.plot(aligned_data['residuals'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.grid()
@@ -130,6 +131,7 @@ def get_butterfly_scatter_plot(**kwargs):
     yield1_last5_years = yield1[last5_years_indx]
     yield2_last5_years = yield2[last5_years_indx]
 
+    plt.figure(figsize=(16,7))
     plt.scatter(yield2, yield1, color='b')
     plt.scatter(yield2_last5_years,yield1_last5_years, color='k')
     plt.scatter(yield2_current, yield1_current, color='r')

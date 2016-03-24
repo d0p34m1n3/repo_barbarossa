@@ -163,7 +163,12 @@ def update_futures_price_database_from_cme_file(**kwargs):
 
     import time
     con = msu.get_my_sql_connection(**kwargs)
-    run_date = int(time.strftime('%Y%m%d'))
+
+    if 'settle_date' in kwargs.keys():
+        run_date = kwargs['settle_date']
+    else:
+        run_date = int(time.strftime('%Y%m%d'))
+
     #run_date = 20160225
     data_vendor_id = 2
     now = datetime.datetime.now()

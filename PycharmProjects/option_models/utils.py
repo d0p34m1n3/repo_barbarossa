@@ -57,6 +57,22 @@ def get_option_underlying(**kwargs):
     ticker_month_num = contract_specs_output['ticker_month_num']
     ticker_year = contract_specs_output['ticker_year']
 
+    if ticker_head == 'E0':
+        ticker_head = 'ED'
+        ticker_year = ticker_year + 1
+    elif ticker_head == 'E2':
+        ticker_head = 'ED'
+        ticker_year = ticker_year + 2
+    elif ticker_head == 'E3':
+        ticker_head = 'ED'
+        ticker_year = ticker_year + 3
+    elif ticker_head == 'E4':
+        ticker_head = 'ED'
+        ticker_year = ticker_year + 4
+    elif ticker_head == 'E5':
+        ticker_head = 'ED'
+        ticker_year = ticker_year + 5
+
     futures_contract_months = cmi.futures_contract_months[ticker_head]
 
     futures_contract_month_numbers = [cmi.letter_month_string.find(x)+1 for x in futures_contract_months]
