@@ -23,4 +23,27 @@ to such operations.
 (PAGE 107) Depending on the specific shape of the data structures, care should be taken with regard to the memory layout of arrays.
 Choosing the right approach here can speed up code execution by a factor of two or more.
 
-[PAGE 129]
+(PAGE 177) Pickle stores objects according to first in, first out (FIFO) principle. There is one major problem with this: there is no
+meta-information available to the user to know beforehand what is stored in a pickle file. A sometimes helpful workaround is to not
+store single objects, but a dict object containing all the other objects. This approach, however, requires us to write and read all 
+objects at once. This is a compromise one can probably live with in many circumstances given the much higher convenience it brings along.
+
+(PAGE 183) Writing and reading NumPy arrays as a way of data storage and retrieval is much, much faster compared to SQL databases or 
+using the standard pickle library for serialization.
+
+(PAGE 188) Instead of writing and reading to SQL database reading and writing from pandas tables might be a faster alternative.
+
+(PAGE 200) SQL-based (i.e., relational) databases have advantages when it comes to complex data structures that exhibit lots of
+relations between single objects/tables. This might justify in some circumstances their performance disadvantage over pure Numpy
+ndaray-based or pandas DataFrame-based appraoches. However, many application areas in finance or science in general, can succeed
+with a mainly array-based data modeling approach. In these cases, huge performance improvements can be realized by making use of
+native Numpy I/O capabilities, a combination of NumpPy and PyTables capabilities, or of the pandas approach via HDF5-based stores.
+
+(PAGE 201) The out-of-memory calculation of the numerical expression with PyTables takes roughly 1.5 minutes on standard hardware.
+The same task executed in-memory (using the numexpr library) takes about 4 seconds, while reading the whole data set from disk takes
+just over 5 seconds.This value is from an eight-core server with enough memory (in this particular case, 64 GB of RAM) and an SSD drive.
+Therefore, scaling up hardware and applying different implementation approaches might significantly influence performance.
+
+
+
+[PAGE 212]

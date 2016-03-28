@@ -140,4 +140,3 @@ def get_butterfly_scatter_plot(**kwargs):
     plt.show()
 
     return bf_signals_output
-
