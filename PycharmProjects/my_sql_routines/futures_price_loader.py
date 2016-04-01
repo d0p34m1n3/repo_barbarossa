@@ -42,6 +42,12 @@ def load_price_data_4ticker(load_price_data_input):
         return
 
     contract_specs_output = cmi.get_contract_specs(ticker)
+
+    if contract_specs_output['ticker_head'] == 'JY':
+        price_multiplier = 10
+    else:
+        price_multiplier = 1
+
     bday_us = CustomBusinessDay(calendar=exp.get_calendar_4ticker_head(contract_specs_output['ticker_head']))
     dts = pd.date_range(start=price_data.index[0], end=expiration_date, freq=bday_us)
     dts = [x.date() for x in dts]
@@ -67,10 +73,10 @@ def load_price_data_4ticker(load_price_data_input):
                      (expiration_date-x[date_indx].to_datetime().date()).days,
                      len([y for y in dts if y > x[date_indx].to_datetime().date()]),
                      now, now,
-                     None if np.isnan(x[open_indx]) else x[open_indx],
-                     None if np.isnan(x[high_indx]) else x[high_indx],
-                     None if np.isnan(x[low_indx]) else x[low_indx],
-                     None if np.isnan(x[settle_indx]) else x[settle_indx],
+                     None if np.isnan(x[open_indx]) else price_multiplier*x[open_indx],
+                     None if np.isnan(x[high_indx]) else price_multiplier*x[high_indx],
+                     None if np.isnan(x[low_indx]) else price_multiplier*x[low_indx],
+                     None if np.isnan(x[settle_indx]) else price_multiplier*x[settle_indx],
                      None if np.isnan(x[volume_indx]) else x[volume_indx],
                      None if np.isnan(x[interest_indx]) else x[interest_indx]]) for x in price_data.values]
 
@@ -85,9 +91,12 @@ def load_price_data_4ticker(load_price_data_input):
     if 'con' not in load_price_data_input.keys():
         con.close()
 
+
 def load_entire_history(**kwargs):
 
-    contract_list = cl.get_db_contract_list_filtered(ticker_year_from=1980, ticker_year_to=2022)
+    contract_list = cl.get_db_contract_list_filtered(instrument='futures',
+                                                     ticker_year_from=1980, ticker_year_to=2022, **kwargs)
+
     # length of contract_list is 6594
 
     if 'start_indx' in kwargs.keys():
@@ -98,7 +107,7 @@ def load_entire_history(**kwargs):
     if 'end_indx' in kwargs.keys():
         end_indx = kwargs['end_indx']
     else:
-        end_indx = 6751
+        end_indx = len(contract_list)
 
     con = msu.get_my_sql_connection(**kwargs)
     load_price_data_input = dict()

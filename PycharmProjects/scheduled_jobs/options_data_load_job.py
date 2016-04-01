@@ -6,6 +6,7 @@ import pickle as pickle
 import my_sql_routines.futures_price_loader as fpl
 import my_sql_routines.options_price_loader as opl
 import my_sql_routines.options_greek_loader as ogl
+import my_sql_routines.options_signal_loader as osl
 import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
 
@@ -72,6 +73,11 @@ except Exception:
 
 try:
     ogl.update_options_greeks_4date(con=con, settle_date=folder_date)
+except Exception:
+    pass
+
+try:
+    osl.load_ticker_signals_4settle_date(con=con, settle_date=folder_date)
 except Exception:
     pass
 

@@ -20,10 +20,14 @@ def get_stdev(**kwargs):
 
     return np.nanstd(x)
 
+
 def get_quantile_from_number(quantile_input):
 
     x = quantile_input['x']
     y = quantile_input['y']
+
+    if np.isnan(x):
+        return np.NAN
 
     if 'clean_num_obs' in quantile_input.keys():
         clean_num_obs = quantile_input['clean_num_obs']

@@ -16,6 +16,7 @@ tr_days_half_band_with = {1: const.monthly_tr_days_half_band_width,
                           3: const.quarterly_tr_days_half_band_width,
                           12: const.annual_tr_days_half_band_width}
 
+
 def get_aggregation_method_contracts_back(utilities_input):
 
     ticker_class = utilities_input['ticker_class']

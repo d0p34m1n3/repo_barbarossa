@@ -37,3 +37,42 @@ def get_daily_pnl_snapshot(**kwargs):
     strategy_frame.to_pickle(ta_output_dir + '/portfolio_pnl.pkl')
 
     return strategy_frame
+
+
+def get_trades_4portfolio(**kwargs):
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'trade_date_to' in kwargs.keys():
+        filter_string = 'WHERE trade_date<=' + str(kwargs['trade_date_to'])
+    else:
+        filter_string = ''
+
+    cur = con.cursor()
+
+    sql_query = 'SELECT ticker, trade_quantity from trades ' + filter_string
+    cur = con.cursor()
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    trade_frame = pd.DataFrame(data, columns=['ticker', 'trade_quantity'])
+    return trade_frame
+
+
+def get_position_4portfolio(**kwargs):
+
+    trades_frame = get_trades_4portfolio(**kwargs)
+
+    grouped = trades_frame.groupby('ticker')
+
+    net_position = pd.DataFrame()
+
+    net_position['ticker'] = (grouped['ticker'].first()).values
+    net_position['qty'] = (grouped['trade_quantity'].sum()).values
+    net_position = net_position[net_position['qty']!=0]
+
+    return net_position
+

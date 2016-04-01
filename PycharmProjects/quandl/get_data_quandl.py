@@ -26,7 +26,20 @@ quandl_database = {'LN': 'CME',
                    'HO': 'CME',
                    'RB': 'CME',
                    'NG': 'CME',
-                   'ED': 'CME'}
+                   'ED': 'CME',
+                   'BP': 'CME',
+                   'GC': 'CME',
+                   'CD': 'CME',
+                   'ES': 'CME',
+                   'AD': 'CME',
+                   'TY': 'CME',
+                   'TU': 'CME',
+                   'FV': 'CME',
+                   'EC': 'CME',
+                   'JY': 'CME',
+                   'NQ': 'CME',
+                   'US': 'CME',
+                   'SI': 'CME'}
 
 def get_quandl_database_4ticker(ticker):
     ticker_head = cmi.get_contract_specs(ticker)['ticker_head']

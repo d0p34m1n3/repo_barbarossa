@@ -27,6 +27,7 @@ def get_futures_curve_chart_4date(**kwargs):
 
     tick_labels = [month_letters[x]+str(ticker_year_short.values[x]) for x in range(len(month_letters))]
 
+    plt.figure(figsize=(16, 7))
     plt.plot(data2_plot['close_price'])
     plt.xticks(range(len(data2_plot.index)),tick_labels)
     plt.grid()
@@ -140,3 +141,4 @@ def get_butterfly_scatter_plot(**kwargs):
     plt.show()
 
     return bf_signals_output
+

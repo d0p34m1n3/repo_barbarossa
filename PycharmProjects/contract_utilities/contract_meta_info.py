@@ -271,7 +271,7 @@ aligned_data_tickerhead = {'LN': 'LNH',
                            'E4': 'E4',
                            'E5': 'E5'}
 
-aligned_data_tr_dte_list = [10, 15, 20, 25, 30, 35, 40, 40, 45, 50, 60, 70, 80, 90, 100,
+aligned_data_tr_dte_list = [10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100,
                            120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 330, 360, 390]
 
 contract_multiplier = {'LN': 400,
