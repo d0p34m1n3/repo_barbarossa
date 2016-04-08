@@ -2,6 +2,7 @@
 import ta.strategy as ts
 import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
+import get_price.get_options_price as gop
 import contract_utilities.expiration as exp
 import shared.calendar_utilities as cu
 import my_sql_routines.my_sql_utilities as msu
@@ -38,13 +39,28 @@ def get_strategy_pnl_4day(**kwargs):
 
     pnl_date_1 = exp.doubledate_shift_bus_days(double_date=pnl_date)
 
-    trades_frame['price_1'] = [gfp.get_futures_price_preloaded(ticker=x,
-                                futures_data_dictionary=futures_data_dictionary,
-                                settle_date=pnl_date_1)['close_price'].values[0] for x in trades_frame['ticker']]
+    underlying_frame = trades_frame[trades_frame['instrument'] == 'F']
+    option_frame = trades_frame[trades_frame['instrument'] == 'O']
 
-    trades_frame['price'] = [gfp.get_futures_price_preloaded(ticker=x,
+    underlying_frame['price_1'] = [gfp.get_futures_price_preloaded(ticker=x,
                                 futures_data_dictionary=futures_data_dictionary,
-                                settle_date=pnl_date)['close_price'].values[0] for x in trades_frame['ticker']]
+                                settle_date=pnl_date_1)['close_price'].values[0] for x in underlying_frame['ticker']]
+
+    underlying_frame['price'] = [gfp.get_futures_price_preloaded(ticker=x,
+                                futures_data_dictionary=futures_data_dictionary,
+                                settle_date=pnl_date)['close_price'].values[0] for x in underlying_frame['ticker']]
+
+    option_frame['price_1'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
+                                                             strike=option_frame['strike_price'].iloc[x],
+                                                             option_type=option_frame['option_type'].iloc[x],
+                                                             con=con,settle_date=pnl_date_1)['close_price'].values[0] for x in range(len(option_frame.index))]
+
+    option_frame['price'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
+                                                             strike=option_frame['strike_price'].iloc[x],
+                                                             option_type=option_frame['option_type'].iloc[x],
+                                                             con=con,settle_date=pnl_date)['close_price'].values[0] for x in range(len(option_frame.index))]
+
+    trades_frame = pd.concat([option_frame, underlying_frame])
 
     position_frame = trades_frame[trades_frame['trade_date'] < pnl_datetime]
     intraday_frame = trades_frame[trades_frame['trade_date'] == pnl_datetime]
@@ -62,6 +78,7 @@ def get_strategy_pnl_4day(**kwargs):
                                 position_frame['trade_quantity']*\
                                 (position_frame['price']-position_frame['price_1'])
         position_pnl = position_frame['pnl'].sum()
+
         position_grouped_per_ticker = position_frame.groupby('ticker')
         position_grouped_per_tickerhead = position_frame.groupby('ticker_head')
         position_pnl_per_ticker['pnl_position'] = (position_grouped_per_ticker['pnl'].sum()).values

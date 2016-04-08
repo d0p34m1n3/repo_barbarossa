@@ -9,6 +9,9 @@ import my_sql_routines.options_greek_loader as ogl
 import my_sql_routines.options_signal_loader as osl
 import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
+import opportunity_constructs.vcs as vcs
+import formats.options_strategy_formats as osf
+import ta.prepare_daily as prep
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
 equity_address = 'ftp://ftp.cmegroup.com/pub/settle/stleqt'
@@ -78,6 +81,17 @@ except Exception:
 
 try:
     osl.load_ticker_signals_4settle_date(con=con, settle_date=folder_date)
+except Exception:
+    pass
+
+try:
+    vcs.generate_vcs_sheet_4date(con=con,date_to=folder_date)
+except Exception:
+    pass
+
+try:
+    osf.generate_vcs_formatted_output(report_date=folder_date)
+    prep.prepare_strategy_daily(strategy_class='vcs', report_date=folder_date)
 except Exception:
     pass
 

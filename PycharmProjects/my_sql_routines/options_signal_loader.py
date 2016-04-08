@@ -58,7 +58,9 @@ def load_ticker_signals_4settle_date(**kwargs):
     ticker_head_indx = column_names.index('ticker_head')
     ticker_month_indx = column_names.index('ticker_month')
     ticker_year_indx = column_names.index('ticker_year')
-    atm_vol_indx = column_names.index('delta_vol')
+    imp_vol_indx = column_names.index('delta_vol')
+    strike_indx = column_names.index('strike')
+    theta_indx = column_names.index('theta')
     open_interest_indx = column_names.index('open_interest')
     volume_indx = column_names.index('volume')
     real_vol_indx = column_names.index('real_vol')
@@ -69,14 +71,16 @@ def load_ticker_signals_4settle_date(**kwargs):
     tuples = [tuple([x[ticker_indx], x[ticker_head_indx], x[ticker_month_indx] , x[ticker_year_indx],
                      None if np.isnan(x[cal_dte_indx]) else x[cal_dte_indx],
                      None if np.isnan(x[tr_dte_indx]) else x[tr_dte_indx],
-                     None if np.isnan(x[atm_vol_indx]) else 100*x[atm_vol_indx],
+                     None if np.isnan(x[imp_vol_indx]) else 100*x[imp_vol_indx], 0.5,
+                     None if np.isnan(x[theta_indx]) else x[theta_indx],
+                     None if np.isnan(x[strike_indx]) else x[strike_indx],
                      None if np.isnan(x[real_vol_indx]) else x[real_vol_indx],
                      None if np.isnan(x[open_interest_indx]) else x[open_interest_indx],
                      None if np.isnan(x[volume_indx]) else x[volume_indx],
                      settle_datetime.date(), now, now]) for x in atm_vol_frame.values]
 
     column_str = "ticker, ticker_head, ticker_month, ticker_year, " \
-                 " cal_dte, tr_dte, atm_vol, close2close_vol20, open_interest, volume, price_date, created_date, last_updated_date"
+                 " cal_dte, tr_dte, imp_vol, delta, theta, strike, close2close_vol20, open_interest, volume, price_date, created_date, last_updated_date"
 
     insert_str = ("%s, " * len(column_str.split(',')))[:-2]
     final_str = "REPLACE INTO option_ticker_indicators (%s) VALUES (%s)" % (column_str, insert_str)

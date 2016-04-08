@@ -4,6 +4,7 @@ import my_sql_routines.my_sql_utilities as msu
 import signals.option_signals as ops
 import contract_utilities.contract_meta_info as cmi
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def get_vcs_panel_plot(**kwargs):
@@ -21,7 +22,7 @@ def get_vcs_panel_plot(**kwargs):
     hist = option_indicator_output['hist']
 
     new_index = list(range(len(hist.index)))
-    contract_change_indx = (hist['c1']['ticker_year']-hist['c2']['ticker_year'].shift(1) != 0).values
+    contract_change_indx = (hist['c1']['ticker_year']-hist['c1']['ticker_year'].shift(1) != 0).values
     front_contract_year = hist['c1']['ticker_year'].astype('int') % 10
 
     contract_change_indx[0] = False
@@ -32,9 +33,21 @@ def get_vcs_panel_plot(**kwargs):
                      str(front_contract_year.values[x]) for x in new_index if contract_change_indx[x]]
 
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['c1']['atm_vol']/hist['c2']['atm_vol'])
+    plt.plot(hist['c1']['imp_vol']/hist['c2']['imp_vol'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('atmVolRatio')
+    plt.grid()
+    plt.show()
+
+    fwd_var = hist['c2']['cal_dte']*(hist['c2']['imp_vol']**2)-hist['c1']['cal_dte']*(hist['c1']['imp_vol']**2)
+    fwd_vol_sq = fwd_var/(hist['c2']['cal_dte']-hist['c1']['cal_dte'])
+    fwd_vol_adj = np.sign(fwd_vol_sq)*((abs(fwd_vol_sq)).apply(np.sqrt))
+    hist['fwd_vol_adj'] = fwd_vol_adj
+
+    plt.figure(figsize=(16, 7))
+    plt.plot(hist['fwd_vol_adj'])
+    plt.xticks(x_tick_locations,x_tick_values)
+    plt.ylabel('Fwd Vol')
     plt.grid()
     plt.show()
 
@@ -46,7 +59,7 @@ def get_vcs_panel_plot(**kwargs):
     plt.show()
 
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['c1']['atm_vol']/hist['c1']['close2close_vol20'])
+    plt.plot(hist['c1']['imp_vol']/hist['c1']['close2close_vol20'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('atmRealVolRatio')
     plt.grid()
@@ -64,6 +77,20 @@ def get_vcs_panel_plot(**kwargs):
         plt.plot(hist['c1']['tr_dte']-hist['c2']['tr_dte'])
         plt.xticks(x_tick_locations,x_tick_values)
         plt.ylabel('tr dte diff')
+        plt.grid()
+        plt.show()
+
+        plt.figure(figsize=(16, 7))
+        plt.plot(hist['c1']['tr_dte'])
+        plt.xticks(x_tick_locations,x_tick_values)
+        plt.ylabel('tr dte')
+        plt.grid()
+        plt.show()
+
+        plt.figure(figsize=(16, 7))
+        plt.plot(hist['c1']['ticker_month'])
+        plt.xticks(x_tick_locations,x_tick_values)
+        plt.ylabel('ticker_month')
         plt.grid()
         plt.show()
 

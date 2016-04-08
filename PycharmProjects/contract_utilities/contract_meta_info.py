@@ -349,3 +349,33 @@ def get_month_seperation_from_cont_indx(cont_indx1, cont_indx2):
     contract_year2 = m.floor(cont_indx2/100)
 
     return 12*(contract_year1-contract_year2)+(contract_month1-contract_month2)
+
+
+def get_cont_indx_from_month_seperation(cont_indx1,month_seperation):
+
+    contract_month1 = cont_indx1 % 100
+    contract_year1 = round(cont_indx1/100)
+
+    total_months1 = 12*contract_year1 + contract_month1
+
+    total_months2 = total_months1+month_seperation
+
+    contract_month2 = total_months2 % 12
+
+    if contract_month2 == 0:
+        contract_month2 = 12
+        contract_year2 = round(total_months2/12)-1
+    else:
+        contract_year2 = m.floor(total_months2/12)
+
+    return 100*contract_year2+contract_month2
+
+
+
+
+
+
+
+
+
+

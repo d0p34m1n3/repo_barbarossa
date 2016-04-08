@@ -316,6 +316,10 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/curve_pca/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'spread_carry':
          output_dir = strategy_output_folder + '/spread_carry/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'vcs':
+         output_dir = strategy_output_folder + '/vcs/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'scv':
+         output_dir = strategy_output_folder + '/scv/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

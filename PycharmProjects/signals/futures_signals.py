@@ -325,6 +325,7 @@ def get_futures_spread_carry_signals(**kwargs):
                                                        quantile_list=[1, 15, 85, 99],
                                                        clean_num_obs=max(100, round(3*len(change_5_history[x].values)/4)))
                                                        for x in range(len(ticker_list)-1)]
+
     q1 = [x[0] for x in percentile_vector]
     q15 = [x[1] for x in percentile_vector]
     q85 = [x[2] for x in percentile_vector]

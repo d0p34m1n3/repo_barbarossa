@@ -5,6 +5,7 @@ import my_sql_routines.my_sql_utilities as msu
 import scipy.io
 import pandas as pd
 import os
+import h5py
 
 def get_column_names_4option_data():
 
@@ -67,8 +68,12 @@ def load_aligend_options_data_file(**kwargs):
     file_dir = ticker_head + '_' + str(delta_center) + '_' + model + '_20_510204060_' + str(tr_dte_center) + contract_month_str + '.mat'
 
     if os.path.isfile(option_data_dir+'/'+file_dir):
-        mat_output = scipy.io.loadmat(option_data_dir+'/'+file_dir)
-        data_frame_out = pd.DataFrame(mat_output['alignedDataMatrix'], columns=column_names)
+        try:
+            mat_output = scipy.io.loadmat(option_data_dir+'/'+file_dir)
+            data_frame_out = pd.DataFrame(mat_output['alignedDataMatrix'], columns=column_names)
+        except Exception:
+            mat_output = h5py.File(option_data_dir+'/'+file_dir)
+            data_frame_out = pd.DataFrame(mat_output['alignedDataMatrix'].value.transpose(), columns=column_names)
     else:
         data_frame_out = pd.DataFrame(columns=column_names)
 
@@ -94,6 +99,12 @@ def get_options_price_from_db(**kwargs):
         filter_string = filter_string + ' and abs(' + str(kwargs['delta_target']) + '-delta) = ' +\
         '(SELECT min(abs('+ str(kwargs['delta_target']) + '-delta)) FROM daily_option_price ' + filter_string + ')'
 
+    if 'strike' in kwargs.keys():
+        filter_string = filter_string + ' and strike=' + str(kwargs['strike'])
+
+    if 'option_type' in kwargs.keys():
+        filter_string = filter_string + ' and option_type=\'' + kwargs['option_type'] + '\''
+
     if 'column_names' in kwargs.keys():
         column_names = kwargs['column_names']
     else:
@@ -108,7 +119,14 @@ def get_options_price_from_db(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return pd.DataFrame(data, columns=column_names)
+    data_frame_out = pd.DataFrame(data, columns=column_names)
+
+    for x in ['close_price', 'delta', 'imp_vol', 'strike', 'theta']:
+
+        if x in column_names:
+            data_frame_out[x] = data_frame_out[x].astype('float64')
+
+    return data_frame_out
 
 
 
