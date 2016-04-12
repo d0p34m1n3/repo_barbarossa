@@ -17,6 +17,11 @@ def option_model_wrapper(**kwargs):
     ticker = kwargs['ticker']
     calculation_date = kwargs['calculation_date']
 
+    if 'interest_rate_date' in kwargs.keys():
+        interest_rate_date = kwargs['interest_rate_date']
+    else:
+        interest_rate_date = calculation_date
+
     #print(ticker)
     #print(kwargs['exercise_type'])
 
@@ -30,7 +35,7 @@ def option_model_wrapper(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    interest_rate = grfs.get_simple_rate(as_of_date=calculation_date, date_to=expiration_date)['rate_output']
+    interest_rate = grfs.get_simple_rate(as_of_date=interest_rate_date, date_to=expiration_date)['rate_output']
 
     if np.isnan(interest_rate):
         option_greeks = {'implied_vol': np.NaN, 'delta': np.NaN, 'vega': np.NaN, 'dollar_vega': np.NaN,

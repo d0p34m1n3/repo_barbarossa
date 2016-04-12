@@ -37,8 +37,6 @@ def get_net_position_4strategy_alias(**kwargs):
 
     alias = kwargs['alias']
 
-    con = msu.get_my_sql_connection(**kwargs)
-
     if 'as_of_date' in kwargs.keys():
         as_of_date = kwargs['as_of_date']
     else:
@@ -114,7 +112,6 @@ def generate_db_strategy_from_alias(**kwargs):
 def get_trades_4strategy_alias(**kwargs):
 
     con = msu.get_my_sql_connection(**kwargs)
-    cur = con.cursor()
 
     sql_query = 'SELECT tr.id, tr.ticker, tr.option_type, tr.strike_price, tr.trade_price, tr.trade_quantity, tr.trade_date, tr.instrument, tr.real_tradeQ ' + \
                  'FROM strategy as str INNER JOIN trades as tr ON tr.strategy_id=str.id ' + \
@@ -128,6 +125,7 @@ def get_trades_4strategy_alias(**kwargs):
 
     trade_frame = pd.DataFrame(data, columns=['id', 'ticker', 'option_type', 'strike_price', 'trade_price', 'trade_quantity', 'trade_date', 'instrument', 'real_tradeQ'])
     trade_frame['trade_price'] = [float(x) if x is not None else float('NaN') for x in trade_frame['trade_price'].values]
+    trade_frame['trade_quantity'] = trade_frame['trade_quantity'].astype('float64')
     return trade_frame
 
 

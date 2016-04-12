@@ -33,6 +33,8 @@ def cal_greeks_4option_maturity(**kwargs):
     expiration_date = int(expiration_datetime.strftime('%Y%m%d'))
 
     interest_rate = grfs.get_simple_rate(as_of_date=kwargs['settle_date'], date_to=expiration_date)['rate_output']
+    #print(kwargs['settle_date'])
+    #print(expiration_date)
 
     option_greeks = [qom.get_option_greeks(underlying=underlying_price,
                                            option_price=float(option_prices['close_price'].iloc[x]),

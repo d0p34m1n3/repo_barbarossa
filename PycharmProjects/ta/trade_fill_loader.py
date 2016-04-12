@@ -63,8 +63,13 @@ def convert_from_cme_contract_code(contract_code):
 
     result_dictionary['ticker'] = split_list[2] + cmi.full_letter_month_list[ticker_month-1] + str(ticker_year)
     result_dictionary['ticker_head'] = split_list[2]
-    result_dictionary['option_type'] = split_list[4]
-    result_dictionary['strike_price'] = int(split_list[5])
+
+    if len(split_list) >= 6:
+        result_dictionary['option_type'] = split_list[4]
+        result_dictionary['strike_price'] = int(split_list[5])
+    else:
+        result_dictionary['option_type'] = None
+        result_dictionary['strike_price'] = None
 
     return result_dictionary
 
@@ -153,14 +158,20 @@ def get_formatted_cme_direct_fills(**kwargs):
 
     formatted_frame['PQ'] = formatted_frame['trade_price']*formatted_frame['trade_quantity']
 
-    grouped = formatted_frame.groupby(['ticker', 'option_type', 'strike_price', 'side'])
+    #grouped = formatted_frame.groupby(['ticker', 'option_type', 'strike_price', 'side'])
+
+    grouped = formatted_frame.groupby(['ticker', 'side'])
 
     aggregate_trades = pd.DataFrame()
     aggregate_trades['trade_price'] = grouped['PQ'].sum()/grouped['trade_quantity'].sum()
     aggregate_trades['trade_quantity'] = grouped['trade_quantity'].sum()
 
-    aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity'] =- \
-        aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity']
+    aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity'] =- \
+        aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity']
+
+    #aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity'] =- \
+    #    aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity']
+
     aggregate_trades['ticker'] = grouped['ticker'].first()
     aggregate_trades['ticker_head'] = grouped['ticker_head'].first()
     aggregate_trades['instrument'] = grouped['instrument'].first()
@@ -209,6 +220,7 @@ def load_tt_trades(**kwargs):
 
     if 'con' not in kwargs.keys():
         con.close()
+
 
 def load_cme_direct_trades(**kwargs):
 

@@ -29,7 +29,8 @@ def get_simple_rate(**kwargs):
 
     if os.path.isfile(file_name):
         price_frame = pd.read_pickle(file_name)
-    else:
+
+    if (not os.path.isfile(file_name)) or price_frame.empty:
         price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
         price_frame = price_frame[price_frame['close_price'].notnull()]
 

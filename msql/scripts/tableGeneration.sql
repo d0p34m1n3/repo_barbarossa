@@ -194,6 +194,9 @@ PRIMARY KEY (`id`),
 KEY `index_strategy_id` (`strategy_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+#Modifications:
+ALTER TABLE `trades` MODIFY `trade_quantity` decimal(19,2) NULL
+
 
 
 
