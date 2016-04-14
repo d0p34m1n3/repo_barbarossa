@@ -16,15 +16,15 @@
     <option name="PATCH_PATH" value="" />
   </component>
   <component name="DockManager">
-    <window id="1">
+    <window id="6">
       <content type="file-editors">
         <state>
           <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file leaf-file-name="contract_meta_info.py" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
+            <file leaf-file-name="forecastRealizedVolUntilExpiration.m" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/forecastRealizedVolUntilExpiration.m">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0">
-                    <caret line="64" column="28" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="28" />
+                  <state vertical-scroll-proportion="0.0127340825">
+                    <caret line="36" column="45" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="45" />
                     <folding />
                   </state>
                 </provider>
@@ -41,8 +41,44 @@
             <file leaf-file-name="strategy.py" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/../ta/strategy.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.43651927">
-                    <caret line="276" column="13" selection-start-line="276" selection-start-column="8" selection-end-line="276" selection-end-column="18" />
+                  <state vertical-scroll-proportion="0.0057761734">
+                    <caret line="252" column="0" selection-start-line="252" selection-start-column="0" selection-end-line="252" selection-end-column="0" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+    <window id="3">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file leaf-file-name="contract_meta_info.py" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.42992702">
+                    <caret line="95" column="17" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="27" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+    <window id="4">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file leaf-file-name="getBusDatesFromAggMethodAndContractsBack.m" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../../matlab/sharedMfinlib/mfinlib/getBusDatesFromAggMethodAndContractsBack.m">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.4167883">
+                    <caret line="52" column="52" selection-start-line="52" selection-start-column="52" selection-end-line="52" selection-end-column="60" />
                     <folding />
                   </state>
                 </provider>
@@ -59,10 +95,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="strategy_hedger.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="strategy_hedger.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../ta/strategy_hedger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15956679">
+            <state vertical-scroll-proportion="0.0">
               <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding>
                 <element signature="e#1#26#0" expanded="true" />
@@ -71,69 +107,65 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strategy_followup_formats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../formats/strategy_followup_formats.py">
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../signals/utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="12" selection-start-line="33" selection-start-column="4" selection-end-line="38" selection-end-column="68" />
+              <caret line="91" column="119" selection-start-line="91" selection-start-column="119" selection-end-line="91" selection-end-column="119" />
               <folding>
-                <element signature="e#1#47#0" expanded="true" />
+                <element signature="e#26#59#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="portfolio_manager.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../ta/portfolio_manager.py">
+      <file leaf-file-name="calendar_utilities.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../shared/calendar_utilities.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="11" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="53" />
-              <folding>
-                <element signature="e#1#25#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vcs.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vcs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="28.333334">
-              <caret line="11" column="61" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="61" />
+              <caret line="5" column="24" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="options_greek_loader.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../my_sql_routines/options_greek_loader.py">
+      <file leaf-file-name="realized_vol_until_expiration.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../signals/realized_vol_until_expiration.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+              <caret line="97" column="121" selection-start-line="97" selection-start-column="121" selection-end-line="97" selection-end-column="121" />
               <folding>
-                <element signature="e#1#47#0" expanded="true" />
+                <element signature="e#1#44#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="skew_calc.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../option_models/skew_calc.py">
+      <file leaf-file-name="expiration.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-              <folding>
-                <element signature="e#1#47#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.5937277">
+              <caret line="323" column="24" selection-start-line="323" selection-start-column="24" selection-end-line="323" selection-end-column="68" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="option_signals.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../signals/option_signals.py">
+      <file leaf-file-name="futures_butterfly.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/futures_butterfly.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="373" column="48" selection-start-line="373" selection-start-column="48" selection-end-line="373" selection-end-column="48" />
+              <caret line="129" column="9" selection-start-line="129" selection-start-column="4" selection-end-line="129" selection-end-column="137" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="get_futures_price.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="95" column="21" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -155,7 +187,6 @@
         <option value="$PROJECT_DIR$/../get_price/presave_price.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/imp_vol.py" />
         <option value="$PROJECT_DIR$/../get_price/options_signal_loader.py" />
-        <option value="$PROJECT_DIR$/../contract_utilities/expiration.py" />
         <option value="$PROJECT_DIR$/../signals/imp_vol.py" />
         <option value="$PROJECT_DIR$/../shared/utils.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/process_cme_options.py" />
@@ -173,7 +204,6 @@
         <option value="$PROJECT_DIR$/../ta/pnl.py" />
         <option value="$PROJECT_DIR$/../signals/futures_signals.py" />
         <option value="$PROJECT_DIR$/../shared/statistics.py" />
-        <option value="$PROJECT_DIR$/../contract_utilities/contract_meta_info.py" />
         <option value="$PROJECT_DIR$/../get_price/get_options_price.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/options_signal_loader.py" />
         <option value="$PROJECT_DIR$/../../repo_barbarossa/PycharmProjects/contract_utilities/expiration.py" />
@@ -185,9 +215,7 @@
         <option value="$PROJECT_DIR$/../formats/options_strategy_formats.py" />
         <option value="$PROJECT_DIR$/../ta/prepare_daily.py" />
         <option value="$PROJECT_DIR$/../scheduled_jobs/options_data_load_job.py" />
-        <option value="$PROJECT_DIR$/../signals/utils.py" />
         <option value="$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/realized_vol_until_expiration.py" />
-        <option value="$PROJECT_DIR$/../signals/realized_vol_until_expiration.py" />
         <option value="$PROJECT_DIR$/../futures_charts/options_curve.py" />
         <option value="$PROJECT_DIR$/../futures_charts/get_intraday_prices_from_cmedirect.py" />
         <option value="$PROJECT_DIR$/../ta/get_intraday_prices_from_cmedirect.py" />
@@ -195,21 +223,25 @@
         <option value="$PROJECT_DIR$/../option_models/utils.py" />
         <option value="$PROJECT_DIR$/../option_models/quantlib_option_models.py" />
         <option value="$PROJECT_DIR$/../ta/trade_fill_loader.py" />
-        <option value="$PROJECT_DIR$/../signals/option_signals.py" />
         <option value="$PROJECT_DIR$/vcs.py" />
         <option value="$PROJECT_DIR$/../interest_curve/get_rate_from_stir.py" />
         <option value="$PROJECT_DIR$/../option_models/skew_calc.py" />
         <option value="$PROJECT_DIR$/../my_sql_routines/options_greek_loader.py" />
         <option value="$PROJECT_DIR$/../ta/strategy.py" />
         <option value="$PROJECT_DIR$/../ta/strategy_hedger.py" />
+        <option value="$PROJECT_DIR$/../signals/option_signals.py" />
+        <option value="$PROJECT_DIR$/../contract_utilities/contract_meta_info.py" />
+        <option value="$PROJECT_DIR$/../contract_utilities/expiration.py" />
+        <option value="$PROJECT_DIR$/../signals/utils.py" />
+        <option value="$PROJECT_DIR$/../signals/realized_vol_until_expiration.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="828" />
-    <option name="y" value="29" />
-    <option name="width" value="1395" />
-    <option name="height" value="1522" />
+    <option name="x" value="646" />
+    <option name="y" value="50" />
+    <option name="width" value="1691" />
+    <option name="height" value="1540" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -237,6 +269,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -257,11 +290,10 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../get_price/get_futures_price.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../contract_utilities/expiration.py" />
     <property name="SearchEverywhereHistoryKey" value="doubledate_shift_bus_days&#9;null&#9;null" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -404,10 +436,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="828" y="29" width="1395" height="1522" extended-state="0" />
-    <editor active="false" />
+    <frame x="646" y="50" width="1691" height="1540" extended-state="1" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17693982" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14507462" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -448,27 +480,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+signals/getFwdVol4Pair.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+signals/volPairSignals.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="327" column="223" selection-start-line="327" selection-start-column="184" selection-end-line="327" selection-end-column="223" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10007358">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.074074">
@@ -518,13 +529,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/sharedMfinlib/mfinlib/getBusDatesFromAggMethodAndContractsBack.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../repo_barbarossa/PycharmProjects/get_price/presave_price.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.88945085">
@@ -543,13 +547,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5086705">
           <caret line="95" column="22" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/getPastRealizedVolsUntilExpiration.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="87" column="15" selection-start-line="87" selection-start-column="15" selection-end-line="87" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -609,27 +606,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/forecastRealVolUsingPastContractData.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/forecastRealizedVolUntilExpiration.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="37" selection-start-line="37" selection-start-column="37" selection-end-line="37" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../signals/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="93" column="26" selection-start-line="93" selection-start-column="26" selection-end-line="93" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../scheduled_jobs/futures_strategies_job.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -655,14 +631,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="35" column="8" selection-start-line="35" selection-start-column="4" selection-end-line="36" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.093819804">
-          <caret line="366" column="22" selection-start-line="366" selection-start-column="4" selection-end-line="366" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -691,31 +659,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="19" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../signals/realized_vol_until_expiration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/futures_butterfly.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="277" column="72" selection-start-line="277" selection-start-column="69" selection-end-line="277" selection-end-column="78" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="28" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -723,7 +666,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.65054154">
           <caret line="59" column="56" selection-start-line="59" selection-start-column="56" selection-end-line="59" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -731,7 +673,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.06137184">
           <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -739,9 +680,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-          <folding>
-            <element signature="e#1#47#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -749,33 +687,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-          <folding>
-            <element signature="e#1#47#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../signals/option_signals.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="373" column="48" selection-start-line="373" selection-start-column="48" selection-end-line="373" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.96967506">
-          <caret line="79" column="8" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/vcs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="28.333334">
+        <state vertical-scroll-proportion="0.0">
           <caret line="11" column="61" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -783,7 +701,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5725632">
           <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -791,9 +708,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="11" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="53" />
-          <folding>
-            <element signature="e#1#25#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -801,9 +715,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="33" column="12" selection-start-line="33" selection-start-column="4" selection-end-line="38" selection-end-column="68" />
-          <folding>
-            <element signature="e#1#47#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -811,25 +722,135 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/forecastRealVolUsingPastContractData.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="128" selection-start-line="0" selection-start-column="110" selection-end-line="0" selection-end-column="128" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../shared/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../signals/option_signals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.012274369">
+          <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/sharedMfinlib/mfinlib/getTickersFromAggMethodAndContractsBack.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.11046931">
+          <caret line="9" column="12" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../get_price/get_futures_price.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="95" column="21" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../ta/strategy.py">
+    <entry file="file://$PROJECT_DIR$/futures_butterfly.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43651927">
-          <caret line="276" column="13" selection-start-line="276" selection-start-column="8" selection-end-line="276" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="129" column="9" selection-start-line="129" selection-start-column="4" selection-end-line="129" selection-end-column="137" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../shared/calendar_utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="24" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../signals/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="91" column="119" selection-start-line="91" selection-start-column="119" selection-end-line="91" selection-end-column="119" />
+          <folding>
+            <element signature="e#26#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/getPastRealizedVolsUntilExpiration.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.012372634">
+          <caret line="18" column="61" selection-start-line="18" selection-start-column="61" selection-end-line="18" selection-end-column="61" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../ta/strategy_hedger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15956679">
+        <state vertical-scroll-proportion="0.0">
           <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding>
             <element signature="e#1#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ta/strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0057761734">
+          <caret line="252" column="0" selection-start-line="252" selection-start-column="0" selection-end-line="252" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/sharedMfinlib/mfinlib/getBusDatesFromAggMethodAndContractsBack.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4167883">
+          <caret line="52" column="52" selection-start-line="52" selection-start-column="52" selection-end-line="52" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../contract_utilities/contract_meta_info.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42992702">
+          <caret line="95" column="17" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../matlab/Alpha/mlib/+realizedVolForecast/forecastRealizedVolUntilExpiration.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0127340825">
+          <caret line="36" column="45" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../signals/realized_vol_until_expiration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="97" column="121" selection-start-line="97" selection-start-column="121" selection-end-line="97" selection-end-column="121" />
+          <folding>
+            <element signature="e#1#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../contract_utilities/expiration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5937277">
+          <caret line="323" column="24" selection-start-line="323" selection-start-column="24" selection-end-line="323" selection-end-column="68" />
+          <folding />
         </state>
       </provider>
     </entry>

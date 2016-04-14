@@ -332,6 +332,7 @@ t_cost = {'CL': 0.80,
           'SB': 2.1,
           'CT': 2.1}
 
+
 def get_contract_specs(ticker):
     return {'ticker_head': ticker[:-5],
             'ticker_year': int(ticker[-4:]),

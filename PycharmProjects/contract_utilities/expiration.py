@@ -320,7 +320,8 @@ def get_days2_expiration(**kwargs):
     datetime_to = cu.convert_doubledate_2datetime(date_to)
     expiration_datetime = get_expiration_from_db(**kwargs)
 
-    return {'datetime_to': datetime_to, 'expiration_datetime': expiration_datetime}
+    return {'expiration_datetime': expiration_datetime,
+            'cal_dte': (expiration_datetime-datetime_to.date()).days}
 
 
 def get_prev_ticker_year_month(ticker_year,ticker_month_num):
@@ -379,7 +380,7 @@ def doubledate_shift_bus_days(**kwargs):
     if 'reference_tickerhead' in kwargs.keys():
         reference_tickerhead = kwargs['reference_tickerhead']
     else:
-        reference_tickerhead =const.reference_tickerhead_4business_calendar
+        reference_tickerhead = const.reference_tickerhead_4business_calendar
 
     bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(reference_tickerhead))
     double_date_datetime = cu.convert_doubledate_2datetime(double_date)
