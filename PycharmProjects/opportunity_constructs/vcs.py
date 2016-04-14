@@ -5,6 +5,8 @@ import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
 import os.path
 import ta.strategy as ts
+import contract_utilities.contract_lists as cl
+import shared.calendar_utilities as cu
 
 
 def get_vcs_pairs_4date(**kwargs):
@@ -46,6 +48,104 @@ def get_vcs_pairs_4date(**kwargs):
                           option_frame['ticker_class'][indx[0]],
                           option_frame['tr_dte'][indx[0]],
                           option_frame['tr_dte'][indx[1]]) for indx in tuples],columns=['ticker1','ticker2','tickerHead','tickerClass','trDte1','trDte2'])
+
+
+def get_vcs_pairs_legacy(**kwargs):
+
+    settle_date = kwargs['settle_date']
+    settle_datetime = cu.convert_doubledate_2datetime(settle_date)
+
+    liquid_options_frame = cl.generate_liquid_options_list_dataframe(**kwargs)
+    contract_specs_output = [cmi.get_contract_specs(x) for x in liquid_options_frame['ticker']]
+    liquid_options_frame['ticker_head'] = [x['ticker_head'] for x in contract_specs_output]
+    liquid_options_frame['ticker_month'] = [x['ticker_month_num'] for x in contract_specs_output]
+    liquid_options_frame['ticker_class'] = [x['ticker_class'] for x in contract_specs_output]
+    liquid_options_frame['cal_dte'] = [(x-settle_datetime.date()).days for x in liquid_options_frame['expiration_date']]
+
+    liquid_options_frame = liquid_options_frame[((liquid_options_frame['ticker_head'] == 'LN')&(liquid_options_frame['cal_dte'] <= 360))|
+                                                ((liquid_options_frame['ticker_head']=='LC')&(liquid_options_frame['cal_dte']<=360)&
+                                                 (liquid_options_frame['ticker_month']%2==0))|
+                                                ((liquid_options_frame['ticker_head']=='LC')&(liquid_options_frame['cal_dte']<=40)&
+                                                 (liquid_options_frame['ticker_month']%2==1))|
+                                                ((liquid_options_frame['ticker_head']=='ES')&(liquid_options_frame['cal_dte']<=270))|
+                                                ((liquid_options_frame['ticker_class']=='FX')&(liquid_options_frame['cal_dte']<=270)&
+                                                 (liquid_options_frame['ticker_month']%3==0))|
+                                                ((liquid_options_frame['ticker_class']=='FX')&(liquid_options_frame['cal_dte']<=70)&
+                     (liquid_options_frame['ticker_month']%3!=0))|
+                     ((liquid_options_frame['ticker_head']=='GC')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month'].isin([6,12])))|
+                     ((liquid_options_frame['ticker_head']=='GC')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month'].isin([2,4,8,10])))|
+                     ((liquid_options_frame['ticker_head']=='GC')&(liquid_options_frame['cal_dte']<=70))|
+                     ((liquid_options_frame['ticker_head']=='SI')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month'].isin([7,12])))|
+                     ((liquid_options_frame['ticker_head']=='SI')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month'].isin([1,3,5,9])))|
+                     ((liquid_options_frame['ticker_head']=='SI')&(liquid_options_frame['cal_dte']<=70))|
+                     ((liquid_options_frame['ticker_class']=='Treasury')&(liquid_options_frame['cal_dte']<=180)&
+                     (liquid_options_frame['ticker_month']%3==0))|
+                     ((liquid_options_frame['ticker_class']=='Treasury')&(liquid_options_frame['cal_dte']<=70)&
+                     (liquid_options_frame['ticker_month']%3!=0))|
+                     ((liquid_options_frame['ticker_head']=='C')&(liquid_options_frame['cal_dte']<=540)&
+                     (liquid_options_frame['ticker_month']==12))|
+                     ((liquid_options_frame['ticker_head']=='C')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month']==7))|
+                     ((liquid_options_frame['ticker_head']=='C')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month'].isin([3,5,9])))|
+                     ((liquid_options_frame['ticker_head']=='C')&(liquid_options_frame['cal_dte']<=40))|
+                     ((liquid_options_frame['ticker_head']=='S')&(liquid_options_frame['cal_dte']<=540)&
+                     (liquid_options_frame['ticker_month']==11))|
+                     ((liquid_options_frame['ticker_head']=='S')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month']==7))|
+                     ((liquid_options_frame['ticker_head']=='S')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month'].isin([1,3,5,8,9])))|
+                     ((liquid_options_frame['ticker_head']=='S')&(liquid_options_frame['cal_dte']<=40))|
+                     ((liquid_options_frame['ticker_head']=='SM')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month']==12))|
+                     ((liquid_options_frame['ticker_head']=='SM')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month']==7))|
+                     ((liquid_options_frame['ticker_head']=='SM')&(liquid_options_frame['cal_dte']<=180)&
+                     (liquid_options_frame['ticker_month'].isin([1,3,5,8,9,10])))|
+                     ((liquid_options_frame['ticker_head']=='SM')&(liquid_options_frame['cal_dte']<=40))|
+                     ((liquid_options_frame['ticker_head']=='BO')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month']==12))|
+                     ((liquid_options_frame['ticker_head']=='BO')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month']==7))|
+                     ((liquid_options_frame['ticker_head']=='BO')&(liquid_options_frame['cal_dte']<=180)&
+                     (liquid_options_frame['ticker_month'].isin([1,3,5,8,9,10])))|
+                     ((liquid_options_frame['ticker_head']=='BO')&(liquid_options_frame['cal_dte']<=40))|
+                     ((liquid_options_frame['ticker_head']=='W')&(liquid_options_frame['cal_dte']<=360)&
+                     (liquid_options_frame['ticker_month']==12))|
+                     ((liquid_options_frame['ticker_head']=='W')&(liquid_options_frame['cal_dte']<=270)&
+                     (liquid_options_frame['ticker_month']==7))|
+                     ((liquid_options_frame['ticker_head']=='W')&(liquid_options_frame['cal_dte']<=180)&
+                     (liquid_options_frame['ticker_month'].isin([3,5,9])))|
+                     ((liquid_options_frame['ticker_head']=='W')&(liquid_options_frame['cal_dte']<=40))|
+                     ((liquid_options_frame['ticker_head']=='CL')&(liquid_options_frame['cal_dte']<=720)&
+                     (liquid_options_frame['ticker_month']==12))|
+                     ((liquid_options_frame['ticker_head']=='CL')&(liquid_options_frame['cal_dte']<=540)&
+                     (liquid_options_frame['ticker_month']==6))|
+                     ((liquid_options_frame['ticker_head']=='CL')&(liquid_options_frame['cal_dte']<=180))|
+                     ((liquid_options_frame['ticker_head']=='NG')&(liquid_options_frame['cal_dte']<=360))]
+
+    liquid_options_frame.sort(['ticker_head','cal_dte'],ascending=[True,True],inplace=True)
+
+
+
+
+    liquid_options_frame = liquid_options_frame[liquid_options_frame['cal_dte'] >= 48]
+
+    return liquid_options_frame
+
+
+
+
+
+
+
+
+
+
 
 
 def generate_vcs_sheet_4date(**kwargs):
