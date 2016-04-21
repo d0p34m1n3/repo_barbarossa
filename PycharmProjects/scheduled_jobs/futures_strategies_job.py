@@ -9,6 +9,7 @@ import get_price.presave_price as pp
 import opportunity_constructs.futures_butterfly as fb
 import contract_utilities.expiration as exp
 import ta.prepare_daily as prep
+import ta.email_reports as er
 
 con = msu.get_my_sql_connection()
 
@@ -44,6 +45,11 @@ try:
     writer_out = sff.generate_futures_butterfly_followup_report(as_of_date=report_date, con=con)
     sff.generate_spread_carry_followup_report(as_of_date=report_date, con=con, writer=writer_out)
     prep.move_from_dated_folder_2daily_folder(ext='ta', file_name='followup', folder_date=report_date)
+except Exception:
+    pass
+
+try:
+    er.send_hrsn_report(report_date=report_date)
 except Exception:
     pass
 

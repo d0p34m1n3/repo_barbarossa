@@ -51,7 +51,7 @@ def get_curve_pca_report(**kwargs):
         if ticker_head == 'CL':
             num_semiannual_contracts = 6
         elif ticker_head == 'B':
-            num_semiannual_contracts = 8
+            num_semiannual_contracts = 7
 
         rolling_data_monthly = cd.get_rolling_curve_data(ticker_head=ticker_head, num_contracts=num_monthly_contracts,
                                          front_tr_dte_limit=10,

@@ -8,18 +8,24 @@ import numpy as np
 import contract_utilities.contract_meta_info as cmi
 pd.options.mode.chained_assignment = None  # default='warn'
 import get_price.get_futures_price as gfp
+import signals.option_signals as ops
 
 
 def get_past_realized_vol_until_expiration(**kwargs):
 
     ticker = kwargs['ticker']
-    contracts_back = kwargs['contracts_back']
-    aggregation_method = kwargs['aggregation_method']
     date_to = kwargs['date_to']
 
     contract_specs_output = cmi.get_contract_specs(ticker)
     ticker_class = contract_specs_output['ticker_class']
     ticker_head = contract_specs_output['ticker_head']
+
+    if ticker_class in ['Index', 'FX', 'Metal', 'Treasury'] or ticker_head == 'CL':
+        contracts_back = 100
+        aggregation_method = 1
+    elif ticker_class in ['Ag', 'Livestock'] or ticker_head == 'NG':
+        contracts_back = 20
+        aggregation_method = 12
 
     con = msu.get_my_sql_connection(**kwargs)
 
@@ -93,10 +99,8 @@ def get_past_realized_vol_until_expiration(**kwargs):
 
             selected_price = rolling_price[(rolling_price['settle_date'] >= data_frame_out['observed_real_vol_date_from'].loc[i])&
             (rolling_price['settle_date'] <= data_frame_out['observed_real_vol_date_to'].loc[i])]
-            return selected_price['log_return']
 
             data_frame_out['real_vol20'].loc[i] = 100*np.sqrt(252*np.mean(np.square(selected_price['log_return'][-20:])))
-
 
     elif ticker_class in ['Ag', 'Livestock', 'Energy']:
 
@@ -122,7 +126,43 @@ def get_past_realized_vol_until_expiration(**kwargs):
 
                 data_frame_out['real_vol_till_expiration'].loc[i] = 100*np.sqrt(252*np.mean(np.square(selected_price['log_return'])))
 
+            selected_price = ticker_data[(ticker_data['settle_date'] >= data_frame_out['observed_real_vol_date_from'].loc[i])&
+            (ticker_data['settle_date'] <= data_frame_out['observed_real_vol_date_to'].loc[i])]
+
+            data_frame_out['real_vol20'].loc[i] = 100*np.sqrt(252*np.mean(np.square(selected_price['log_return'][-20:])))
+
     return data_frame_out
+
+
+def forecast_realized_vol_until_expiration(**kwargs):
+
+    past_realized_vol_frame = get_past_realized_vol_until_expiration(**kwargs)
+
+    kwargs['settle_date'] = kwargs['date_to']
+    real_vol20_current = ops.calc_realized_vol_4options_ticker(**kwargs)
+
+    realized_vol_forecast = np.NaN
+    clean_indx = (past_realized_vol_frame['real_vol_till_expiration'].notnull())&(past_realized_vol_frame['real_vol20'].notnull())
+
+    if sum(clean_indx) > 10:
+
+        clean_vol_frame = past_realized_vol_frame[clean_indx]
+        clean_vol_frame['real_vol_diff'] = abs(clean_vol_frame['real_vol20']-real_vol20_current)
+        clean_vol_frame['forecast_multiplier'] = clean_vol_frame['real_vol_till_expiration']/clean_vol_frame['real_vol20']
+
+        num_relevant_obs = max(round(len(clean_vol_frame.index)/5), 10)
+
+        if sum(clean_indx) <= 20:
+            forecast_multiplier_mean = sum([clean_vol_frame['forecast_multiplier'].iloc[i]*(num_relevant_obs-i) for i in range(num_relevant_obs)])/sum([(num_relevant_obs-i) for i in range(num_relevant_obs)])
+        else:
+            forecast_multiplier_mean = clean_vol_frame['forecast_multiplier'][:num_relevant_obs].mean()
+
+        realized_vol_forecast = forecast_multiplier_mean*real_vol20_current
+
+    return realized_vol_forecast
+
+
+
 
 
 

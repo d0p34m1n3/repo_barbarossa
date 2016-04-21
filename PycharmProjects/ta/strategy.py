@@ -4,6 +4,7 @@ import shared.directory_names as dn
 import shared.calendar_utilities as cu
 import os.path
 import pandas as pd
+import numpy as np
 import shared.converters as conv
 import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
@@ -62,6 +63,8 @@ def get_net_position_4strategy_alias(**kwargs):
     net_position['strike_price'] = (grouped['strike_price'].first()).values
     net_position['instrument'] = (grouped['instrument'].first()).values
     net_position['qty'] = (grouped['trade_quantity'].sum()).values
+
+    net_position['qty'] = net_position['qty'].round(2)
 
     if 'con' not in kwargs.keys():
         con.close()
@@ -177,6 +180,8 @@ def load_trades_2strategy(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
 
     trade_frame['strategy_id'] = [get_strategy_id_from_alias(alias=trade_frame['alias'][x],con=con) for x in range(len(trade_frame.index))]
+    trade_frame['strike_price'] = trade_frame['strike_price'].astype('float64')
+
     now_time = dt.datetime.now()
     now_date = now_time.date()
 
@@ -201,8 +206,9 @@ def load_trades_2strategy(**kwargs):
     real_tradeQ_indx = column_names.index('real_tradeQ')
     strategy_id_indx = column_names.index('strategy_id')
 
-    tuples = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], x[strategy_id_indx],
-              x[trade_price_indx], x[trade_quantity_indx],
+    tuples = [tuple([x[ticker_indx],x[option_type_indx],
+                     None if np.isnan(x[strike_price_indx]) else x[strike_price_indx],
+                      x[strategy_id_indx],x[trade_price_indx], x[trade_quantity_indx],
               trade_date,x[instrument_indx], x[real_tradeQ_indx],now_time,now_time]) for x in trade_frame.values]
 
     msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples, con=con)

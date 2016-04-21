@@ -6,6 +6,7 @@ import contract_utilities.expiration as exp
 import get_price.get_options_price as gop
 import option_models.utils as omu
 import pandas as pd
+import numpy as np
 import ta.get_intraday_prices as gip
 import contract_utilities.contract_meta_info as cmi
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -20,8 +21,20 @@ def get_hedge_4strategy(**kwargs):
 
     position_frame = tas.get_net_position_4strategy_alias(alias=kwargs['alias'],as_of_date=current_date,con=con)
 
+    intraday_price_frame = gip.get_cme_direct_prices()
+    intraday_price_frame.rename(columns={'ticker': 'underlying_ticker'},inplace=True)
+
     options_frame = position_frame[position_frame['instrument'] == 'O']
     futures_frame = position_frame[position_frame['instrument'] == 'F']
+
+    if options_frame.empty:
+        futures_frame.rename(columns={'ticker': 'underlying_ticker', 'qty': 'underlying_delta'},inplace=True)
+        futures_frame = futures_frame[['underlying_ticker', 'underlying_delta']]
+        net_position = pd.merge(futures_frame, intraday_price_frame, how='left', on='underlying_ticker')
+        net_position['hedge_price'] = (net_position['bid_price']+net_position['ask_price'])/2
+        net_position['hedge'] = -net_position['underlying_delta']
+        return net_position
+
 
     imp_vol_list = [gop.get_options_price_from_db(ticker=options_frame['ticker'].iloc[x],
                                   settle_date=settle_price_date,
@@ -37,9 +50,6 @@ def get_hedge_4strategy(**kwargs):
     options_frame = pd.concat([options_frame, imp_vol_frame], axis=1)
 
     options_frame['underlying_ticker'] = [omu.get_option_underlying(ticker=x) for x in options_frame['ticker']]
-
-    intraday_price_frame = gip.get_cme_direct_prices()
-    intraday_price_frame.rename(columns={'ticker': 'underlying_ticker'},inplace=True)
 
     options_frame = pd.merge(options_frame, intraday_price_frame, how='left', on='underlying_ticker')
 
@@ -95,7 +105,7 @@ def hedge_strategy_against_delta(**kwargs):
     trade_frame = pd.DataFrame()
     trade_frame['ticker'] = hedge_results['underlying_ticker']
     trade_frame['option_type'] = None
-    trade_frame['strike_price'] = None
+    trade_frame['strike_price'] = np.NaN
     trade_frame['trade_price'] = hedge_results['hedge_price']
     trade_frame['trade_quantity'] = hedge_results['hedge']
     trade_frame['instrument'] = 'F'

@@ -58,9 +58,10 @@ def generate_futures_butterfly_followup_report(**kwargs):
 
     butterfly_followup_frame['z1'] = butterfly_followup_frame['z1'].round(2)
 
-
     butterfly_followup_frame.to_excel(writer, sheet_name='butterflies')
     worksheet_butterflies = writer.sheets['butterflies']
+
+    worksheet_butterflies.set_column('B:B', 26)
     worksheet_butterflies.freeze_panes(1, 0)
 
     worksheet_butterflies.autofilter(0, 0, len(butterfly_followup_frame.index),

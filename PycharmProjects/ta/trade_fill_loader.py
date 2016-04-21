@@ -158,9 +158,13 @@ def get_formatted_cme_direct_fills(**kwargs):
 
     formatted_frame['PQ'] = formatted_frame['trade_price']*formatted_frame['trade_quantity']
 
-    #grouped = formatted_frame.groupby(['ticker', 'option_type', 'strike_price', 'side'])
+    formatted_frame['generalized_ticker'] = formatted_frame['ticker']
+    option_indx = formatted_frame['instrument'] == 'O'
+    formatted_frame['generalized_ticker'][option_indx] = formatted_frame['ticker'][option_indx] + '-' + \
+                                                         formatted_frame['option_type'][option_indx] + '-' + \
+                                                         formatted_frame['strike_price'][option_indx].astype(str)
 
-    grouped = formatted_frame.groupby(['ticker', 'side'])
+    grouped = formatted_frame.groupby(['generalized_ticker', 'side'])
 
     aggregate_trades = pd.DataFrame()
     aggregate_trades['trade_price'] = grouped['PQ'].sum()/grouped['trade_quantity'].sum()
@@ -168,9 +172,6 @@ def get_formatted_cme_direct_fills(**kwargs):
 
     aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity'] =- \
         aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity']
-
-    #aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity'] =- \
-    #    aggregate_trades.loc[(slice(None),slice(None),slice(None),'Sell'),'trade_quantity']
 
     aggregate_trades['ticker'] = grouped['ticker'].first()
     aggregate_trades['ticker_head'] = grouped['ticker_head'].first()

@@ -54,6 +54,8 @@ def generate_portfolio_pnl_report(**kwargs):
     writer = pd.ExcelWriter(ta_output_dir + '/pnl.xlsx', engine='xlsxwriter')
     daily_pnl_frame.to_excel(writer, sheet_name='strategies')
     worksheet_strategies = writer.sheets['strategies']
+
+    worksheet_strategies.set_column('B:B', 30)
     worksheet_strategies.freeze_panes(1, 0)
     worksheet_strategies.autofilter(0, 0, len(daily_pnl_frame.index),
                               len(daily_pnl_frame.columns))

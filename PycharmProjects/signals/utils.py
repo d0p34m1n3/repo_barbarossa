@@ -89,7 +89,7 @@ def get_bus_dates_from_agg_method_and_contracts_back(**kwargs):
         if shift_bus_days >= 0:
             bus_date_list = [pd.date_range(x, periods=shift_bus_days+1, freq=bday_us)[shift_bus_days].to_datetime() for x in cal_date_list]
         elif shift_bus_days < 0:
-            bus_date_list = [pd.date_range(start=x-relativedelta(days=(max(m.ceil(-shift_bus_days*7/5), -shift_bus_days+5))), end=x, freq=bday_us)[-shift_bus_days-1].to_datetime() for x in cal_date_list]
+            bus_date_list = [pd.date_range(start=x-relativedelta(days=(max(m.ceil(-shift_bus_days*7/5)+5, -shift_bus_days+5))), end=x, freq=bday_us)[shift_bus_days-1].to_datetime() for x in cal_date_list]
     else:
         bus_date_list = [pd.date_range(x, periods=1, freq=bday_us)[0].to_datetime() for x in cal_date_list]
 
