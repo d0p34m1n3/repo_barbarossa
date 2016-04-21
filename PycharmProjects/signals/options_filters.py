@@ -21,4 +21,57 @@ def get_vcs_filters(**kwargs):
         selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Livestock') & (data_frame_input['Q'] >= 70))
         selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Metal') & (data_frame_input['Q'] >= 64))
 
+    if 'long2' in filter_list:
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Ag') &
+                                         (data_frame_input['Q1'] <= 34) &
+                                         (data_frame_input['Q'] <= 21))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Livestock') &
+                                         (data_frame_input['Q1'] <= 37) &
+                                         (data_frame_input['Q'] <= 16))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Metal') &
+                                         (data_frame_input['Q1'] <= 28) &
+                                         (data_frame_input['Q'] <= 31))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'FX') &
+                                         (data_frame_input['Q1'] <= 24) &
+                                         (data_frame_input['Q'] <= 12))
+
+        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'CL') &
+                                         (data_frame_input['Q1'] <= 31) &
+                                         (data_frame_input['Q'] <= 4))
+
+    if 'short2' in filter_list:
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Ag') &
+                                         (data_frame_input['Q1'] >= 66) &
+                                         (data_frame_input['Q'] >= 65))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Livestock') &
+                                         (data_frame_input['Q1'] >= 70) &
+                                         (data_frame_input['Q'] >= 65))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Metal') &
+                                         (data_frame_input['Q1'] >= 66) &
+                                         (data_frame_input['Q'] >= 61))
+
+        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'CL') &
+                                         (data_frame_input['Q1'] >= 67) &
+                                         (data_frame_input['Q'] >= 33))
+
+        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'NG') &
+                                         (data_frame_input['Q1'] >= 66) &
+                                         (data_frame_input['Q'] >= 69))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Treasury') &
+                                         (data_frame_input['Q1'] >= 71) &
+                                         (data_frame_input['Q'] >= 93))
+
+        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Index') &
+                                         (data_frame_input['Q1'] >= 60) &
+                                         (data_frame_input['Q'] >= 74))
+
+
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }

@@ -14,6 +14,11 @@ def get_backtesting_dates(**kwargs):
     date_to = kwargs['date_to']
     years_back = kwargs['years_back']
 
+    if 'day_of_week' in kwargs.keys():
+        day_of_week = kwargs['day_of_week']
+    else:
+        day_of_week = 2
+
     date_from = cu.doubledate_shift(date_to, years_back*365)
 
     trading_calendar = exp.get_calendar_4ticker_head('CL')
@@ -22,7 +27,7 @@ def get_backtesting_dates(**kwargs):
     dts = pd.date_range(start=cu.convert_doubledate_2datetime(date_from),
                     end=cu.convert_doubledate_2datetime(date_to), freq=bday_us)
 
-    dts = dts[dts.dayofweek==2]
+    dts = dts[dts.dayofweek==day_of_week]
 
     return {'date_time_dates': dts,
             'double_dates': [int(x.strftime('%Y%m%d')) for x in dts]}

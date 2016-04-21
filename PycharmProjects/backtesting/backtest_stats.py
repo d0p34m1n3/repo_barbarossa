@@ -193,6 +193,10 @@ def rank_indicators(**kwargs):
     long_pnl_field = kwargs['long_pnl_field']
     short_pnl_field = kwargs['short_pnl_field']
 
+    if 'granular_ranking_type' in kwargs.keys():
+        granular_ranking_type = kwargs['granular_ranking_type']
+
+
     selection_indx = [True]*len(trade_data.index)
 
     for indicator_i in indicator_list_raw:
@@ -216,24 +220,45 @@ def rank_indicators(**kwargs):
                                                     strategy_class=strategy_class)
     indicator_ranking_total.sort('ranking',ascending=False,inplace=True)
 
-    ticker_head_list = list(trade_data['tickerHead'].unique())
+    if granular_ranking_type == 'ticker_head':
+        ticker_head_list = list(trade_data['tickerHead'].unique())
+        ranking_list = []
 
-    ranking_list = []
-
-    for i in range(len(ticker_head_list)):
-        data_4tickerhead = trade_data[trade_data['tickerHead'] == ticker_head_list[i]]
-        indicator_ranking_output = get_indicator_ranking(trade_data=data_4tickerhead,
+        for i in range(len(ticker_head_list)):
+            data_4tickerhead = trade_data[trade_data['tickerHead'] == ticker_head_list[i]]
+            indicator_ranking_output = get_indicator_ranking(trade_data=data_4tickerhead,
                                                  indicator_list=indicator_list,
                                                          long_pnl_field=long_pnl_field,
                                                          short_pnl_field=short_pnl_field,
                                                          strategy_class=strategy_class)
 
-        ranking_list.append(indicator_ranking_output['ranking'].values)
+            ranking_list.append(indicator_ranking_output['ranking'].values)
 
-    tickerhead_ranking_sums = pd.DataFrame(ranking_list).sum()
+        granular_ranking_sums = pd.DataFrame(ranking_list).sum()
 
-    tickerhead_ranking_frame = pd.DataFrame.from_items([('indicator', indicator_list),
-                             ('ranking', tickerhead_ranking_sums)])
+        granular_ranking_frame = pd.DataFrame.from_items([('indicator', indicator_list),
+                             ('ranking', granular_ranking_sums)])
+
+    elif granular_ranking_type == 'ticker_class':
+
+        ticker_class_list = list(trade_data['tickerClass'].unique())
+        ranking_list = []
+
+        for i in range(len(ticker_class_list)):
+            print(ticker_class_list[i])
+            data_4tickerclass = trade_data[trade_data['tickerClass'] == ticker_class_list[i]]
+            indicator_ranking_output = get_indicator_ranking(trade_data=data_4tickerclass,
+                                                 indicator_list=indicator_list,
+                                                         long_pnl_field=long_pnl_field,
+                                                         short_pnl_field=short_pnl_field,
+                                                         strategy_class=strategy_class)
+
+            ranking_list.append(indicator_ranking_output['ranking'].values)
+
+        granular_ranking_sums = pd.DataFrame(ranking_list).sum()
+
+        granular_ranking_frame = pd.DataFrame.from_items([('indicator', indicator_list),
+                             ('ranking', granular_ranking_sums)])
 
     return {'indicator_ranking_total': indicator_ranking_total,
-            'indicator_ranking_tickerhead_total': tickerhead_ranking_frame.sort('ranking',ascending=False,inplace=False)}
+            'indicator_ranking_granular_total': granular_ranking_frame.sort('ranking', ascending=False,inplace=False)}

@@ -300,6 +300,7 @@ def get_futures_expiration(ticker):
 
     return dts[exp_indx].to_datetime()
 
+
 def get_futures_days2_expiration(expiration_input):
 
     ticker = expiration_input['ticker']
@@ -320,8 +321,13 @@ def get_days2_expiration(**kwargs):
     datetime_to = cu.convert_doubledate_2datetime(date_to)
     expiration_datetime = get_expiration_from_db(**kwargs)
 
+    contract_specs_output = cmf.get_contract_specs(kwargs['ticker'])
+    bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(contract_specs_output['ticker_head']))
+    dts = pd.date_range(start=datetime_to, end=expiration_datetime, freq=bday_us)
+
     return {'expiration_datetime': expiration_datetime,
-            'cal_dte': (expiration_datetime-datetime_to.date()).days}
+            'cal_dte': (expiration_datetime-datetime_to.date()).days,
+            'tr_dte': len(dts)-1}
 
 
 def get_prev_ticker_year_month(ticker_year,ticker_month_num):

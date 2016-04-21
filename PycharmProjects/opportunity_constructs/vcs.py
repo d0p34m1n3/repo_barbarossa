@@ -7,6 +7,7 @@ import os.path
 import ta.strategy as ts
 import contract_utilities.contract_lists as cl
 import shared.calendar_utilities as cu
+import contract_utilities.expiration as exp
 
 
 def get_vcs_pairs_4date(**kwargs):
@@ -38,9 +39,10 @@ def get_vcs_pairs_4date(**kwargs):
         ticker_head_data = option_frame[option_frame['ticker_head'] == ticker_head_i]
         ticker_head_data.sort(['ticker_year', 'ticker_month'], ascending=[True, True], inplace=True)
 
-        if len(ticker_head_data.index)>=2:
-            tuples = tuples + [(ticker_head_data.index[i], ticker_head_data.index[i+1]) for i in range(len(ticker_head_data.index)-1)]
-
+        if len(ticker_head_data.index) >= 2:
+            for i in range(len(ticker_head_data.index)-1):
+                for j in range(i+1,len(ticker_head_data.index)):
+                    tuples = tuples + [(ticker_head_data.index[i], ticker_head_data.index[j])]
 
     return pd.DataFrame([(option_frame['ticker'][indx[0]],
                           option_frame['ticker'][indx[1]],
@@ -50,12 +52,14 @@ def get_vcs_pairs_4date(**kwargs):
                           option_frame['tr_dte'][indx[1]]) for indx in tuples],columns=['ticker1','ticker2','tickerHead','tickerClass','trDte1','trDte2'])
 
 
-def get_vcs_pairs_legacy(**kwargs):
+def get_vcs_pairs_4date_legacy(**kwargs):
 
     settle_date = kwargs['settle_date']
     settle_datetime = cu.convert_doubledate_2datetime(settle_date)
 
-    liquid_options_frame = cl.generate_liquid_options_list_dataframe(**kwargs)
+    con = msu.get_my_sql_connection(**kwargs)
+
+    liquid_options_frame = cl.generate_liquid_options_list_dataframe(settle_date=settle_date,con=con)
     contract_specs_output = [cmi.get_contract_specs(x) for x in liquid_options_frame['ticker']]
     liquid_options_frame['ticker_head'] = [x['ticker_head'] for x in contract_specs_output]
     liquid_options_frame['ticker_month'] = [x['ticker_month_num'] for x in contract_specs_output]
@@ -130,22 +134,34 @@ def get_vcs_pairs_legacy(**kwargs):
 
     liquid_options_frame.sort(['ticker_head','cal_dte'],ascending=[True,True],inplace=True)
 
+    liquid_options_frame['tr_dte'] = [exp.get_days2_expiration(date_to=settle_date,con=con,instrument='options',ticker=x)['tr_dte'] for x in liquid_options_frame['ticker']]
 
+    if 'con' not in kwargs.keys():
+            con.close()
 
+    option_frame = liquid_options_frame[liquid_options_frame['tr_dte'] >= 35]
 
-    liquid_options_frame = liquid_options_frame[liquid_options_frame['cal_dte'] >= 48]
+    option_frame.reset_index(drop=True,inplace=True)
 
-    return liquid_options_frame
+    unique_ticker_heads = option_frame['ticker_head'].unique()
+    tuples = []
 
+    for ticker_head_i in unique_ticker_heads:
 
+        ticker_head_data = option_frame[option_frame['ticker_head'] == ticker_head_i]
+        ticker_head_data.sort('cal_dte', ascending=True, inplace=True)
 
+        if len(ticker_head_data.index) >= 2:
+            for i in range(len(ticker_head_data.index)-1):
+                for j in range(i+1,len(ticker_head_data.index)):
+                    tuples = tuples + [(ticker_head_data.index[i], ticker_head_data.index[j])]
 
-
-
-
-
-
-
+    return pd.DataFrame([(option_frame['ticker'][indx[0]],
+                          option_frame['ticker'][indx[1]],
+                          option_frame['ticker_head'][indx[0]],
+                          option_frame['ticker_class'][indx[0]],
+                          option_frame['tr_dte'][indx[0]],
+                          option_frame['tr_dte'][indx[1]]) for indx in tuples],columns=['ticker1','ticker2','tickerHead','tickerClass','trDte1','trDte2'])
 
 
 def generate_vcs_sheet_4date(**kwargs):
@@ -224,6 +240,118 @@ def generate_vcs_sheet_4date(**kwargs):
     vcs_pairs.to_pickle(output_dir + '/summary.pkl')
 
     return {'vcs_pairs': vcs_pairs,'success': True}
+
+
+def generate_vcs_sheet_4date_legacy(**kwargs):
+
+    kwargs['settle_date'] = kwargs['date_to']
+    num_cal_days_back = 20*365
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='vcs', report_date=kwargs['date_to'])
+
+    if os.path.isfile(output_dir + '/summary.pkl'):
+        vcs_pairs = pd.read_pickle(output_dir + '/summary.pkl')
+        return {'vcs_pairs': vcs_pairs,'success': True}
+
+    vcs_pairs = get_vcs_pairs_4date_legacy(**kwargs)
+    num_pairs = len(vcs_pairs.index)
+
+    atm_vol_ratio_list = [None]*num_pairs
+    q_list = [None]*num_pairs
+    q2_list = [None]*num_pairs
+    q1_list = [None]*num_pairs
+    q5_list = [None]*num_pairs
+
+    fwd_vol_q_list = [None]*num_pairs
+    fwd_vol_q2_list = [None]*num_pairs
+    fwd_vol_q1_list = [None]*num_pairs
+    fwd_vol_q5_list = [None]*num_pairs
+
+    atm_real_vol_ratio_list = [None]*num_pairs
+    q_atm_real_vol_ratio_list = [None]*num_pairs
+
+    atm_real_vol_ratio_ratio_list = [None]*num_pairs
+    q_atm_real_vol_ratio_ratio_list = [None]*num_pairs
+
+    tr_dte_diff_percent_list = [None]*num_pairs
+    downside_list = [None]*num_pairs
+    upside_list = [None]*num_pairs
+
+    theta1_list = [None]*num_pairs
+    theta2_list = [None]*num_pairs
+
+    for i in range(num_pairs):
+
+        vcs_output = ops.get_vcs_signals_legacy(ticker_list=[vcs_pairs['ticker1'].iloc[i], vcs_pairs['ticker2'].iloc[i]],
+                                                tr_dte_list=[vcs_pairs['trDte1'].iloc[i],vcs_pairs['trDte2'].iloc[i]],
+                                                num_cal_days_back=num_cal_days_back,settle_date=kwargs['date_to'])
+
+        atm_vol_ratio_list[i] = vcs_output['atm_vol_ratio']
+
+        q_list[i] = vcs_output['q']
+        q2_list[i] = vcs_output['q2']
+        q1_list[i] = vcs_output['q1']
+        q5_list[i] = vcs_output['q5']
+
+        fwd_vol_q_list[i] = vcs_output['fwd_vol_q']
+        fwd_vol_q2_list[i] = vcs_output['fwd_vol_q2']
+        fwd_vol_q1_list[i] = vcs_output['fwd_vol_q1']
+        fwd_vol_q5_list[i] = vcs_output['fwd_vol_q5']
+
+        atm_real_vol_ratio_list[i] = vcs_output['atm_real_vol_ratio']
+        q_atm_real_vol_ratio_list[i] = vcs_output['q_atm_real_vol_ratio']
+
+        atm_real_vol_ratio_ratio_list[i] = vcs_output['atm_real_vol_ratio_ratio']
+        q_atm_real_vol_ratio_ratio_list[i] = vcs_output['q_atm_real_vol_ratio_ratio']
+
+        tr_dte_diff_percent_list[i] = vcs_output['tr_dte_diff_percent']
+        downside_list[i] = vcs_output['downside']
+        upside_list[i] = vcs_output['upside']
+
+        theta1_list[i] = vcs_output['theta1']
+        theta2_list[i] = vcs_output['theta2']
+
+    vcs_pairs['Q'] = q_list
+    vcs_pairs['Q2'] = q2_list
+    vcs_pairs['Q1'] = q1_list
+    vcs_pairs['Q5'] = q5_list
+
+    vcs_pairs['fwdVolQ'] = fwd_vol_q_list
+    vcs_pairs['fwdVolQ2'] = fwd_vol_q2_list
+    vcs_pairs['fwdVolQ1'] = fwd_vol_q1_list
+    vcs_pairs['fwdVolQ5'] = fwd_vol_q5_list
+
+    vcs_pairs['atmRealVolRatio'] = atm_real_vol_ratio_list
+    vcs_pairs['atmRealVolRatioQ'] = q_atm_real_vol_ratio_list
+
+    vcs_pairs['atmRealVolRatioRatio'] = atm_real_vol_ratio_ratio_list
+    vcs_pairs['atmRealVolRatioRatioQ'] = q_atm_real_vol_ratio_ratio_list
+
+    vcs_pairs['trDteDiffPercent'] = tr_dte_diff_percent_list
+    vcs_pairs['downside'] = downside_list
+    vcs_pairs['upside'] = upside_list
+
+    vcs_pairs['theta1'] = theta1_list
+    vcs_pairs['theta2'] = theta2_list
+
+    vcs_pairs.to_pickle(output_dir + '/summary.pkl')
+
+    return {'vcs_pairs': vcs_pairs, 'success': True}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

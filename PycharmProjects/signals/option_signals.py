@@ -82,6 +82,233 @@ def get_vcs_signals(**kwargs):
             'q': q, 'qf': qf, 'fwd_vol_q': fwd_vol_q}
 
 
+def get_vcs_signals_legacy(**kwargs):
+
+    aligned_indicators_output = get_aligned_option_indicators_legacy(**kwargs)
+
+    if not aligned_indicators_output['success']:
+        return {'atm_vol_ratio': np.NaN, 'q': np.NaN, 'q2': np.NaN, 'q1': np.NaN, 'q5': np.NaN,
+            'fwd_vol_q': np.NaN, 'fwd_vol_q2': np.NaN, 'fwd_vol_q1': np.NaN, 'fwd_vol_q5': np.NaN,
+             'atm_real_vol_ratio': np.NaN, 'q_atm_real_vol_ratio': np.NaN,
+             'atm_real_vol_ratio_ratio': np.NaN, 'q_atm_real_vol_ratio_ratio': np.NaN,
+             'tr_dte_diff_percent': np.NaN,'downside': np.NaN, 'upside': np.NaN, 'theta1': np.NaN, 'theta2': np.NaN, 'hist': []}
+
+    hist = aligned_indicators_output['hist']
+    current = aligned_indicators_output['current']
+    settle_datetime = cu.convert_doubledate_2datetime(kwargs['settle_date'])
+
+    settle_datetime_1year_back = settle_datetime-dt.timedelta(360)
+    settle_datetime_5year_back = settle_datetime-dt.timedelta(5*360)
+
+    hist['atm_vol_ratio'] = hist['c1']['imp_vol']/hist['c2']['imp_vol']
+
+    fwd_var = hist['c2']['cal_dte']*(hist['c2']['imp_vol']**2)-hist['c1']['cal_dte']*(hist['c1']['imp_vol']**2)
+    fwd_vol_sq = fwd_var/(hist['c2']['cal_dte']-hist['c1']['cal_dte'])
+    fwd_vol_adj = np.sign(fwd_vol_sq)*((abs(fwd_vol_sq)).apply(np.sqrt))
+    hist['fwd_vol_adj'] = fwd_vol_adj
+
+    fwd_var = current['cal_dte'][1]*(current['imp_vol'][1]**2)-current['cal_dte'][0]*(current['imp_vol'][0]**2)
+    fwd_vol_sq = fwd_var/(current['cal_dte'][1]-current['cal_dte'][0])
+    fwd_vol_adj = np.sign(fwd_vol_sq)*(np.sqrt(abs(fwd_vol_sq)))
+
+    atm_vol_ratio = current['imp_vol'][0]/current['imp_vol'][1]
+
+    hist['atm_real_vol_ratio'] = hist['c1']['imp_vol']/hist['c1']['close2close_vol20']
+    atm_real_vol_ratio = current['imp_vol'][0]/current['close2close_vol20'][0]
+
+    hist['atm_real_vol_ratio_ratio'] = (hist['c1']['imp_vol']/hist['c1']['close2close_vol20'])/(hist['c2']['imp_vol']/hist['c2']['close2close_vol20'])
+    atm_real_vol_ratio_ratio = (current['imp_vol'][0]/current['close2close_vol20'][0])/(current['imp_vol'][0]/current['close2close_vol20'][0])
+
+    hist_1year = hist[hist.index >= settle_datetime_1year_back]
+    hist_5year = hist[hist.index >= settle_datetime_5year_back]
+
+    q = stats.get_quantile_from_number({'x': atm_vol_ratio,
+                                        'y': hist['atm_vol_ratio'].values, 'clean_num_obs': max(100, round(3*len(hist.index)/4))})
+
+    q2 = stats.get_quantile_from_number({'x': atm_vol_ratio, 'y': hist['atm_vol_ratio'].values[-40:], 'clean_num_obs': 30})
+
+    q1 = stats.get_quantile_from_number({'x': atm_vol_ratio,
+                                        'y': hist_1year['atm_vol_ratio'].values, 'clean_num_obs': max(50, round(3*len(hist_1year.index)/4))})
+
+    q5 = stats.get_quantile_from_number({'x': atm_vol_ratio,
+                                        'y': hist_5year['atm_vol_ratio'].values, 'clean_num_obs': max(100, round(3*len(hist_5year.index)/4))})
+
+    fwd_vol_q = stats.get_quantile_from_number({'x': fwd_vol_adj,
+                                                'y': hist['fwd_vol_adj'].values, 'clean_num_obs': max(100, round(3*len(hist.index)/4))})
+
+    fwd_vol_q2 = stats.get_quantile_from_number({'x': fwd_vol_adj,
+                                                 'y': hist['fwd_vol_adj'].values[-40:], 'clean_num_obs': 30})
+
+    fwd_vol_q1 = stats.get_quantile_from_number({'x': fwd_vol_adj,
+                                                 'y': hist_1year['fwd_vol_adj'].values, 'clean_num_obs': max(50, round(3*len(hist_1year.index)/4))})
+
+    fwd_vol_q5 = stats.get_quantile_from_number({'x': fwd_vol_adj,
+                                                 'y': hist_5year['fwd_vol_adj'].values, 'clean_num_obs': max(100, round(3*len(hist_5year.index)/4))})
+
+    q_atm_real_vol_ratio = stats.get_quantile_from_number({'x': atm_real_vol_ratio,
+                                                           'y': hist['atm_real_vol_ratio'].values, 'clean_num_obs': max(100, round(3*len(hist.index)/4))})
+
+    q_atm_real_vol_ratio_ratio = stats.get_quantile_from_number({'x': atm_real_vol_ratio_ratio,
+                                                                 'y': hist['atm_real_vol_ratio_ratio'].values, 'clean_num_obs': max(100, round(3*len(hist.index)/4))})
+
+    tr_dte_diff_percent = round(100*(current['tr_dte'][1]-current['tr_dte'][0])/current['tr_dte'][0])
+
+    profit5 = hist['c1']['profit5']-hist['c2']['profit5']
+
+    clean_indx = profit5.notnull()
+    clean_data = hist[clean_indx]
+
+    if clean_data.empty:
+        downside = np.NaN
+        upside = np.NaN
+    else:
+        last_available_align_date = clean_data.index[-1]
+        clean_data = clean_data[clean_data.index >= last_available_align_date-dt.timedelta(5*365)]
+        profit5 = clean_data['c1']['profit5']-clean_data['c2']['profit5']
+
+        percentile_vector = stats.get_number_from_quantile(y=profit5.values,
+                                                       quantile_list=[1, 15, 85, 99],
+                                                       clean_num_obs=max(100, round(3*len(profit5.values)/4)))
+
+        downside = (percentile_vector[0]+percentile_vector[1])/2
+        upside = (percentile_vector[2]+percentile_vector[3])/2
+
+    return {'atm_vol_ratio': atm_vol_ratio, 'q': q, 'q2': q2, 'q1': q1, 'q5': q5,
+            'fwd_vol_q': fwd_vol_q, 'fwd_vol_q2': fwd_vol_q2, 'fwd_vol_q1': fwd_vol_q1, 'fwd_vol_q5': fwd_vol_q5,
+             'atm_real_vol_ratio': atm_real_vol_ratio, 'q_atm_real_vol_ratio': q_atm_real_vol_ratio,
+             'atm_real_vol_ratio_ratio': atm_real_vol_ratio_ratio, 'q_atm_real_vol_ratio_ratio': q_atm_real_vol_ratio_ratio,
+            'tr_dte_diff_percent': tr_dte_diff_percent, 'downside': downside, 'upside': upside, 'theta1': current['theta'][0], 'theta2': current['theta'][1], 'hist': hist}
+
+
+def get_aligned_option_indicators_legacy(**kwargs):
+
+    ticker_list = kwargs['ticker_list']
+    tr_dte_list = kwargs['tr_dte_list']
+    settle_datetime = cu.convert_doubledate_2datetime(kwargs['settle_date'])
+
+    if 'num_cal_days_back' in kwargs.keys():
+        num_cal_days_back = kwargs['num_cal_days_back']
+    else:
+        num_cal_days_back = 20*365
+
+    settle_datetime_from = settle_datetime-dt.timedelta(num_cal_days_back)
+
+    contract_specs_output_list = [cmi.get_contract_specs(x) for x in ticker_list]
+    ticker_head_list = [x['ticker_head'] for x in contract_specs_output_list]
+
+    cont_indx_list = [x['ticker_year']*100+x['ticker_month_num'] for x in contract_specs_output_list]
+    month_seperation_list = [cmi.get_month_seperation_from_cont_indx(x,cont_indx_list[0]) for x in cont_indx_list]
+
+    aggregation_method = max([ocu.get_aggregation_method_contracts_back({'ticker_class': x['ticker_class'],
+                                                                         'ticker_head': x['ticker_head']})['aggregation_method'] for x in contract_specs_output_list])
+
+    if (min(tr_dte_list) >= 80) and (aggregation_method == 1):
+        aggregation_method = 3
+
+    tr_days_half_band_width_selected = ocu.tr_days_half_band_with[aggregation_method]
+    data_frame_list = []
+
+    for x in range(len(ticker_list)):
+
+        if ticker_head_list[x] in ['ED', 'E0', 'E2', 'E3', 'E4', 'E5']:
+            model = 'OU'
+        else:
+            model = 'BS'
+
+        tr_dte_upper_band = tr_dte_list[x]+tr_days_half_band_width_selected
+        tr_dte_lower_band = tr_dte_list[x]-tr_days_half_band_width_selected
+
+        ref_tr_dte_list = [y for y in cmi.aligned_data_tr_dte_list if y <= tr_dte_upper_band and y>=tr_dte_lower_band]
+
+        if len(ref_tr_dte_list) == 0:
+            return {'hist': [], 'current': [], 'success': False}
+
+        if aggregation_method == 12:
+
+            aligned_data = [gop.load_aligend_options_data_file(ticker_head=cmi.aligned_data_tickerhead[ticker_head_list[x]],
+                                                    tr_dte_center=y,
+                                                    contract_month_letter=contract_specs_output_list[x]['ticker_month_str'],
+                                                    model=model) for y in ref_tr_dte_list]
+
+        else:
+
+            aligned_data = [gop.load_aligend_options_data_file(ticker_head=cmi.aligned_data_tickerhead[ticker_head_list[x]],
+                                                    tr_dte_center=y,
+                                                    model=model) for y in ref_tr_dte_list]
+
+        aligned_data = [y[(y['trDTE'] >= tr_dte_lower_band)&(y['trDTE'] <= tr_dte_upper_band)] for y in aligned_data]
+
+        aligned_data = pd.concat(aligned_data)
+        aligned_data.drop('theta', axis=1, inplace=True)
+
+        aligned_data['settle_date'] = pd.to_datetime(aligned_data['settleDates'].astype('str'), format='%Y%m%d')
+        aligned_data = aligned_data[(aligned_data['settle_date'] <= settle_datetime)&(aligned_data['settle_date'] >= settle_datetime_from)]
+
+        aligned_data.rename(columns={'TickerYear': 'ticker_year',
+                                     'TickerMonth': 'ticker_month',
+                                     'trDTE': 'tr_dte',
+                                     'calDTE': 'cal_dte',
+                                     'impVol': 'imp_vol',
+                                     'close2CloseVol20': 'close2close_vol20',
+                                     'dollarTheta': 'theta'}, inplace=True)
+
+        aligned_data.sort(['settle_date', 'ticker_year', 'ticker_month'], ascending=[True,True,True],inplace=True)
+        aligned_data.drop_duplicates(['settle_date','ticker_year','ticker_month'],inplace=True)
+
+        aligned_data = aligned_data[['settle_date','ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'imp_vol', 'theta', 'close2close_vol20', 'profit5']]
+
+        aligned_data['cont_indx'] = 100*aligned_data['ticker_year']+aligned_data['ticker_month']
+        aligned_data['cont_indx_adj'] = [cmi.get_cont_indx_from_month_seperation(y,-month_seperation_list[x]) for y in aligned_data['cont_indx']]
+
+        data_frame_list.append(aligned_data)
+
+    for x in range(len(ticker_list)):
+        data_frame_list[x].set_index(['settle_date','cont_indx_adj'], inplace=True,drop=False)
+
+    merged_dataframe = pd.concat(data_frame_list, axis=1, join='inner',keys=['c'+ str(x+1) for x in range(len(ticker_list))])
+    merged_dataframe['abs_tr_dte_diff'] = abs(merged_dataframe['c1']['tr_dte']-tr_dte_list[0])
+    merged_dataframe['settle_date'] = merged_dataframe['c1']['settle_date']
+    merged_dataframe.sort(['settle_date', 'abs_tr_dte_diff'], ascending=[True,True], inplace=False)
+    merged_dataframe.drop_duplicates('settle_date', inplace=True, take_last=False)
+
+    merged_dataframe.index = merged_dataframe.index.droplevel(1)
+
+    tr_dte_list = []
+    cal_dte_list = []
+    imp_vol_list = []
+    theta_list = []
+    close2close_vol20_list = []
+
+    for x in range(len(ticker_list)):
+        selected_data = merged_dataframe['c' + str(x+1)]
+
+        if settle_datetime in selected_data.index:
+            selected_data = selected_data.loc[settle_datetime]
+        else:
+            return {'hist': [], 'current': [], 'success': False}
+
+        if selected_data['cont_indx'] != cont_indx_list[x]:
+            return {'hist': [], 'current': [], 'success': False}
+
+        tr_dte_list.append(selected_data['tr_dte'])
+        cal_dte_list.append(selected_data['cal_dte'])
+        imp_vol_list.append(selected_data['imp_vol'])
+        theta_list.append(selected_data['theta'])
+        close2close_vol20_list.append(selected_data['close2close_vol20'])
+
+    current_data = pd.DataFrame.from_items([('ticker',ticker_list),
+                             ('tr_dte', tr_dte_list),
+                             ('cal_dte', cal_dte_list),
+                             ('imp_vol', imp_vol_list),
+                             ('theta', theta_list),
+                             ('close2close_vol20', close2close_vol20_list)])
+
+    current_data['settle_date'] = settle_datetime
+    current_data.set_index('ticker', drop=True, inplace=True)
+
+    return {'hist': merged_dataframe, 'current': current_data, 'success': True}
+
+# num_cal_days_back isn't used properly for past aligned data, needs to be changed!
 def get_aligned_option_indicators(**kwargs):
 
     ticker_list = kwargs['ticker_list']
@@ -161,18 +388,12 @@ def get_aligned_option_indicators(**kwargs):
     aggregation_method = max([ocu.get_aggregation_method_contracts_back({'ticker_class': x['ticker_class'],
                                                                          'ticker_head': x['ticker_head']})['aggregation_method'] for x in contract_specs_output_list])
 
-    if (current_data['tr_dte'].min()>=80) and (aggregation_method==1):
+    if (current_data['tr_dte'].min() >= 80) and (aggregation_method == 1):
         aggregation_method = 3
 
     tr_days_half_band_width_selected = ocu.tr_days_half_band_with[aggregation_method]
     data_frame_list = []
-    aligned_data_list = []
     ref_tr_dte_list_list = []
-
-    max_tr_dte = current_data['tr_dte'].max()
-    max_ref_dte = sut.get_closest(list_input=cmi.aligned_data_tr_dte_list, target_value=max_tr_dte)
-
-    #print(max_ref_dte)
 
     for x in range(len(ticker_list)):
         ticker_data = option_ticker_indicator_dictionary_final[ticker_list[x]]

@@ -4,6 +4,7 @@ import shared.directory_names as dn
 import my_sql_routines.my_sql_utilities as msu
 import scipy.io
 import pandas as pd
+import numpy as np
 import os
 import h5py
 
@@ -78,6 +79,41 @@ def load_aligend_options_data_file(**kwargs):
         data_frame_out = pd.DataFrame(columns=column_names)
 
     return data_frame_out
+
+
+def load_options_backtesting_data(**kwargs):
+
+    ticker = kwargs['ticker']
+    settle_date = kwargs['settle_date']
+    delta = kwargs['delta']
+
+    if 'model' in kwargs.keys():
+        model = kwargs['model']
+    else:
+        model = 'BS'
+
+    option_data_dir = dn.get_dated_directory_extension(folder_date=settle_date, ext='options_backtesting_data')
+    file_dir = ticker + '_' + model + '_' + str(delta) + '.mat'
+
+    output_dictionary = {'final_pnl5': np.NaN, 'final_pnl10': np.NaN, 'final_pnl20': np.NaN,
+                             'accumulated_theta_5': np.NaN, 'accumulated_theta_10': np.NaN, 'accumulated_theta_20': np.NaN}
+
+    if os.path.isfile(option_data_dir+'/'+file_dir):
+
+        try:
+            mat_output = scipy.io.loadmat(option_data_dir+'/'+file_dir)
+            paper_trader_output = mat_output['paperTraderOutput']
+
+            output_dictionary = {'final_pnl5': paper_trader_output['finalPnl5'][0][0][0][0],
+                             'final_pnl10': paper_trader_output['finalPnl10'][0][0][0][0],
+                             'final_pnl20': paper_trader_output['finalPnl20'][0][0][0][0],
+                             'accumulated_theta_5': paper_trader_output['accumulatedTheta5'][0][0][0][0],
+                             'accumulated_theta_10': paper_trader_output['accumulatedTheta10'][0][0][0][0],
+                             'accumulated_theta_20': paper_trader_output['accumulatedTheta20'][0][0][0][0]}
+        except Exception:
+            print('Cannot load ' + file_dir + ' !')
+
+    return output_dictionary
 
 
 def get_options_price_from_db(**kwargs):
