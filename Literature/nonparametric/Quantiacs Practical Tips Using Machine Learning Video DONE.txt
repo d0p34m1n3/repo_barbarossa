@@ -1,0 +1,5 @@
+
+
+(40:00) Talks about hyperparameter crossvalidation which might be useful.
+
+The talk itself was mostly useless.

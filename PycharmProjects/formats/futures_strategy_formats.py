@@ -29,13 +29,13 @@ def generate_futures_butterfly_formatted_output(**kwargs):
                                                   'tickerHead', 'trDte1', 'trDte2', 'trDte3',
                                                   'Q', 'QF', 'z1', 'z2','z3','z4', 'theo_pnl', 'r1', 'r2', 'bf_price',
                                                   'RC', 'seasonality','second_spread_weight_1', 'upside', 'downside',
-                                                  'recent_vol_ratio', 'recent_5day_pnl']]
+                                                  'recent_vol_ratio', 'recent_5day_pnl', 'bf_sell_limit', 'bf_buy_limit']]
 
     good_butterflies_w_selected_columns = good_butterflies[['ticker1', 'ticker2', 'ticker3',
                                                   'tickerHead', 'trDte1', 'trDte2', 'trDte3',
                                                   'Q', 'QF', 'z1', 'z2','z3','z4', 'theo_pnl', 'r1', 'r2', 'bf_price',
                                                   'RC', 'seasonality', 'second_spread_weight_1', 'upside', 'downside',
-                                                  'recent_vol_ratio', 'recent_5day_pnl']]
+                                                  'recent_vol_ratio', 'recent_5day_pnl', 'bf_sell_limit', 'bf_buy_limit']]
 
     writer = pd.ExcelWriter(output_dir + '/' + futil.xls_file_names['futures_butterfly'] + '.xlsx', engine='xlsxwriter')
 
