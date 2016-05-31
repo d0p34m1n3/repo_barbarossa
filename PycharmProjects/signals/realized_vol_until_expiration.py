@@ -150,6 +150,8 @@ def forecast_realized_vol_until_expiration(**kwargs):
         clean_vol_frame['real_vol_diff'] = abs(clean_vol_frame['real_vol20']-real_vol20_current)
         clean_vol_frame['forecast_multiplier'] = clean_vol_frame['real_vol_till_expiration']/clean_vol_frame['real_vol20']
 
+        clean_vol_frame.sort('real_vol_diff',ascending=True,inplace=True)
+
         num_relevant_obs = max(round(len(clean_vol_frame.index)/5), 10)
 
         if sum(clean_indx) <= 20:
@@ -159,7 +161,7 @@ def forecast_realized_vol_until_expiration(**kwargs):
 
         realized_vol_forecast = forecast_multiplier_mean*real_vol20_current
 
-    return realized_vol_forecast
+    return {'realized_vol_forecast': realized_vol_forecast, 'real_vol20_current': real_vol20_current}
 
 
 

@@ -73,5 +73,31 @@ def get_vcs_filters(**kwargs):
                                          (data_frame_input['Q1'] >= 60) &
                                          (data_frame_input['Q'] >= 74))
 
+    return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
+
+
+def get_scv_filters(**kwargs):
+
+    data_frame_input = kwargs['data_frame_input']
+    filter_list = kwargs['filter_list']
+
+    selection_indx = [False]*len(data_frame_input.index)
+
+    if 'long1' in filter_list:
+
+        selection_indx = selection_indx|((data_frame_input['premium'] <= -28) & (data_frame_input['Q'] <= 29))
+
+        selection_indx = selection_indx|((data_frame_input['premium'] > -28) &
+                                         (data_frame_input['premium'] <= -7) &
+                                         (data_frame_input['Q'] <= 14))
+
+    if 'short1' in filter_list:
+
+        selection_indx = selection_indx|((data_frame_input['premium'] >= 21) & (data_frame_input['Q'] >= 80))
+
+        selection_indx = selection_indx|((data_frame_input['premium'] < 21) &
+                                         (data_frame_input['premium'] >= 12) &
+                                         (data_frame_input['Q'] >= 91))
 
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
+

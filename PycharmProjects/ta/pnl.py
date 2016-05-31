@@ -180,7 +180,6 @@ def get_strategy_pnl(**kwargs):
         for i in range(len(pnl_per_tickerhead.columns)):
             pnl_per_tickerhead.iloc[:, i][zero_indx[i]] = 0
 
-
     pnl_per_tickerhead['settle_date'] = bus_day_list
     pnl_per_tickerhead.reset_index(inplace=True,drop=True)
 

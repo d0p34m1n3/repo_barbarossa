@@ -28,6 +28,16 @@ conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'Cocoa': 'CC',
                                   'Sugar No 11': 'SB',
                                   'Cotton No 2': 'CT'}
+
+conversion_from_cme_direct_ticker_head = {'S': 'S',
+                                          'W': 'W',
+                                          'LC': 'LC',
+                                          'LN': 'LN',
+                                          'J1': 'JY',
+                                          'LO': 'CL',
+                                          'CL': 'CL',
+                                          'SO': 'SI'}
+
 product_type_instrument_conversion = {'Future': 'F'}
 
 
@@ -52,6 +62,19 @@ def convert_trade_price_from_tt(**kwargs):
     return converted_price
 
 
+def convert_trade_price_from_cme_direct(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    price = kwargs['price']
+
+    if ticker_head in ['JY']:
+        converted_price = price*(10**7)
+    else:
+        converted_price = price
+
+    return converted_price
+
+
 def convert_from_cme_contract_code(contract_code):
 
     split_list = contract_code.split(':')
@@ -61,12 +84,14 @@ def convert_from_cme_contract_code(contract_code):
     ticker_month = int(split_list[3]) % 100
     ticker_year = m.floor(float(split_list[3])/100)
 
-    result_dictionary['ticker'] = split_list[2] + cmi.full_letter_month_list[ticker_month-1] + str(ticker_year)
-    result_dictionary['ticker_head'] = split_list[2]
+    ticker_head = conversion_from_cme_direct_ticker_head[split_list[2]]
+
+    result_dictionary['ticker'] = ticker_head + cmi.full_letter_month_list[ticker_month-1] + str(ticker_year)
+    result_dictionary['ticker_head'] = ticker_head
 
     if len(split_list) >= 6:
         result_dictionary['option_type'] = split_list[4]
-        result_dictionary['strike_price'] = int(split_list[5])
+        result_dictionary['strike_price'] = split_list[5]
     else:
         result_dictionary['option_type'] = None
         result_dictionary['strike_price'] = None
@@ -152,7 +177,16 @@ def get_formatted_cme_direct_fills(**kwargs):
 
     formatted_frame = pd.DataFrame([convert_from_cme_contract_code(x) for x in fill_frame['ContractCode']])
 
+    formatted_frame['strike_price'] = formatted_frame['strike_price'].astype('float64')
+
     formatted_frame['trade_price'] = fill_frame['Price']
+
+    formatted_frame['trade_price'] = [convert_trade_price_from_cme_direct(ticker_head=formatted_frame['ticker_head'].iloc[x],
+                                        price=formatted_frame['trade_price'].iloc[x]) for x in range(len(formatted_frame.index))]
+
+    formatted_frame['strike_price'] = [convert_trade_price_from_cme_direct(ticker_head=formatted_frame['ticker_head'].iloc[x],
+                                        price=formatted_frame['strike_price'].iloc[x]) for x in range(len(formatted_frame.index))]
+
     formatted_frame['trade_quantity'] = fill_frame['FilledQuantity']
     formatted_frame['side'] = fill_frame['Side']
 
@@ -170,8 +204,9 @@ def get_formatted_cme_direct_fills(**kwargs):
     aggregate_trades['trade_price'] = grouped['PQ'].sum()/grouped['trade_quantity'].sum()
     aggregate_trades['trade_quantity'] = grouped['trade_quantity'].sum()
 
-    aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity'] =- \
-        aggregate_trades.loc[(slice(None),'Sell'),'trade_quantity']
+    if 'Sell' in list(aggregate_trades.index.get_level_values(1)):
+        aggregate_trades.loc[(slice(None), 'Sell'),'trade_quantity'] =- \
+        aggregate_trades.loc[(slice(None), 'Sell'),'trade_quantity']
 
     aggregate_trades['ticker'] = grouped['ticker'].first()
     aggregate_trades['ticker_head'] = grouped['ticker_head'].first()

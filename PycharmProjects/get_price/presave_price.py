@@ -315,6 +315,9 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
     data4_tickerhead = data4_tickerhead.drop('discard', 1)
 
     data4_tickerhead['close_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['close_price'].values]
+    data4_tickerhead['open_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['open_price'].values]
+    data4_tickerhead['high_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['high_price'].values]
+    data4_tickerhead['low_price'] = [float(x) if x is not None else float('NaN') for x in data4_tickerhead['low_price'].values]
 
     data4_tickerhead['cont_indx'] = 100*data4_tickerhead['ticker_year']+data4_tickerhead['ticker_month']
     unique_cont_indx_list = data4_tickerhead['cont_indx'].unique()
@@ -340,6 +343,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         merged_dataframe_list[i]['cont_indx'] = contract_data['cont_indx'][contract_data.index[0]]
 
         merged_dataframe_list[i]['change1'] = merged_dataframe_list[i]['close_price'].shift(-2)-merged_dataframe_list[i]['close_price'].shift(-1)
+        merged_dataframe_list[i]['change1_instant'] = merged_dataframe_list[i]['close_price'].shift(-1)-merged_dataframe_list[i]['close_price']
         merged_dataframe_list[i]['change2'] = merged_dataframe_list[i]['close_price'].shift(-3)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change5'] = merged_dataframe_list[i]['close_price'].shift(-6)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change10'] = merged_dataframe_list[i]['close_price'].shift(-11)-merged_dataframe_list[i]['close_price'].shift(-1)

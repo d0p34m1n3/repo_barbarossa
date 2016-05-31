@@ -4,6 +4,7 @@ import shared.directory_names as dn
 import contract_utilities.contract_meta_info as cmi
 import ta.portfolio_manager as tpm
 import math as m
+import shared.calendar_utilities as cu
 position_file_name = 'abn_position.csv'
 
 conversion_from_abn_ticker_head = {'CBT BEAN MEAL(0106)': 'SM',
@@ -13,6 +14,7 @@ conversion_from_abn_ticker_head = {'CBT BEAN MEAL(0106)': 'SM',
                                    'CBT SOYBEANS(01S)': 'S',
                                    'CBT WHEAT(01W)': 'W',
                                    'LIVE CATTLE(0248)': 'LC',
+                                   'CATTLE(0248)': 'LC',
                                    'CME FEEDERS(0262)': 'FC',
                                    'CME LEAN HOGS(0253)': 'LN',
                                    'IMM 3M EUR(03ED)': 'ED',
@@ -24,9 +26,15 @@ conversion_from_abn_ticker_head = {'CBT BEAN MEAL(0106)': 'SM',
                                    'ICEUS COCOA(09CC)': 'CC',
                                    'ICEUS COFFEEC(09KC)': 'KC',
                                    'ICEUS SUGAR11(09SB)': 'SB',
-                                   'ICE BRENT CRD(16B)': 'B'}
+                                   'ICE BRENT CRD(16B)': 'B',
+                                   'JAPANESE YEN(03J1)': 'JY',
+                                   'CMX SILVER(08SI)': 'SI',
+                                   'IMM JPY(03J1)': 'JY'}
 
-abn_strike_multiplier = {'W': 100}
+abn_strike_multiplier = {'W': 100,
+                         'S': 100,
+                         'SI': 0.01,
+                         'JY': 1000}
 
 
 def get_abn_strike_multiplier(ticker_head):
@@ -72,6 +80,7 @@ def load_and_convert_abn_position_file(**kwargs):
                                                          abn_frame['strike_price'][option_indx].astype(str)
 
     abn_frame = abn_frame[abn_frame['qty'] != 0]
+    abn_frame['generalized_ticker'] = [x.rstrip('0').rstrip('.') for x in abn_frame['generalized_ticker']]
 
     return abn_frame[['generalized_ticker', 'qty']]
 
@@ -80,7 +89,9 @@ def reconcile_position(**kwargs):
 
     abn_position = load_and_convert_abn_position_file(**kwargs)
 
-    db_position = tpm.get_position_4portfolio(trade_date_to=20160421)
+    db_position = tpm.get_position_4portfolio(trade_date_to=cu.get_doubledate())
+
+    db_position['generalized_ticker'] = [x.rstrip('0').rstrip('.') for x in db_position['generalized_ticker']]
 
     merged_data = pd.merge(abn_position,db_position,how='outer',on='generalized_ticker')
     merged_data['qty_diff'] = merged_data['qty_x'].astype('float64')-merged_data['qty_y'].astype('float64')

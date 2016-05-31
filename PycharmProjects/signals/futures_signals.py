@@ -83,6 +83,8 @@ def get_futures_butterfly_signals(**kwargs):
 
     linear_interp_price2 = (weight_11*aligned_data['c1']['close_price']+weight_13*aligned_data['c3']['close_price'])/2
 
+    butterfly_price = aligned_data['c1']['close_price']-2*aligned_data['c2']['close_price']+aligned_data['c3']['close_price']
+
     price_ratio = linear_interp_price2/aligned_data['c2']['close_price']
 
     linear_interp_price2_current = (weight_11*price_1+weight_13*price_3)/2
@@ -91,6 +93,9 @@ def get_futures_butterfly_signals(**kwargs):
 
     q = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values, 'clean_num_obs': max(100, round(3*len(price_ratio.values)/4))})
     qf = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values[-40:], 'clean_num_obs': 30})
+
+    recent_quantile_list = [stats.get_quantile_from_number({'x': x, 'y': price_ratio.values[-40:], 'clean_num_obs': 30}) for x in price_ratio.values[-40:]]
+
     weight1 = weight_11
     weight2 = weight_12
     weight3 = weight_13
@@ -113,10 +118,34 @@ def get_futures_butterfly_signals(**kwargs):
                               +current_data['c3']['close_price']
 
     yield_regress_output = stats.get_regression_results({'x':yield2, 'y':yield1,'x_current': yield2_current, 'y_current': yield1_current,
-                                                          'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
+                                                         'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
     yield_regress_output_last5_years = stats.get_regression_results({'x':yield2_last5_years, 'y':yield1_last5_years,
-                                                             'x_current': yield2_current, 'y_current': yield1_current,
-                                                             'clean_num_obs': max(100, round(3*len(yield1_last5_years.values)/4))})
+                                                                     'x_current': yield2_current, 'y_current': yield1_current,
+                                                                     'clean_num_obs': max(100, round(3*len(yield1_last5_years.values)/4))})
+
+    recent_zscore_list = [(yield1[-40+i]-yield_regress_output['alpha']-yield_regress_output['beta']*yield2[-40+i])/yield_regress_output['residualstd'] for i in range(40)]
+
+    bf_qz_frame = pd.DataFrame.from_items([('bf_price', butterfly_price.values[-40:]),
+                                           ('q',recent_quantile_list),
+                                           ('zscore', recent_zscore_list)])
+
+    bf_qz_frame = np.round(bf_qz_frame, 8)
+    bf_qz_frame.drop_duplicates(['bf_price'], take_last=True, inplace=True)
+
+    # return bf_qz_frame
+
+    bf_qz_frame_short = bf_qz_frame[(bf_qz_frame['zscore'] >= 0.6) & (bf_qz_frame['q'] >= 85)]
+    bf_qz_frame_long = bf_qz_frame[(bf_qz_frame['zscore'] <= -0.6) & (bf_qz_frame['q'] <= 12)]
+
+    if bf_qz_frame_short.empty:
+        short_price_limit = np.NAN
+    else:
+        short_price_limit = bf_qz_frame_short['bf_price'].min()
+
+    if bf_qz_frame_long.empty:
+        long_price_limit = np.NAN
+    else:
+        long_price_limit = bf_qz_frame_long['bf_price'].max()
 
     zscore1= yield_regress_output['zscore']
     rsquared1= yield_regress_output['rsquared']
@@ -212,7 +241,8 @@ def get_futures_butterfly_signals(**kwargs):
             'second_spread_weight_1': second_spread_weight_1, 'second_spread_weight_2': second_spread_weight_2,
             'downside': downside, 'upside': upside,
              'yield1': yield1, 'yield2': yield2, 'yield1_current': yield1_current, 'yield2_current': yield2_current,
-            'bf_price': butterfly_price_current, 'noise_ratio': noise_ratio,
+            'bf_price': butterfly_price_current, 'short_price_limit': short_price_limit,'long_price_limit':long_price_limit,
+            'noise_ratio': noise_ratio,
             'alpha1': alpha1, 'alpha2': yield_regress_output_last5_years['alpha'],
             'residual_std1': yield_regress_output['residualstd'], 'residual_std2': yield_regress_output_last5_years['residualstd'],
             'recent_vol_ratio': recent_vol_ratio, 'recent_5day_pnl': recent_5day_pnl,

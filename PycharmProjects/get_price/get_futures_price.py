@@ -18,7 +18,8 @@ def get_futures_prices_4date(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
 
     sql_query = 'SELECT dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, ' + \
-    'sym.ticker_year, dp.cal_dte, dp.tr_dte, dp.close_price, dp.volume ' + \
+    'sym.ticker_year, dp.cal_dte, dp.tr_dte, ' \
+    'dp.open_price, dp.high_price, dp.low_price, dp.close_price, dp.volume ' + \
     'FROM symbol as sym ' + \
     'INNER JOIN daily_price as dp ON dp.symbol_id = sym.id ' + \
     'WHERE dp.price_date=' + str(date_to) + \
@@ -31,7 +32,8 @@ def get_futures_prices_4date(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
+    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte',
+                                      'open_price','high_price','low_price','close_price', 'volume'])
 
 
 def get_futures_price_4ticker(**kwargs):
@@ -59,7 +61,8 @@ def get_futures_price_4ticker(**kwargs):
         filter_string = filter_string + ' and dp.price_date<=' + str(kwargs['date_to'])
 
     sql_query = 'SELECT dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, ' + \
-    'sym.ticker_year, dp.cal_dte, dp.tr_dte, dp.close_price, dp.volume ' + \
+    'sym.ticker_year, dp.cal_dte, dp.tr_dte, ' \
+    'dp.open_price, dp.high_price, dp.low_price, dp.close_price, dp.volume ' + \
     'FROM symbol as sym ' + \
     'INNER JOIN daily_price as dp ON dp.symbol_id = sym.id ' + \
     filter_string +  \
@@ -72,7 +75,8 @@ def get_futures_price_4ticker(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'close_price', 'volume'])
+    return pd.DataFrame(data,columns=['settle_date', 'ticker', 'ticker_head', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte',
+                                      'open_price','high_price','low_price','close_price', 'volume'])
 
 
 def get_futures_last_price_date_4ticker(**kwargs):

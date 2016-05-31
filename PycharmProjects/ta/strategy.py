@@ -295,6 +295,33 @@ def get_open_strategies(**kwargs):
     return pd.DataFrame(data,columns=['id','alias','open_date','close_date','pnl','created_date','last_updated_date','description_string'])
 
 
+def select_strategies(**kwargs):
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    sql_query = 'SELECT * FROM futures_master.strategy WHERE '
+
+    if 'open_date_from' in kwargs.keys():
+        open_date_from = kwargs['open_date_from']
+    else:
+        open_date_from = 20160107
+
+    sql_query = sql_query + ' open_date>=' + str(open_date_from)
+
+    if 'open_date_to' in kwargs.keys():
+        sql_query = sql_query + ' and open_date<=' + str(kwargs['open_date_to'])
+
+    cur = con.cursor()
+
+    cur.execute(sql_query)
+    data = cur.fetchall()
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return pd.DataFrame(data,columns=['id','alias','open_date','close_date','pnl','created_date','last_updated_date','description_string'])
+
+
 def load_strategy_file(**kwargs):
 
     strategy_class = kwargs['strategy_class']

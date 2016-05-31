@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import ta.get_intraday_prices as gip
 import contract_utilities.contract_meta_info as cmi
+import ta.trade_fill_loader as tfl
 pd.options.mode.chained_assignment = None  # default='warn'
 import shared.converters as sc
 
@@ -24,6 +25,12 @@ def get_hedge_4strategy(**kwargs):
     intraday_price_frame = gip.get_cme_direct_prices()
     intraday_price_frame.rename(columns={'ticker': 'underlying_ticker'},inplace=True)
 
+    intraday_price_frame['ticker_head'] = [cmi.get_contract_specs(x)['ticker_head'] for x in intraday_price_frame['underlying_ticker']]
+    intraday_price_frame['mid_price'] = (intraday_price_frame['bid_price'] + intraday_price_frame['ask_price'])/2
+
+    intraday_price_frame['mid_price'] = [tfl.convert_trade_price_from_cme_direct(ticker_head=intraday_price_frame['ticker_head'].iloc[x],
+                                        price=intraday_price_frame['mid_price'].iloc[x]) for x in range(len(intraday_price_frame.index))]
+
     options_frame = position_frame[position_frame['instrument'] == 'O']
     futures_frame = position_frame[position_frame['instrument'] == 'F']
 
@@ -31,23 +38,15 @@ def get_hedge_4strategy(**kwargs):
         futures_frame.rename(columns={'ticker': 'underlying_ticker', 'qty': 'underlying_delta'},inplace=True)
         futures_frame = futures_frame[['underlying_ticker', 'underlying_delta']]
         net_position = pd.merge(futures_frame, intraday_price_frame, how='left', on='underlying_ticker')
-        net_position['hedge_price'] = (net_position['bid_price']+net_position['ask_price'])/2
+        net_position['hedge_price'] = net_position['mid_price']
         net_position['hedge'] = -net_position['underlying_delta']
         return net_position
 
-
-    imp_vol_list = [gop.get_options_price_from_db(ticker=options_frame['ticker'].iloc[x],
+    options_frame['imp_vol'] = [gop.get_options_price_from_db(ticker=options_frame['ticker'].iloc[x],
                                   settle_date=settle_price_date,
                                   strike=options_frame['strike_price'].iloc[x],
-                                  option_type=options_frame['option_type'].iloc[x],
                                   column_names=['imp_vol'],
-                                  con=con) for x in range(len(options_frame.index))]
-
-    imp_vol_frame = pd.concat(imp_vol_list)
-    imp_vol_frame.reset_index(drop=True, inplace=True)
-    options_frame.reset_index(drop=True, inplace=True)
-
-    options_frame = pd.concat([options_frame, imp_vol_frame], axis=1)
+                                  con=con)['imp_vol'][0] for x in range(len(options_frame.index))]
 
     options_frame['underlying_ticker'] = [omu.get_option_underlying(ticker=x) for x in options_frame['ticker']]
 
@@ -56,8 +55,6 @@ def get_hedge_4strategy(**kwargs):
     options_frame['ticker_head'] = [cmi.get_contract_specs(x)['ticker_head'] for x in options_frame['ticker']]
     options_frame['exercise_type'] = [cmi.get_option_exercise_type(ticker_head=x) for x in options_frame['ticker_head']]
     options_frame['strike_price'] = options_frame['strike_price'].astype('float64')
-
-    options_frame['mid_price'] = (options_frame['bid_price']+options_frame['ask_price'])/2
 
     options_frame['delta'] = [omu.option_model_wrapper(ticker=options_frame['ticker'].iloc[x],
                              calculation_date=current_date,
@@ -115,7 +112,7 @@ def hedge_strategy_against_delta(**kwargs):
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     trade_frame['trade_quantity'] = -trade_frame['trade_quantity']
-    trade_frame['alias'] = 'Delta'
+    trade_frame['alias'] = 'delta_may'
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     if 'con' not in kwargs.keys():
@@ -133,8 +130,8 @@ def strategy_hedge_report(**kwargs):
     strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=strategy_frame['description_string'][x])['strategy_class']
                            for x in range(len(strategy_frame.index))]
 
-    vcs_indx = [x == 'vcs' for x in strategy_class_list]
-    hedge_frame = strategy_frame[vcs_indx]
+    hedge_indx = [x in ['vcs', 'scv'] for x in strategy_class_list]
+    hedge_frame = strategy_frame[hedge_indx]
 
     [hedge_strategy_against_delta(alias=x, con=con) for x in hedge_frame['alias']]
 

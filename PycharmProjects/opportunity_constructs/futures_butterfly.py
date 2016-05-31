@@ -88,6 +88,8 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     yield1_list = [None]*num_butterflies
     yield2_list = [None]*num_butterflies
     bf_price_list = [None]*num_butterflies
+    bf_price_sell_limit_list = [None]*num_butterflies
+    bf_price_buy_limit_list = [None]*num_butterflies
     noise_ratio_list = [None]*num_butterflies
     alpha1_list = [None]*num_butterflies
     alpha2_list = [None]*num_butterflies
@@ -156,6 +158,8 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         yield1_list[i] = bf_signals_output['yield1_current']
         yield2_list[i] = bf_signals_output['yield2_current']
         bf_price_list[i] = bf_signals_output['bf_price']
+        bf_price_sell_limit_list[i] = bf_signals_output['short_price_limit']
+        bf_price_buy_limit_list[i] = bf_signals_output['long_price_limit']
         noise_ratio_list[i] = bf_signals_output['noise_ratio']
         alpha1_list[i] = bf_signals_output['alpha1']
         alpha2_list[i] = bf_signals_output['alpha2']
@@ -209,8 +213,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['seasonality'] = contract_seasonality_list
     butterflies['yield1'] = yield1_list
     butterflies['yield2'] = yield2_list
-
     butterflies['bf_price'] = bf_price_list
+    butterflies['bf_sell_limit'] = bf_price_sell_limit_list
+    butterflies['bf_buy_limit'] = bf_price_buy_limit_list
     butterflies['noise_ratio'] = noise_ratio_list
     butterflies['alpha1'] = alpha1_list
     butterflies['alpha2'] = alpha2_list

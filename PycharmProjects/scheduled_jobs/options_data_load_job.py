@@ -95,4 +95,10 @@ try:
 except Exception:
     pass
 
+try:
+    osf.generate_scv_formatted_output(report_date=folder_date)
+    prep.prepare_strategy_daily(strategy_class='scv', report_date=folder_date)
+except Exception:
+    pass
+
 con.close()

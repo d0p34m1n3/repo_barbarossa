@@ -23,7 +23,7 @@ def get_vcs_pairs_4date(**kwargs):
     option_frame['ticker_class'] = [cmi.ticker_class[x] for x in option_frame['ticker_head']]
 
     selection_indx = (option_frame['ticker_class'] == 'Livestock') | (option_frame['ticker_class'] == 'Ag') | \
-                     (option_frame['ticker_class'] == 'Treasury') | (option_frame['ticker_head'] == 'CL') | \
+                     (option_frame['ticker_class'] == 'Treasury') | (option_frame['ticker_class'] == 'Energy') | \
                      (option_frame['ticker_class'] == 'FX') | (option_frame['ticker_class'] == 'Index') | \
                      (option_frame['ticker_class'] == 'Metal')
     option_frame = option_frame[selection_indx]
@@ -191,7 +191,7 @@ def generate_vcs_sheet_4date(**kwargs):
             con.close()
 
     q_list = [None]*num_pairs
-    qf_list = [None]*num_pairs
+    q1_list = [None]*num_pairs
     fwd_vol_q_list = [None]*num_pairs
     downside_list = [None]*num_pairs
     upside_list = [None]*num_pairs
@@ -208,7 +208,7 @@ def generate_vcs_sheet_4date(**kwargs):
                             settle_date=kwargs['date_to'])
 
         q_list[i] = vcs_output['q']
-        qf_list[i] = vcs_output['qf']
+        q1_list[i] = vcs_output['q1']
         fwd_vol_q_list[i] = vcs_output['fwd_vol_q']
         downside_list[i] = vcs_output['downside']
         upside_list[i] = vcs_output['upside']
@@ -219,7 +219,7 @@ def generate_vcs_sheet_4date(**kwargs):
         theta_list[i] = vcs_output['theta']
 
     vcs_pairs['Q'] = q_list
-    vcs_pairs['QF'] = qf_list
+    vcs_pairs['Q1'] = q1_list
     vcs_pairs['fwdVolQ'] = fwd_vol_q_list
     vcs_pairs['downside'] = downside_list
     vcs_pairs['upside'] = upside_list

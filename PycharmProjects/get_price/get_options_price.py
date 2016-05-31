@@ -157,7 +157,7 @@ def get_options_price_from_db(**kwargs):
 
     data_frame_out = pd.DataFrame(data, columns=column_names)
 
-    for x in ['close_price', 'delta', 'imp_vol', 'strike', 'theta']:
+    for x in ['close_price', 'delta', 'imp_vol', 'strike', 'theta', 'vega']:
 
         if x in column_names:
             data_frame_out[x] = data_frame_out[x].astype('float64')

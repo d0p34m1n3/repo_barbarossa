@@ -28,18 +28,24 @@ def get_vcs_signals(**kwargs):
             'real_vol_ratio': np.NaN,
             'atm_real_vol_ratio': np.NaN,
             'theta': np.NaN,
-            'q': np.NaN, 'qf': np.NaN, 'fwd_vol_q': np.NaN}
+            'q': np.NaN, 'q1': np.NaN, 'fwd_vol_q': np.NaN}
 
     hist = aligned_indicators_output['hist']
     current = aligned_indicators_output['current']
 
+    settle_datetime = cu.convert_doubledate_2datetime(kwargs['settle_date'])
+    settle_datetime_1year_back = settle_datetime-dt.timedelta(360)
+
     hist['atm_vol_ratio'] = hist['c1']['imp_vol']/hist['c2']['imp_vol']
     atm_vol_ratio = current['imp_vol'][0]/current['imp_vol'][1]
+
+    hist_1year = hist[hist.index >= settle_datetime_1year_back]
 
     q = stats.get_quantile_from_number({'x': atm_vol_ratio,
                                         'y': hist['atm_vol_ratio'].values, 'clean_num_obs': max(100, round(3*len(hist.index)/4))})
 
-    qf = stats.get_quantile_from_number({'x': atm_vol_ratio, 'y': hist['atm_vol_ratio'].values[-40:], 'clean_num_obs': 30})
+    q1 = stats.get_quantile_from_number({'x': atm_vol_ratio,
+                                        'y': hist_1year['atm_vol_ratio'].values, 'clean_num_obs': max(50, round(3*len(hist_1year.index)/4))})
 
     fwd_var = hist['c2']['cal_dte']*(hist['c2']['imp_vol']**2)-hist['c1']['cal_dte']*(hist['c1']['imp_vol']**2)
     fwd_vol_sq = fwd_var/(hist['c2']['cal_dte']-hist['c1']['cal_dte'])
@@ -79,7 +85,7 @@ def get_vcs_signals(**kwargs):
             'real_vol_ratio': current['close2close_vol20'][0]/current['close2close_vol20'][1],
             'atm_real_vol_ratio': current['imp_vol'][0]/current['close2close_vol20'][0],
             'theta': current['theta'][1]-current['theta'][0],
-            'q': q, 'qf': qf, 'fwd_vol_q': fwd_vol_q}
+            'q': q, 'q1': q1, 'fwd_vol_q': fwd_vol_q}
 
 
 def get_vcs_signals_legacy(**kwargs):
@@ -308,7 +314,6 @@ def get_aligned_option_indicators_legacy(**kwargs):
 
     return {'hist': merged_dataframe, 'current': current_data, 'success': True}
 
-# num_cal_days_back isn't used properly for past aligned data, needs to be changed!
 def get_aligned_option_indicators(**kwargs):
 
     ticker_list = kwargs['ticker_list']
@@ -320,6 +325,8 @@ def get_aligned_option_indicators(**kwargs):
         num_cal_days_back = kwargs['num_cal_days_back']
     else:
         num_cal_days_back = 20*365
+
+    settle_datetime_from = settle_datetime-dt.timedelta(num_cal_days_back)
 
     contract_specs_output_list = [cmi.get_contract_specs(x) for x in ticker_list]
     ticker_head_list = [x['ticker_head'] for x in contract_specs_output_list]
@@ -454,6 +461,8 @@ def get_aligned_option_indicators(**kwargs):
         ticker_data['old_aligned'] = False
         ticker_data['profit5'] = np.NaN
         ticker_data = pd.concat([aligned_data, ticker_data[['settle_date', 'ticker_month', 'ticker_year', 'cal_dte', 'tr_dte', 'imp_vol', 'close2close_vol20', 'profit5', 'old_aligned']]])
+
+        ticker_data = ticker_data[(ticker_data['settle_date'] <= settle_datetime)&(ticker_data['settle_date'] >= settle_datetime_from)]
 
         ticker_data['cont_indx'] = 100*ticker_data['ticker_year']+ticker_data['ticker_month']
         ticker_data['cont_indx_adj'] = [cmi.get_cont_indx_from_month_seperation(y,-month_seperation_list[x]) for y in ticker_data['cont_indx']]

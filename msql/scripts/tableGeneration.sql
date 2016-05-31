@@ -139,7 +139,7 @@ CREATE TABLE `option_ticker_indicators`(
 `ticker_year` int NOT NULL,
 `cal_dte` int NULL,
 `tr_dte` int NULL,
-`imp_vol` decimal(5,3) NULL,
+`imp_vol` decimal(7,3) NULL,
 `delta` decimal(5,3) NULL,
 `strike` decimal(19,4) NULL,
 `theta` decimal(15,8) NULL,
@@ -159,6 +159,7 @@ CREATE TABLE `option_ticker_indicators`(
 PRIMARY KEY (`id`),
 UNIQUE KEY `ticker_day` (`ticker`,`price_date`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 
 CREATE TABLE `strategy` (
@@ -196,7 +197,7 @@ KEY `index_strategy_id` (`strategy_id`)
 
 #Modifications:
 ALTER TABLE `trades` MODIFY `trade_quantity` decimal(19,2) NULL
-
+ALTER TABLE `trades` MODIFY `strike_price` decimal(19,4) NULL
 
 
 
