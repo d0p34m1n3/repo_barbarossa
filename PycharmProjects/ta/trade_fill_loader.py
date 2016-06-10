@@ -10,6 +10,8 @@ import ta.strategy as ts
 import numpy as np
 import math as m
 cme_direct_fill_file_name = 'cme_direct_fills.csv'
+manual_trade_entry_file_name = 'manual_trade_entry.csv'
+
 
 conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'HO': 'HO',
@@ -36,7 +38,9 @@ conversion_from_cme_direct_ticker_head = {'S': 'S',
                                           'J1': 'JY',
                                           'LO': 'CL',
                                           'CL': 'CL',
-                                          'SO': 'SI'}
+                                          'SO': 'SI',
+                                          'SI': 'SI',
+                                          'ES': 'ES'}
 
 product_type_instrument_conversion = {'Future': 'F'}
 
@@ -218,6 +222,52 @@ def get_formatted_cme_direct_fills(**kwargs):
     return {'raw_trades': fill_frame, 'aggregate_trades': aggregate_trades }
 
 
+def get_formatted_manual_entry_fills(**kwargs):
+
+    fill_frame = pd.read_csv(dn.get_directory_name(ext='daily') + '/' + manual_trade_entry_file_name)
+    formatted_frame = fill_frame
+    formatted_frame.rename(columns={'optionType': 'option_type',
+                                    'strikePrice': 'strike_price',
+                                    'tradePrice': 'trade_price',
+                                    'quantity': 'trade_quantity'},
+                           inplace=True)
+
+    formatted_frame['strike_price'] = formatted_frame['strike_price'].astype('float64')
+
+    formatted_frame['PQ'] = formatted_frame['trade_price']*formatted_frame['trade_quantity']
+
+    formatted_frame['instrument'] = 'O'
+
+    formatted_frame.loc[formatted_frame['option_type'].isnull(),'instrument'] = 'F'
+
+    option_type = formatted_frame['option_type']
+    formatted_frame['option_type']= option_type.where(pd.notnull(option_type),None)
+
+    option_indx = formatted_frame['instrument'] == 'O'
+
+    formatted_frame['generalized_ticker'] = formatted_frame['ticker']
+    formatted_frame['generalized_ticker'][option_indx] = formatted_frame['ticker'][option_indx] + '-' + \
+                                                         formatted_frame['option_type'][option_indx] + '-' + \
+                                                         formatted_frame['strike_price'][option_indx].astype(str)
+
+    formatted_frame['side'] = np.sign(formatted_frame['trade_quantity'])
+    formatted_frame['ticker_head'] = [cmi.get_contract_specs(x)['ticker_head'] for x in formatted_frame['ticker']]
+
+    grouped = formatted_frame.groupby(['generalized_ticker', 'side'])
+
+    aggregate_trades = pd.DataFrame()
+    aggregate_trades['trade_price'] = grouped['PQ'].sum()/grouped['trade_quantity'].sum()
+    aggregate_trades['trade_quantity'] = grouped['trade_quantity'].sum()
+    aggregate_trades['ticker'] = grouped['ticker'].first()
+    aggregate_trades['ticker_head'] = grouped['ticker_head'].first()
+    aggregate_trades['instrument'] = grouped['instrument'].first()
+    aggregate_trades['option_type'] = grouped['option_type'].first()
+    aggregate_trades['strike_price'] = grouped['strike_price'].first()
+    aggregate_trades['real_tradeQ'] = True
+
+    return {'raw_trades': fill_frame, 'aggregate_trades': aggregate_trades }
+
+
 def assign_trades_2strategies(**kwargs):
 
     trade_source = kwargs['trade_source']
@@ -226,6 +276,8 @@ def assign_trades_2strategies(**kwargs):
         formatted_fills = get_formatted_tt_fills()
     elif trade_source == 'cme_direct':
         formatted_fills = get_formatted_cme_direct_fills()
+    elif trade_source == 'manual_entry':
+        formatted_fills = get_formatted_manual_entry_fills()
 
     aggregate_trades = formatted_fills['aggregate_trades']
 
@@ -261,6 +313,16 @@ def load_tt_trades(**kwargs):
 def load_cme_direct_trades(**kwargs):
 
     trade_frame = assign_trades_2strategies(trade_source='cme_direct')
+    con = msu.get_my_sql_connection(**kwargs)
+    ts.load_trades_2strategy(trade_frame=trade_frame,con=con,**kwargs)
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+
+def load_manual_entry_trades(**kwargs):
+
+    trade_frame = assign_trades_2strategies(trade_source='manual_entry')
     con = msu.get_my_sql_connection(**kwargs)
     ts.load_trades_2strategy(trade_frame=trade_frame,con=con,**kwargs)
 

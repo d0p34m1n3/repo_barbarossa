@@ -1,0 +1,4 @@
+C:\Research\c#\TA\TA\bin\Debug\TA.dll
+C:\Research\c#\TA\TA\bin\Debug\TA.pdb
+C:\Research\c#\TA\TA\obj\Debug\TA.dll
+C:\Research\c#\TA\TA\obj\Debug\TA.pdb

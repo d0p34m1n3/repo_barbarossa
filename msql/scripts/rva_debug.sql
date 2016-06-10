@@ -1,6 +1,6 @@
 
 
-SELECT * FROM futures_master.strategy WHERE close_date>20160524
+SELECT * FROM futures_master.strategy WHERE close_date>20160605
 SELECT * FROM futures_master.strategy
 
 SELECT dp.id, dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, sym.ticker_year, dp.cal_dte, dp.tr_dte, dp.close_price, dp.volume 

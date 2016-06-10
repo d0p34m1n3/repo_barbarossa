@@ -1,0 +1,8 @@
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\IOUtilities.dll
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\IOUtilities.pdb
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\Excel.dll
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\ICSharpCode.SharpZipLib.dll
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\Excel.pdb
+C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.csprojResolveAssemblyReference.cache
+C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.dll
+C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.pdb

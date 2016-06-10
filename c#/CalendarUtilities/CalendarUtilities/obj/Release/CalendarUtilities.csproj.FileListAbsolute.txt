@@ -1,0 +1,4 @@
+C:\Research\c#\CalendarUtilities\CalendarUtilities\bin\Release\CalendarUtilities.dll
+C:\Research\c#\CalendarUtilities\CalendarUtilities\bin\Release\CalendarUtilities.pdb
+C:\Research\c#\CalendarUtilities\CalendarUtilities\obj\Release\CalendarUtilities.dll
+C:\Research\c#\CalendarUtilities\CalendarUtilities\obj\Release\CalendarUtilities.pdb

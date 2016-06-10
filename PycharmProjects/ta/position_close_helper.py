@@ -49,9 +49,6 @@ def calc_intrday_pnl_from_prices(**kwargs):
 
     futures_frame['intraday_pnl'] = (futures_frame['intraday_price']-futures_frame['close_price'])*futures_frame['qty']*futures_frame['contract_multiplier']
 
-
-
-
     if 'con' not in kwargs.keys():
         con.close()
 

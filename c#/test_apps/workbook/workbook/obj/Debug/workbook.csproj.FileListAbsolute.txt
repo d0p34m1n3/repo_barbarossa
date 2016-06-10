@@ -1,0 +1,6 @@
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\workbook.exe.config
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\workbook.exe
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\workbook.pdb
+C:\Research\c#\test_apps\workbook\workbook\obj\Debug\workbook.csprojResolveAssemblyReference.cache
+C:\Research\c#\test_apps\workbook\workbook\obj\Debug\workbook.exe
+C:\Research\c#\test_apps\workbook\workbook\obj\Debug\workbook.pdb

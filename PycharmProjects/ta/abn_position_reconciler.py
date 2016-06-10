@@ -29,7 +29,8 @@ conversion_from_abn_ticker_head = {'CBT BEAN MEAL(0106)': 'SM',
                                    'ICE BRENT CRD(16B)': 'B',
                                    'JAPANESE YEN(03J1)': 'JY',
                                    'CMX SILVER(08SI)': 'SI',
-                                   'IMM JPY(03J1)': 'JY'}
+                                   'IMM JPY(03J1)': 'JY',
+                                   'EMINI S&P 500(03ES)': 'ES'}
 
 abn_strike_multiplier = {'W': 100,
                          'S': 100,

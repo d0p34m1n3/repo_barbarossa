@@ -1,0 +1,14 @@
+
+strategy class:
+
+fields:
+strategy class
+
+methods:
+
+get_symbol_list
+get_quantity_list
+get_price_constraints
+
+use prices to make decision buy/sell etc.
+

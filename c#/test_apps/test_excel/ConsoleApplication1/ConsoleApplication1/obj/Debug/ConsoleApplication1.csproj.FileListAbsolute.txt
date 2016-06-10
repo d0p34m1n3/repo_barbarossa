@@ -1,0 +1,12 @@
+c:\users\ekocatulum\documents\visual studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\ekocatulum\Documents\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.ResolveComReference.cache
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.ResolveComReference.cache
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\Excel.dll
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Research\c#\test_apps\test_excel\ConsoleApplication1\ConsoleApplication1\bin\Debug\Excel.pdb

@@ -8,6 +8,7 @@ import ta.strategy as ts
 import os.path
 import signals.futures_signals as fs
 
+
 def get_curve_pca_report(**kwargs):
 
     ticker_head = kwargs['ticker_head']

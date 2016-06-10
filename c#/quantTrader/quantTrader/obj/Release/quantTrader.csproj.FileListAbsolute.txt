@@ -1,0 +1,1 @@
+C:\Research\c#\quantTrader\quantTrader\obj\Release\quantTrader.csprojResolveAssemblyReference.cache

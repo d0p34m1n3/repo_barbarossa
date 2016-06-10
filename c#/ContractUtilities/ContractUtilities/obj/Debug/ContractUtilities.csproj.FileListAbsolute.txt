@@ -1,0 +1,5 @@
+C:\Research\c#\ContractUtilities\ContractUtilities\obj\Debug\ContractUtilities.csprojResolveAssemblyReference.cache
+C:\Research\c#\ContractUtilities\ContractUtilities\bin\Debug\ContractUtilities.dll
+C:\Research\c#\ContractUtilities\ContractUtilities\bin\Debug\ContractUtilities.pdb
+C:\Research\c#\ContractUtilities\ContractUtilities\obj\Debug\ContractUtilities.dll
+C:\Research\c#\ContractUtilities\ContractUtilities\obj\Debug\ContractUtilities.pdb
