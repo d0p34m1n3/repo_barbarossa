@@ -39,9 +39,8 @@ namespace CalendarUtilities
         public static DateTime GetBusinessDayShifted(DateTime referanceDate, int shiftInDays)
          {
 
-             int ShiftInDays = -1;
-             int ShiftSign = Math.Sign(ShiftInDays);
-             int ShiftInDaysAbs = Math.Abs(ShiftInDays);
+             int ShiftSign = Math.Sign(shiftInDays);
+             int ShiftInDaysAbs = Math.Abs(shiftInDays);
 
              List<DateTime> businessDays;
              DateTime BusinessDayOut;
@@ -61,7 +60,7 @@ namespace CalendarUtilities
              {
                  businessDays = CalendarUtilities.BusinessDays.GetBusinessDays(referanceDate, referanceDate.AddDays(ShiftInCalDays));
                  businessDays.Remove(referanceDate);
-                 BusinessDayOut = businessDays[ShiftInDays - 1];
+                 BusinessDayOut = businessDays[shiftInDays - 1];
              }
 
              return BusinessDayOut;

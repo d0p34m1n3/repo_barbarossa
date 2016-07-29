@@ -1,0 +1,6 @@
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Release\DatabaseConnection.dll.config
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Release\DatabaseConnection.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Release\DatabaseConnection.pdb
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Release\MySql.Data.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\obj\Release\DatabaseConnection.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\obj\Release\DatabaseConnection.pdb

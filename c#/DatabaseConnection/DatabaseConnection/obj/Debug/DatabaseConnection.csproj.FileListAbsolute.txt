@@ -1,0 +1,7 @@
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Debug\DatabaseConnection.dll.config
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Debug\DatabaseConnection.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Debug\DatabaseConnection.pdb
+C:\Research\c#\DatabaseConnection\DatabaseConnection\bin\Debug\MySql.Data.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\obj\Debug\DatabaseConnection.csprojResolveAssemblyReference.cache
+C:\Research\c#\DatabaseConnection\DatabaseConnection\obj\Debug\DatabaseConnection.dll
+C:\Research\c#\DatabaseConnection\DatabaseConnection\obj\Debug\DatabaseConnection.pdb

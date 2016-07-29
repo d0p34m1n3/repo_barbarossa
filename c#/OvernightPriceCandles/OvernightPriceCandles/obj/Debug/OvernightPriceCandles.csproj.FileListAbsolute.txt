@@ -1,0 +1,17 @@
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\OvernightPriceCandles.exe.config
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\OvernightPriceCandles.exe
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\OvernightPriceCandles.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\obj\Debug\OvernightPriceCandles.csprojResolveAssemblyReference.cache
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\obj\Debug\OvernightPriceCandles.exe
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\obj\Debug\OvernightPriceCandles.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\IOUtilities.dll
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\TA.dll
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\CsvHelper.dll
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\CalendarUtilities.dll
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\IOUtilities.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\TA.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\CsvHelper.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\CsvHelper.xml
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\CalendarUtilities.pdb
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\FormatUtilities.dll
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\Debug\FormatUtilities.pdb

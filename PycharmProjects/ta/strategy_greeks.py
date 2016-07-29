@@ -20,6 +20,11 @@ def get_greeks_4strategy_4date(**kwargs):
     position_frame = tas.get_net_position_4strategy_alias(alias=alias,as_of_date=as_of_date,con=con)
     options_frame = position_frame[position_frame['instrument'] == 'O']
 
+    if options_frame.empty:
+        if 'con' not in kwargs.keys():
+            con.close()
+        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','ticker']), 'strike_portfolio': pd.DataFrame()}
+
     unique_ticker_list = options_frame['ticker'].unique()
     result_list = []
 

@@ -81,6 +81,8 @@ def generate_spread_carry_followup_report(**kwargs):
         as_of_date = exp.doubledate_shift_bus_days()
         kwargs['as_of_date'] = as_of_date
 
+    con = msu.get_my_sql_connection(**kwargs)
+
     ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
 
     if 'writer' in kwargs.keys():
@@ -97,7 +99,8 @@ def generate_spread_carry_followup_report(**kwargs):
     spread_carry_frame = strategy_frame[spread_carry_indx]
 
     results = [sf.get_results_4strategy(alias=spread_carry_frame['alias'].iloc[x],
-                                        strategy_info_output=spread_carry_frame.iloc[x])
+                                        strategy_info_output=spread_carry_frame.iloc[x],
+                                        con=con)
                for x in range(len(spread_carry_frame.index))]
 
     results_frame_list = [results[x]['results_frame'] for x in range(len(results)) if results[x]['success']]
@@ -110,7 +113,78 @@ def generate_spread_carry_followup_report(**kwargs):
     worksheet_sc.autofilter(0, 0, len(spread_carry_followup_frame.index),
                               len(spread_carry_followup_frame.columns))
 
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return writer
+
+
+def generate_vcs_followup_report(**kwargs):
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+        kwargs['as_of_date'] = as_of_date
+
+    ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'writer' in kwargs.keys():
+        writer = kwargs['writer']
+    else:
+        writer = pd.ExcelWriter(ta_output_dir + '/followup.xlsx', engine='xlsxwriter')
+
+    strategy_frame = ts.get_open_strategies(**kwargs)
+
+    strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=strategy_frame['description_string'][x])['strategy_class']
+                           for x in range(len(strategy_frame.index))]
+
+    vcs_indx = [x == 'vcs' for x in strategy_class_list]
+    vcs_frame = strategy_frame[vcs_indx]
+
+    results = [sf.get_results_4strategy(alias=vcs_frame['alias'].iloc[x],
+                                        strategy_info_output=vcs_frame.iloc[x])
+               for x in range(len(vcs_frame.index))]
+
+    vcs_followup_frame = pd.DataFrame(results)
+    vcs_followup_frame['alias'] = vcs_frame['alias'].values
+
+    pnl_frame = pm.get_daily_pnl_snapshot(**kwargs)
+    merged_frame1 = pd.merge(vcs_followup_frame,pnl_frame, how='left', on='alias')
+
+    vcs_followup_frame = merged_frame1[['alias', 'last_adjustment_days_ago','min_tr_dte', 'long_short_ratio',
+                   'net_oev', 'net_theta', 'long_oev', 'short_oev', 'favQMove', 'total_pnl','recommendation']]
+
+    vcs_followup_frame['long_short_ratio'] = vcs_followup_frame['long_short_ratio'].round()
+    vcs_followup_frame['net_oev'] = vcs_followup_frame['net_oev'].round(1)
+    vcs_followup_frame['long_oev'] = vcs_followup_frame['long_oev'].round(1)
+    vcs_followup_frame['short_oev'] = vcs_followup_frame['short_oev'].round(1)
+    vcs_followup_frame['net_theta'] = vcs_followup_frame['net_theta'].round(1)
+
+    vcs_followup_frame.sort('total_pnl', ascending=False, inplace=True)
+    vcs_followup_frame.reset_index(drop=True,inplace=True)
+    vcs_followup_frame.loc[len(vcs_followup_frame.index)] = ['TOTAL', None, None, None, None, vcs_followup_frame['net_theta'].sum(),
+                                                             None, None, None, vcs_followup_frame['total_pnl'].sum(), None]
+
+    vcs_followup_frame.to_excel(writer, sheet_name='vcs')
+    worksheet_vcs = writer.sheets['vcs']
+    worksheet_vcs.set_column('B:B', 18)
+    worksheet_vcs.freeze_panes(1, 0)
+
+    worksheet_vcs.autofilter(0, 0, len(vcs_followup_frame.index),
+                              len(vcs_followup_frame.columns))
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
     writer.save()
+
+
+
+
+
 
 
 

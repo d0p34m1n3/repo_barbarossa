@@ -305,7 +305,6 @@ def get_futures_spread_carry_signals(**kwargs):
                                                           futures_data_dictionary=futures_data_dictionary,
                                                           use_last_as_current=use_last_as_current)
 
-
     aligned_data = aligned_output['aligned_data']
     current_data = aligned_output['current_data']
 

@@ -16,7 +16,6 @@ import time as tm
 import datetime as dt
 import math as m
 
-
 def get_options_expiration(ticker):
 
     contract_specs = cmf.get_contract_specs(ticker)
@@ -430,9 +429,13 @@ def get_bus_day_list(**kwargs):
 
     if 'date_from' in kwargs.keys():
         datetime_from = cu.convert_doubledate_2datetime(kwargs['date_from'])
+    if 'datetime_from' in kwargs.keys():
+        datetime_from = kwargs['datetime_from']
 
     if 'date_to' in kwargs.keys():
         datetime_to = cu.convert_doubledate_2datetime(kwargs['date_to'])
+    if 'datetime_to' in kwargs.keys():
+        datetime_to = kwargs['datetime_to']
 
     bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(reference_tickerhead))
 

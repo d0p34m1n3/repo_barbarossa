@@ -43,7 +43,8 @@ except Exception:
 
 try:
     writer_out = sff.generate_futures_butterfly_followup_report(as_of_date=report_date, con=con)
-    sff.generate_spread_carry_followup_report(as_of_date=report_date, con=con, writer=writer_out)
+    writer_out = sff.generate_spread_carry_followup_report(as_of_date=report_date, con=con, writer=writer_out)
+    sff.generate_vcs_followup_report(as_of_date=report_date, con=con, writer=writer_out)
     prep.move_from_dated_folder_2daily_folder(ext='ta', file_name='followup', folder_date=report_date)
 except Exception:
     pass

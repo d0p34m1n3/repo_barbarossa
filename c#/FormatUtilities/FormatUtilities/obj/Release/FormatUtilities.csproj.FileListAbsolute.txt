@@ -1,0 +1,4 @@
+C:\Research\c#\FormatUtilities\FormatUtilities\bin\Release\FormatUtilities.dll
+C:\Research\c#\FormatUtilities\FormatUtilities\bin\Release\FormatUtilities.pdb
+C:\Research\c#\FormatUtilities\FormatUtilities\obj\Release\FormatUtilities.dll
+C:\Research\c#\FormatUtilities\FormatUtilities\obj\Release\FormatUtilities.pdb

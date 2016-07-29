@@ -7,6 +7,7 @@
       <w>intraday</w>
       <w>openpyxl</w>
       <w>tickerhead</w>
+      <w>ttapi</w>
       <w>xlsx</w>
       <w>xlsxwriter</w>
     </words>

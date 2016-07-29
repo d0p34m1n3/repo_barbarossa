@@ -129,6 +129,7 @@ def get_trades_4strategy_alias(**kwargs):
     trade_frame = pd.DataFrame(data, columns=['id', 'ticker', 'option_type', 'strike_price', 'trade_price', 'trade_quantity', 'trade_date', 'instrument', 'real_tradeQ'])
     trade_frame['trade_price'] = [float(x) if x is not None else float('NaN') for x in trade_frame['trade_price'].values]
     trade_frame['trade_quantity'] = trade_frame['trade_quantity'].astype('float64')
+    trade_frame['strike_price'] = trade_frame['strike_price'].astype('float64')
     return trade_frame
 
 
@@ -351,6 +352,10 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/vcs/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'scv':
          output_dir = strategy_output_folder + '/scv/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ifs':
+         output_dir = strategy_output_folder + '/ifs/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ibo':
+         output_dir = strategy_output_folder + '/ibo/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

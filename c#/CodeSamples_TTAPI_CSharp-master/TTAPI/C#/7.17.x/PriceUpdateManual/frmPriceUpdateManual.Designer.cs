@@ -144,6 +144,7 @@
             this.txtBidPrice.Name = "txtBidPrice";
             this.txtBidPrice.Size = new System.Drawing.Size(89, 20);
             this.txtBidPrice.TabIndex = 41;
+            this.txtBidPrice.TextChanged += new System.EventHandler(this.txtBidPrice_TextChanged);
             // 
             // lblLastQty
             // 

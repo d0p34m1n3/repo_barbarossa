@@ -20,6 +20,9 @@ def get_historical_risk_4strategy(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
 
     alias = kwargs['alias']
+
+    #print(alias)
+
     if 'as_of_date' in kwargs.keys():
         as_of_date = kwargs['as_of_date']
     else:
@@ -32,6 +35,7 @@ def get_historical_risk_4strategy(**kwargs):
         datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
 
     net_position = ts.get_net_position_4strategy_alias(alias=alias,con=con)
+    net_position = net_position[net_position['instrument'] != 'O']
 
     if 'con' not in kwargs.keys():
         con.close()

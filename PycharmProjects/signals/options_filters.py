@@ -1,4 +1,66 @@
 
+vcs_filter_dict = {'Ag_long': 21,
+                   'Ag_long1': 34,
+                   'Livestock_long': 16,
+                   'Livestock_long1': 37,
+                   'Metal_long': 31,
+                   'Metal_long1': 28,
+                   'FX_long': 12,
+                   'FX_long1': 24,
+                   'CL_long': 4,
+                   'CL_long1': 31,
+                   'Ag_short': 65,
+                   'Ag_short1': 66,
+                   'Livestock_short': 65,
+                   'Livestock_short1': 70,
+                   'Metal_short': 61,
+                   'Metal_short1': 66,
+                   'CL_short': 33,
+                   'CL_short1': 67,
+                   'NG_short': 69,
+                   'NG_short1': 66,
+                   'Treasury_short': 93,
+                   'Treasury_short1': 71,
+                   'Index_short': 74,
+                   'Index_short1': 60}
+
+import contract_utilities.contract_meta_info as cmi
+
+
+def get_vcs_filter_values(**kwargs):
+
+    product_group = kwargs['product_group']
+    filter_type = kwargs['filter_type']
+    direction = kwargs['direction']
+    indicator = kwargs['indicator']
+
+    if indicator == 'Q1':
+        indicator_dict_input = '1'
+    elif indicator == 'Q':
+        indicator_dict_input = ''
+
+    key_requested = product_group + '_' + direction + indicator_dict_input
+
+    if direction == 'long':
+        filter_value = -1
+    elif direction == 'short':
+        filter_value = 101
+
+    if filter_type == 'tickerHead':
+        if key_requested in vcs_filter_dict.keys():
+            filter_value = vcs_filter_dict[key_requested]
+        else:
+            ticker_class = cmi.ticker_class[product_group]
+            key_requested = ticker_class + '_' + direction + indicator_dict_input
+            if key_requested in vcs_filter_dict.keys():
+                filter_value = vcs_filter_dict[key_requested]
+    elif filter_type == 'tickerClass':
+        if key_requested in vcs_filter_dict.keys():
+            filter_value = vcs_filter_dict[key_requested]
+
+    return filter_value
+
+
 def get_vcs_filters(**kwargs):
 
     data_frame_input = kwargs['data_frame_input']
@@ -23,58 +85,38 @@ def get_vcs_filters(**kwargs):
 
     if 'long2' in filter_list:
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Ag') &
-                                         (data_frame_input['Q1'] <= 34) &
-                                         (data_frame_input['Q'] <= 21))
+        long_tuples = [('Ag','tickerClass'),('Livestock','tickerClass'),('Metal','tickerClass'),('FX','tickerClass'),('CL','tickerHead')]
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Livestock') &
-                                         (data_frame_input['Q1'] <= 37) &
-                                         (data_frame_input['Q'] <= 16))
+        for i in range(len(long_tuples)):
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Metal') &
-                                         (data_frame_input['Q1'] <= 28) &
-                                         (data_frame_input['Q'] <= 31))
-
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'FX') &
-                                         (data_frame_input['Q1'] <= 24) &
-                                         (data_frame_input['Q'] <= 12))
-
-        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'CL') &
-                                         (data_frame_input['Q1'] <= 31) &
-                                         (data_frame_input['Q'] <= 4))
+                selection_indx = selection_indx|((data_frame_input[long_tuples[i][1]] == long_tuples[i][0]) &
+                                         (data_frame_input['Q1'] <= get_vcs_filter_values(product_group=long_tuples[i][0],
+                                                                                          filter_type=long_tuples[i][1],
+                                                                                          direction='long',
+                                                                                          indicator='Q1')) &
+                                         (data_frame_input['Q'] <= get_vcs_filter_values(product_group=long_tuples[i][0],
+                                                                                         filter_type=long_tuples[i][1],
+                                                                                         direction='long',
+                                                                                         indicator='Q')))
 
     if 'short2' in filter_list:
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Ag') &
-                                         (data_frame_input['Q1'] >= 66) &
-                                         (data_frame_input['Q'] >= 65))
+        short_tuples = [('Ag','tickerClass'),('Livestock','tickerClass'),('Metal','tickerClass'),('CL','tickerHead'),('NG','tickerHead'),
+                        ('Treasury','tickerClass'),('Index','tickerClass')]
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Livestock') &
-                                         (data_frame_input['Q1'] >= 70) &
-                                         (data_frame_input['Q'] >= 65))
+        for i in range(len(short_tuples)):
 
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Metal') &
-                                         (data_frame_input['Q1'] >= 66) &
-                                         (data_frame_input['Q'] >= 61))
+                selection_indx = selection_indx|((data_frame_input[short_tuples[i][1]] == short_tuples[i][0]) &
+                                         (data_frame_input['Q1'] >= get_vcs_filter_values(product_group=short_tuples[i][0],
+                                                                                          filter_type=short_tuples[i][1],
+                                                                                          direction='short',
+                                                                                          indicator='Q1')) &
+                                         (data_frame_input['Q'] >= get_vcs_filter_values(product_group=short_tuples[i][0],
+                                                                                         filter_type=short_tuples[i][1],
+                                                                                         direction='short',
+                                                                                         indicator='Q')))
 
-        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'CL') &
-                                         (data_frame_input['Q1'] >= 67) &
-                                         (data_frame_input['Q'] >= 33))
-
-        selection_indx = selection_indx|((data_frame_input['tickerHead'] == 'NG') &
-                                         (data_frame_input['Q1'] >= 66) &
-                                         (data_frame_input['Q'] >= 69))
-
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Treasury') &
-                                         (data_frame_input['Q1'] >= 71) &
-                                         (data_frame_input['Q'] >= 93))
-
-        selection_indx = selection_indx|((data_frame_input['tickerClass'] == 'Index') &
-                                         (data_frame_input['Q1'] >= 60) &
-                                         (data_frame_input['Q'] >= 74))
-
-    return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
-
+    return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx}
 
 def get_scv_filters(**kwargs):
 

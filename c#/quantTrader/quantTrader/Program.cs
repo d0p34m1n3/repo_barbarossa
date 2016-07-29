@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IOUtilities;
 using System.Data;
+using System.Threading;
 
 namespace quantTrader
 {
@@ -31,6 +32,15 @@ namespace quantTrader
             //InstumentSpecs InstrumentSpecs2 = Instrument.GetSpecs(Instrument2.Ticker);
             // InstrumentSpecs3 = Instrument.GetSpecs(Instrument3.Ticker);
 
+            string ttUserId = "ekocatulum";
+            string ttPassword = "pompei1789";
+
+            TTAPIBasicFunctionality.TTAPIInitialize initialize = new TTAPIBasicFunctionality.TTAPIInitialize(ttUserId, ttPassword);
+
+
+
+
+
             FuturesButterflyPortfolio FutButtPort = new FuturesButterflyPortfolio();
 
             DataTable AllSheet = FutButtPort.SpreadSheet.Tables["All"];
@@ -44,6 +54,42 @@ namespace quantTrader
             Console.WriteLine(TA.TickerheadConverters.ConversionFromTT2DB["IPE e-Brent"].ToString());
 
             Console.WriteLine(TA.TickerheadConverters.ConversionFromTT2DB.FirstOrDefault(x => x.Value == "B").Key);
+
+            
+
+            // Check that the compiler settings are compatible with the version of TT API installed
+            TTAPIArchitectureCheck archCheck = new TTAPIArchitectureCheck();
+            if (archCheck.validate())
+            {
+                Console.WriteLine("Architecture check passed.");
+
+                // Dictates whether TT API will be started on its own thread
+                bool startOnSeparateThread = false;
+
+                if (startOnSeparateThread)
+                {
+                    // Start TT API on a separate thread
+                    TTAPIFunctions tf = new TTAPIFunctions(ttUserId, ttPassword);
+                    Thread workerThread = new Thread(tf.Start);
+                    workerThread.Name = "TT API Thread";
+                    workerThread.Start();
+
+                    // Insert other code here that will run on this thread
+                }
+                else
+                {
+                    // Start the TT API on the same thread
+                    using (TTAPIFunctions tf = new TTAPIFunctions(ttUserId, ttPassword))
+                    {
+                        tf.Start();
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Architecture check failed.  {0}", archCheck.ErrorString);
+            }
+
 
    
             

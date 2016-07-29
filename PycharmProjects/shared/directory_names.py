@@ -10,6 +10,8 @@ tt_fill_directory = r'C:\tt\datfiles\Export'
 
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
+                  'intraday_ttapi_data': '/data/intraday_data/tt_api',
+                  'intraday_ttapi_data_fixed_interval': '/data/intraday_data/tt_api_fixed_interval',
                   'raw_options_data': '/data/options_data_raw',
                   'options_backtesting_data': '/data/options_backtesting_data',
                   'option_model_test_data': '/data/option_model_tests',
@@ -17,7 +19,8 @@ extension_dict = {'presaved_futures_data': '/data/futures_data',
                   'ta': '/ta',
                   'strategy_output': '/strategy_output',
                   'backtest_results': '/backtest_results',
-                  'daily': '/daily'}
+                  'daily': '/daily',
+                  'python_file': '/PycharmProjects'}
 
 
 def get_directory_name(**kwargs):

@@ -25,22 +25,32 @@ conversion_from_tt_ticker_head = {'CL': 'CL',
                                   'KE': 'KW',
                                   'NG': 'NG',
                                   'LE': 'LC', 'HE': 'LN', 'GF': 'FC',
+                                  'ES': 'ES', 'NQ': 'NQ',
+                                  '6A': 'AD', '6C': 'CD', '6E': 'EC', '6J': 'JY', '6B': 'BP',
+                                  'ZT': 'TU', 'ZF': 'FV', 'ZN': 'TY', 'ZB': 'US',
+                                  'GC': 'GC', 'SI': 'SI',
                                   'IPE e-Brent': 'B',
                                   'Coffee C': 'KC',
                                   'Cocoa': 'CC',
                                   'Sugar No 11': 'SB',
-                                  'Cotton No 2': 'CT'}
+                                  'Cotton No 2': 'CT',
+                                  'FCOJ A': 'OJ'}
 
 conversion_from_cme_direct_ticker_head = {'S': 'S',
                                           'W': 'W',
+                                          'C': 'C',
                                           'LC': 'LC',
                                           'LN': 'LN',
                                           'J1': 'JY',
+                                          'EC': 'EC',
                                           'LO': 'CL',
                                           'CL': 'CL',
                                           'SO': 'SI',
                                           'SI': 'SI',
-                                          'ES': 'ES'}
+                                          'OG': 'GC',
+                                          'GC': 'GC',
+                                          'ES': 'ES',
+                                          '07': 'BO'}
 
 product_type_instrument_conversion = {'Future': 'F'}
 
@@ -50,18 +60,39 @@ def convert_trade_price_from_tt(**kwargs):
     ticker_head = kwargs['ticker_head']
     price = kwargs['price']
 
-    if ticker_head in ['CL', 'BO', 'ED']:
+    if np.isnan(price):
+        return np.NaN
+
+    if ticker_head in ['CL', 'BO', 'ED', 'ES', 'NQ']:
         converted_price = price/100
-    elif ticker_head in ['B', 'KC', 'SB', 'CC', 'CT']:
+    elif ticker_head in ['B', 'KC', 'SB', 'CC', 'CT', 'OJ']:
         converted_price = price
-    elif ticker_head in ['HO','RB']:
+    elif ticker_head in ['HO','RB', 'AD', 'CD', 'EC', 'BP']:
         converted_price = price/10000
-    elif ticker_head in ['LC', 'LN', 'FC', 'NG']:
+    elif ticker_head in ['LC', 'LN', 'FC', 'NG', 'SI']:
         converted_price = price/1000
     elif ticker_head in ['C', 'S', 'KW', 'W']:
         converted_price = np.floor(price/10)+(price%10)*0.125
-    elif ticker_head == 'SM':
+    elif ticker_head in ['SM','GC']:
         converted_price = price/10
+    elif ticker_head == 'JY':
+        converted_price = price*10
+    elif ticker_head in ['TU', 'FV',  'TY', 'US']:
+        aux1 = np.floor(price/1000)
+        aux2 = price % 1000
+        aux3 = np.floor(aux2/10)
+        aux4 = aux2 % 10
+
+        if aux4 == 2:
+            aux5 = 0.25
+        elif aux4 == 5:
+            aux5 = 0.5
+        elif aux4 == 7:
+            aux5 = 0.75
+        elif aux4 == 0:
+            aux5 = 0
+
+        converted_price = aux1+(aux3+aux5)/32
 
     return converted_price
 

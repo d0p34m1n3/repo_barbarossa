@@ -7,6 +7,7 @@ import opportunity_constructs.scv as scv
 import signals.options_filters as of
 import formats.utils as futil
 
+
 def generate_vcs_formatted_output(**kwargs):
 
     if 'report_date' in kwargs.keys():

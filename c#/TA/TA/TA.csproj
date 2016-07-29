@@ -30,6 +30,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CalendarUtilities">
+      <HintPath>..\..\CalendarUtilities\CalendarUtilities\bin\Release\CalendarUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.16.0.0\lib\net45\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DatabaseConnection">
+      <HintPath>..\..\DatabaseConnection\DatabaseConnection\bin\Release\DatabaseConnection.dll</HintPath>
+    </Reference>
+    <Reference Include="FormatUtilities">
+      <HintPath>..\..\FormatUtilities\FormatUtilities\bin\Release\FormatUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="IOUtilities">
+      <HintPath>..\..\IOUtilities\IOUtilities\bin\Release\IOUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,8 +59,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Credentials.cs" />
+    <Compile Include="DirectoryNames.cs" />
+    <Compile Include="FileNames.cs" />
+    <Compile Include="LoadContractVolumeFile.cs" />
+    <Compile Include="Strategy.cs" />
+    <Compile Include="TickerConverters.cs" />
     <Compile Include="TickerheadConverters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -169,7 +169,7 @@ def process_title(title_input):
         title_indx = title_list.index('SOY')
     elif title_list[0] == 'S' and asset_type == 'futures':
         ticker_head = 'S'
-    elif 'Soybean Meal' in title_input and asset_type == 'options':
+    elif 'Soybean Meal' in title_input and 'Short-Dated' not in title_input and asset_type == 'options':
         ticker_head = 'SM'
         title_indx = title_list.index('MY')+2
     elif title_list[0] == 'SM' and asset_type == 'futures':

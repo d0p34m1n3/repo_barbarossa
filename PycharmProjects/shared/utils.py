@@ -34,6 +34,15 @@ def get_equal_length_partition(**kwargs):
     return np.arange(min_value+interval_step,max_value,interval_step)
 
 
+def get_key_in_dictionary(**kwargs):
+
+    dictionary_input = kwargs['dictionary_input']
+    value_input = kwargs['value']
+
+    key = (key for key,value in dictionary_input.items() if value == value_input).__next__()
+    return key
+
+
 def bucket_data(**kwargs):
 
     data_input = kwargs['data_input']

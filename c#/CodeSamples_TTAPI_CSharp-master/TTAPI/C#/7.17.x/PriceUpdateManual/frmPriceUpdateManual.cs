@@ -267,5 +267,10 @@ namespace TTAPI_Samples
             }
         }
         #endregion
+
+        private void txtBidPrice_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,0 +1,2 @@
+C:\Research\c#\SaveVolume\SaveVolume\bin\Debug\SaveVolume.exe.config
+C:\Research\c#\SaveVolume\SaveVolume\obj\Debug\SaveVolume.csprojResolveAssemblyReference.cache

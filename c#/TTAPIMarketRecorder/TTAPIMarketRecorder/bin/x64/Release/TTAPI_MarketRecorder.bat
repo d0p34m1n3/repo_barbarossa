@@ -1,0 +1,1 @@
+TTAPIMarketRecorder.exe > TTAPIMarketRecorder.log

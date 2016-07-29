@@ -1,10 +1,13 @@
 __author__ = 'kocat_000'
 
 import math as m
+import pytz as pytz
+import datetime as dt
 
 full_letter_month_list = ['F', 'G', 'H', 'J', 'K', 'M', 'N', 'Q', 'U', 'V', 'X', 'Z']
 quarterly_month_list = ['H', 'M', 'U', 'Z']
 letter_month_string = 'FGHJKMNQUVXZ'
+central_zone = pytz.timezone('US/Central')
 
 futures_contract_months = {'LN': ['G', 'J', 'K', 'M', 'N', 'Q', 'V', 'Z'],
                            'LC': ['G', 'J', 'M', 'Q', 'V', 'Z'],
@@ -117,6 +120,18 @@ def get_tickerhead_list(list_name):
 
     return tickerhead_list
 
+
+def get_exchange_traded(ticker_head):
+
+    if (ticker_head in cme_futures_tickerhead_list) or (ticker_head in cme_option_tickerhead_list):
+        exchange = 'CME'
+    elif ticker_head in futures_butterfly_strategy_tickerhead_list:
+        exchange = 'ICE'
+    else:
+        exchange = null
+
+    return exchange
+
 contract_name = {'LN': 'Lean Hog',
                  'LC': 'Live Cattle',
                  'FC': 'Feeder Cattle',
@@ -176,6 +191,40 @@ relevant_max_cal_dte = {'LN': 720,
                         'RB': 720,
                         'NG': 720,
                         'ED': 1440}
+
+last_trade_hour_minute = {'LN': dt.time(13, 3, 0, 0, central_zone),
+                          'LC': dt.time(13, 3, 0, 0, central_zone),
+                          'FC': dt.time(13, 3, 0, 0, central_zone),
+                          'C': dt.time(13, 18, 0, 0, central_zone),
+                          'S': dt.time(13, 18, 0, 0, central_zone),
+                          'SM': dt.time(13, 18, 0, 0, central_zone),
+                          'BO': dt.time(13, 18, 0, 0, central_zone),
+                          'W': dt.time(13, 18, 0, 0, central_zone),
+                          'KW': dt.time(13, 18, 0, 0, central_zone),
+                          'SB': dt.time(11, 58, 0, 0, central_zone),
+                          'KC': dt.time(12, 28, 0, 0, central_zone),
+                          'CC': dt.time(12, 28, 0, 0, central_zone),
+                          'CT': dt.time(12, 28, 0, 0, central_zone),
+                          'OJ': dt.time(12, 58, 0, 0, central_zone),
+                          'CL': dt.time(14, 28, 0, 0, central_zone),
+                          'B': dt.time(14, 28, 0, 0, central_zone),
+                          'HO': dt.time(14, 28, 0, 0, central_zone),
+                          'RB': dt.time(14, 28, 0, 0, central_zone),
+                          'NG': dt.time(14, 28, 0, 0, central_zone),
+                          'ED': dt.time(14, 28, 0, 0, central_zone),
+                          'ES': dt.time(14, 28, 0, 0, central_zone),
+                          'NQ': dt.time(14, 28, 0, 0, central_zone),
+                          'EC': dt.time(14, 28, 0, 0, central_zone),
+                          'JY': dt.time(14, 28, 0, 0, central_zone),
+                          'AD': dt.time(14, 28, 0, 0, central_zone),
+                          'CD': dt.time(14, 28, 0, 0, central_zone),
+                          'BP': dt.time(14, 28, 0, 0, central_zone),
+                          'TY': dt.time(14, 28, 0, 0, central_zone),
+                          'US': dt.time(14, 28, 0, 0, central_zone),
+                          'FV': dt.time(14, 28, 0, 0, central_zone),
+                          'TU': dt.time(14, 28, 0, 0, central_zone),
+                          'GC': dt.time(14, 28, 0, 0, central_zone),
+                          'SI': dt.time(14, 28, 0, 0, central_zone)}
 
 
 def get_max_cal_dte(**kwargs):
@@ -328,10 +377,14 @@ t_cost = {'CL': 0.80,
           'KW': 0.61,
           'ED': 0.29,
           'JY': 0.42,
-          'SI': 0.8,  # ? check this
+          'EC': 0.42,
+          'ES': 0.45,
+          'SI': 0.65,  # ? check this
+          'GC': 0.65,
           'KC': 2.1,
           'CC': 2.1,
           'SB': 2.1,
+          'OJ': 2.1,
           'CT': 2.1}
 
 

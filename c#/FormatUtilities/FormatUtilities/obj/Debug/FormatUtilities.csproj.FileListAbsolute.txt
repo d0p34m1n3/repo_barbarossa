@@ -1,0 +1,5 @@
+C:\Research\c#\FormatUtilities\FormatUtilities\bin\Debug\FormatUtilities.dll
+C:\Research\c#\FormatUtilities\FormatUtilities\bin\Debug\FormatUtilities.pdb
+C:\Research\c#\FormatUtilities\FormatUtilities\obj\Debug\FormatUtilities.csprojResolveAssemblyReference.cache
+C:\Research\c#\FormatUtilities\FormatUtilities\obj\Debug\FormatUtilities.dll
+C:\Research\c#\FormatUtilities\FormatUtilities\obj\Debug\FormatUtilities.pdb

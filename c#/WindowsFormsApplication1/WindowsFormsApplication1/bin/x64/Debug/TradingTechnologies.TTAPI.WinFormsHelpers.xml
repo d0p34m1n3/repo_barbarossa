@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>TradingTechnologies.TTAPI.WinFormsHelpers</name>
+  </assembly>
+  <members>
+    <member name="T:TradingTechnologies.TTAPI.WinFormsHelpers.DataObjectExtensions">
+      <summary>Helper class for extraction of InstrumentKeys and ProductKeys from IDataObjects used with drag-and-drop and clipboard operations.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentExtensions">
+      <summary>Helper class for converting instances of Instruments to IDataObject, which can then be used for drag-and-drop and clipboard operations.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentKeyExtensions">
+      <summary>Helper class for converting instances of InstrumentKeys to IDataObject, which can then be used for drag-and-drop and clipboard operations.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.WinFormsHelpers.ProductExtensions">
+      <summary>Helper class for converting instances of Products to IDataObject, which can then be used for drag-and-drop and clipboard operations.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.WinFormsHelpers.ProductKeyExtensions">
+      <summary>Helper class for converting instances of ProductKeys to IDataObject, which can then be used for drag-and-drop and clipboard operations.</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.DataObjectExtensions.GetInstrumentKeys(System.Windows.Forms.IDataObject)">
+      <summary>Gets an array of InstrumentKey objects from an IDataObject</summary>
+      <returns>
+        <para>Array of InstrumentKey objects or <strong>null</strong> if the object contained to instrument keys</para>
+      </returns>
+      <param name="dataObject">IDataObject containing the objects dropped on the application window</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.DataObjectExtensions.GetProductKeys(System.Windows.Forms.IDataObject)">
+      <summary>Gets an array of ProductKey objects from an IDataObject</summary>
+      <returns>
+        <para>Array of ProductKey objects or <strong>null</strong> if the object contained to product keys</para>
+      </returns>
+      <param name="dataObject">IDataObject containing the objects dropped on the application window</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.DataObjectExtensions.HasInstrumentKeys(System.Windows.Forms.IDataObject)">
+      <summary>Checks whether a given IDataObject contains at least one InstrumentKey</summary>
+      <returns>
+        <strong>true</strong> if the IDataObject contains at least one InstrumentKey object; <strong>false</strong>, otherwise</returns>
+      <param name="dataObject">IDataObject containing the objects dropped on the application window</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.DataObjectExtensions.HasProductKeys(System.Windows.Forms.IDataObject)">
+      <summary>Checks whether a given IDataObject contains at least one ProductKey</summary>
+      <returns>
+        <strong>true</strong> if the <u><font color="blue">IDataObject</font></u> contains at least one ProductKey object; <strong>false</strong>, otherwise</returns>
+      <param name="dataObject">IDataObject containing the objects dropped on the application window</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentExtensions.ToDataObject(System.Collections.Generic.IEnumerable{TradingTechnologies.TTAPI.Instrument})">
+      <summary>Converts a collection of Instrument objects to <see cref="T:System.Windows.Forms.IDataObject">IDataObject</see></summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Collection of Instrument objects to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentExtensions.ToDataObject(TradingTechnologies.TTAPI.Instrument)">
+      <summary>Converts an Instrument object to a IDataObject</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Instrument object to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentKeyExtensions.ToDataObject(System.Collections.Generic.IEnumerable{TradingTechnologies.TTAPI.InstrumentKey})">
+      <summary>Converts a collection of InstrumentKey objects to <see cref="T:System.Windows.Forms.IDataObject">IDataObject</see>.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Collection of InstrumentKey objects to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.InstrumentKeyExtensions.ToDataObject(TradingTechnologies.TTAPI.InstrumentKey)">
+      <summary>Converts an InstrumentKey to IDataObject.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">InstrumentKey object to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.ProductExtensions.ToDataObject(System.Collections.Generic.IEnumerable{TradingTechnologies.TTAPI.Product})">
+      <summary>Converts a collection of Product objects to <see cref="T:System.Windows.Forms.IDataObject">IDataObject</see>.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Collection of Product objects to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.ProductExtensions.ToDataObject(TradingTechnologies.TTAPI.Product)">
+      <summary>Converts a Product to IDataObject.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Product object to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.ProductKeyExtensions.ToDataObject(System.Collections.Generic.IEnumerable{TradingTechnologies.TTAPI.ProductKey})">
+      <summary>Converts a collection of ProductKey objects to <see cref="T:System.Windows.Forms.IDataObject">IDataObject</see>.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">Collection of ProductKey objects to copy to the system clipboard</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.WinFormsHelpers.ProductKeyExtensions.ToDataObject(TradingTechnologies.TTAPI.ProductKey)">
+      <summary>Converts a ProductKey object to a IDataObject.</summary>
+      <returns>IDataObject object if successful; <strong>null</strong>, otherwise</returns>
+      <param name="self">ProductKey object to copy to the system clipboard</param>
+    </member>
+  </members>
+</doc>

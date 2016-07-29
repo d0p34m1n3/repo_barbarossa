@@ -7,6 +7,7 @@ import contract_utilities.expiration as exp
 import shared.calendar_utilities as cu
 import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
+import numpy as np
 import datetime as dt
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -15,6 +16,8 @@ def get_strategy_pnl_4day(**kwargs):
 
     alias = kwargs['alias']
     pnl_date = kwargs['pnl_date']
+
+    #print(pnl_date)
 
     pnl_datetime = cu.convert_doubledate_2datetime(pnl_date)
 
@@ -42,13 +45,25 @@ def get_strategy_pnl_4day(**kwargs):
     underlying_frame = trades_frame[trades_frame['instrument'] == 'F']
     option_frame = trades_frame[trades_frame['instrument'] == 'O']
 
-    underlying_frame['price_1'] = [gfp.get_futures_price_preloaded(ticker=x,
+    futures_price_out_1 = [gfp.get_futures_price_preloaded(ticker=x,
                                 futures_data_dictionary=futures_data_dictionary,
-                                settle_date=pnl_date_1)['close_price'].values[0] for x in underlying_frame['ticker']]
+                                settle_date=pnl_date_1) for x in underlying_frame['ticker']]
 
-    underlying_frame['price'] = [gfp.get_futures_price_preloaded(ticker=x,
+    futures_price_out = [gfp.get_futures_price_preloaded(ticker=x,
                                 futures_data_dictionary=futures_data_dictionary,
-                                settle_date=pnl_date)['close_price'].values[0] for x in underlying_frame['ticker']]
+                                settle_date=pnl_date) for x in underlying_frame['ticker']]
+
+    underlying_frame['price_1'] = [np.NaN if x.empty else x['close_price'].values[0] for x in futures_price_out_1]
+
+    underlying_frame['price'] = [np.NaN if x.empty else x['close_price'].values[0] for x in futures_price_out]
+
+    #underlying_frame['price_1'] = [gfp.get_futures_price_preloaded(ticker=x,
+    #                            futures_data_dictionary=futures_data_dictionary,
+    #                            settle_date=pnl_date_1)['close_price'].values[0] for x in underlying_frame['ticker']]
+
+    #underlying_frame['price'] = [gfp.get_futures_price_preloaded(ticker=x,
+    #                            futures_data_dictionary=futures_data_dictionary,
+    #                            settle_date=pnl_date)['close_price'].values[0] for x in underlying_frame['ticker']]
 
     option_frame['price_1'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                                              strike=option_frame['strike_price'].iloc[x],
@@ -137,6 +152,8 @@ def get_strategy_pnl(**kwargs):
 
     alias = kwargs['alias']
     con = msu.get_my_sql_connection(**kwargs)
+
+    #print(alias)
 
     strategy_info = ts.get_strategy_info_from_alias(alias=alias, con=con)
 

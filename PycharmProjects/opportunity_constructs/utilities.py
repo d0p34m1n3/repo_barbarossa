@@ -8,6 +8,7 @@ import get_price.get_futures_price as gfp
 import shared.calendar_utilities as cu
 import pandas as pd
 import contract_utilities.expiration as exp
+import reformat_intraday_data.reformat_ttapi_intraday_data as rid
 import scipy.io
 
 pd.options.mode.chained_assignment = None
@@ -150,6 +151,34 @@ def get_aligned_futures_data(**kwargs):
         current_data = aligned_dataframe.loc[cu.convert_doubledate_2datetime(date_to)]
 
     return {'aligned_data': aligned_dataframe, 'current_data': current_data}
+
+def get_aligned_futures_data_intraday(**kwargs):
+
+    contract_list = kwargs['contract_list']
+    date_list = kwargs['date_list']
+
+    num_contracts = len(contract_list)
+    merged_dataframe_list = [None]*len(date_list)
+
+    for i in range(len(date_list)):
+
+        contract_data_list = [None]*num_contracts
+        for j in range(num_contracts):
+
+            contract_data_list[j] = rid.get_book_snapshot_4ticker(ticker=contract_list[j], folder_date=date_list[i])
+
+        merged_dataframe_list[i] = pd.concat(contract_data_list, axis=1, join='inner',keys=['c'+ str(x+1) for x in range(num_contracts)])
+    aligned_dataframe = pd.concat(merged_dataframe_list)
+
+    return aligned_dataframe
+
+
+
+
+
+
+
+
 
 
 

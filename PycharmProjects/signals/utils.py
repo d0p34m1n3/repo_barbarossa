@@ -142,6 +142,38 @@ def get_rolling_futures_price(**kwargs):
     return futures_dataframe
 
 
+def get_spread_weights_4contract_list(**kwargs):
+
+    ticker_head_list = kwargs['ticker_head_list']
+
+    if ticker_head_list in [['CL', 'HO'], ['CL', 'RB']]:
+        portfolio_weights = [1, -1]
+        spread_weights = [1, -42]
+    elif ticker_head_list in [['HO', 'CL'], ['RB', 'CL']]:
+        portfolio_weights = [1, -1]
+        spread_weights = [42, -1]
+    elif ticker_head_list in [['B', 'CL'], ['CL', 'B']]:
+        portfolio_weights = [1, -1]
+        spread_weights = [1, -1]
+    elif ticker_head_list == ['S','BO','SM']:
+        portfolio_weights = [1, -1, -1]
+        spread_weights = [1, -11, -2.2]
+    elif ticker_head_list in [['C', 'W'], ['W', 'C']]:
+        portfolio_weights = [1, -1]
+        spread_weights = [1, -1]
+
+    return {'portfolio_weights': portfolio_weights, 'spread_weights': spread_weights}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

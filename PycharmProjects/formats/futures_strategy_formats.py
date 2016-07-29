@@ -2,6 +2,7 @@ __author__ = 'kocat_000'
 
 import contract_utilities.expiration as exp
 import opportunity_constructs.futures_butterfly as fb
+import opportunity_constructs.intraday_future_spreads as ifs
 import opportunity_constructs.curve_pca as cpc
 import signals.futures_filters as ff
 import shared.directory_names as dn
@@ -94,6 +95,24 @@ def generate_curve_pca_formatted_output(**kwargs):
 
             worksheet_all.autofilter(0, 0, len(all_spreads.index), len(selected_column_list))
 
+
+def generate_ifs_formatted_output(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='ifs', report_date=report_date)
+
+    ifs_output = ifs.generate_ifs_sheet_4date(date_to=report_date)
+    intraday_spreads = ifs_output['intraday_spreads']
+
+    intraday_spreads.rename(columns={'ticker_head1': 'tickerHead1', 'ticker_head2': 'tickerHead2', 'ticker_head3': 'tickerHead3'},inplace=True)
+
+    writer = pd.ExcelWriter(output_dir + '/' + futil.xls_file_names['ifs'] + '.xlsx', engine='xlsxwriter')
+
+    intraday_spreads.to_excel(writer, sheet_name='all')
 
 
 

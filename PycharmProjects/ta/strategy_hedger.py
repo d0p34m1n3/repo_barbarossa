@@ -96,6 +96,7 @@ def get_hedge_4strategy(**kwargs):
 def hedge_strategy_against_delta(**kwargs):
 
     con = msu.get_my_sql_connection(**kwargs)
+    print(kwargs['alias'])
 
     hedge_results = get_hedge_4strategy(alias=kwargs['alias'], con=con)
 
@@ -112,7 +113,7 @@ def hedge_strategy_against_delta(**kwargs):
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     trade_frame['trade_quantity'] = -trade_frame['trade_quantity']
-    trade_frame['alias'] = 'delta_may'
+    trade_frame['alias'] = 'delta_jul16'
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     if 'con' not in kwargs.keys():

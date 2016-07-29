@@ -1,0 +1,2 @@
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\Debug\IntradayBreakout.exe.config
+C:\Research\c#\IntradayBreakout\IntradayBreakout\obj\Debug\IntradayBreakout.csprojResolveAssemblyReference.cache

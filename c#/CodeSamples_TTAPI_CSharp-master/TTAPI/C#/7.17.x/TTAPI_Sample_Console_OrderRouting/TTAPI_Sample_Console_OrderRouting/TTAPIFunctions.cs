@@ -110,7 +110,7 @@ namespace TTAPI_Sample_Console_OrderRouting
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
                     new ProductKey(MarketKey.Cme, ProductType.Future, "ES"),
-                    "Mar13");
+                    "Sep16");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }
@@ -170,9 +170,9 @@ namespace TTAPI_Sample_Console_OrderRouting
                         // You should use the order feed that is valid for your purposes.
                         OrderProfile op = new OrderProfile(e.Fields.Instrument.GetValidOrderFeeds()[0], e.Fields.Instrument);
                         op.BuySell = BuySell.Buy;
-                        op.AccountName = "12345678";
-                        op.AccountType = AccountType.A1;
-                        op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 10);
+                        op.AccountName = "H1KOC";
+                        op.AccountType = AccountType.P2;
+                        op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 1);
                         op.OrderType = OrderType.Limit;
                         op.LimitPrice = e.Fields.GetBestBidPriceField().Value;
 
