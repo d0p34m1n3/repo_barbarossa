@@ -91,7 +91,7 @@ namespace TTAPI_Sample_Console_PriceSubscription
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
                     new ProductKey(MarketKey.Cme, ProductType.Future, "CL"),
-                    "Jul16");
+                    "Dec16");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }
@@ -142,6 +142,8 @@ namespace TTAPI_Sample_Console_PriceSubscription
                     {
                         Console.WriteLine("    {0} : {1}", id.ToString(), e.Fields[id].FormattedValue);
                     }
+                    //Dispose();
+                    Dispatcher.Current.BeginInvoke(new Action(Dispose));
                 }
                 else
                 {

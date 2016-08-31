@@ -1,0 +1,6 @@
+C:\Research\c#\GetPrice\GetPrice\bin\Release\GetPrice.dll.config
+C:\Research\c#\GetPrice\GetPrice\bin\Release\GetPrice.dll
+C:\Research\c#\GetPrice\GetPrice\bin\Release\GetPrice.pdb
+C:\Research\c#\GetPrice\GetPrice\bin\Release\MySql.Data.dll
+C:\Research\c#\GetPrice\GetPrice\obj\Release\GetPrice.dll
+C:\Research\c#\GetPrice\GetPrice\obj\Release\GetPrice.pdb

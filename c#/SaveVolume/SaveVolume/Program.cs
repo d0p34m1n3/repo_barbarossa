@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ContractUtilities;
+using TA;
 
 namespace SaveVolume
 {
@@ -13,8 +14,9 @@ namespace SaveVolume
     {
         static void Main(string[] args)
         {
-            string ttUserId = "ekocatulum";
-            string ttPassword = "rubicon1789";
+            Dictionary<string, string> dictionaryOut = TA.Credentials.GetTTAPICredentials();
+            string ttUserId = dictionaryOut["username"];
+            string ttPassword = dictionaryOut["password"];
 
             // Check that the compiler settings are compatible with the version of TT API installed
             TTAPIArchitectureCheck archCheck = new TTAPIArchitectureCheck();
@@ -31,7 +33,7 @@ namespace SaveVolume
                     // Start TT API on a separate thread
                     saveVolume sv = new saveVolume(ttUserId, ttPassword);
                     sv.TickerheadList = ContractMetaInfo.cmeFuturesTickerheadList.Union(ContractMetaInfo.iceFuturesTickerheadList).ToList();
-                    Thread workerThread = new Thread(sv.Start);
+                    Thread workerThread = new Thread(sv.TTAPISubs.Start);
                     workerThread.Name = "TT API Thread";
                     workerThread.Start();
 
@@ -43,10 +45,10 @@ namespace SaveVolume
                     using (saveVolume sv = new saveVolume(ttUserId, ttPassword))
                     {
                         //sv.TickerheadList = ContractMetaInfo.FuturesButterflyTickerheadList;
-                        sv.TickerheadList = ContractMetaInfo.cmeFuturesTickerheadList.Union(ContractMetaInfo.iceFuturesTickerheadList).ToList();
+                        sv.TTAPISubs.TickerHeadList = ContractMetaInfo.cmeFuturesTickerheadList.Union(ContractMetaInfo.iceFuturesTickerheadList).ToList();
 
 
-                        sv.Start();
+                        sv.TTAPISubs.Start();
                     }
                 }
             }
@@ -55,7 +57,7 @@ namespace SaveVolume
             {
                 Console.WriteLine("Architecture check failed.  {0}", archCheck.ErrorString);
             }
-            Console.ReadLine();
+            Console.WriteLine("SUCCESS!! ");
         }
     }
 }

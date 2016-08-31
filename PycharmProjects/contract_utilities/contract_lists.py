@@ -10,7 +10,9 @@ import my_sql_routines.my_sql_utilities as msu
 import get_price.get_futures_price as gfp
 import get_price.presave_price as psp
 import opportunity_constructs.utilities as ut
+import ta.trade_fill_loader as tfl
 import shared.calendar_utilities as cu
+import shared.directory_names as dn
 import pandas as pd
 
 
@@ -154,6 +156,31 @@ def generate_liquid_options_list_dataframe(**kwargs):
         con.close()
 
     return pd.DataFrame(contract_list,columns=['id', 'ticker', 'expiration_date'])
+
+
+def get_liquid_outright_futures_frame(**kwargs):
+
+    ticker_head_list = list(set(cmi.futures_butterfly_strategy_tickerhead_list) | set(cmi.cme_futures_tickerhead_list))
+
+    data_dir = dn.get_dated_directory_extension(ext='intraday_ttapi_data', folder_date=kwargs['settle_date'])
+    file_name = 'ContractList.csv'
+
+    data_frame_out = pd.read_csv(data_dir + '/' + file_name)
+    data_frame_out_filtered = data_frame_out[data_frame_out['ProductType'] == 'FUTURE']
+    num_contracts = len(data_frame_out_filtered.index)
+
+    reformat_out_list = [tfl.get_ticker_from_tt_instrument_name_and_product_name(instrument_name=data_frame_out_filtered['InstrumentName'].iloc[x],
+                                                        product_name =data_frame_out_filtered['ProductName'].iloc[x] ) for x in range(num_contracts)]
+
+    data_frame_out_filtered['ticker'] = [reformat_out_list[x]['ticker'] for x in range(num_contracts)]
+    data_frame_out_filtered['ticker_head'] = [reformat_out_list[x]['ticker_head'] for x in range(num_contracts)]
+
+    selection_indx = [data_frame_out_filtered['ticker_head'].iloc[x] in ticker_head_list for x in range(num_contracts)]
+    data_frame_out_filtered2 = data_frame_out_filtered[selection_indx]
+
+    data_frame_out_filtered2.sort(['ticker_head','Volume'],ascending=[True, False],inplace=True)
+    return data_frame_out_filtered2.drop_duplicates('ticker_head')
+
 
 
 

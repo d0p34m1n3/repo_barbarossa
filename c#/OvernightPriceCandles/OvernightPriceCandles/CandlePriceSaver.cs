@@ -27,7 +27,6 @@ namespace OvernightPriceCandles
         private string m_password = "";
         private string OutputFolder;
         
-        List<ContractVolume> ttapiTickerList;
         ContractUtilities.ContractList liquidContractList;
         string[] instrumentList;
         DataTable candlestickData;
@@ -61,7 +60,6 @@ namespace OvernightPriceCandles
             instrumentList = ContractUtilities.ContractMetaInfo.cmeFuturesTickerheadList.Union(ContractUtilities.ContractMetaInfo.iceFuturesTickerheadList).ToArray();
 
             liquidContractList = new ContractUtilities.ContractList(instrumentList);
-            ttapiTickerList = liquidContractList.ttapiTickerList;
             
             DateTime referanceDate = DateTime.Today;
 
@@ -72,12 +70,13 @@ namespace OvernightPriceCandles
 
             candleObj = new DataAnalysis.CandleStick(startTime, endTime, liquidContractList.dbTickerList.ToArray(), minInterval);
 
-            OutputFolder = TA.DirectoryNames.overnightCandlestickDirectory + BusinessDays.GetDirectoryExtension(DateTime.Now.Date);
+            OutputFolder = TA.DirectoryNames.GetDirectoryName(ext: "overnightCandlestick") + 
+                TA.DirectoryNames.GetDirectoryExtension(DateTime.Now.Date);
             System.IO.Directory.CreateDirectory(OutputFolder);
 
             ttapiSubs = new ttapiUtils.Subscription(m_username, m_password);
-            ttapiSubs.ttapiTickerList = ttapiTickerList;
-            ttapiSubs.ils_update = ttapiSubs.startPriceSubscriptions;
+            ttapiSubs.dbTickerList = liquidContractList.dbTickerList;
+            ttapiSubs.ilsUpdateList = new List<EventHandler<InstrumentLookupSubscriptionEventArgs>> { ttapiSubs.startPriceSubscriptions };
             ttapiSubs.asu_update = ttapiSubs.startInstrumentLookupSubscriptions;
             ttapiSubs.priceUpdatedEventHandler = m_ps_FieldsUpdated;
 
@@ -96,7 +95,7 @@ namespace OvernightPriceCandles
                 candlestickData = candleObj.data;
                 candlestickData.TableName = "candleStick";
                 candlestickData.WriteXml(OutputFolder + "/" + TA.FileNames.candlestick_signal_file, XmlWriteMode.WriteSchema);
-                Dispose();
+                Dispatcher.Current.BeginInvoke(new Action(Dispose));
                 return;
             }
 
@@ -126,7 +125,7 @@ namespace OvernightPriceCandles
         /// </summary>
         public void Dispose()
         {
-            ttapiSubs.Dispose1();
+            ttapiSubs.Dispose();
 
         }
 

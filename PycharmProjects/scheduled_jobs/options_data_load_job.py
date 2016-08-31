@@ -11,6 +11,7 @@ import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
 import opportunity_constructs.vcs as vcs
 import formats.options_strategy_formats as osf
+import formats.intraday_futures_strategy_formats as ifsf
 import ta.prepare_daily as prep
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
@@ -98,6 +99,11 @@ except Exception:
 try:
     osf.generate_scv_formatted_output(report_date=folder_date)
     prep.prepare_strategy_daily(strategy_class='scv', report_date=folder_date)
+except Exception:
+    pass
+
+try:
+    ifsf.generate_ibo_formatted_output(report_date=folder_date)
 except Exception:
     pass
 

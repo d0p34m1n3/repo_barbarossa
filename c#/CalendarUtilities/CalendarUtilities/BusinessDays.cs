@@ -73,14 +73,6 @@ namespace CalendarUtilities
 
         }
 
-        public static string GetDirectoryExtension(DateTime directoryDate)
-        {
-            return directoryDate.Year.ToString() + "/" +
-                (100 * directoryDate.Year + directoryDate.Month).ToString() + "/" +
-                directoryDate.Date.ToString("yyyyMMdd");
-        }
-    
-
         public static HashSet<DateTime> GetHolidays(int year)
         {
             HashSet<DateTime> holidays = new HashSet<DateTime>();

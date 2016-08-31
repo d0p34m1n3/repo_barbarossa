@@ -12,7 +12,7 @@ namespace TA
     {
         public static Dictionary<string,string> GetTTAPICredentials()
         {
-            List<string> lineList = IOUtilities.FromTxt2List.LoadFile(DirectoryNames.ttapiConfigDirectory + FileNames.ttapi_credential_file);
+            List<string> lineList = IOUtilities.FromTxt2List.LoadFile(DirectoryNames.GetDirectoryName("ttapiConfig") + FileNames.ttapi_credential_file);
             return FormatUtilities.FromString2Dictionary.Convert(lineList[0]);
         }
 

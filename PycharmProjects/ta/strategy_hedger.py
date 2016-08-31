@@ -42,11 +42,14 @@ def get_hedge_4strategy(**kwargs):
         net_position['hedge'] = -net_position['underlying_delta']
         return net_position
 
-    options_frame['imp_vol'] = [gop.get_options_price_from_db(ticker=options_frame['ticker'].iloc[x],
+    imp_vol_list = [gop.get_options_price_from_db(ticker=options_frame['ticker'].iloc[x],
                                   settle_date=settle_price_date,
                                   strike=options_frame['strike_price'].iloc[x],
                                   column_names=['imp_vol'],
-                                  con=con)['imp_vol'][0] for x in range(len(options_frame.index))]
+                                  con=con)['imp_vol'] for x in range(len(options_frame.index))]
+
+    options_frame['imp_vol'] = [imp_vol_list[x][1] if (np.isnan(imp_vol_list[x][0]) and len(imp_vol_list[x]) > 1) else imp_vol_list[x][0]
+                                for x in range(len(options_frame.index))]
 
     options_frame['underlying_ticker'] = [omu.get_option_underlying(ticker=x) for x in options_frame['ticker']]
 
@@ -82,8 +85,24 @@ def get_hedge_4strategy(**kwargs):
     else:
         futures_frame.rename(columns={'ticker': 'underlying_ticker', 'qty': 'underlying_delta'},inplace=True)
         futures_frame = futures_frame[['underlying_ticker', 'underlying_delta']]
-        net_position = pd.merge(net_position, futures_frame, how='outer', on='underlying_ticker')
-        net_position['total_delta'] = net_position['option_delta']+net_position['underlying_delta']
+
+        isinOptions = futures_frame['underlying_ticker'].isin(net_position['underlying_ticker'])
+        futures_frame_w_options = futures_frame[isinOptions]
+        futures_frame_wo_options = futures_frame[~isinOptions]
+
+        if futures_frame_w_options.empty:
+            net_position['underlying_delta'] = 0
+            net_position['total_delta'] = net_position['option_delta']
+        else:
+            net_position = pd.merge(net_position, futures_frame_w_options, how='outer', on='underlying_ticker')
+            net_position['total_delta'] = net_position['option_delta']+net_position['underlying_delta']
+
+        if not futures_frame_wo_options.empty:
+            net_position_futures = pd.merge(futures_frame_wo_options, intraday_price_frame, how='left', on='underlying_ticker')
+            net_position_futures['hedge_price'] = net_position_futures['mid_price']
+            net_position_futures['option_delta'] = 0
+            net_position_futures['total_delta'] = net_position_futures['underlying_delta']
+            net_position = pd.concat([net_position,net_position_futures[['underlying_ticker','hedge_price','option_delta','underlying_delta','total_delta']]])
 
     net_position['hedge'] = -net_position['total_delta']
 
@@ -91,7 +110,6 @@ def get_hedge_4strategy(**kwargs):
         con.close()
 
     return net_position
-
 
 def hedge_strategy_against_delta(**kwargs):
 
@@ -131,9 +149,10 @@ def strategy_hedge_report(**kwargs):
     strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=strategy_frame['description_string'][x])['strategy_class']
                            for x in range(len(strategy_frame.index))]
 
-    hedge_indx = [x in ['vcs', 'scv'] for x in strategy_class_list]
+    hedge_indx = [x in ['vcs', 'scv','optionInventory'] for x in strategy_class_list]
     hedge_frame = strategy_frame[hedge_indx]
 
+    #hedge_frame = hedge_frame[hedge_frame['alias'] != 'LNZ16V16VCS']
     [hedge_strategy_against_delta(alias=x, con=con) for x in hedge_frame['alias']]
 
     if 'con' not in kwargs.keys():

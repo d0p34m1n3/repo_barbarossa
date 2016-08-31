@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using TA;
 
 namespace TTAPIMarketRecorder
 {
@@ -12,8 +13,9 @@ namespace TTAPIMarketRecorder
     {
         static void Main(string[] args)
         {
-            string ttUserId = "ekocatulum";
-            string ttPassword = "rubicon1789";
+            Dictionary<string, string> dictionaryOut = TA.Credentials.GetTTAPICredentials();
+            string ttUserId = dictionaryOut["username"];
+            string ttPassword = dictionaryOut["password"];
 
             // Check that the compiler settings are compatible with the version of TT API installed
             TTAPIArchitectureCheck archCheck = new TTAPIArchitectureCheck();
@@ -29,7 +31,7 @@ namespace TTAPIMarketRecorder
                 {
                     // Start TT API on a separate thread
                     MarketRecorder mr = new MarketRecorder(ttUserId, ttPassword);
-                    Thread workerThread = new Thread(mr.Start);
+                    Thread workerThread = new Thread(mr.TTAPISubs.Start);
                     workerThread.Name = "TT API Thread";
                     workerThread.Start();
 
@@ -40,7 +42,7 @@ namespace TTAPIMarketRecorder
                     // Start the TT API on the same thread
                     using (MarketRecorder mr = new MarketRecorder(ttUserId, ttPassword))
                     {
-                        mr.Start();
+                        mr.TTAPISubs.Start();
                     }
                 }
             }
@@ -49,7 +51,6 @@ namespace TTAPIMarketRecorder
             {
                 Console.WriteLine("Architecture check failed.  {0}", archCheck.ErrorString);
             }
-            Console.ReadLine();
         }
     }
 }

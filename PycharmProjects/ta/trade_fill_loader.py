@@ -206,6 +206,26 @@ def get_formatted_tt_fills(**kwargs):
     return {'raw_trades': fill_frame, 'aggregate_trades': aggregate_trades}
 
 
+def get_ticker_from_tt_instrument_name_and_product_name(**kwargs):
+
+    instrument_name = kwargs['instrument_name']
+    product_name = kwargs['product_name']
+
+    maturity_string = instrument_name.split()[-1]
+
+    if len(maturity_string)>=5:
+        datetime_conversion = dt.datetime.strptime(maturity_string,'%b%y')
+    else:
+        return {'ticker': '', 'ticker_head': '' }
+
+    ticker_year = datetime_conversion.year
+    ticker_month = datetime_conversion.month
+    ticker_head = conversion_from_tt_ticker_head[product_name]
+
+    ticker = ticker_head + cmi.full_letter_month_list[ticker_month-1] + str(ticker_year)
+    return {'ticker': ticker, 'ticker_head': ticker_head }
+
+
 def get_formatted_cme_direct_fills(**kwargs):
 
     fill_frame = load_cme__fills(**kwargs)

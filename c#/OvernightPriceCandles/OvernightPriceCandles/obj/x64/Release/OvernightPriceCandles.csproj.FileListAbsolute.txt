@@ -39,4 +39,4 @@ C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\x64\Release\ttapi
 C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\x64\Release\ttapiUtils.pdb
 C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\x64\Release\ContractUtilities.dll
 C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\x64\Release\ContractUtilities.pdb
-C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\obj\x64\Release\OvernightPriceCandles.csprojResolveAssemblyReference.cache
+C:\Research\c#\OvernightPriceCandles\OvernightPriceCandles\bin\x64\Release\MySql.Data.dll

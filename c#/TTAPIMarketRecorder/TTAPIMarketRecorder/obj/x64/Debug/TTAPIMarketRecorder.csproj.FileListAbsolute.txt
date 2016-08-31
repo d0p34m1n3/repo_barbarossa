@@ -33,3 +33,12 @@ C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\Excel.dll
 C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\ICSharpCode.SharpZipLib.dll
 C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\IOUtilities.pdb
 C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\Excel.pdb
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\TA.dll
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\ttapiUtils.dll
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\MySql.Data.dll
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\FormatUtilities.dll
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\ContractUtilities.dll
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\TA.pdb
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\ttapiUtils.pdb
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\FormatUtilities.pdb
+C:\Research\c#\TTAPIMarketRecorder\TTAPIMarketRecorder\bin\x64\Debug\ContractUtilities.pdb

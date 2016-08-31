@@ -29,3 +29,14 @@ C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\TTSimLib_1.0.dll
 C:\Research\c#\SaveVolume\SaveVolume\obj\x64\Debug\SaveVolume.csprojResolveAssemblyReference.cache
 C:\Research\c#\SaveVolume\SaveVolume\obj\x64\Debug\SaveVolume.exe
 C:\Research\c#\SaveVolume\SaveVolume\obj\x64\Debug\SaveVolume.pdb
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\MySql.Data.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\CsvHelper.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\IOUtilities.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\FormatUtilities.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\Excel.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\ICSharpCode.SharpZipLib.dll
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\CsvHelper.pdb
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\CsvHelper.xml
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\IOUtilities.pdb
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\FormatUtilities.pdb
+C:\Research\c#\SaveVolume\SaveVolume\bin\x64\Debug\Excel.pdb

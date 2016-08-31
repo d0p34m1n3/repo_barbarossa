@@ -56,8 +56,6 @@ namespace OvernightPriceCandles
             {
                 Console.WriteLine("Architecture check failed.  {0}", archCheck.ErrorString);
             }
-            Console.ReadLine();
-
         }
     }
 }

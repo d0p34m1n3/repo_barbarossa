@@ -5,6 +5,7 @@ import contract_utilities.contract_meta_info as cmi
 import ta.trade_fill_loader as tfl
 import datetime as dt
 import shared.utils as su
+import os.path
 import pandas as pd
 import os.path
 import numpy as np
@@ -43,11 +44,13 @@ def load_csv_file_4ticker(**kwargs):
 
     file_name = get_ttapi_filename(ticker=ticker)
 
-    data_frame_out = pd.read_csv(data_dir + '/' + file_name,names=['time','field','value'],dtype={2: 'str'})
+    if os.path.isfile(data_dir + '/' + file_name):
+        data_frame_out = pd.read_csv(data_dir + '/' + file_name,names=['time','field','value'],dtype={2: 'str'})
+        data_frame_out['time'] = pd.to_datetime(data_frame_out['time'])
+    else:
+        data_frame_out = pd.DataFrame(columns=['time','field','value'])
 
-    #dtype={'value': np.float64}
 
-    data_frame_out['time'] = pd.to_datetime(data_frame_out['time'])
     return data_frame_out
 
 
@@ -73,6 +76,9 @@ def get_book_snapshot_4ticker(**kwargs):
         return book_snapshot
 
     data_frame_out = load_csv_file_4ticker(**kwargs)
+
+    if data_frame_out.empty:
+        return pd.DataFrame(columns=['best_bid_p','best_bid_q','best_ask_p','best_ask_q'])
 
     start_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[0].tolist()/1e9).replace(microsecond=0, second=0)
     end_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[-1].tolist()/1e9).replace(microsecond=0, second=0)

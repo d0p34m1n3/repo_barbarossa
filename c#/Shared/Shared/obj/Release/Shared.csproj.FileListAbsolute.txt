@@ -1,0 +1,4 @@
+C:\Research\c#\Shared\Shared\bin\Release\Shared.dll
+C:\Research\c#\Shared\Shared\bin\Release\Shared.pdb
+C:\Research\c#\Shared\Shared\obj\Release\Shared.dll
+C:\Research\c#\Shared\Shared\obj\Release\Shared.pdb

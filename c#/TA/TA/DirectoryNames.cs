@@ -8,39 +8,28 @@ namespace TA
 {
     public static class DirectoryNames
     {
-        public static string ttapiContractVolumeDirectory
+        public static string rootWork = "C:/Research";
+
+        public static Dictionary<string,string> extensionDict = new Dictionary<string,string>
         {
-            get
-            {
-                return "C:/Research/data/intraday_data/tt_api/";
-            }
+            {"ttapiContractVolume" , "/data/intraday_data/tt_api/"},
+            {"ttapiBidAsk", "/data/intraday_data/tt_api/"},
+            {"ttapiConfig", "/c#/config/"},
+            {"overnightCandlestick", "/strategy_output/ibo/"},
+            {"presavedFuturesData", "/data/FuturesData"},
+            {"ta", "/ta/"}
+        };
+
+        public static string GetDirectoryName(string ext)
+        {
+            return rootWork + extensionDict[ext];
         }
 
-        public static string ttapiBidAskDirectory
+        public static string GetDirectoryExtension(DateTime directoryDate)
         {
-            get
-            {
-                return "C:/Research/data/intraday_data/tt_api/";
-            }
+            return directoryDate.Year.ToString() + "/" +
+                (100 * directoryDate.Year + directoryDate.Month).ToString() + "/" +
+                directoryDate.Date.ToString("yyyyMMdd");
         }
-
-        public static string ttapiConfigDirectory
-        {
-            get
-            {
-                return "C:/Research/c#/config/";
-            }
-        }
-
-        public static string overnightCandlestickDirectory
-        {
-            get
-            {
-                return "C:/Research/strategy_output/ibo/";
-                
-            }
-        }
-
-
     }
 }

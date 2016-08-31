@@ -16,4 +16,6 @@ C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\IOUtilities.pdb
 C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\FormatUtilities.pdb
 C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\CalendarUtilities.pdb
 C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\Excel.pdb
+C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\MySql.Data.dll
+C:\Research\c#\ContractUtilities\ContractUtilities\bin\Release\ContractUtilities.dll.config
 C:\Research\c#\ContractUtilities\ContractUtilities\obj\Release\ContractUtilities.csprojResolveAssemblyReference.cache

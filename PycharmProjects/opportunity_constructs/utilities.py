@@ -152,6 +152,7 @@ def get_aligned_futures_data(**kwargs):
 
     return {'aligned_data': aligned_dataframe, 'current_data': current_data}
 
+
 def get_aligned_futures_data_intraday(**kwargs):
 
     contract_list = kwargs['contract_list']

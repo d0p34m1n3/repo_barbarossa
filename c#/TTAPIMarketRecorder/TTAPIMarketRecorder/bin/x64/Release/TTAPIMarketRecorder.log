@@ -1,1042 +1,216 @@
 Architecture check passed.
-ICE_IPE IPE e-Brent Spread Sep16/Oct16
-ICE_IPE IPE e-Brent Spread Sep16/Nov16
-ICE_IPE IPE e-Brent Spread Sep16/Dec16
-ICE_IPE IPE e-Brent Spread Sep16/Jan17
-ICE_IPE IPE e-Brent Spread Sep16/Feb17
-ICE_IPE IPE e-Brent Spread Sep16/Mar17
-ICE_IPE IPE e-Brent Spread Oct16/Nov16
-ICE_IPE IPE e-Brent Spread Oct16/Dec16
-ICE_IPE IPE e-Brent Spread Oct16/Jan17
-ICE_IPE IPE e-Brent Spread Oct16/Feb17
-ICE_IPE IPE e-Brent Spread Oct16/Mar17
-ICE_IPE IPE e-Brent Spread Oct16/Dec17
-ICE_IPE IPE e-Brent Spread Nov16/Dec16
-ICE_IPE IPE e-Brent Spread Nov16/Jan17
-ICE_IPE IPE e-Brent Spread Nov16/Feb17
-ICE_IPE IPE e-Brent Spread Nov16/Mar17
-ICE_IPE IPE e-Brent Spread Dec16/Jan17
-ICE_IPE IPE e-Brent Spread Dec16/Feb17
-ICE_IPE IPE e-Brent Spread Dec16/Mar17
-ICE_IPE IPE e-Brent Spread Dec16/Apr17
-ICE_IPE IPE e-Brent Spread Dec16/May17
-ICE_IPE IPE e-Brent Spread Dec16/Jun17
-ICE_IPE IPE e-Brent Spread Dec16/Dec17
-ICE_IPE IPE e-Brent Spread Dec16/Dec18
-ICE_IPE IPE e-Brent Spread Jan17/Feb17
-ICE_IPE IPE e-Brent Spread Jan17/Mar17
-ICE_IPE IPE e-Brent Spread Jan17/Apr17
-ICE_IPE IPE e-Brent Spread Jan17/May17
-ICE_IPE IPE e-Brent Spread Jan17/Jun17
-ICE_IPE IPE e-Brent Spread Feb17/Mar17
-ICE_IPE IPE e-Brent Spread Feb17/Apr17
-ICE_IPE IPE e-Brent Spread Feb17/May17
-ICE_IPE IPE e-Brent Spread Feb17/Jun17
-ICE_IPE IPE e-Brent Spread Mar17/Apr17
-ICE_IPE IPE e-Brent Spread Mar17/May17
-ICE_IPE IPE e-Brent Spread Mar17/Jun17
-ICE_IPE IPE e-Brent Spread Apr17/May17
-ICE_IPE IPE e-Brent Spread Apr17/Jun17
-ICE_IPE IPE e-Brent Spread May17/Jun17
-ICE_IPE IPE e-Brent Spread Jun17/Jul17
-ICE_IPE IPE e-Brent Spread Jun17/Aug17
-ICE_IPE IPE e-Brent Spread Jun17/Sep17
-ICE_IPE IPE e-Brent Spread Jun17/Dec17
-ICE_IPE IPE e-Brent Spread Jun17/Jun18
-ICE_IPE IPE e-Brent Spread Jul17/Aug17
-ICE_IPE IPE e-Brent Spread Aug17/Sep17
-ICE_IPE IPE e-Brent Spread Aug17/Oct17
-ICE_IPE IPE e-Brent Spread Sep17/Nov17
-ICE_IPE IPE e-Brent Spread Sep17/Dec17
-ICE_IPE IPE e-Brent Spread Oct17/Nov17
-ICE_IPE IPE e-Brent Spread Oct17/Dec17
-ICE_IPE IPE e-Brent Spread Nov17/Dec17
-ICE_IPE IPE e-Brent Spread Dec17/Jan18
-ICE_IPE IPE e-Brent Spread Dec17/Mar18
-ICE_IPE IPE e-Brent Spread Dec17/Jun18
-ICE_IPE IPE e-Brent Spread Dec17/Dec18
-ICE_IPE IPE e-Brent Spread Jan18/Feb18
-ICE_IPE IPE e-Brent Spread Feb18/Mar18
-ICE_IPE IPE e-Brent Spread Mar18/Apr18
-ICE_IPE IPE e-Brent Spread Mar18/Jun18
-ICE_IPE IPE e-Brent Spread Jun18/Sep18
-ICE_IPE IPE e-Brent Spread Jun18/Dec18
-ICE_IPE IPE e-Brent Spread Dec18/Jun19
-ICE_IPE IPE e-Brent Spread Dec18/Dec19
-ICE_IPE IPE e-Brent Spread Dec19/Dec20
-ICE_IPE IPE e-Brent Spread Dec20/Dec21
-ICE_IPE IPE e-Brent Sep16
-ICE_IPE IPE e-Brent Oct16
-ICE_IPE IPE e-Brent Nov16
-ICE_IPE IPE e-Brent Dec16
-ICE_IPE IPE e-Brent Jan17
-ICE_IPE IPE e-Brent Feb17
-ICE_IPE IPE e-Brent Mar17
-ICE_IPE IPE e-Brent Apr17
-ICE_IPE IPE e-Brent May17
-ICE_IPE IPE e-Brent Jun17
-ICE_IPE IPE e-Brent Jul17
-ICE_IPE IPE e-Brent Aug17
-ICE_IPE IPE e-Brent Sep17
-ICE_IPE IPE e-Brent Oct17
-ICE_IPE IPE e-Brent Nov17
-ICE_IPE IPE e-Brent Dec17
-ICE_IPE IPE e-Brent Jan18
-ICE_IPE IPE e-Brent Feb18
-ICE_IPE IPE e-Brent Mar18
-ICE_IPE IPE e-Brent Apr18
-ICE_IPE IPE e-Brent May18
-ICE_IPE IPE e-Brent Jun18
-ICE_IPE IPE e-Brent Sep18
-ICE_IPE IPE e-Brent Dec18
-ICE_IPE IPE e-Brent Jun19
-ICE_IPE IPE e-Brent Dec19
-ICE_IPE IPE e-Brent Dec20
-ICE_IPE IPE e-Brent Dec21
-ICE_IPE FCOJ A Spread Sep16/Nov16
-ICE_IPE FCOJ A Sep16
-ICE_IPE FCOJ A Nov16
-ICE_IPE Cotton No 2 Spread Dec16/Mar17
-ICE_IPE Cotton No 2 Spread Mar17/May17
-ICE_IPE Cotton No 2 Spread May17/Jul17
-ICE_IPE Cotton No 2 Dec16
-ICE_IPE Cotton No 2 Mar17
-ICE_IPE Cotton No 2 May17
-ICE_IPE Cotton No 2 Jul17
-ICE_IPE Cotton No 2 Dec17
-ICE_IPE Cocoa Spread Sep16/Dec16
-ICE_IPE Cocoa Spread Sep16/Mar17
-ICE_IPE Cocoa Spread Dec16/Mar17
-ICE_IPE Cocoa Spread Dec16/May17
-ICE_IPE Cocoa Spread Mar17/May17
-ICE_IPE Cocoa Sep16
-ICE_IPE Cocoa Dec16
-ICE_IPE Cocoa Mar17
-ICE_IPE Cocoa May17
-ICE_IPE Coffee C Spread Sep16/Dec16
-ICE_IPE Coffee C Spread Sep16/Mar17
-ICE_IPE Coffee C Spread Dec16/Mar17
-ICE_IPE Sugar No 11 Oct16
-ICE_IPE Sugar No 11 Mar17
-ICE_IPE Sugar No 11 May17
-ICE_IPE Sugar No 11 Jul17
-ICE_IPE Sugar No 11 Oct17
-ICE_IPE Sugar No 11 Mar18
-ICE_IPE Sugar No 11 May18
-ICE_IPE Sugar No 11 Spread Oct16/Mar17
-ICE_IPE Sugar No 11 Spread Oct16/May17
-ICE_IPE Sugar No 11 Spread Mar17/May17
-ICE_IPE Sugar No 11 Spread Mar17/Jul17
-ICE_IPE Sugar No 11 Spread May17/Jul17
-ICE_IPE Sugar No 11 Spread Jul17/Oct17
-ICE_IPE Sugar No 11 Spread Oct17/Mar18
-ICE_IPE Sugar No 11 Spread Mar18/May18
-ICE_IPE Coffee C Sep16
-ICE_IPE Coffee C Dec16
-ICE_IPE Coffee C Mar17
-ICE_IPE Coffee C May17
-CME CL Sep16
-CME CL Oct16
-CME CL Nov16
-CME CL Dec16
-CME CL Jan17
-CME CL Feb17
-CME CL Mar17
-CME CL Apr17
-CME CL May17
-CME CL Jun17
-CME CL Jul17
-CME CL Aug17
-CME CL Sep17
-CME CL Oct17
-CME CL Nov17
-CME CL Dec17
-CME CL Jan18
-CME CL Feb18
-CME CL Mar18
-CME CL Jun18
-CME CL Dec18
-CME CL Dec19
-CME CL Dec20
-CME Calendar: 1xCL Sep16:-1xOct16
-CME Calendar: 1xCL Sep16:-1xNov16
-CME Calendar: 1xCL Sep16:-1xDec16
-CME Calendar: 1xCL Sep16:-1xJan17
-CME Calendar: 1xCL Sep16:-1xFeb17
-CME Calendar: 1xCL Sep16:-1xMar17
-CME Calendar: 1xCL Sep16:-1xJun17
-CME Calendar: 1xCL Sep16:-1xDec17
-CME Calendar: 1xCL Oct16:-1xNov16
-CME Calendar: 1xCL Oct16:-1xDec16
-CME Calendar: 1xCL Oct16:-1xJan17
-CME Calendar: 1xCL Oct16:-1xFeb17
-CME Calendar: 1xCL Oct16:-1xMar17
-CME Calendar: 1xCL Oct16:-1xDec17
-CME Calendar: 1xCL Nov16:-1xDec16
-CME Calendar: 1xCL Nov16:-1xJan17
-CME Calendar: 1xCL Nov16:-1xFeb17
-CME Calendar: 1xCL Nov16:-1xMar17
-CME Calendar: 1xCL Dec16:-1xJan17
-CME Calendar: 1xCL Dec16:-1xFeb17
-CME Calendar: 1xCL Dec16:-1xMar17
-CME Calendar: 1xCL Dec16:-1xApr17
-CME Calendar: 1xCL Dec16:-1xJun17
-CME Calendar: 1xCL Dec16:-1xDec17
-CME Calendar: 1xCL Jan17:-1xFeb17
-CME Calendar: 1xCL Jan17:-1xMar17
-CME Calendar: 1xCL Jan17:-1xApr17
-CME Calendar: 1xCL Feb17:-1xMar17
-CME Calendar: 1xCL Feb17:-1xApr17
-CME Calendar: 1xCL Feb17:-1xJun17
-CME Calendar: 1xCL Mar17:-1xApr17
-CME Calendar: 1xCL Mar17:-1xMay17
-CME Calendar: 1xCL Mar17:-1xJun17
-CME Calendar: 1xCL Mar17:-1xSep17
-CME Calendar: 1xCL Apr17:-1xMay17
-CME Calendar: 1xCL Apr17:-1xJun17
-CME Calendar: 1xCL May17:-1xJun17
-CME Calendar: 1xCL Jun17:-1xJul17
-CME Calendar: 1xCL Jun17:-1xSep17
-CME Calendar: 1xCL Jun17:-1xDec17
-CME Calendar: 1xCL Jun17:-1xJun18
-CME Calendar: 1xCL Jul17:-1xAug17
-CME Calendar: 1xCL Aug17:-1xSep17
-CME Calendar: 1xCL Aug17:-1xOct17
-CME Calendar: 1xCL Sep17:-1xOct17
-CME Calendar: 1xCL Sep17:-1xDec17
-CME Calendar: 1xCL Oct17:-1xNov17
-CME Calendar: 1xCL Oct17:-1xDec17
-CME Calendar: 1xCL Nov17:-1xDec17
-CME Calendar: 1xCL Dec17:-1xJan18
-CME Calendar: 1xCL Dec17:-1xJun18
-CME Calendar: 1xCL Dec17:-1xDec18
-CME HO Nov16
-CME HO Dec16
-CME HO Jan17
-CME Calendar: 1xCL Jun18:-1xDec18
-CME Calendar: 1xHO Nov16:-1xDec16
-CME Calendar: 1xHO Dec16:-1xJan17
-CME Calendar: 1xCL Dec18:-1xDec19
-CME Calendar: 1xCL Dec19:-1xDec20
-CME Butterfly: 1xCL Sep16:-2xOct16:+1xNov16
-CME Butterfly: 1xCL Oct16:-2xNov16:+1xDec16
-CME Butterfly: 1xCL Nov16:-2xDec16:+1xJan17
-CME Butterfly: 1xCL Dec16:-2xJan17:+1xFeb17
-CME HO Aug16
-CME HO Sep16
-CME HO Oct16
-CME HO Feb17
-CME HO Mar17
-CME HO Apr17
-CME HO May17
-CME HO Jun17
-CME HO Jul17
-CME HO Aug17
-CME HO Sep17
-CME HO Dec17
-CME Calendar: 1xHO Aug16:-1xSep16
-CME Calendar: 1xHO Sep16:-1xOct16
-CME Calendar: 1xHO Sep16:-1xNov16
-CME Calendar: 1xHO Sep16:-1xDec16
-CME Calendar: 1xHO Sep16:-1xJan17
-CME Calendar: 1xHO Sep16:-1xFeb17
-CME Calendar: 1xHO Sep16:-1xMar17
-CME Calendar: 1xHO Oct16:-1xNov16
-CME Calendar: 1xHO Oct16:-1xDec16
-CME Calendar: 1xHO Oct16:-1xJan17
-CME Calendar: 1xHO Oct16:-1xFeb17
-CME Calendar: 1xHO Nov16:-1xJan17
-CME Calendar: 1xHO Dec16:-1xFeb17
-CME Calendar: 1xHO Dec16:-1xMar17
-CME Calendar: 1xHO Dec16:-1xJun17
-CME Calendar: 1xHO Dec16:-1xDec17
-CME Calendar: 1xHO Jan17:-1xFeb17
-CME Calendar: 1xHO Jan17:-1xJun17
-CME Calendar: 1xHO Feb17:-1xMar17
-CME Calendar: 1xHO Mar17:-1xApr17
-CME Calendar: 1xHO Apr17:-1xMay17
-CME Calendar: 1xHO May17:-1xJun17
-CME Calendar: 1xHO Jun17:-1xDec17
-CME Calendar: 1xHO Jul17:-1xAug17
-CME NG May17
-CME NG Jul17
-CME NG Sep17
-CME NG Oct17
-CME NG Nov17
-CME NG Dec17
-CME Calendar: 1xZS Aug16:-1xSep16
-CME Calendar: 1xZS Aug16:-1xNov16
-CME Calendar: 1xZS Aug16:-1xJan17
-CME RB Aug16
-CME RB Sep16
-CME RB Oct16
-CME RB Nov16
-CME RB Dec16
-CME RB Jan17
-CME RB Feb17
-CME RB Mar17
-CME RB Apr17
-CME RB May17
-CME RB Jun17
-CME RB Aug17
-CME RB Sep17
-CME RB Oct17
-CME RB Dec17
-CME ZC Dec16
-CME ZC May17
-CME ZC Sep17
-CME Calendar: 1xZC Dec16:-1xMay17
-CME Calendar: 1xRB Aug16:-1xSep16
-CME Calendar: 1xRB Aug16:-1xOct16
-CME Calendar: 1xZS Sep16:-1xNov16
-CME Calendar: 1xZS Sep16:-1xJan17
-CME Calendar: 1xZS Sep16:-1xMar17
-CME Calendar: 1xZS Sep16:-1xNov17
-CME Calendar: 1xZS Nov16:-1xJan17
-CME Calendar: 1xRB Sep16:-1xOct16
-CME Calendar: 1xZS Nov16:-1xMar17
-CME Calendar: 1xZS Nov16:-1xMay17
-CME Calendar: 1xRB Sep16:-1xNov16
-CME Calendar: 1xZS Nov16:-1xJul17
-CME Calendar: 1xRB Sep16:-1xDec16
-CME Calendar: 1xRB Sep16:-1xJan17
-CME Calendar: 1xRB Sep16:-1xMar17
-CME Calendar: 1xZS Nov16:-1xNov17
-CME Calendar: 1xZS Jan17:-1xMar17
-CME Calendar: 1xZS Jan17:-1xMay17
-CME Calendar: 1xZS Jan17:-1xJul17
-CME Calendar: 1xRB Oct16:-1xNov16
-CME Calendar: 1xRB Oct16:-1xDec16
-CME Calendar: 1xRB Oct16:-1xJan17
-CME Calendar: 1xZS Mar17:-1xMay17
-CME Calendar: 1xZS Mar17:-1xJul17
-CME Calendar: 1xRB Nov16:-1xDec16
-CME Calendar: 1xZS May17:-1xJul17
-CME Calendar: 1xRB Nov16:-1xJan17
-CME Calendar: 1xRB Nov16:-1xFeb17
-CME Calendar: 1xZS Jul17:-1xNov17
-CME Calendar: 1xRB Dec16:-1xJan17
-CME Calendar: 1xRB Dec16:-1xMar17
-CME Calendar: 1xRB Dec16:-1xJun17
-CME Calendar: 1xRB Dec16:-1xDec17
-CME Calendar: 1xRB Jan17:-1xFeb17
-CME Calendar: 1xNG Oct17:-1xNov17
-CME Calendar: 1xNG Nov17:-1xDec17
-CME Calendar: 1xRB Feb17:-1xMar17
-CME Calendar: 1xRB Mar17:-1xApr17
-CME Calendar: 1xRB Apr17:-1xJun17
-CME Butterfly: 1xZS Aug16:-2xSep16:+1xNov16
-CME Butterfly: 1xZS Jan17:-2xMar17:+1xMay17
-CME Calendar: 1xRB May17:-1xJun17
-CME ZS Aug16
-CME ZS Sep16
-CME ZS Nov16
-CME ZS Jan17
-CME ZS Mar17
-CME ZS May17
-CME ZS Jul17
-CME ZS Nov17
-CME ZC Sep16
-CME ZC Mar17
-CME ZC Jul17
-CME ZC Dec17
-CME Calendar: 1xRB Aug17:-1xSep17
-CME Calendar: 1xLE Oct16:-1xDec16
-CME Calendar: 1xZC Sep16:-1xDec16
-CME Calendar: 1xZC Sep16:-1xMar17
-CME Calendar: 1xZC Sep16:-1xMay17
-CME LE Oct16
-CME LE Dec16
-CME Calendar: 1xZC Sep16:-1xJul17
-CME Calendar: 1xRB Sep17:-1xOct17
-CME HE Oct16
-CME HE Dec16
-CME HE Feb17
-CME Calendar: 1xZC Sep16:-1xDec17
-CME Calendar: 1xHE Oct16:-1xDec16
-CME Calendar: 1xZC Dec16:-1xMar17
-CME Calendar: 1xZC Dec16:-1xJul17
-CME Calendar: 1xZC Dec16:-1xSep17
-CME Calendar: 1xZC Dec16:-1xDec17
-CME Calendar: 1xZC Mar17:-1xMay17
-CME Calendar: 1xZC Mar17:-1xJul17
-CME Calendar: 1xZC May17:-1xJul17
-CME Calendar: 1xZC Jul17:-1xSep17
-CME Calendar: 1xZC Jul17:-1xDec17
-CME Calendar: 1xZC Sep17:-1xDec17
-CME Butterfly: 1xZC Sep16:-2xDec16:+1xMar17
-CME Butterfly: 1xZC Dec16:-2xMar17:+1xMay17
-CME Butterfly: 1xZC Jul17:-2xSep17:+1xDec17
-CME Calendar: 1xGF Aug16:-1xSep16
-CME Calendar: 1xGF Aug16:-1xOct16
-CME Calendar: 1xGF Aug16:-1xNov16
-CME Calendar: 1xGF Sep16:-1xOct16
-CME Calendar: 1xGF Sep16:-1xNov16
-CME Calendar: 1xGF Oct16:-1xNov16
-CME Calendar: 1xGF Nov16:-1xJan17
-CME GF Aug16
-CME GF Sep16
-CME GF Oct16
-CME GF Nov16
-CME GF Jan17
-CME GF Mar17
-CME ZM Aug16
-CME ZM Sep16
-CME ZM Oct16
-CME ZM Dec16
-CME ZM Jan17
-CME ZM Mar17
-CME ZM May17
-CME ZM Jul17
-CME ZM Aug17
-CME ZM Sep17
-CME ZM Dec17
-CME Calendar: 1xLE Aug16:-1xOct16
-CME Calendar: 1xLE Aug16:-1xDec16
-CME Calendar: 1xLE Aug16:-1xFeb17
-CME Calendar: 1xLE Oct16:-1xFeb17
-CME Calendar: 1xLE Oct16:-1xApr17
-CME Calendar: 1xLE Dec16:-1xFeb17
-CME Calendar: 1xLE Dec16:-1xApr17
-CME Calendar: 1xLE Dec16:-1xAug17
-CME Calendar: 1xLE Feb17:-1xApr17
-CME Calendar: 1xLE Feb17:-1xJun17
-CME LE Aug16
-CME LE Feb17
-CME LE Apr17
-CME LE Jun17
-CME LE Aug17
-CME HE Aug16
-CME HE Apr17
-CME HE Jun17
-CME Calendar: 1xHE Aug16:-1xOct16
-CME Calendar: 1xHE Aug16:-1xDec16
-CME Calendar: 1xHE Oct16:-1xFeb17
-CME Calendar: 1xHE Oct16:-1xApr17
-CME Calendar: 1xHE Dec16:-1xFeb17
-CME Calendar: 1xHE Dec16:-1xApr17
-CME Calendar: 1xHE Dec16:-1xJun17
-CME Calendar: 1xHE Feb17:-1xApr17
-CME Calendar: 1xZM Aug16:-1xSep16
-CME Calendar: 1xZM Aug16:-1xOct16
-CME Calendar: 1xZM Aug16:-1xDec16
-CME Calendar: 1xZM Sep16:-1xOct16
-CME Calendar: 1xZM Sep16:-1xDec16
-CME Calendar: 1xZM Sep16:-1xJan17
-CME Calendar: 1xZM Oct16:-1xDec16
-CME Calendar: 1xZM Oct16:-1xJan17
-CME Calendar: 1xZM Dec16:-1xJan17
-CME Calendar: 1xZM Dec16:-1xMar17
-CME Calendar: 1xZM Dec16:-1xMay17
-CME Calendar: 1xZM Dec16:-1xJul17
-CME Calendar: 1xZM Jan17:-1xMar17
-CME Calendar: 1xZM Jan17:-1xJul17
-CME Calendar: 1xZM Jan17:-1xAug17
-CME Calendar: 1xZM Mar17:-1xMay17
-CME Calendar: 1xZM May17:-1xJul17
-CME NG Sep16
-CME NG Oct16
-CME NG Nov16
-CME NG Dec16
-CME NG Jan17
-CME NG Feb17
-CME NG Mar17
-CME NG Apr17
-CME NG Jun17
-CME NG Aug17
-CME NG Jan18
-CME NG Feb18
-CME NG Mar18
-CME NG Apr18
-CME NG May18
-CME NG Jun18
-CME NG Jul18
-CME Butterfly: 1xZM Sep16:-2xOct16:+1xDec16
-CME Butterfly: 1xZM Oct16:-2xDec16:+1xJan17
-CME ZL Aug16
-CME ZL Sep16
-CME ZL Oct16
-CME ZL Dec16
-CME ZL Jan17
-CME ZL Mar17
-CME ZL May17
-CME ZL Jul17
-CME ZL Oct17
-CME ZL Dec17
-CME Calendar: 1xZL Aug16:-1xSep16
-CME Calendar: 1xZL Aug16:-1xOct16
-CME Calendar: 1xZL Aug16:-1xDec16
-CME Calendar: 1xZL Sep16:-1xOct16
-CME Calendar: 1xZL Sep16:-1xDec16
-CME Calendar: 1xZL Sep16:-1xJan17
-CME GC Aug16
-CME GC Sep16
-CME GC Oct16
-CME GC Dec16
-CME GC Feb17
-CME GC Aug17
-CME Calendar: 1xZL Oct16:-1xDec16
-CME SI Sep16
-CME SI Dec16
-CME SI Mar17
-CME Calendar: 1xZL Dec16:-1xJan17
-CME Calendar: 1xZL Dec16:-1xMar17
-CME Calendar: 1xZL Dec16:-1xMay17
-CME Calendar: 1xZL Dec16:-1xJul17
-CME Calendar: 1xZL Dec16:-1xDec17
-CME Calendar: 1xZL Jan17:-1xMar17
-CME Calendar: 1xZL Jan17:-1xMay17
-CME Calendar: 1xGC Aug16:-1xSep16
-CME Calendar: 1xGC Aug16:-1xOct16
-CME Calendar: 1xGC Aug16:-1xDec16
-CME Calendar: 1xZL Mar17:-1xMay17
-CME Calendar: 1xGC Sep16:-1xOct16
-CME Calendar: 1xGC Sep16:-1xDec16
-CME Calendar: 1xZL May17:-1xJul17
-CME Calendar: 1xGC Oct16:-1xDec16
-CME Calendar: 1xGC Oct16:-1xFeb17
-CME Calendar: 1xZL Jul17:-1xDec17
-CME Calendar: 1xGC Dec16:-1xFeb17
-CME Butterfly: 1xZL Jan17:-2xMar17:+1xMay17
-CME ZW Sep16
-CME ZW Dec16
-CME ZW Mar17
-CME ZW May17
-CME ZW Jul17
-CME ZW Dec17
-CME Calendar: 1xZW Sep16:-1xDec16
-CME Calendar: 1xZW Sep16:-1xMar17
-CME Calendar: 1xZW Sep16:-1xMay17
-CME Calendar: 1xZW Sep16:-1xJul17
-CME Calendar: 1xZW Dec16:-1xMar17
-CME Calendar: 1xZW Dec16:-1xMay17
-CME Calendar: 1xZW Dec16:-1xJul17
-CME Reduced Tick Spread: 1xSI Sep16:-1xDec16
-CME Reduced Tick Spread: 1xSI Sep16:-1xMar17
-CME Calendar: 1xZW Mar17:-1xMay17
-CME Calendar: 1xZW Mar17:-1xJul17
-CME Calendar: 1xZW May17:-1xJul17
-CME Butterfly: 1xZW Sep16:-2xDec16:+1xMar17
-CME KE Sep16
-CME KE Dec16
-CME KE Mar17
-CME KE May17
-CME KE Jul17
-CME Calendar: 1xKE Sep16:-1xDec16
-CME Calendar: 1xKE Sep16:-1xMar17
-CME Calendar: 1xKE Sep16:-1xMay17
-CME Calendar: 1xKE Dec16:-1xMar17
-CME Calendar: 1xKE Dec16:-1xJul17
-CME Calendar: 1xNG Sep16:-1xOct16
-CME Calendar: 1xNG Sep16:-1xNov16
-CME Calendar: 1xNG Sep16:-1xDec16
-CME Calendar: 1xNG Sep16:-1xJan17
-CME Calendar: 1xNG Sep16:-1xFeb17
-CME Calendar: 1xNG Sep16:-1xMar17
-CME Calendar: 1xNG Sep16:-1xApr17
-CME GE Aug16
-CME GE Sep16
-CME GE Oct16
-CME Calendar: 1xNG Oct16:-1xNov16
-CME Calendar: 1xNG Oct16:-1xDec16
-CME GE Dec16
-CME Calendar: 1xNG Oct16:-1xJan17
-CME Calendar: 1xNG Oct16:-1xFeb17
-CME Calendar: 1xNG Oct16:-1xMar17
-CME GE Mar17
-CME Calendar: 1xNG Oct16:-1xApr17
-CME GE Jun17
-CME GE Sep17
-CME GE Dec17
-CME GE Mar18
-CME GE Jun18
-CME GE Sep18
-CME GE Dec18
-CME GE Mar19
-CME GE Jun19
-CME GE Sep19
-CME GE Dec19
-CME GE Mar20
-CME GE Jun20
-CME GE Sep20
-CME GE Dec20
-CME GE Mar21
-CME GE Jun21
-CME GE Sep21
-CME GE Dec21
-CME GE Mar22
-CME GE Jun22
-CME Calendar: 1xNG Nov16:-1xDec16
-CME Calendar: 1xNG Nov16:-1xJan17
-CME Calendar: 1xNG Nov16:-1xFeb17
-CME Calendar: 1xNG Nov16:-1xMar17
-CME Calendar: 1xNG Nov16:-1xApr17
-CME Calendar: 1xGE Aug16:-1xSep16
-CME Calendar: 1xGE Sep16:-1xOct16
-CME Calendar: 1xGE Sep16:-1xDec16
-CME Calendar: 1xGE Sep16:-1xMar17
-CME Calendar: 1xGE Sep16:-1xJun17
-CME Calendar: 1xGE Sep16:-1xSep17
-CME Calendar: 1xGE Sep16:-1xDec17
-CME Calendar: 1xGE Sep16:-1xMar18
-CME Calendar: 1xGE Sep16:-1xSep18
-CME Calendar: 1xGE Sep16:-1xMar19
-CME Calendar: 1xGE Oct16:-1xDec16
-CME Calendar: 1xGE Dec16:-1xMar17
-CME Calendar: 1xGE Dec16:-1xJun17
-CME Calendar: 1xGE Dec16:-1xSep17
-CME Calendar: 1xGE Dec16:-1xDec17
-CME Calendar: 1xGE Dec16:-1xMar18
-CME Calendar: 1xGE Dec16:-1xSep18
-CME Calendar: 1xNG Dec16:-1xJan17
-CME Calendar: 1xGE Dec16:-1xDec18
-CME Calendar: 1xNG Dec16:-1xFeb17
-CME Calendar: 1xNG Dec16:-1xMar17
-CME Calendar: 1xGE Dec16:-1xJun19
-CME Calendar: 1xNG Dec16:-1xApr17
-CME Calendar: 1xGE Dec16:-1xDec20
-CME Calendar: 1xGE Mar17:-1xJun17
-CME Calendar: 1xGE Mar17:-1xSep17
-CME Calendar: 1xGE Mar17:-1xDec17
-CME Calendar: 1xGE Mar17:-1xMar18
-CME Calendar: 1xGE Mar17:-1xJun18
-CME Calendar: 1xGE Mar17:-1xSep18
-CME Calendar: 1xGE Mar17:-1xDec18
-CME Calendar: 1xGE Mar17:-1xMar19
-CME Calendar: 1xGE Mar17:-1xSep19
-CME Calendar: 1xGE Mar17:-1xDec20
-CME Calendar: 1xGE Jun17:-1xSep17
-CME Calendar: 1xGE Jun17:-1xDec17
-CME Calendar: 1xGE Jun17:-1xMar18
-CME Calendar: 1xGE Jun17:-1xJun18
-CME Calendar: 1xGE Jun17:-1xSep18
-CME Calendar: 1xNG Jan17:-1xFeb17
-CME Calendar: 1xGE Jun17:-1xDec18
-CME Calendar: 1xGE Jun17:-1xMar19
-CME Calendar: 1xGE Jun17:-1xJun19
-CME Calendar: 1xNG Jan17:-1xMar17
-CME Calendar: 1xNG Jan17:-1xApr17
-CME Calendar: 1xNG Jan17:-1xMay17
-CME Calendar: 1xGE Jun17:-1xJun20
-CME Calendar: 1xGE Sep17:-1xDec17
-CME Calendar: 1xGE Sep17:-1xMar18
-CME Calendar: 1xGE Sep17:-1xJun18
-CME Calendar: 1xGE Sep17:-1xSep18
-CME Calendar: 1xGE Sep17:-1xDec18
-CME Calendar: 1xGE Sep17:-1xMar19
-CME Calendar: 1xGE Sep17:-1xSep19
-CME Calendar: 1xGE Dec17:-1xMar18
-CME Calendar: 1xGE Dec17:-1xJun18
-CME Calendar: 1xGE Dec17:-1xSep18
-CME Calendar: 1xGE Dec17:-1xDec18
-CME Calendar: 1xGE Dec17:-1xDec19
-CME Calendar: 1xNG Feb17:-1xMar17
-CME Calendar: 1xNG Feb17:-1xApr17
-CME Calendar: 1xNG Feb17:-1xMay17
-CME Calendar: 1xGE Mar18:-1xJun18
-CME Calendar: 1xGE Mar18:-1xSep18
-CME Calendar: 1xGE Mar18:-1xDec18
-CME Calendar: 1xGE Mar18:-1xMar19
-CME Calendar: 1xGE Mar18:-1xJun19
-CME Calendar: 1xGE Mar18:-1xSep19
-CME Calendar: 1xGE Jun18:-1xSep18
-CME Calendar: 1xGE Jun18:-1xDec18
-CME Calendar: 1xGE Jun18:-1xMar19
-CME Calendar: 1xGE Jun18:-1xJun19
-CME Calendar: 1xGE Jun18:-1xSep19
-CME Calendar: 1xNG Mar17:-1xApr17
-CME Calendar: 1xGE Sep18:-1xDec18
-CME Calendar: 1xGE Sep18:-1xMar19
-CME Calendar: 1xNG Mar17:-1xMay17
-CME Calendar: 1xGE Sep18:-1xJun19
-CME Calendar: 1xGE Sep18:-1xSep19
-CME Calendar: 1xGE Sep18:-1xSep20
-CME Calendar: 1xGE Dec18:-1xMar19
-CME Calendar: 1xGE Dec18:-1xJun19
-CME Calendar: 1xGE Dec18:-1xSep19
-CME Calendar: 1xGE Dec18:-1xDec19
-CME Calendar: 1xGE Dec18:-1xMar20
-CME Calendar: 1xGE Dec18:-1xDec20
-CME Calendar: 1xGE Mar19:-1xJun19
-CME Calendar: 1xGE Mar19:-1xSep19
-CME Calendar: 1xGE Mar19:-1xDec19
-CME Calendar: 1xGE Mar19:-1xMar20
-CME Calendar: 1xNG Apr17:-1xMay17
-CME Calendar: 1xNG Apr17:-1xJun17
-CME Calendar: 1xNG Apr17:-1xAug17
-CME Calendar: 1xNG Apr17:-1xSep17
-CME Calendar: 1xNG Apr17:-1xOct17
-CME Calendar: 1xGE Jun19:-1xSep19
-CME Calendar: 1xGE Jun19:-1xDec19
-CME Calendar: 1xGE Jun19:-1xMar20
-CME Calendar: 1xGE Jun19:-1xJun20
-CME Calendar: 1xGE Jun19:-1xJun21
-CME Calendar: 1xGE Sep19:-1xDec19
-CME Calendar: 1xGE Sep19:-1xMar20
-CME Calendar: 1xGE Sep19:-1xJun20
-CME Calendar: 1xGE Sep19:-1xSep20
-CME Calendar: 1xGE Dec19:-1xMar20
-CME Calendar: 1xGE Dec19:-1xJun20
-CME Calendar: 1xNG May17:-1xJun17
-CME Calendar: 1xGE Dec19:-1xSep20
-CME Calendar: 1xGE Dec19:-1xDec20
-CME Calendar: 1xNG May17:-1xMar18
-CME Calendar: 1xGE Mar20:-1xSep20
-CME Calendar: 1xGE Jun20:-1xDec20
-CME Calendar: 1xGE Jun20:-1xJun21
-CME Calendar: 1xNG Jun17:-1xJul17
-CME Calendar: 1xGE Dec20:-1xMar21
-CME Calendar: 1xGE Dec20:-1xJun21
-CME Calendar: 1xNG Jul17:-1xAug17
-CME Calendar: 1xNG Aug17:-1xSep17
-CME Calendar: 1xNG Sep17:-1xOct17
-CME Calendar: 1xNG Oct17:-1xJan18
-CME Calendar: 1xNG Dec17:-1xJan18
-CME Calendar: 1xNG Jan18:-1xFeb18
-CME Butterfly: 1xGE Sep16:-2xDec16:+1xMar17
-CME Butterfly: 1xGE Sep16:-2xDec16:+1xJun17
-CME Butterfly: 1xGE Sep16:-2xMar17:+1xSep17
-CME Butterfly: 1xGE Sep16:-2xSep17:+1xSep18
-CME Butterfly: 1xGE Dec16:-2xMar17:+1xJun17
-CME Butterfly: 1xGE Dec16:-2xJun17:+1xDec17
-CME Butterfly: 1xGE Dec16:-2xSep17:+1xJun18
-CME Butterfly: 1xGE Dec16:-2xDec17:+1xDec18
-CME Calendar: 1xNG Feb18:-1xMar18
-CME Butterfly: 1xGE Mar17:-2xSep17:+1xMar18
-CME Butterfly: 1xGE Mar17:-2xMar18:+1xMar19
-CME Butterfly: 1xGE Jun17:-2xSep17:+1xDec17
-CME Butterfly: 1xGE Jun17:-2xDec17:+1xJun18
-CME Butterfly: 1xGE Jun17:-2xJun18:+1xJun19
-CME Butterfly: 1xGE Sep17:-2xDec17:+1xMar18
-CME Butterfly: 1xGE Sep17:-2xMar18:+1xSep18
-CME Butterfly: 1xGE Sep17:-2xSep18:+1xSep19
-CME Butterfly: 1xGE Dec17:-2xJun18:+1xDec18
-CME Butterfly: 1xGE Dec17:-2xDec18:+1xDec19
-CME Butterfly: 1xGE Mar18:-2xJun18:+1xSep18
-CME Butterfly: 1xGE Mar18:-2xMar19:+1xMar20
-CME Butterfly: 1xGE Jun18:-2xSep18:+1xDec18
-CME Butterfly: 1xGE Jun18:-2xDec18:+1xJun19
-CME Calendar: 1xNG Mar18:-1xApr18
-CME Butterfly: 1xGE Jun18:-2xJun19:+1xJun20
-CME Butterfly: 1xGE Sep18:-2xDec18:+1xMar19
-CME Butterfly: 1xGE Dec18:-2xJun19:+1xDec19
-CME Butterfly: 1xGE Jun19:-2xJun20:+1xJun21
-CME Calendar: 1xNG Apr18:-1xMay18
-CME Calendar: 1xNG May18:-1xJun18
-CME Pack: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17
-CME Pack: 1xGE Sep17:+1xDec17:+1xMar18:+1xJun18
-CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19
-CME Pack: 1xGE Sep19:+1xDec19:+1xMar20:+1xJun20
-CME Pack: 1xGE Sep20:+1xDec20:+1xMar21:+1xJun21
-CME Pack: 1xGE Sep21:+1xDec21:+1xMar22:+1xJun22
-CME Double Butterfly: 1xGE Sep16:-3xDec16:+3xMar17:-1xJun17
-CME Double Butterfly: 1xGE Dec16:-3xJun17:+3xDec17:-1xJun18
-CME Double Butterfly: 1xGE Mar17:-3xDec17:+3xSep18:-1xJun19
-CME Double Butterfly: 1xGE Jun17:-3xSep17:+3xDec17:-1xMar18
-CME Double Butterfly: 1xGE Jun17:-3xJun18:+3xJun19:-1xJun20
-CME Double Butterfly: 1xGE Sep17:-3xMar18:+3xSep18:-1xMar19
-CME Double Butterfly: 1xGE Jun18:-3xDec18:+3xJun19:-1xDec19
-CME Double Butterfly: 1xGE Jun20:-3xSep20:+3xDec20:-1xMar21
-CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-1xSep19:-1xDec19:-1xMar20:-1xJun20
-CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-1xSep20:-1xDec20:-1xMar21:-1xJun21
-CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18
-CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19
-CME Pack Butterfly: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-2xSep19:-2xDec19:-2xMar20:-2xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
-CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20
-CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
-CME ES Sep16
-CME ES Dec16
-CME ES Mar17
-CME Calendar: -1xES Sep16:+1xDec16
-CME Calendar: -1xES Sep16:+1xMar17
-CME NQ Sep16
-CME 6E Sep16
-CME 6E Dec16
-CME 6E Mar17
-CME Calendar: 1x6E Dec16:-1xSep16
-CME Calendar: 1x6E Mar17:-1xSep16
-CME 6J Sep16
-CME 6J Dec16
-CME 6A Sep16
-CME ZN Sep16
-CME ZN Dec16
-CME ZB Sep16
-CME ZB Dec16
-CME ZF Sep16
-CME ZF Dec16
-CME ZT Sep16
-CME ZT Dec16
-CME 6C Sep16
-CME 6C Dec16
-CME 6B Sep16
-CME 6B Dec16
-CME 6B Jun17
-CME Calendar: 1x6B Jun17:-1xSep16
-CME Reduced Tick Spread: 1xZN Sep16:-1xDec16
-CME Calendar: 1xZF Sep16:-1xDec16
-CME Calendar: 1xZT Sep16:-1xDec16
-Found: CME Calendar: 1xCL Jan17:-1xMar17
-Found: CME Calendar: 1xCL Jan17:-1xApr17
-Found: CME Calendar: 1xCL Feb17:-1xMar17
-Found: CME Calendar: 1xCL Feb17:-1xApr17
-Found: CME Calendar: 1xCL Feb17:-1xJun17
-Found: CME Calendar: 1xCL Mar17:-1xApr17
-Found: CME Calendar: 1xCL Mar17:-1xMay17
-Found: CME Calendar: 1xCL Mar17:-1xJun17
-Found: CME Calendar: 1xCL Mar17:-1xSep17
-Found: CME Calendar: 1xCL Apr17:-1xMay17
-Found: CME Calendar: 1xCL Apr17:-1xJun17
-Found: CME Calendar: 1xCL May17:-1xJun17
-Found: CME Calendar: 1xCL Jun17:-1xJul17
-Found: CME Calendar: 1xCL Jun17:-1xSep17
-Found: CME Calendar: 1xCL Jun17:-1xDec17
-Found: CME Calendar: 1xCL Jun17:-1xJun18
-Found: CME Calendar: 1xCL Jul17:-1xAug17
-Found: CME Calendar: 1xCL Aug17:-1xSep17
-Found: CME Calendar: 1xCL Aug17:-1xOct17
-Found: CME Calendar: 1xCL Sep17:-1xOct17
-Found: CME Calendar: 1xCL Sep17:-1xDec17
-Found: CME Calendar: 1xCL Oct17:-1xNov17
-Found: CME Calendar: 1xCL Oct17:-1xDec17
-Found: CME Calendar: 1xCL Nov17:-1xDec17
-Found: CME Calendar: 1xCL Dec17:-1xJan18
-Found: CME Calendar: 1xCL Dec17:-1xJun18
-Found: CME Calendar: 1xCL Dec17:-1xDec18
-Found: CME Calendar: 1xCL Jun18:-1xDec18
-Found: CME Calendar: 1xCL Sep16:-1xOct16
-Found: CME Calendar: 1xCL Sep16:-1xNov16
-Found: CME Calendar: 1xCL Sep16:-1xDec16
-Found: CME Calendar: 1xCL Sep16:-1xJan17
-Found: CME Calendar: 1xCL Sep16:-1xFeb17
-Found: CME Calendar: 1xCL Sep16:-1xMar17
-Found: CME Calendar: 1xCL Sep16:-1xJun17
-Found: CME Calendar: 1xCL Sep16:-1xDec17
-Found: CME Calendar: 1xCL Oct16:-1xNov16
-Found: CME Calendar: 1xCL Oct16:-1xDec16
-Found: CME Calendar: 1xCL Oct16:-1xJan17
-Found: CME Calendar: 1xCL Oct16:-1xFeb17
-Found: CME Calendar: 1xCL Oct16:-1xMar17
-Found: CME Calendar: 1xCL Oct16:-1xDec17
-Found: CME Calendar: 1xCL Nov16:-1xDec16
-Found: CME Calendar: 1xCL Nov16:-1xJan17
-Found: CME Calendar: 1xCL Nov16:-1xFeb17
-Found: CME Calendar: 1xCL Nov16:-1xMar17
-Found: CME Calendar: 1xCL Dec16:-1xJan17
-Found: CME Calendar: 1xCL Dec16:-1xFeb17
-Found: CME Calendar: 1xCL Dec16:-1xMar17
-Found: CME Calendar: 1xCL Dec16:-1xApr17
-Found: CME Calendar: 1xCL Dec16:-1xJun17
-Found: CME Calendar: 1xCL Dec16:-1xDec17
-Found: CME Calendar: 1xCL Jan17:-1xFeb17
-Found: CME Calendar: 1xCL Dec18:-1xDec19
-Found: CME Calendar: 1xCL Dec19:-1xDec20
-Found: CME Butterfly: 1xCL Sep16:-2xOct16:+1xNov16
-Found: CME Butterfly: 1xCL Oct16:-2xNov16:+1xDec16
-Found: CME Butterfly: 1xCL Nov16:-2xDec16:+1xJan17
-Found: CME Butterfly: 1xCL Dec16:-2xJan17:+1xFeb17
-Found: CME HO Nov16
-Found: CME HO Dec16
-Found: CME HO Jan17
-Found: CME HO Aug16
-Found: CME HO Sep16
-Found: CME HO Oct16
-Found: CME HO Feb17
-Found: CME HO Mar17
-Found: CME HO Apr17
-Found: CME HO May17
-Found: CME HO Jun17
-Found: CME HO Jul17
-Found: CME HO Aug17
-Found: CME HO Sep17
-Found: CME HO Dec17
-Found: CME CL Feb18
-Found: CME CL Mar18
-Found: CME CL Jun18
-Found: CME CL Dec18
-Found: CME CL Dec19
-Found: CME CL Dec20
-Found: CME CL Sep16
-Found: CME CL Oct16
-Found: CME CL Nov16
-Found: CME CL Dec16
-Found: CME CL Jan17
-Found: CME CL Feb17
-Found: CME CL Mar17
-Found: CME CL Apr17
-Found: CME CL May17
-Found: CME CL Jun17
-Found: CME CL Jul17
-Found: CME CL Aug17
-Found: CME CL Sep17
-Found: CME CL Oct17
-Found: CME CL Nov17
-Found: CME CL Dec17
-Found: CME CL Jan18
-Found: CME Calendar: 1xHO Nov16:-1xDec16
-Found: CME Calendar: 1xHO Dec16:-1xJan17
-Found: CME Calendar: 1xHO Aug16:-1xSep16
-Found: CME Calendar: 1xHO Sep16:-1xOct16
-Found: CME Calendar: 1xHO Sep16:-1xNov16
-Found: CME Calendar: 1xHO Sep16:-1xDec16
-Found: CME Calendar: 1xHO Sep16:-1xJan17
-Found: CME Calendar: 1xHO Sep16:-1xFeb17
-Found: CME Calendar: 1xHO Sep16:-1xMar17
-Found: CME Calendar: 1xHO Oct16:-1xNov16
-Found: CME Calendar: 1xHO Oct16:-1xDec16
-Found: CME Calendar: 1xHO Oct16:-1xJan17
-Found: CME Calendar: 1xHO Oct16:-1xFeb17
-Found: CME Calendar: 1xHO Nov16:-1xJan17
-Found: CME Calendar: 1xHO Dec16:-1xFeb17
-Found: CME Calendar: 1xHO Dec16:-1xMar17
-Found: CME Calendar: 1xHO Dec16:-1xJun17
-Found: CME Calendar: 1xHO Dec16:-1xDec17
-Found: CME Calendar: 1xHO Jan17:-1xFeb17
-Found: CME Calendar: 1xHO Jan17:-1xJun17
-Found: CME Calendar: 1xHO Feb17:-1xMar17
-Found: CME Calendar: 1xHO Mar17:-1xApr17
-Found: CME Calendar: 1xHO Apr17:-1xMay17
-Found: CME Calendar: 1xHO May17:-1xJun17
-Found: CME Calendar: 1xHO Jun17:-1xDec17
-Found: CME Calendar: 1xHO Jul17:-1xAug17
-Found: CME NG May17
-Found: CME NG Jul17
-Found: CME NG Sep17
-Found: CME NG Oct17
-Found: CME NG Nov17
-Found: CME NG Dec17
-Found: CME NG Sep16
-Found: CME NG Oct16
-Found: CME NG Nov16
-Found: CME NG Dec16
-Found: CME NG Jan17
-Found: CME NG Feb17
-Found: CME NG Mar17
-Found: CME NG Apr17
-Found: CME NG Jun17
-Found: CME NG Aug17
-Found: CME NG Jan18
-Found: CME NG Feb18
-Found: CME NG Mar18
-Found: CME NG Apr18
-Found: CME NG May18
-Found: CME NG Jun18
-Found: CME NG Jul18
-Found: CME RB Aug16
-Found: CME RB Sep16
-Found: CME RB Oct16
-Found: CME RB Nov16
-Found: CME RB Dec16
-Found: CME RB Jan17
-Found: CME RB Feb17
-Found: CME RB Mar17
-Found: CME RB Apr17
-Found: CME RB May17
-Found: CME RB Jun17
-Found: CME RB Aug17
-Found: CME RB Sep17
-Found: CME RB Oct17
-Found: CME RB Dec17
-Found: CME Calendar: 1xRB Aug16:-1xSep16
-Found: CME Calendar: 1xRB Aug16:-1xOct16
-Found: CME Calendar: 1xRB Sep16:-1xOct16
-Found: CME Calendar: 1xRB Sep16:-1xNov16
-Found: CME Calendar: 1xRB Sep16:-1xDec16
-Found: CME Calendar: 1xRB Sep16:-1xJan17
-Found: CME Calendar: 1xRB Sep16:-1xMar17
-Found: CME Calendar: 1xRB Oct16:-1xNov16
-Found: CME Calendar: 1xRB Oct16:-1xDec16
-Found: CME Calendar: 1xRB Oct16:-1xJan17
-Found: CME Calendar: 1xRB Nov16:-1xDec16
-Found: CME Calendar: 1xRB Nov16:-1xJan17
-Found: CME Calendar: 1xRB Nov16:-1xFeb17
-Found: CME Calendar: 1xRB Dec16:-1xJan17
-Found: CME Calendar: 1xRB Dec16:-1xMar17
-Found: CME Calendar: 1xRB Dec16:-1xJun17
-Found: CME Calendar: 1xRB Dec16:-1xDec17
-Found: CME Calendar: 1xRB Jan17:-1xFeb17
-Found: CME Calendar: 1xRB Feb17:-1xMar17
-Found: CME Calendar: 1xRB Mar17:-1xApr17
-Found: CME Calendar: 1xRB Apr17:-1xJun17
-Found: CME Calendar: 1xRB May17:-1xJun17
-Found: CME Calendar: 1xRB Aug17:-1xSep17
-Found: CME Calendar: 1xRB Sep17:-1xOct17
-Found: CME Calendar: 1xNG Oct17:-1xNov17
-Found: CME Calendar: 1xNG Nov17:-1xDec17
-Found: CME Calendar: 1xNG Sep16:-1xOct16
-Found: CME Calendar: 1xNG Sep16:-1xNov16
-Found: CME Calendar: 1xNG Sep16:-1xDec16
-Found: CME Calendar: 1xNG Sep16:-1xJan17
-Found: CME Calendar: 1xNG Sep16:-1xFeb17
-Found: CME Calendar: 1xNG Sep16:-1xMar17
-Found: CME Calendar: 1xNG Sep16:-1xApr17
-Found: CME Calendar: 1xNG Oct16:-1xNov16
-Found: CME Calendar: 1xNG Oct16:-1xDec16
-Found: CME Calendar: 1xNG Oct16:-1xJan17
-Found: CME Calendar: 1xNG Oct16:-1xFeb17
-Found: CME Calendar: 1xNG Oct16:-1xMar17
-Found: CME Calendar: 1xNG Oct16:-1xApr17
-Found: CME Calendar: 1xNG Nov16:-1xDec16
-Found: CME Calendar: 1xNG Nov16:-1xJan17
-Found: CME Calendar: 1xNG Nov16:-1xFeb17
-Found: CME Calendar: 1xNG Nov16:-1xMar17
-Found: CME Calendar: 1xNG Nov16:-1xApr17
-Found: CME Calendar: 1xNG Dec16:-1xJan17
-Found: CME Calendar: 1xNG Dec16:-1xFeb17
-Found: CME Calendar: 1xNG Dec16:-1xMar17
-Found: CME Calendar: 1xNG Dec16:-1xApr17
-Found: CME Calendar: 1xNG Jan17:-1xFeb17
-Found: CME Calendar: 1xNG Jan17:-1xMar17
-Found: CME Calendar: 1xNG Jan17:-1xApr17
-Found: CME Calendar: 1xNG Jan17:-1xMay17
-Found: CME Calendar: 1xNG Feb17:-1xMar17
-Found: CME Calendar: 1xNG Feb17:-1xApr17
-Found: CME Calendar: 1xNG Feb17:-1xMay17
-Found: CME Calendar: 1xNG Mar17:-1xApr17
-Found: CME Calendar: 1xNG Mar17:-1xMay17
-Found: CME Calendar: 1xNG Apr17:-1xMay17
-Found: CME Calendar: 1xNG Apr17:-1xJun17
-Found: CME Calendar: 1xNG Apr17:-1xAug17
-Found: CME Calendar: 1xNG Apr17:-1xSep17
-Found: CME Calendar: 1xNG Apr17:-1xOct17
-Found: CME Calendar: 1xNG May17:-1xJun17
-Found: CME Calendar: 1xNG May17:-1xMar18
-Found: CME Calendar: 1xNG Jun17:-1xJul17
-Found: CME Calendar: 1xNG Jul17:-1xAug17
-Found: CME Calendar: 1xNG Aug17:-1xSep17
-Found: CME Calendar: 1xNG Sep17:-1xOct17
-Found: CME Calendar: 1xNG Oct17:-1xJan18
-Found: CME Calendar: 1xNG Dec17:-1xJan18
-Found: CME Calendar: 1xNG Jan18:-1xFeb18
-Found: CME Calendar: 1xNG Feb18:-1xMar18
-Found: CME Calendar: 1xNG Mar18:-1xApr18
-Found: CME Calendar: 1xNG Apr18:-1xMay18
-Found: CME Calendar: 1xNG May18:-1xJun18
-Found: CME GC Aug16
-Found: CME GC Sep16
-Found: CME GC Oct16
-Found: CME GC Dec16
-Found: CME GC Feb17
-Found: CME GC Aug17
-Found: CME SI Sep16
-Found: CME SI Dec16
-Found: CME SI Mar17
-Found: CME Calendar: 1xGC Aug16:-1xSep16
-Found: CME Calendar: 1xGC Aug16:-1xOct16
-Found: CME Calendar: 1xGC Aug16:-1xDec16
-Found: CME Calendar: 1xGC Sep16:-1xOct16
-Found: CME Calendar: 1xGC Sep16:-1xDec16
-Found: CME Calendar: 1xGC Oct16:-1xDec16
-Found: CME Calendar: 1xGC Oct16:-1xFeb17
-Found: CME Calendar: 1xGC Dec16:-1xFeb17
-Found: CME Reduced Tick Spread: 1xSI Sep16:-1xDec16
-Found: CME Reduced Tick Spread: 1xSI Sep16:-1xMar17
-Found: CME Calendar: 1xZS Aug16:-1xSep16
-Found: CME Calendar: 1xZS Aug16:-1xNov16
-Found: CME Calendar: 1xZS Aug16:-1xJan17
+Found: CME Calendar: 1xZM Sep16:-1xOct16
+Found: CME Calendar: 1xZM Sep16:-1xDec16
+Found: CME Calendar: 1xZM Sep16:-1xJan17
+Found: CME Calendar: 1xZM Oct16:-1xDec16
+Found: CME Calendar: 1xZM Oct16:-1xJan17
+Found: CME Calendar: 1xZM Oct16:-1xMar17
+Found: CME Calendar: 1xZM Dec16:-1xJan17
+Found: CME Calendar: 1xZM Dec16:-1xMar17
+Found: CME Calendar: 1xZM Dec16:-1xMay17
+Found: CME Calendar: 1xZM Dec16:-1xJul17
+Found: CME Calendar: 1xZM Dec16:-1xDec17
+Found: CME Calendar: 1xZM Jan17:-1xMar17
+Found: CME Calendar: 1xZM Mar17:-1xMay17
+Found: CME Calendar: 1xZM Mar17:-1xJul17
+Found: CME Calendar: 1xZM Mar17:-1xDec17
+Found: CME Calendar: 1xZM May17:-1xJul17
+Found: CME Calendar: 1xZM May17:-1xAug17
+Found: CME Calendar: 1xZM Jul17:-1xAug17
+Found: CME Calendar: 1xZM Jul17:-1xSep17
+Found: CME Calendar: 1xZM Jul17:-1xDec17
+Found: CME Calendar: 1xZM Aug17:-1xSep17
+Found: CME Calendar: 1xZM Dec17:-1xJan18
+Found: CME Butterfly: 1xZM Sep16:-2xOct16:+1xDec16
+Found: CME Butterfly: 1xZM Oct16:-2xDec16:+1xJan17
+Found: CME Butterfly: 1xZM Jan17:-2xMar17:+1xMay17
+Found: CME Condor: 1xZM Oct16:-1xDec16:-1xJan17:+1xMar17
+Found: CME ZL Mar17
+Found: CME ZL May17
+Found: CME ZL Jul17
+Found: CME ZL Sep16
+Found: CME ZL Oct16
+Found: CME ZL Dec16
+Found: CME ZL Jan17
+Found: CME ZL Aug17
+Found: CME ZL Sep17
+Found: CME ZL Oct17
+Found: CME ZL Dec17
+Found: CME Calendar: 1xZL Mar17:-1xMay17
+Found: CME Calendar: 1xZL May17:-1xJul17
+Found: CME Calendar: 1xZL Sep16:-1xOct16
+Found: CME Calendar: 1xZL Sep16:-1xDec16
+Found: CME Calendar: 1xZL Sep16:-1xJan17
+Found: CME Calendar: 1xZL Oct16:-1xDec16
+Found: CME Calendar: 1xZL Oct16:-1xJan17
+Found: CME Calendar: 1xZL Oct16:-1xMar17
+Found: CME Calendar: 1xZL Oct16:-1xMay17
+Found: CME Calendar: 1xZL Dec16:-1xJan17
+Found: CME Calendar: 1xZL Dec16:-1xMar17
+Found: CME Calendar: 1xZL Dec16:-1xMay17
+Found: CME Calendar: 1xZL Dec16:-1xJul17
+Found: CME Calendar: 1xZL Dec16:-1xDec17
+Found: CME Calendar: 1xZL Jan17:-1xMar17
+Found: CME Calendar: 1xZL Jan17:-1xMay17
+Found: CME Calendar: 1xZL Jul17:-1xDec17
+Found: CME Calendar: 1xZL Aug17:-1xSep17
+Found: CME Butterfly: 1xZL Dec16:-2xJan17:+1xMar17
+Found: CME Calendar: 1xGE Sep17:-1xDec17
+Found: CME Calendar: 1xGE Dec17:-1xMar18
+Found: CME Calendar: 1xGE Sep16:-1xOct16
+Found: CME Calendar: 1xGE Sep16:-1xDec16
+Found: CME Calendar: 1xGE Sep16:-1xMar17
+Found: CME Calendar: 1xGE Sep16:-1xJun17
+Found: CME Calendar: 1xGE Sep16:-1xSep17
+Found: CME Calendar: 1xGE Sep16:-1xSep18
+Found: CME Calendar: 1xGE Oct16:-1xNov16
+Found: CME Calendar: 1xGE Oct16:-1xDec16
+Found: CME Calendar: 1xGE Nov16:-1xDec16
+Found: CME Calendar: 1xGE Dec16:-1xMar17
+Found: CME Calendar: 1xGE Dec16:-1xJun17
+Found: CME Calendar: 1xGE Dec16:-1xSep17
+Found: CME Calendar: 1xGE Dec16:-1xDec17
+Found: CME Calendar: 1xGE Dec16:-1xJun18
+Found: CME Calendar: 1xGE Dec16:-1xDec18
+Found: CME Calendar: 1xGE Mar17:-1xJun17
+Found: CME Calendar: 1xGE Mar17:-1xSep17
+Found: CME Calendar: 1xGE Mar17:-1xDec17
+Found: CME Calendar: 1xGE Mar17:-1xMar18
+Found: CME Calendar: 1xGE Mar17:-1xJun18
+Found: CME Calendar: 1xGE Mar17:-1xMar19
+Found: CME Calendar: 1xGE Jun17:-1xSep17
+Found: CME Calendar: 1xGE Jun17:-1xDec17
+Found: CME Calendar: 1xGE Jun17:-1xMar18
+Found: CME Calendar: 1xGE Jun17:-1xJun18
+Found: CME Calendar: 1xGE Jun17:-1xSep18
+Found: CME Calendar: 1xGE Jun17:-1xDec18
+Found: CME Calendar: 1xGE Jun17:-1xJun19
+Found: CME Calendar: 1xGE Sep17:-1xMar18
+Found: CME Calendar: 1xGE Sep17:-1xJun18
+Found: CME Calendar: 1xGE Sep17:-1xSep18
+Found: CME Calendar: 1xGE Sep17:-1xDec18
+Found: CME Calendar: 1xGE Sep17:-1xMar19
+Found: CME Calendar: 1xGE Sep17:-1xSep19
+Found: CME Calendar: 1xGE Dec17:-1xJun18
+Found: CME Calendar: 1xGE Dec17:-1xSep18
+Found: CME Calendar: 1xGE Dec17:-1xDec18
+Found: CME Calendar: 1xGE Dec17:-1xMar19
+Found: CME Calendar: 1xGE Dec17:-1xDec19
+Found: CME Calendar: 1xGE Mar18:-1xJun18
+Found: CME Calendar: 1xGE Mar18:-1xSep18
+Found: CME Calendar: 1xGE Mar18:-1xDec18
+Found: CME Calendar: 1xGE Mar18:-1xMar19
+Found: CME Calendar: 1xGE Mar18:-1xMar20
+Found: CME Calendar: 1xGE Mar18:-1xJun20
+Found: CME Calendar: 1xGE Jun18:-1xSep18
+Found: CME Calendar: 1xGE Jun18:-1xDec18
+Found: CME Calendar: 1xGE Jun18:-1xMar19
+Found: CME Calendar: 1xGE Jun18:-1xJun19
+Found: CME Calendar: 1xGE Jun18:-1xJun20
+Found: CME Calendar: 1xGE Sep18:-1xDec18
+Found: CME Calendar: 1xGE Sep18:-1xMar19
+Found: CME Calendar: 1xGE Sep18:-1xJun19
+Found: CME Calendar: 1xGE Sep18:-1xSep19
+Found: CME Calendar: 1xGE Dec18:-1xMar19
+Found: CME Calendar: 1xGE Dec18:-1xJun19
+Found: CME Calendar: 1xGE Dec18:-1xSep19
+Found: CME Calendar: 1xGE Dec18:-1xDec19
+Found: CME Calendar: 1xGE Dec18:-1xDec20
+Found: CME Calendar: 1xGE Mar19:-1xJun19
+Found: CME Calendar: 1xGE Mar19:-1xSep19
+Found: CME Calendar: 1xGE Mar19:-1xDec19
+Found: CME Calendar: 1xGE Mar19:-1xMar20
+Found: CME Calendar: 1xGE Jun19:-1xSep19
+Found: CME Calendar: 1xGE Jun19:-1xDec19
+Found: CME Calendar: 1xGE Jun19:-1xMar20
+Found: CME Calendar: 1xGE Jun19:-1xJun20
+Found: CME Calendar: 1xGE Jun19:-1xJun21
+Found: CME Calendar: 1xGE Sep19:-1xDec19
+Found: CME Calendar: 1xGE Sep19:-1xMar20
+Found: CME Calendar: 1xGE Sep19:-1xJun20
+Found: CME Calendar: 1xGE Sep19:-1xSep20
+Found: CME Calendar: 1xGE Sep19:-1xSep21
+Found: CME Calendar: 1xGE Dec19:-1xMar20
+Found: CME Calendar: 1xGE Dec19:-1xJun20
+Found: CME Calendar: 1xGE Dec19:-1xDec20
+Found: CME Calendar: 1xGE Mar20:-1xJun20
+Found: CME Calendar: 1xGE Mar20:-1xSep20
+Found: CME Calendar: 1xGE Mar20:-1xDec20
+Found: CME Calendar: 1xGE Mar20:-1xMar21
+Found: CME Calendar: 1xGE Jun20:-1xDec20
+Found: CME Calendar: 1xGE Jun20:-1xMar21
+Found: CME Calendar: 1xGE Jun20:-1xJun21
+Found: CME Calendar: 1xGE Sep20:-1xDec20
+Found: CME Calendar: 1xGE Sep20:-1xMar21
+Found: CME Calendar: 1xGE Sep20:-1xJun21
+Found: CME Calendar: 1xGE Dec20:-1xSep21
+Found: CME Calendar: 1xGE Mar21:-1xJun21
+Found: CME Calendar: 1xGE Jun21:-1xDec21
+Found: CME Calendar: 1xGE Sep21:-1xMar22
+Found: CME Calendar: 1xGE Mar22:-1xJun22
+Found: CME Calendar: 1xGE Jun22:-1xJun23
+Found: CME Butterfly: 1xGE Sep16:-2xDec16:+1xMar17
+Found: CME Butterfly: 1xGE Sep16:-2xMar17:+1xSep17
+Found: CME Butterfly: 1xGE Sep16:-2xSep17:+1xSep18
+Found: CME Butterfly: 1xGE Dec16:-2xJun17:+1xDec17
+Found: CME Butterfly: 1xGE Dec16:-2xSep17:+1xJun18
+Found: CME Butterfly: 1xGE Dec16:-2xDec17:+1xDec18
+Found: CME Butterfly: 1xGE Mar17:-2xJun17:+1xSep17
+Found: CME Butterfly: 1xGE Mar17:-2xDec17:+1xSep18
+Found: CME Butterfly: 1xGE Mar17:-2xMar18:+1xMar19
+Found: CME Butterfly: 1xGE Jun17:-2xSep17:+1xDec17
+Found: CME Butterfly: 1xGE Jun17:-2xDec17:+1xJun18
+Found: CME Butterfly: 1xGE Jun17:-2xJun18:+1xJun19
+Found: CME Butterfly: 1xGE Sep17:-2xDec17:+1xMar18
+Found: CME Butterfly: 1xGE Sep17:-2xMar18:+1xSep18
+Found: CME Butterfly: 1xGE Sep17:-2xSep18:+1xSep19
+Found: CME Butterfly: 1xGE Dec17:-2xJun18:+1xDec18
+Found: CME Butterfly: 1xGE Dec17:-2xDec18:+1xDec19
+Found: CME Butterfly: 1xGE Mar18:-2xJun18:+1xSep18
+Found: CME Butterfly: 1xGE Mar18:-2xDec18:+1xSep19
+Found: CME Butterfly: 1xGE Jun18:-2xSep18:+1xDec18
+Found: CME Butterfly: 1xGE Jun18:-2xJun19:+1xJun20
+Found: CME Butterfly: 1xGE Sep18:-2xJun19:+1xMar20
+Found: CME Butterfly: 1xGE Dec18:-2xDec19:+1xDec20
+Found: CME Butterfly: 1xGE Jun19:-2xJun20:+1xJun21
+Found: CME Butterfly: 1xGE Sep19:-2xDec19:+1xMar20
+Found: CME Butterfly: 1xGE Dec19:-2xDec20:+1xDec21
+Found: CME Condor: 1xGE Mar18:-1xJun18:-1xSep18:+1xDec18
+Found: CME Pack: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17
+Found: CME Pack: 1xGE Sep17:+1xDec17:+1xMar18:+1xJun18
+Found: CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19
+Found: CME Pack: 1xGE Sep19:+1xDec19:+1xMar20:+1xJun20
+Found: CME Pack: 1xGE Sep20:+1xDec20:+1xMar21:+1xJun21
+Found: CME Pack: 1xGE Sep21:+1xDec21:+1xMar22:+1xJun22
+Found: CME Double Butterfly: 1xGE Sep16:-3xDec16:+3xMar17:-1xJun17
+Found: CME Double Butterfly: 1xGE Mar17:-3xSep17:+3xMar18:-1xSep18
+Found: CME Double Butterfly: 1xGE Sep17:-3xDec17:+3xMar18:-1xJun18
+Found: CME Double Butterfly: 1xGE Sep18:-3xDec18:+3xMar19:-1xJun19
+Found: CME Double Butterfly: 1xGE Sep19:-3xMar20:+3xSep20:-1xMar21
+Found: CME Double Butterfly: 1xGE Sep20:-3xDec20:+3xMar21:-1xJun21
+Found: CME Pack: 1xGE Sep17:+1xDec17:+1xMar18:+1xJun18:-1xSep18:-1xDec18:-1xMar19:-1xJun19
+Found: CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-1xSep19:-1xDec19:-1xMar20:-1xJun20
+Found: CME Pack: 1xGE Sep19:+1xDec19:+1xMar20:+1xJun20:-1xSep20:-1xDec20:-1xMar21:-1xJun21
+Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18
+Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19
+Found: CME Pack Butterfly: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-2xSep19:-2xDec19:-2xMar20:-2xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
+Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20
+Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
+Found: CME ZM Sep16
+Found: CME ZM Oct16
+Found: CME ZM Dec16
+Found: CME ZM Jan17
+Found: CME ZM Mar17
+Found: CME ZM May17
+Found: CME ZM Jul17
+Found: CME ZM Aug17
+Found: CME ZM Sep17
+Found: CME ZM Oct17
+Found: CME ZM Dec17
+Found: CME ZM Jan18
 Found: CME Calendar: 1xZS Sep16:-1xNov16
 Found: CME Calendar: 1xZS Sep16:-1xJan17
 Found: CME Calendar: 1xZS Sep16:-1xMar17
-Found: CME Calendar: 1xZS Sep16:-1xNov17
 Found: CME Calendar: 1xZS Nov16:-1xJan17
 Found: CME Calendar: 1xZS Nov16:-1xMar17
 Found: CME Calendar: 1xZS Nov16:-1xMay17
@@ -1049,176 +223,137 @@ Found: CME Calendar: 1xZS Mar17:-1xMay17
 Found: CME Calendar: 1xZS Mar17:-1xJul17
 Found: CME Calendar: 1xZS May17:-1xJul17
 Found: CME Calendar: 1xZS Jul17:-1xNov17
-Found: CME Butterfly: 1xZS Aug16:-2xSep16:+1xNov16
-Found: CME Butterfly: 1xZS Jan17:-2xMar17:+1xMay17
-Found: CME ZC Dec16
-Found: CME ZC May17
-Found: CME ZC Sep17
-Found: CME ZC Sep16
-Found: CME ZC Mar17
-Found: CME ZC Jul17
-Found: CME ZC Dec17
-Found: CME Calendar: 1xZC Dec16:-1xMay17
-Found: CME Calendar: 1xZC Sep16:-1xDec16
-Found: CME Calendar: 1xZC Sep16:-1xMar17
-Found: CME Calendar: 1xZC Sep16:-1xMay17
-Found: CME Calendar: 1xZC Sep16:-1xJul17
-Found: CME Calendar: 1xZC Sep16:-1xDec17
-Found: CME Calendar: 1xZC Dec16:-1xMar17
-Found: CME Calendar: 1xZC Dec16:-1xJul17
-Found: CME Calendar: 1xZC Dec16:-1xSep17
-Found: CME Calendar: 1xZC Dec16:-1xDec17
-Found: CME Calendar: 1xZC Mar17:-1xMay17
-Found: CME Calendar: 1xZC Mar17:-1xJul17
-Found: CME Calendar: 1xZC May17:-1xJul17
-Found: CME Calendar: 1xZC Jul17:-1xSep17
-Found: CME Calendar: 1xZC Jul17:-1xDec17
-Found: CME Calendar: 1xZC Sep17:-1xDec17
-Found: CME Butterfly: 1xZC Sep16:-2xDec16:+1xMar17
-Found: CME Butterfly: 1xZC Dec16:-2xMar17:+1xMay17
-Found: CME Butterfly: 1xZC Jul17:-2xSep17:+1xDec17
-Found: CME ZS Aug16
+Found: CME Butterfly: 1xZS Nov16:-2xJan17:+1xMar17
+Found: CME Butterfly: 1xZS Mar17:-2xMay17:+1xJul17
 Found: CME ZS Sep16
 Found: CME ZS Nov16
 Found: CME ZS Jan17
 Found: CME ZS Mar17
 Found: CME ZS May17
 Found: CME ZS Jul17
+Found: CME ZS Aug17
 Found: CME ZS Nov17
-Found: CME Calendar: 1xLE Oct16:-1xDec16
-Found: CME Calendar: 1xLE Aug16:-1xOct16
-Found: CME Calendar: 1xLE Aug16:-1xDec16
-Found: CME Calendar: 1xLE Aug16:-1xFeb17
-Found: CME Calendar: 1xLE Oct16:-1xFeb17
-Found: CME Calendar: 1xLE Oct16:-1xApr17
-Found: CME Calendar: 1xLE Dec16:-1xFeb17
-Found: CME Calendar: 1xLE Dec16:-1xApr17
-Found: CME Calendar: 1xLE Dec16:-1xAug17
-Found: CME Calendar: 1xLE Feb17:-1xApr17
-Found: CME Calendar: 1xLE Feb17:-1xJun17
-Found: CME LE Oct16
-Found: CME LE Dec16
-Found: CME LE Aug16
-Found: CME LE Feb17
-Found: CME LE Apr17
-Found: CME LE Jun17
-Found: CME LE Aug17
-Found: CME Calendar: 1xHE Oct16:-1xDec16
-Found: CME Calendar: 1xHE Aug16:-1xOct16
-Found: CME Calendar: 1xHE Aug16:-1xDec16
-Found: CME Calendar: 1xHE Oct16:-1xFeb17
-Found: CME Calendar: 1xHE Oct16:-1xApr17
-Found: CME Calendar: 1xHE Dec16:-1xFeb17
-Found: CME Calendar: 1xHE Dec16:-1xApr17
-Found: CME Calendar: 1xHE Dec16:-1xJun17
-Found: CME Calendar: 1xHE Feb17:-1xApr17
-Found: CME HE Oct16
-Found: CME HE Dec16
-Found: CME HE Feb17
-Found: CME HE Aug16
-Found: CME HE Apr17
-Found: CME HE Jun17
-Found: CME Calendar: 1xGF Aug16:-1xSep16
-Found: CME Calendar: 1xGF Aug16:-1xOct16
-Found: CME Calendar: 1xGF Aug16:-1xNov16
+Found: CME Calendar: 1xZC Sep16:-1xDec16
+Found: CME Calendar: 1xZC Sep16:-1xMar17
+Found: CME Calendar: 1xZC Sep16:-1xMay17
+Found: CME Calendar: 1xZC Sep16:-1xJul17
+Found: CME Calendar: 1xZC Sep16:-1xSep17
+Found: CME Calendar: 1xZC Sep16:-1xDec17
+Found: CME Calendar: 1xZC Dec16:-1xMar17
+Found: CME Calendar: 1xZC Dec16:-1xMay17
+Found: CME Calendar: 1xZC Dec16:-1xJul17
+Found: CME Calendar: 1xZC Dec16:-1xSep17
+Found: CME Calendar: 1xZC Dec16:-1xDec17
+Found: CME Calendar: 1xZC Mar17:-1xMay17
+Found: CME Calendar: 1xZC Mar17:-1xJul17
+Found: CME Calendar: 1xZC Mar17:-1xDec17
+Found: CME Calendar: 1xZC May17:-1xJul17
+Found: CME Calendar: 1xZC May17:-1xSep17
+Found: CME Calendar: 1xZC Jul17:-1xSep17
+Found: CME Calendar: 1xZC Jul17:-1xDec17
+Found: CME Calendar: 1xZC Sep17:-1xDec17
+Found: CME Calendar: 1xZC Dec17:-1xMar18
+Found: CME Calendar: 1xZC Dec17:-1xJul18
+Found: CME Calendar: 1xZC Mar18:-1xMay18
+Found: CME Butterfly: 1xZC Sep16:-2xDec16:+1xMar17
+Found: CME Butterfly: 1xZC Dec16:-2xMar17:+1xMay17
+Found: CME Butterfly: 1xZC Dec16:-2xMar17:+1xJul17
+Found: CME Butterfly: 1xZC Mar17:-2xMay17:+1xJul17
+Found: CME Butterfly: 1xZC May17:-2xJul17:+1xSep17
+Found: CME Butterfly: 1xZC Jul17:-2xSep17:+1xDec17
+Found: CME ZC Sep16
+Found: CME ZC Dec16
+Found: CME ZC Mar17
+Found: CME ZC May17
+Found: CME ZC Jul17
+Found: CME ZC Sep17
+Found: CME ZC Dec17
+Found: CME ZC Mar18
+Found: CME ZC May18
+Found: CME ZC Jul18
+Found: CME ZC Dec18
 Found: CME Calendar: 1xGF Sep16:-1xOct16
 Found: CME Calendar: 1xGF Sep16:-1xNov16
 Found: CME Calendar: 1xGF Oct16:-1xNov16
+Found: CME Calendar: 1xGF Oct16:-1xJan17
 Found: CME Calendar: 1xGF Nov16:-1xJan17
-Found: CME GF Aug16
+Found: CME Calendar: 1xGF Jan17:-1xMar17
 Found: CME GF Sep16
 Found: CME GF Oct16
 Found: CME GF Nov16
 Found: CME GF Jan17
 Found: CME GF Mar17
-Found: CME ZM Aug16
-Found: CME ZM Sep16
-Found: CME ZM Oct16
-Found: CME ZM Dec16
-Found: CME ZM Jan17
-Found: CME ZM Mar17
-Found: CME ZM May17
-Found: CME ZM Jul17
-Found: CME ZM Aug17
-Found: CME ZM Sep17
-Found: CME ZM Dec17
-Found: CME Calendar: 1xZM Aug16:-1xSep16
-Found: CME Calendar: 1xZM Aug16:-1xOct16
-Found: CME Calendar: 1xZM Aug16:-1xDec16
-Found: CME Calendar: 1xZM Sep16:-1xOct16
-Found: CME Calendar: 1xZM Sep16:-1xDec16
-Found: CME Calendar: 1xZM Sep16:-1xJan17
-Found: CME Calendar: 1xZM Oct16:-1xDec16
-Found: CME Calendar: 1xZM Oct16:-1xJan17
-Found: CME Calendar: 1xZM Dec16:-1xJan17
-Found: CME Calendar: 1xZM Dec16:-1xMar17
-Found: CME Calendar: 1xZM Dec16:-1xMay17
-Found: CME Calendar: 1xZM Dec16:-1xJul17
-Found: CME Calendar: 1xZM Jan17:-1xMar17
-Found: CME Calendar: 1xZM Jan17:-1xJul17
-Found: CME Calendar: 1xZM Jan17:-1xAug17
-Found: CME Calendar: 1xZM Mar17:-1xMay17
-Found: CME Calendar: 1xZM May17:-1xJul17
-Found: CME Butterfly: 1xZM Sep16:-2xOct16:+1xDec16
-Found: CME Butterfly: 1xZM Oct16:-2xDec16:+1xJan17
-Found: CME ZL Aug16
-Found: CME ZL Sep16
-Found: CME ZL Oct16
-Found: CME ZL Dec16
-Found: CME ZL Jan17
-Found: CME ZL Mar17
-Found: CME ZL May17
-Found: CME ZL Jul17
-Found: CME ZL Oct17
-Found: CME ZL Dec17
-Found: CME Calendar: 1xZL Aug16:-1xSep16
-Found: CME Calendar: 1xZL Aug16:-1xOct16
-Found: CME Calendar: 1xZL Aug16:-1xDec16
-Found: CME Calendar: 1xZL Sep16:-1xOct16
-Found: CME Calendar: 1xZL Sep16:-1xDec16
-Found: CME Calendar: 1xZL Sep16:-1xJan17
-Found: CME Calendar: 1xZL Oct16:-1xDec16
-Found: CME Calendar: 1xZL Dec16:-1xJan17
-Found: CME Calendar: 1xZL Dec16:-1xMar17
-Found: CME Calendar: 1xZL Dec16:-1xMay17
-Found: CME Calendar: 1xZL Dec16:-1xJul17
-Found: CME Calendar: 1xZL Dec16:-1xDec17
-Found: CME Calendar: 1xZL Jan17:-1xMar17
-Found: CME Calendar: 1xZL Jan17:-1xMay17
-Found: CME Calendar: 1xZL Mar17:-1xMay17
-Found: CME Calendar: 1xZL May17:-1xJul17
-Found: CME Calendar: 1xZL Jul17:-1xDec17
-Found: CME Butterfly: 1xZL Jan17:-2xMar17:+1xMay17
+Found: CME Calendar: 1xLE Aug16:-1xOct16
+Found: CME Calendar: 1xLE Aug16:-1xDec16
+Found: CME Calendar: 1xLE Oct16:-1xDec16
+Found: CME Calendar: 1xLE Oct16:-1xFeb17
+Found: CME Calendar: 1xLE Oct16:-1xApr17
+Found: CME Calendar: 1xLE Oct16:-1xJun17
+Found: CME Calendar: 1xLE Dec16:-1xFeb17
+Found: CME Calendar: 1xLE Dec16:-1xApr17
+Found: CME Calendar: 1xLE Dec16:-1xJun17
+Found: CME Calendar: 1xLE Feb17:-1xApr17
+Found: CME Calendar: 1xLE Feb17:-1xJun17
+Found: CME Calendar: 1xLE Apr17:-1xJun17
+Found: CME Calendar: 1xLE Jun17:-1xAug17
+Found: CME Butterfly: 1xLE Oct16:-2xDec16:+1xFeb17
+Found: CME LE Aug16
+Found: CME LE Oct16
+Found: CME LE Dec16
+Found: CME LE Feb17
+Found: CME LE Apr17
+Found: CME LE Jun17
+Found: CME LE Aug17
+Found: CME Calendar: 1xHE Oct16:-1xDec16
+Found: CME Calendar: 1xHE Oct16:-1xFeb17
+Found: CME Calendar: 1xHE Dec16:-1xFeb17
+Found: CME Calendar: 1xHE Feb17:-1xApr17
+Found: CME Calendar: 1xHE Apr17:-1xJun17
+Found: CME HE Oct16
+Found: CME HE Dec16
+Found: CME HE Feb17
+Found: CME HE Apr17
+Found: CME HE Jun17
 Found: CME ZW Sep16
 Found: CME ZW Dec16
 Found: CME ZW Mar17
 Found: CME ZW May17
 Found: CME ZW Jul17
+Found: CME ZW Sep17
 Found: CME ZW Dec17
+Found: CME ZW Mar18
 Found: CME Calendar: 1xZW Sep16:-1xDec16
 Found: CME Calendar: 1xZW Sep16:-1xMar17
-Found: CME Calendar: 1xZW Sep16:-1xMay17
-Found: CME Calendar: 1xZW Sep16:-1xJul17
 Found: CME Calendar: 1xZW Dec16:-1xMar17
 Found: CME Calendar: 1xZW Dec16:-1xMay17
 Found: CME Calendar: 1xZW Dec16:-1xJul17
+Found: CME Calendar: 1xZW Dec16:-1xDec17
 Found: CME Calendar: 1xZW Mar17:-1xMay17
 Found: CME Calendar: 1xZW Mar17:-1xJul17
 Found: CME Calendar: 1xZW May17:-1xJul17
+Found: CME Calendar: 1xZW Jul17:-1xSep17
+Found: CME Calendar: 1xZW Jul17:-1xDec17
+Found: CME Calendar: 1xZW Sep17:-1xDec17
 Found: CME Butterfly: 1xZW Sep16:-2xDec16:+1xMar17
 Found: CME KE Sep16
 Found: CME KE Dec16
 Found: CME KE Mar17
 Found: CME KE May17
 Found: CME KE Jul17
+Found: CME KE Sep17
 Found: CME Calendar: 1xKE Sep16:-1xDec16
 Found: CME Calendar: 1xKE Sep16:-1xMar17
 Found: CME Calendar: 1xKE Sep16:-1xMay17
+Found: CME Calendar: 1xKE Sep16:-1xJul17
 Found: CME Calendar: 1xKE Dec16:-1xMar17
+Found: CME Calendar: 1xKE Dec16:-1xMay17
 Found: CME Calendar: 1xKE Dec16:-1xJul17
-Found: CME GE Aug16
+Found: CME Calendar: 1xKE Mar17:-1xMay17
+Found: CME Calendar: 1xKE Mar17:-1xJul17
+Found: CME Calendar: 1xKE May17:-1xJul17
 Found: CME GE Sep16
 Found: CME GE Oct16
+Found: CME GE Nov16
 Found: CME GE Dec16
 Found: CME GE Mar17
 Found: CME GE Jun17
@@ -1242,179 +377,302 @@ Found: CME GE Sep21
 Found: CME GE Dec21
 Found: CME GE Mar22
 Found: CME GE Jun22
-Found: CME Calendar: 1xGE Aug16:-1xSep16
-Found: CME Calendar: 1xGE Sep16:-1xOct16
-Found: CME Calendar: 1xGE Sep16:-1xDec16
-Found: CME Calendar: 1xGE Sep16:-1xMar17
-Found: CME Calendar: 1xGE Sep16:-1xJun17
-Found: CME Calendar: 1xGE Sep16:-1xSep17
-Found: CME Calendar: 1xGE Sep16:-1xDec17
-Found: CME Calendar: 1xGE Sep16:-1xMar18
-Found: CME Calendar: 1xGE Sep16:-1xSep18
-Found: CME Calendar: 1xGE Sep16:-1xMar19
-Found: CME Calendar: 1xGE Oct16:-1xDec16
-Found: CME Calendar: 1xGE Dec16:-1xMar17
-Found: CME Calendar: 1xGE Dec16:-1xJun17
-Found: CME Calendar: 1xGE Dec16:-1xSep17
-Found: CME Calendar: 1xGE Dec16:-1xDec17
-Found: CME Calendar: 1xGE Dec16:-1xMar18
-Found: CME Calendar: 1xGE Dec16:-1xSep18
-Found: CME Calendar: 1xGE Dec16:-1xDec18
-Found: CME Calendar: 1xGE Dec16:-1xJun19
-Found: CME Calendar: 1xGE Dec16:-1xDec20
-Found: CME Calendar: 1xGE Mar17:-1xJun17
-Found: CME Calendar: 1xGE Mar17:-1xSep17
-Found: CME Calendar: 1xGE Mar17:-1xDec17
-Found: CME Calendar: 1xGE Mar17:-1xMar18
-Found: CME Calendar: 1xGE Mar17:-1xJun18
-Found: CME Calendar: 1xGE Mar17:-1xSep18
-Found: CME Calendar: 1xGE Mar17:-1xDec18
-Found: CME Calendar: 1xGE Mar17:-1xMar19
-Found: CME Calendar: 1xGE Mar17:-1xSep19
-Found: CME Calendar: 1xGE Mar17:-1xDec20
-Found: CME Calendar: 1xGE Jun17:-1xSep17
-Found: CME Calendar: 1xGE Jun17:-1xDec17
-Found: CME Calendar: 1xGE Jun17:-1xMar18
-Found: CME Calendar: 1xGE Jun17:-1xJun18
-Found: CME Calendar: 1xGE Jun17:-1xSep18
-Found: CME Calendar: 1xGE Jun17:-1xDec18
-Found: CME Calendar: 1xGE Jun17:-1xMar19
-Found: CME Calendar: 1xGE Jun17:-1xJun19
-Found: CME Calendar: 1xGE Jun17:-1xJun20
-Found: CME Calendar: 1xGE Sep17:-1xDec17
-Found: CME Calendar: 1xGE Sep17:-1xMar18
-Found: CME Calendar: 1xGE Sep17:-1xJun18
-Found: CME Calendar: 1xGE Sep17:-1xSep18
-Found: CME Calendar: 1xGE Sep17:-1xDec18
-Found: CME Calendar: 1xGE Sep17:-1xMar19
-Found: CME Calendar: 1xGE Sep17:-1xSep19
-Found: CME Calendar: 1xGE Dec17:-1xMar18
-Found: CME Calendar: 1xGE Dec17:-1xJun18
-Found: CME Calendar: 1xGE Dec17:-1xSep18
-Found: CME Calendar: 1xGE Dec17:-1xDec18
-Found: CME Calendar: 1xGE Dec17:-1xDec19
-Found: CME Calendar: 1xGE Mar18:-1xJun18
-Found: CME Calendar: 1xGE Mar18:-1xSep18
-Found: CME Calendar: 1xGE Mar18:-1xDec18
-Found: CME Calendar: 1xGE Mar18:-1xMar19
-Found: CME Calendar: 1xGE Mar18:-1xJun19
-Found: CME Calendar: 1xGE Mar18:-1xSep19
-Found: CME Calendar: 1xGE Jun18:-1xSep18
-Found: CME Calendar: 1xGE Jun18:-1xDec18
-Found: CME Calendar: 1xGE Jun18:-1xMar19
-Found: CME Calendar: 1xGE Jun18:-1xJun19
-Found: CME Calendar: 1xGE Jun18:-1xSep19
-Found: CME Calendar: 1xGE Sep18:-1xDec18
-Found: CME Calendar: 1xGE Sep18:-1xMar19
-Found: CME Calendar: 1xGE Sep18:-1xJun19
-Found: CME Calendar: 1xGE Sep18:-1xSep19
-Found: CME Calendar: 1xGE Sep18:-1xSep20
-Found: CME Calendar: 1xGE Dec18:-1xMar19
-Found: CME Calendar: 1xGE Dec18:-1xJun19
-Found: CME Calendar: 1xGE Dec18:-1xSep19
-Found: CME Calendar: 1xGE Dec18:-1xDec19
-Found: CME Calendar: 1xGE Dec18:-1xMar20
-Found: CME Calendar: 1xGE Dec18:-1xDec20
-Found: CME Calendar: 1xGE Mar19:-1xJun19
-Found: CME Calendar: 1xGE Mar19:-1xSep19
-Found: CME Calendar: 1xGE Mar19:-1xDec19
-Found: CME Calendar: 1xGE Mar19:-1xMar20
-Found: CME Calendar: 1xGE Jun19:-1xSep19
-Found: CME Calendar: 1xGE Jun19:-1xDec19
-Found: CME Calendar: 1xGE Jun19:-1xMar20
-Found: CME Calendar: 1xGE Jun19:-1xJun20
-Found: CME Calendar: 1xGE Jun19:-1xJun21
-Found: CME Calendar: 1xGE Sep19:-1xDec19
-Found: CME Calendar: 1xGE Sep19:-1xMar20
-Found: CME Calendar: 1xGE Sep19:-1xJun20
-Found: CME Calendar: 1xGE Sep19:-1xSep20
-Found: CME Calendar: 1xGE Dec19:-1xMar20
-Found: CME Calendar: 1xGE Dec19:-1xJun20
-Found: CME Calendar: 1xGE Dec19:-1xSep20
-Found: CME Calendar: 1xGE Dec19:-1xDec20
-Found: CME Calendar: 1xGE Mar20:-1xSep20
-Found: CME Calendar: 1xGE Jun20:-1xDec20
-Found: CME Calendar: 1xGE Jun20:-1xJun21
-Found: CME Calendar: 1xGE Dec20:-1xMar21
-Found: CME Calendar: 1xGE Dec20:-1xJun21
-Found: CME Butterfly: 1xGE Sep16:-2xDec16:+1xMar17
-Found: CME Butterfly: 1xGE Sep16:-2xDec16:+1xJun17
-Found: CME Butterfly: 1xGE Sep16:-2xMar17:+1xSep17
-Found: CME Butterfly: 1xGE Sep16:-2xSep17:+1xSep18
-Found: CME Butterfly: 1xGE Dec16:-2xMar17:+1xJun17
-Found: CME Butterfly: 1xGE Dec16:-2xJun17:+1xDec17
-Found: CME Butterfly: 1xGE Dec16:-2xSep17:+1xJun18
-Found: CME Butterfly: 1xGE Dec16:-2xDec17:+1xDec18
-Found: CME Butterfly: 1xGE Mar17:-2xSep17:+1xMar18
-Found: CME Butterfly: 1xGE Mar17:-2xMar18:+1xMar19
-Found: CME Butterfly: 1xGE Jun17:-2xSep17:+1xDec17
-Found: CME Butterfly: 1xGE Jun17:-2xDec17:+1xJun18
-Found: CME Butterfly: 1xGE Jun17:-2xJun18:+1xJun19
-Found: CME Butterfly: 1xGE Sep17:-2xDec17:+1xMar18
-Found: CME Butterfly: 1xGE Sep17:-2xMar18:+1xSep18
-Found: CME Butterfly: 1xGE Sep17:-2xSep18:+1xSep19
-Found: CME Butterfly: 1xGE Dec17:-2xJun18:+1xDec18
-Found: CME Butterfly: 1xGE Dec17:-2xDec18:+1xDec19
-Found: CME Butterfly: 1xGE Mar18:-2xJun18:+1xSep18
-Found: CME Butterfly: 1xGE Mar18:-2xMar19:+1xMar20
-Found: CME Butterfly: 1xGE Jun18:-2xSep18:+1xDec18
-Found: CME Butterfly: 1xGE Jun18:-2xDec18:+1xJun19
-Found: CME Butterfly: 1xGE Jun18:-2xJun19:+1xJun20
-Found: CME Butterfly: 1xGE Sep18:-2xDec18:+1xMar19
-Found: CME Butterfly: 1xGE Dec18:-2xJun19:+1xDec19
-Found: CME Butterfly: 1xGE Jun19:-2xJun20:+1xJun21
-Found: CME Pack: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17
-Found: CME Pack: 1xGE Sep17:+1xDec17:+1xMar18:+1xJun18
-Found: CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19
-Found: CME Pack: 1xGE Sep19:+1xDec19:+1xMar20:+1xJun20
-Found: CME Pack: 1xGE Sep20:+1xDec20:+1xMar21:+1xJun21
-Found: CME Pack: 1xGE Sep21:+1xDec21:+1xMar22:+1xJun22
-Found: CME Double Butterfly: 1xGE Sep16:-3xDec16:+3xMar17:-1xJun17
-Found: CME Double Butterfly: 1xGE Dec16:-3xJun17:+3xDec17:-1xJun18
-Found: CME Double Butterfly: 1xGE Mar17:-3xDec17:+3xSep18:-1xJun19
-Found: CME Double Butterfly: 1xGE Jun17:-3xSep17:+3xDec17:-1xMar18
-Found: CME Double Butterfly: 1xGE Jun17:-3xJun18:+3xJun19:-1xJun20
-Found: CME Double Butterfly: 1xGE Sep17:-3xMar18:+3xSep18:-1xMar19
-Found: CME Double Butterfly: 1xGE Jun18:-3xDec18:+3xJun19:-1xDec19
-Found: CME Double Butterfly: 1xGE Jun20:-3xSep20:+3xDec20:-1xMar21
-Found: CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-1xSep19:-1xDec19:-1xMar20:-1xJun20
-Found: CME Pack: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-1xSep20:-1xDec20:-1xMar21:-1xJun21
-Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18
-Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19
-Found: CME Pack Butterfly: 1xGE Sep18:+1xDec18:+1xMar19:+1xJun19:-2xSep19:-2xDec19:-2xMar20:-2xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
-Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20
-Found: CME Bundle: 1xGE Sep16:+1xDec16:+1xMar17:+1xJun17:+1xSep17:+1xDec17:+1xMar18:+1xJun18:+1xSep18:+1xDec18:+1xMar19:+1xJun19:+1xSep19:+1xDec19:+1xMar20:+1xJun20:+1xSep20:+1xDec20:+1xMar21:+1xJun21
+Found: CME GE Sep22
+Found: CME GE Mar23
+Found: CME GE Jun23
+Found: CME GE Sep23
 Found: CME ES Sep16
 Found: CME ES Dec16
-Found: CME ES Mar17
 Found: CME Calendar: -1xES Sep16:+1xDec16
-Found: CME Calendar: -1xES Sep16:+1xMar17
 Found: CME NQ Sep16
+Found: CME NQ Dec16
+Found: CME Calendar: -1xNQ Sep16:+1xDec16
 Found: CME 6E Sep16
 Found: CME 6E Dec16
-Found: CME 6E Mar17
 Found: CME Calendar: 1x6E Dec16:-1xSep16
-Found: CME Calendar: 1x6E Mar17:-1xSep16
 Found: CME 6J Sep16
 Found: CME 6J Dec16
-Found: CME ZN Sep16
-Found: CME ZN Dec16
-Found: CME ZB Sep16
-Found: CME ZB Dec16
-Found: CME ZF Sep16
-Found: CME ZF Dec16
-Found: CME ZT Sep16
-Found: CME ZT Dec16
+Found: CME Calendar: 1x6J Dec16:-1xSep16
 Found: CME 6A Sep16
+Found: CME 6A Dec16
+Found: CME Calendar: 1x6A Dec16:-1xSep16
 Found: CME 6C Sep16
 Found: CME 6C Dec16
 Found: CME 6B Sep16
 Found: CME 6B Dec16
-Found: CME 6B Jun17
-Found: CME Calendar: 1x6B Jun17:-1xSep16
+Found: CME Calendar: 1x6B Dec16:-1xSep16
+Found: CME ZN Sep16
+Found: CME ZN Dec16
+Found: CME ZB Sep16
+Found: CME ZB Dec16
 Found: CME Reduced Tick Spread: 1xZN Sep16:-1xDec16
+Found: CME 1xZN Sep16:-1xDec16:+2xSep16@131310
+Found: CME Reduced Tick Spread: 1xZB Sep16:-1xDec16
+Found: CME ZF Sep16
+Found: CME ZF Dec16
+Found: CME ZT Sep16
+Found: CME ZT Dec16
 Found: CME Calendar: 1xZF Sep16:-1xDec16
+Found: CME 1xZF Sep16:-1xDec16:+6xSep16@121065
+Found: CME 1xZF Sep16:-1xDec16:+6xSep16@121067
+Found: CME 1xZF Sep16:-1xDec16:+6xSep16@121075
 Found: CME Calendar: 1xZT Sep16:-1xDec16
+Found: CME CL Dec16
+Found: CME CL Jan17
+Found: CME CL Feb17
+Found: CME CL Apr17
+Found: CME CL May17
+Found: CME CL Jun17
+Found: CME CL Oct16
+Found: CME CL Nov16
+Found: CME CL Mar17
+Found: CME CL Jul17
+Found: CME CL Aug17
+Found: CME CL Sep17
+Found: CME CL Oct17
+Found: CME CL Nov17
+Found: CME CL Dec17
+Found: CME CL Jan18
+Found: CME CL Mar18
+Found: CME CL Jun18
+Found: CME CL Dec18
+Found: CME CL Dec19
+Found: CME Calendar: 1xCL Dec16:-1xJan17
+Found: CME Calendar: 1xCL Jan17:-1xFeb17
+Found: CME Calendar: 1xCL Apr17:-1xMay17
+Found: CME Calendar: 1xCL May17:-1xJun17
+Found: CME Calendar: 1xCL Oct16:-1xNov16
+Found: CME Calendar: 1xCL Oct16:-1xDec16
+Found: CME Calendar: 1xCL Oct16:-1xJan17
+Found: CME Calendar: 1xCL Oct16:-1xFeb17
+Found: CME Calendar: 1xCL Oct16:-1xMar17
+Found: CME Calendar: 1xCL Oct16:-1xApr17
+Found: CME Calendar: 1xCL Oct16:-1xJun17
+Found: CME Calendar: 1xCL Oct16:-1xDec17
+Found: CME Calendar: 1xCL Nov16:-1xDec16
+Found: CME Calendar: 1xCL Nov16:-1xJan17
+Found: CME Calendar: 1xCL Nov16:-1xFeb17
+Found: CME Calendar: 1xCL Nov16:-1xMar17
+Found: CME Calendar: 1xCL Nov16:-1xApr17
+Found: CME Calendar: 1xCL Nov16:-1xJun17
+Found: CME Calendar: 1xCL Nov16:-1xDec17
+Found: CME Calendar: 1xCL Dec16:-1xFeb17
+Found: CME Calendar: 1xCL Dec16:-1xMar17
+Found: CME Calendar: 1xCL Dec16:-1xApr17
+Found: CME Calendar: 1xCL Dec16:-1xJun17
+Found: CME Calendar: 1xCL Dec16:-1xDec17
+Found: CME Calendar: 1xCL Jan17:-1xMar17
+Found: CME Calendar: 1xCL Jan17:-1xApr17
+Found: CME Calendar: 1xCL Jan17:-1xMay17
+Found: CME Calendar: 1xCL Jan17:-1xJun17
+Found: CME Calendar: 1xCL Jan17:-1xJul17
+Found: CME Calendar: 1xCL Feb17:-1xMar17
+Found: CME Calendar: 1xCL Feb17:-1xApr17
+Found: CME Calendar: 1xCL Feb17:-1xMay17
+Found: CME Calendar: 1xCL Feb17:-1xJun17
+Found: CME Calendar: 1xCL Mar17:-1xApr17
+Found: CME Calendar: 1xCL Mar17:-1xMay17
+Found: CME Calendar: 1xCL Mar17:-1xJun17
+Found: CME Calendar: 1xCL Mar17:-1xJul17
+Found: CME Calendar: 1xCL Mar17:-1xSep17
+Found: CME Calendar: 1xCL Apr17:-1xJun17
+Found: CME Calendar: 1xCL Apr17:-1xJul17
+Found: CME Calendar: 1xCL May17:-1xJul17
+Found: CME Calendar: 1xCL May17:-1xAug17
+Found: CME Calendar: 1xCL Jun17:-1xJul17
+Found: CME Calendar: 1xCL Jun17:-1xAug17
+Found: CME Calendar: 1xCL Jun17:-1xSep17
+Found: CME Calendar: 1xCL Jun17:-1xDec17
+Found: CME Calendar: 1xCL Jul17:-1xAug17
+Found: CME Calendar: 1xCL Jul17:-1xSep17
+Found: CME Calendar: 1xCL Jul17:-1xOct17
+Found: CME Calendar: 1xCL Aug17:-1xSep17
+Found: CME Calendar: 1xCL Sep17:-1xOct17
+Found: CME Calendar: 1xCL Sep17:-1xDec17
+Found: CME Calendar: 1xCL Oct17:-1xNov17
+Found: CME Calendar: 1xCL Oct17:-1xDec17
+Found: CME Calendar: 1xCL Nov17:-1xDec17
+Found: CME Calendar: 1xCL Dec17:-1xJan18
+Found: CME Calendar: 1xCL Dec17:-1xJun18
+Found: CME Calendar: 1xCL Dec17:-1xDec18
+Found: CME Calendar: 1xCL Jun18:-1xDec18
+Found: CME Calendar: 1xCL Dec18:-1xDec19
+Found: CME Butterfly: 1xCL Oct16:-2xNov16:+1xDec16
+Found: CME Butterfly: 1xCL Nov16:-2xDec16:+1xJan17
+Found: CME Butterfly: 1xCL Dec16:-2xJan17:+1xFeb17
+Found: CME Butterfly: 1xCL Jan17:-2xFeb17:+1xMar17
+Found: CME Butterfly: 1xCL Mar17:-2xApr17:+1xMay17
+Found: CME HO Sep16
+Found: CME HO Oct16
+Found: CME HO Nov16
+Found: CME HO Dec16
+Found: CME HO Jan17
+Found: CME HO Feb17
+Found: CME HO Mar17
+Found: CME HO Apr17
+Found: CME HO May17
+Found: CME HO Jun17
+Found: CME HO Jul17
+Found: CME HO Sep17
+Found: CME HO Dec17
+Found: CME NG Nov17
+Found: CME NG Dec17
+Found: CME NG Jan18
+Found: CME NG Oct16
+Found: CME NG Nov16
+Found: CME NG Dec16
+Found: CME NG Jan17
+Found: CME NG Feb17
+Found: CME NG Mar17
+Found: CME NG Apr17
+Found: CME NG May17
+Found: CME NG Jun17
+Found: CME NG Jul17
+Found: CME NG Aug17
+Found: CME NG Sep17
+Found: CME NG Oct17
+Found: CME NG Feb18
+Found: CME NG Mar18
+Found: CME NG Apr18
+Found: CME NG Aug18
+Found: CME NG Sep18
+Found: CME NG Nov18
+Found: CME NG Dec18
+Found: CME NG Jan19
+Found: CME Calendar: 1xNG Nov17:-1xDec17
+Found: CME Calendar: 1xNG Dec17:-1xJan18
+Found: CME Calendar: 1xNG Oct16:-1xNov16
+Found: CME Calendar: 1xNG Oct16:-1xDec16
+Found: CME Calendar: 1xNG Oct16:-1xJan17
+Found: CME Calendar: 1xNG Oct16:-1xFeb17
+Found: CME Calendar: 1xNG Oct16:-1xMar17
+Found: CME Calendar: 1xNG Oct16:-1xApr17
+Found: CME Calendar: 1xNG Oct16:-1xOct17
+Found: CME Calendar: 1xNG Nov16:-1xDec16
+Found: CME Calendar: 1xNG Nov16:-1xJan17
+Found: CME Calendar: 1xNG Nov16:-1xFeb17
+Found: CME Calendar: 1xNG Nov16:-1xMar17
+Found: CME Calendar: 1xNG Nov16:-1xApr17
+Found: CME Calendar: 1xNG Nov16:-1xNov17
+Found: CME Calendar: 1xNG Dec16:-1xJan17
+Found: CME Calendar: 1xNG Dec16:-1xFeb17
+Found: CME Calendar: 1xNG Dec16:-1xMar17
+Found: CME Calendar: 1xNG Dec16:-1xApr17
+Found: CME Calendar: 1xNG Jan17:-1xFeb17
+Found: CME Calendar: 1xNG Jan17:-1xMar17
+Found: CME Calendar: 1xNG Jan17:-1xApr17
+Found: CME Calendar: 1xNG Jan17:-1xJun17
+Found: CME Calendar: 1xNG Feb17:-1xMar17
+Found: CME Calendar: 1xNG Feb17:-1xApr17
+Found: CME Calendar: 1xNG Mar17:-1xApr17
+Found: CME Calendar: 1xNG Apr17:-1xMay17
+Found: CME Calendar: 1xNG Apr17:-1xJun17
+Found: CME Calendar: 1xNG Apr17:-1xOct17
+Found: CME Calendar: 1xNG May17:-1xJun17
+Found: CME Calendar: 1xNG May17:-1xJul17
+Found: CME Calendar: 1xNG May17:-1xAug17
+Found: CME Calendar: 1xNG Jun17:-1xJul17
+Found: CME Calendar: 1xNG Jul17:-1xAug17
+Found: CME Calendar: 1xNG Aug17:-1xSep17
+Found: CME Calendar: 1xNG Aug17:-1xOct17
+Found: CME Calendar: 1xNG Sep17:-1xOct17
+Found: CME Calendar: 1xNG Oct17:-1xNov17
+Found: CME Calendar: 1xNG Oct17:-1xJan18
+Found: CME Calendar: 1xNG Jan18:-1xFeb18
+Found: CME Calendar: 1xNG Jan18:-1xMar18
+Found: CME Calendar: 1xNG Feb18:-1xMar18
+Found: CME Calendar: 1xNG Mar18:-1xApr18
+Found: CME Calendar: 1xNG Dec18:-1xJan19
+Found: CME Calendar: 1xHO Sep16:-1xOct16
+Found: CME Calendar: 1xHO Sep16:-1xNov16
+Found: CME Calendar: 1xHO Sep16:-1xDec16
+Found: CME Calendar: 1xHO Oct16:-1xNov16
+Found: CME Calendar: 1xHO Oct16:-1xDec16
+Found: CME Calendar: 1xHO Oct16:-1xJan17
+Found: CME Calendar: 1xHO Oct16:-1xFeb17
+Found: CME Calendar: 1xHO Oct16:-1xMar17
+Found: CME Calendar: 1xHO Nov16:-1xDec16
+Found: CME Calendar: 1xHO Nov16:-1xJan17
+Found: CME Calendar: 1xHO Nov16:-1xFeb17
+Found: CME Calendar: 1xHO Dec16:-1xJan17
+Found: CME Calendar: 1xHO Dec16:-1xFeb17
+Found: CME Calendar: 1xHO Dec16:-1xMar17
+Found: CME Calendar: 1xHO Dec16:-1xJun17
+Found: CME Calendar: 1xHO Dec16:-1xDec17
+Found: CME Calendar: 1xHO Jan17:-1xFeb17
+Found: CME Calendar: 1xHO Jan17:-1xMar17
+Found: CME Calendar: 1xHO Feb17:-1xMar17
+Found: CME Calendar: 1xHO Mar17:-1xApr17
+Found: CME Calendar: 1xHO Mar17:-1xJun17
+Found: CME Calendar: 1xHO Apr17:-1xMay17
+Found: CME Calendar: 1xHO May17:-1xJun17
+Found: CME RB Sep16
+Found: CME RB Oct16
+Found: CME RB Nov16
+Found: CME RB Dec16
+Found: CME RB Jan17
+Found: CME RB Feb17
+Found: CME RB Mar17
+Found: CME RB Apr17
+Found: CME RB May17
+Found: CME RB Jun17
+Found: CME RB Sep17
+Found: CME RB Oct17
+Found: CME RB Nov17
+Found: CME RB Dec17
+Found: CME Calendar: 1xRB Sep16:-1xOct16
+Found: CME Calendar: 1xRB Sep16:-1xNov16
+Found: CME Calendar: 1xRB Sep16:-1xDec16
+Found: CME Calendar: 1xRB Oct16:-1xNov16
+Found: CME Calendar: 1xRB Oct16:-1xDec16
+Found: CME Calendar: 1xRB Oct16:-1xJan17
+Found: CME Calendar: 1xRB Oct16:-1xFeb17
+Found: CME Calendar: 1xRB Oct16:-1xMar17
+Found: CME Calendar: 1xRB Nov16:-1xDec16
+Found: CME Calendar: 1xRB Nov16:-1xJan17
+Found: CME Calendar: 1xRB Dec16:-1xJan17
+Found: CME Calendar: 1xRB Dec16:-1xFeb17
+Found: CME Calendar: 1xRB Dec16:-1xMar17
+Found: CME Calendar: 1xRB Dec16:-1xJun17
+Found: CME Calendar: 1xRB Dec16:-1xDec17
+Found: CME Calendar: 1xRB Jan17:-1xFeb17
+Found: CME Calendar: 1xRB Feb17:-1xMar17
+Found: CME Calendar: 1xRB Mar17:-1xApr17
+Found: CME Calendar: 1xRB Apr17:-1xMay17
+Found: CME Calendar: 1xRB May17:-1xJun17
+Found: CME Calendar: 1xRB Jun17:-1xDec17
+Found: CME Calendar: 1xRB Sep17:-1xOct17
+Found: CME Calendar: 1xRB Oct17:-1xNov17
+Found: CME Calendar: 1xRB Nov17:-1xDec17
+Found: CME GC Sep16
+Found: CME GC Oct16
+Found: CME GC Dec16
+Found: CME GC Feb17
+Found: CME GC Apr17
+Found: CME GC Jun17
+Found: CME GC Aug17
+Found: CME GC Dec17
+Found: CME Calendar: 1xGC Sep16:-1xOct16
+Found: CME Calendar: 1xGC Sep16:-1xDec16
+Found: CME Calendar: 1xGC Oct16:-1xDec16
+Found: CME Calendar: 1xGC Dec16:-1xFeb17
+Found: CME Calendar: 1xGC Dec16:-1xApr17
+Found: CME Calendar: 1xGC Dec16:-1xJun17
+Found: CME Calendar: 1xGC Dec16:-1xAug17
+Found: CME Calendar: 1xGC Dec16:-1xDec17
+Found: CME Calendar: 1xGC Feb17:-1xApr17
+Found: CME Calendar: 1xGC Jun17:-1xDec17
+Found: CME SI Sep16
+Found: CME SI Oct16
+Found: CME SI Dec16
+Found: CME SI Mar17
+Found: CME Reduced Tick Spread: 1xSI Sep16:-1xDec16
+Found: CME Reduced Tick Spread: 1xSI Sep16:-1xMar17
+Found: CME Reduced Tick Spread: 1xSI Dec16:-1xMar17
+Found: ICE_IPE IPE e-Brent Spread Jan17/Apr17
+Found: ICE_IPE IPE e-Brent Spread Jan17/Mar17
+Found: ICE_IPE IPE e-Brent Spread Jan17/Feb17
+Found: ICE_IPE IPE e-Brent Spread Dec16/Dec18
 Found: ICE_IPE IPE e-Brent Spread Dec16/Dec17
 Found: ICE_IPE IPE e-Brent Spread Dec16/Jun17
 Found: ICE_IPE IPE e-Brent Spread Dec16/May17
@@ -1422,28 +680,21 @@ Found: ICE_IPE IPE e-Brent Spread Dec16/Apr17
 Found: ICE_IPE IPE e-Brent Spread Dec16/Mar17
 Found: ICE_IPE IPE e-Brent Spread Dec16/Feb17
 Found: ICE_IPE IPE e-Brent Spread Dec16/Jan17
+Found: ICE_IPE IPE e-Brent Spread Nov16/Jun17
+Found: ICE_IPE IPE e-Brent Spread Nov16/Apr17
 Found: ICE_IPE IPE e-Brent Spread Nov16/Mar17
 Found: ICE_IPE IPE e-Brent Spread Nov16/Feb17
 Found: ICE_IPE IPE e-Brent Spread Nov16/Jan17
 Found: ICE_IPE IPE e-Brent Spread Nov16/Dec16
-Found: ICE_IPE IPE e-Brent Spread Oct16/Dec17
+Found: ICE_IPE IPE e-Brent Spread Nov17/Dec17
 Found: ICE_IPE IPE e-Brent Spread Oct16/Mar17
 Found: ICE_IPE IPE e-Brent Spread Oct16/Feb17
 Found: ICE_IPE IPE e-Brent Spread Oct16/Jan17
 Found: ICE_IPE IPE e-Brent Spread Oct16/Dec16
 Found: ICE_IPE IPE e-Brent Spread Oct16/Nov16
-Found: ICE_IPE IPE e-Brent Spread Sep16/Mar17
-Found: ICE_IPE IPE e-Brent Spread Sep16/Feb17
-Found: ICE_IPE IPE e-Brent Spread Sep16/Jan17
-Found: ICE_IPE IPE e-Brent Spread Sep16/Dec16
-Found: ICE_IPE IPE e-Brent Spread Sep16/Nov16
-Found: ICE_IPE IPE e-Brent Spread Sep16/Oct16
-Found: ICE_IPE IPE e-Brent Spread Dec16/Dec18
-Found: ICE_IPE IPE e-Brent Spread Jan17/Feb17
-Found: ICE_IPE IPE e-Brent Spread Jan17/Mar17
-Found: ICE_IPE IPE e-Brent Spread Jan17/Apr17
 Found: ICE_IPE IPE e-Brent Spread Jan17/May17
 Found: ICE_IPE IPE e-Brent Spread Jan17/Jun17
+Found: ICE_IPE IPE e-Brent Spread Jan17/Dec17
 Found: ICE_IPE IPE e-Brent Spread Feb17/Mar17
 Found: ICE_IPE IPE e-Brent Spread Feb17/Apr17
 Found: ICE_IPE IPE e-Brent Spread Feb17/May17
@@ -1453,35 +704,36 @@ Found: ICE_IPE IPE e-Brent Spread Mar17/May17
 Found: ICE_IPE IPE e-Brent Spread Mar17/Jun17
 Found: ICE_IPE IPE e-Brent Spread Apr17/May17
 Found: ICE_IPE IPE e-Brent Spread Apr17/Jun17
+Found: ICE_IPE IPE e-Brent Spread Apr17/Jul17
 Found: ICE_IPE IPE e-Brent Spread May17/Jun17
+Found: ICE_IPE IPE e-Brent Spread May17/Aug17
 Found: ICE_IPE IPE e-Brent Spread Jun17/Jul17
 Found: ICE_IPE IPE e-Brent Spread Jun17/Aug17
 Found: ICE_IPE IPE e-Brent Spread Jun17/Sep17
 Found: ICE_IPE IPE e-Brent Spread Jun17/Dec17
 Found: ICE_IPE IPE e-Brent Spread Jun17/Jun18
-Found: ICE_IPE IPE e-Brent Spread Jul17/Aug17
-Found: ICE_IPE IPE e-Brent Spread Aug17/Sep17
-Found: ICE_IPE IPE e-Brent Spread Aug17/Oct17
-Found: ICE_IPE IPE e-Brent Spread Sep17/Nov17
+Found: ICE_IPE IPE e-Brent Spread Jun17/Dec18
+Found: ICE_IPE IPE e-Brent Spread Sep17/Oct17
 Found: ICE_IPE IPE e-Brent Spread Sep17/Dec17
 Found: ICE_IPE IPE e-Brent Spread Oct17/Nov17
 Found: ICE_IPE IPE e-Brent Spread Oct17/Dec17
-Found: ICE_IPE IPE e-Brent Spread Nov17/Dec17
 Found: ICE_IPE IPE e-Brent Spread Dec17/Jan18
+Found: ICE_IPE IPE e-Brent Spread Dec17/Feb18
 Found: ICE_IPE IPE e-Brent Spread Dec17/Mar18
 Found: ICE_IPE IPE e-Brent Spread Dec17/Jun18
 Found: ICE_IPE IPE e-Brent Spread Dec17/Dec18
-Found: ICE_IPE IPE e-Brent Spread Jan18/Feb18
-Found: ICE_IPE IPE e-Brent Spread Feb18/Mar18
-Found: ICE_IPE IPE e-Brent Spread Mar18/Apr18
-Found: ICE_IPE IPE e-Brent Spread Mar18/Jun18
-Found: ICE_IPE IPE e-Brent Spread Jun18/Sep18
 Found: ICE_IPE IPE e-Brent Spread Jun18/Dec18
 Found: ICE_IPE IPE e-Brent Spread Dec18/Jun19
 Found: ICE_IPE IPE e-Brent Spread Dec18/Dec19
-Found: ICE_IPE IPE e-Brent Spread Dec19/Dec20
-Found: ICE_IPE IPE e-Brent Spread Dec20/Dec21
-Found: ICE_IPE IPE e-Brent Sep16
+Found: ICE_IPE Cocoa Spread Dec16/Mar17
+Found: ICE_IPE Cocoa Spread Dec16/May17
+Found: ICE_IPE Cocoa Spread Mar17/May17
+Found: ICE_IPE Cocoa Spread Mar17/Jul17
+Found: ICE_IPE Cocoa Spread May17/Jul17
+Found: ICE_IPE Cocoa Dec16
+Found: ICE_IPE Cocoa Mar17
+Found: ICE_IPE Cocoa May17
+Found: ICE_IPE Cocoa Jul17
 Found: ICE_IPE IPE e-Brent Oct16
 Found: ICE_IPE IPE e-Brent Nov16
 Found: ICE_IPE IPE e-Brent Dec16
@@ -1500,54 +752,47 @@ Found: ICE_IPE IPE e-Brent Dec17
 Found: ICE_IPE IPE e-Brent Jan18
 Found: ICE_IPE IPE e-Brent Feb18
 Found: ICE_IPE IPE e-Brent Mar18
-Found: ICE_IPE IPE e-Brent Apr18
-Found: ICE_IPE IPE e-Brent May18
 Found: ICE_IPE IPE e-Brent Jun18
-Found: ICE_IPE IPE e-Brent Sep18
 Found: ICE_IPE IPE e-Brent Dec18
 Found: ICE_IPE IPE e-Brent Jun19
 Found: ICE_IPE IPE e-Brent Dec19
-Found: ICE_IPE IPE e-Brent Dec20
-Found: ICE_IPE IPE e-Brent Dec21
 Found: ICE_IPE FCOJ A Spread Sep16/Nov16
 Found: ICE_IPE FCOJ A Sep16
 Found: ICE_IPE FCOJ A Nov16
 Found: ICE_IPE Cotton No 2 Spread Dec16/Mar17
 Found: ICE_IPE Cotton No 2 Spread Mar17/May17
+Found: ICE_IPE Cotton No 2 Spread Mar17/Jul17
 Found: ICE_IPE Cotton No 2 Spread May17/Jul17
+Found: ICE_IPE Cotton No 2 Spread Jul17/Dec17
 Found: ICE_IPE Cotton No 2 Dec16
 Found: ICE_IPE Cotton No 2 Mar17
 Found: ICE_IPE Cotton No 2 May17
 Found: ICE_IPE Cotton No 2 Jul17
 Found: ICE_IPE Cotton No 2 Dec17
-Found: ICE_IPE Cocoa Spread Sep16/Dec16
-Found: ICE_IPE Cocoa Spread Sep16/Mar17
-Found: ICE_IPE Cocoa Spread Dec16/Mar17
-Found: ICE_IPE Cocoa Spread Dec16/May17
-Found: ICE_IPE Cocoa Spread Mar17/May17
-Found: ICE_IPE Cocoa Sep16
-Found: ICE_IPE Cocoa Dec16
-Found: ICE_IPE Cocoa Mar17
-Found: ICE_IPE Cocoa May17
-Found: ICE_IPE Coffee C Spread Sep16/Dec16
-Found: ICE_IPE Coffee C Spread Sep16/Mar17
+Found: ICE_IPE Sugar No 11 Spread Oct16/Mar17
+Found: ICE_IPE Sugar No 11 Spread Oct16/May17
+Found: ICE_IPE Sugar No 11 Spread Oct16/Jul17
+Found: ICE_IPE Sugar No 11 Spread Oct16/Oct17
+Found: ICE_IPE Sugar No 11 Spread Mar17/May17
+Found: ICE_IPE Sugar No 11 Spread Mar17/Jul17
+Found: ICE_IPE Sugar No 11 Spread May17/Jul17
+Found: ICE_IPE Sugar No 11 Spread Jul17/Oct17
+Found: ICE_IPE Sugar No 11 Spread Oct17/Mar18
+Found: ICE_IPE Coffee C Dec16
+Found: ICE_IPE Coffee C Mar17
+Found: ICE_IPE Coffee C May17
+Found: ICE_IPE Coffee C Jul17
+Found: ICE_IPE Coffee C Sep17
 Found: ICE_IPE Coffee C Spread Dec16/Mar17
+Found: ICE_IPE Coffee C Spread Dec16/May17
+Found: ICE_IPE Coffee C Spread Dec16/Jul17
+Found: ICE_IPE Coffee C Spread Mar17/May17
+Found: ICE_IPE Coffee C Spread Mar17/Jul17
+Found: ICE_IPE Coffee C Spread May17/Jul17
+Found: ICE_IPE Coffee C Spread Jul17/Sep17
 Found: ICE_IPE Sugar No 11 Oct16
 Found: ICE_IPE Sugar No 11 Mar17
 Found: ICE_IPE Sugar No 11 May17
 Found: ICE_IPE Sugar No 11 Jul17
 Found: ICE_IPE Sugar No 11 Oct17
 Found: ICE_IPE Sugar No 11 Mar18
-Found: ICE_IPE Sugar No 11 May18
-Found: ICE_IPE Sugar No 11 Spread Oct16/Mar17
-Found: ICE_IPE Sugar No 11 Spread Oct16/May17
-Found: ICE_IPE Sugar No 11 Spread Mar17/May17
-Found: ICE_IPE Sugar No 11 Spread Mar17/Jul17
-Found: ICE_IPE Sugar No 11 Spread May17/Jul17
-Found: ICE_IPE Sugar No 11 Spread Jul17/Oct17
-Found: ICE_IPE Sugar No 11 Spread Oct17/Mar18
-Found: ICE_IPE Sugar No 11 Spread Mar18/May18
-Found: ICE_IPE Coffee C Sep16
-Found: ICE_IPE Coffee C Dec16
-Found: ICE_IPE Coffee C Mar17
-Found: ICE_IPE Coffee C May17

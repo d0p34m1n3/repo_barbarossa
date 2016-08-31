@@ -109,8 +109,8 @@ namespace TTAPI_Sample_Console_OrderRouting
             {
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                    new ProductKey(MarketKey.Cme, ProductType.Future, "ES"),
-                    "Sep16");
+                    new ProductKey(MarketKey.Ice, ProductType.Future, "Sugar No 11"),
+                    "Oct16");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }
@@ -171,9 +171,10 @@ namespace TTAPI_Sample_Console_OrderRouting
                         OrderProfile op = new OrderProfile(e.Fields.Instrument.GetValidOrderFeeds()[0], e.Fields.Instrument);
                         op.BuySell = BuySell.Buy;
                         op.AccountName = "H1KOC";
-                        op.AccountType = AccountType.P2;
+                        op.AccountType = AccountType.G2;
                         op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 1);
                         op.OrderType = OrderType.Limit;
+                        op.GiveUp = "5283";
                         op.LimitPrice = e.Fields.GetBestBidPriceField().Value;
 
                         if (!m_ts.SendOrder(op))
@@ -222,6 +223,7 @@ namespace TTAPI_Sample_Console_OrderRouting
         void m_ts_OrderRejected(object sender, OrderRejectedEventArgs e)
         {
             Console.WriteLine("Order was rejected.");
+            Console.WriteLine(e.Message);
         }
 
         /// <summary>

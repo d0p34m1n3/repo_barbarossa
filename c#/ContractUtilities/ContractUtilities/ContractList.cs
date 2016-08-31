@@ -10,7 +10,7 @@ namespace ContractUtilities
 {
     public class ContractList
     {
-        public List<TA.ContractVolume> ttapiTickerList
+        public List<TA.ttapiTicker> ttapiTickerList
         {
             get;
             set;
@@ -25,16 +25,16 @@ namespace ContractUtilities
 
         public ContractList(DateTime settleDate, string[] instrumentList)
         {
-            ttapiTickerList = new List<TA.ContractVolume>();
+            ttapiTickerList = new List<TA.ttapiTicker>();
             dbTickerList = new List<string>();
 
             for (int i = 0; i < instrumentList.Length; i++)
             {
                 ContractVolumeList = TA.LoadContractVolumeFile.GetContractVolumes(settleDate).ToList();
 
-                ttapiTickerList.Add(ContractVolumeList.Where(x => x.ProductName == TA.TickerheadConverters.ConvertFromDB2TT(instrumentList[i])
-                    && x.ProductType == "FUTURE").OrderByDescending(x => x.Volume).FirstOrDefault());
-                dbTickerList.Add(TA.TickerConverters.ConvertFromTTAPIFields2DB(ttapiTickerList[i].ProductName, ttapiTickerList[i].InstrumentName));
+                ttapiTickerList.Add((ttapiTicker)ContractVolumeList.Where(x => x.productName == TA.TickerheadConverters.ConvertFromDB2TT(instrumentList[i])
+                    && x.productType == "FUTURE").OrderByDescending(x => x.Volume).FirstOrDefault());
+                dbTickerList.Add(TA.TickerConverters.ConvertFromTTAPIFields2DB(ttapiTickerList[i].productName, ttapiTickerList[i].instrumentName));
             }
         }
 

@@ -62,6 +62,15 @@
       <HintPath>..\packages\CsvHelper.2.16.0.0\lib\net45\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Portfolio">
+      <HintPath>..\..\Portfolio\Portfolio\bin\Release\Portfolio.dll</HintPath>
+    </Reference>
+    <Reference Include="Risk">
+      <HintPath>..\..\Risk\Risk\bin\Release\Risk.dll</HintPath>
+    </Reference>
+    <Reference Include="Shared">
+      <HintPath>..\..\Shared\Shared\bin\Release\Shared.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -80,7 +89,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tt\ttapi\bin\TradingTechnologies.TTAPI.Tradebook.dll</HintPath>
     </Reference>
-    <Reference Include="ttapiUtils">
+    <Reference Include="ttapiUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ttapiUtils\ttapiUtils\bin\x64\Release\ttapiUtils.dll</HintPath>
     </Reference>
   </ItemGroup>

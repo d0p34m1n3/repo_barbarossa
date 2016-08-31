@@ -155,7 +155,10 @@ def get_options_price_from_db(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    data_frame_out = pd.DataFrame(data, columns=column_names)
+    if (not data) and ('strike' in kwargs.keys()) and ('option_type' in kwargs.keys()):
+        data_frame_out = pd.DataFrame([(np.nan, kwargs['option_type'], kwargs['strike'], np.nan, np.nan, np.nan, np.nan, np.nan)], columns=column_names)
+    else:
+        data_frame_out = pd.DataFrame(data, columns=column_names)
 
     for x in ['close_price', 'delta', 'imp_vol', 'strike', 'theta', 'vega']:
 

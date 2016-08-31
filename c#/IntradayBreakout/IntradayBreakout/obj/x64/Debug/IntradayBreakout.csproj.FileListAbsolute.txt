@@ -39,5 +39,12 @@ C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\FormatUtilities.p
 C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Excel.pdb
 C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\ContractUtilities.dll
 C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\ContractUtilities.pdb
-C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\ttapiUtils.dll
 C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\ttapiUtils.pdb
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\MySql.Data.dll
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Portfolio.dll
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Portfolio.pdb
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Risk.dll
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Risk.pdb
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\ttapiUtils.dll
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Shared.dll
+C:\Research\c#\IntradayBreakout\IntradayBreakout\bin\x64\Debug\Shared.pdb

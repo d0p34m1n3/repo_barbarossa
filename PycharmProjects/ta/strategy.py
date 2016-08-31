@@ -10,7 +10,9 @@ import datetime as dt
 import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.expiration as exp
 import get_price.get_futures_price as gfp
+import get_price.get_options_price as gop
 import time as tm
+pd.options.mode.chained_assignment = None
 
 def generate_db_strategy_from_strategy_sheet(**kwargs):
 
@@ -241,8 +243,22 @@ def move_position_from_strategy_2_strategy(**kwargs):
     target_strategy_id = get_strategy_id_from_alias(alias=strategy_to, **kwargs)
     source_strategy_id = get_strategy_id_from_alias(alias=strategy_from, **kwargs)
 
-    net_position_frame['trade_price'] = \
-        [float(gfp.get_futures_price_4ticker(ticker=x,date_from=as_of_date,date_to=as_of_date,con=con)['close_price'][0]) for x in net_position_frame['ticker']]
+    futures_position_frame = net_position_frame[net_position_frame['instrument'] == 'F']
+    options_position_frame = net_position_frame[net_position_frame['instrument'] == 'O']
+
+    futures_position_frame['trade_price'] = \
+        [float(gfp.get_futures_price_4ticker(ticker=x,date_from=as_of_date,date_to=as_of_date,con=con)['close_price'][0]) for x in futures_position_frame['ticker']]
+
+    if not options_position_frame.empty:
+        options_position_frame['trade_price'] = options_position_frame.apply(lambda row: gop.get_options_price_from_db(ticker=row['ticker'],
+                                                                    strike=row['strike_price'],
+                                                                    option_type=row['option_type'],con=con,
+                                                                    return_nan_if_emptyQ=True,
+                                                                    settle_date=as_of_date)['close_price'][0], axis=1)
+
+        net_position_frame = pd.concat([futures_position_frame,options_position_frame])
+    else:
+        net_position_frame = futures_position_frame
 
     column_names = net_position_frame.columns.tolist()
 
@@ -258,13 +274,15 @@ def move_position_from_strategy_2_strategy(**kwargs):
 
     final_str = "INSERT INTO trades (%s) VALUES (%s)" % (column_str, insert_str)
 
-    tuples_target = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], target_strategy_id,
+    tuples_target = [tuple([x[ticker_indx],x[option_type_indx],
+                            None if np.isnan(x[strike_price_indx]) else x[strike_price_indx], target_strategy_id,
               x[trade_price_indx], x[trade_quantity_indx],
               as_of_date,x[instrument_indx], True,now_time,now_time]) for x in net_position_frame.values]
 
     msu.sql_execute_many_wrapper(final_str=final_str, tuples=tuples_target, con=con)
 
-    tuples_source = [tuple([x[ticker_indx],x[option_type_indx], x[strike_price_indx], source_strategy_id,
+    tuples_source = [tuple([x[ticker_indx],x[option_type_indx],
+                            None if np.isnan(x[strike_price_indx]) else x[strike_price_indx], source_strategy_id,
               x[trade_price_indx], -x[trade_quantity_indx],
               as_of_date,x[instrument_indx], True,now_time,now_time]) for x in net_position_frame.values]
 

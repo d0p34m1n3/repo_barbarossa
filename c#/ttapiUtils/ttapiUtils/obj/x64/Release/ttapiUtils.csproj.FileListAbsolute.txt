@@ -35,4 +35,6 @@ C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\xserver_7.9.dll
 C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\TTSimLib_1.0.dll
 C:\Research\c#\ttapiUtils\ttapiUtils\obj\x64\Release\ttapiUtils.dll
 C:\Research\c#\ttapiUtils\ttapiUtils\obj\x64\Release\ttapiUtils.pdb
-C:\Research\c#\ttapiUtils\ttapiUtils\obj\x64\Release\ttapiUtils.csprojResolveAssemblyReference.cache
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\MySql.Data.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ContractUtilities.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ContractUtilities.pdb

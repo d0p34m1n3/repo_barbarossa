@@ -76,6 +76,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tt\ttapi\bin\TradingTechnologies.TTAPI.Tradebook.dll</HintPath>
     </Reference>
+    <Reference Include="ttapiUtils">
+      <HintPath>..\..\ttapiUtils\ttapiUtils\bin\x64\Release\ttapiUtils.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="saveVolume.cs" />

@@ -1,0 +1,5 @@
+C:\Research\c#\Portfolio\Portfolio\bin\Release\Portfolio.dll
+C:\Research\c#\Portfolio\Portfolio\bin\Release\Portfolio.pdb
+C:\Research\c#\Portfolio\Portfolio\obj\Release\Portfolio.dll
+C:\Research\c#\Portfolio\Portfolio\obj\Release\Portfolio.pdb
+C:\Research\c#\Portfolio\Portfolio\obj\Release\Portfolio.csprojResolveAssemblyReference.cache

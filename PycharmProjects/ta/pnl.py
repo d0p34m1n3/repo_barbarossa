@@ -68,12 +68,14 @@ def get_strategy_pnl_4day(**kwargs):
     option_frame['price_1'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                                              strike=option_frame['strike_price'].iloc[x],
                                                              option_type=option_frame['option_type'].iloc[x],
-                                                             con=con,settle_date=pnl_date_1)['close_price'].values[0] for x in range(len(option_frame.index))]
+                                                             con=con,settle_date=pnl_date_1,
+                                                             return_nan_if_emptyQ = True)['close_price'].values[0] for x in range(len(option_frame.index))]
 
     option_frame['price'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                                              strike=option_frame['strike_price'].iloc[x],
                                                              option_type=option_frame['option_type'].iloc[x],
-                                                             con=con,settle_date=pnl_date)['close_price'].values[0] for x in range(len(option_frame.index))]
+                                                             con=con,settle_date=pnl_date,
+                                                             return_nan_if_emptyQ = True)['close_price'].values[0] for x in range(len(option_frame.index))]
 
     trades_frame = pd.concat([option_frame, underlying_frame])
 

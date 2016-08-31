@@ -1,0 +1,4 @@
+C:\Research\c#\Portfolio\Portfolio\bin\Debug\Portfolio.dll
+C:\Research\c#\Portfolio\Portfolio\bin\Debug\Portfolio.pdb
+C:\Research\c#\Portfolio\Portfolio\obj\Debug\Portfolio.dll
+C:\Research\c#\Portfolio\Portfolio\obj\Debug\Portfolio.pdb

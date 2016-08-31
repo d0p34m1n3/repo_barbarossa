@@ -11,12 +11,8 @@ using System.IO;
 
 namespace TA
 {
-    public class ContractVolume
+    public class ContractVolume:ttapiTicker
     {
-        public String InstrumentName { get; set;}
-        public String MarketKey { get; set; }
-        public String ProductType { get; set; }
-        public String ProductName { get; set; }
         public int Volume { get; set; }
 
     }
@@ -25,10 +21,10 @@ namespace TA
     {
         public MyClassMap()
         {
-            Map(m => m.InstrumentName);
-            Map(m => m.MarketKey);
-            Map(m => m.ProductType);
-            Map(m => m.ProductName);
+            Map(m => m.instrumentName).Name("InstrumentName");
+            Map(m => m.marketKey).Name("MarketKey");
+            Map(m => m.productType).Name("ProductType");
+            Map(m => m.productName).Name("ProductName");
             Map(m => m.Volume).Default(0);
         }
     }
@@ -36,7 +32,7 @@ namespace TA
 
     public static class LoadContractVolumeFile
     {
-        private static IEnumerable<ContractVolume> ContractVolumeList;
+        private static List<ContractVolume> ContractVolumeList;
         private static string ContractVolumeFolder;
 
         public static IEnumerable<ContractVolume> GetContractVolumes()
@@ -47,11 +43,18 @@ namespace TA
 
         public static IEnumerable<ContractVolume> GetContractVolumes(DateTime folderDate)
         {
-            ContractVolumeFolder = DirectoryNames.ttapiContractVolumeDirectory + BusinessDays.GetDirectoryExtension(BusinessDays.GetBusinessDayShifted(-1));
+            ContractVolumeFolder = DirectoryNames.GetDirectoryName("ttapiContractVolume") + DirectoryNames.GetDirectoryExtension(BusinessDays.GetBusinessDayShifted(-1));
             var sr = new StreamReader(ContractVolumeFolder + "/ContractList.csv");
             var reader = new CsvHelper.CsvReader(sr);
             reader.Configuration.RegisterClassMap(new MyClassMap());
-            ContractVolumeList = reader.GetRecords<ContractVolume>();
+            ContractVolumeList = reader.GetRecords<ContractVolume>().ToList();
+
+            for (int i = 0; i < ContractVolumeList.Count(); i++)
+            {
+                string[] words = ContractVolumeList[i].instrumentName.Split();
+                ContractVolumeList[i].SeriesKey = words[words.Count() - 1];
+            }
+
             return ContractVolumeList;
         }
         

@@ -25,6 +25,12 @@ def calc_intrday_pnl_from_prices(**kwargs):
 
     option_frame = net_position_frame[net_position_frame['instrument'] == 'O']
 
+    #option_frame = option_frame[(option_frame['strike_price'] == 32)|(option_frame['strike_price'] == 32.5)]
+    #option_frame = option_frame[option_frame['strike_price'] == 60]
+    #option_frame['qty'].loc[option_frame['ticker']=='LNV2016'] = -20
+
+    #return option_frame
+
     option_frame['close_price'] = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                   strike=option_frame['strike_price'].iloc[x],
                                   option_type=option_frame['option_type'].iloc[x],

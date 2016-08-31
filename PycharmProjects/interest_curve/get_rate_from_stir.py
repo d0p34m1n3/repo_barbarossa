@@ -6,6 +6,7 @@ import os.path
 import shared.calendar_utilities as cu
 import numpy as np
 import pandas as pd
+import os.path
 
 
 def get_simple_rate(**kwargs):
@@ -26,6 +27,8 @@ def get_simple_rate(**kwargs):
     ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date,ext='ta')
 
     file_name = ta_output_dir + '/' + ticker_head + '_interest_curve.pkl'
+
+    #print('as_of_date: ' + str(as_of_date) + ', date_to: ' + str(date_to))
 
     if os.path.isfile(file_name):
         price_frame = pd.read_pickle(file_name)
@@ -53,7 +56,7 @@ def get_simple_rate(**kwargs):
             rate_output = price_frame_first['implied_rate'].iloc[-1]/100
         else:
             rate_output = price_frame['implied_rate'].iloc[0]/100
-        return {'rate_output': rate_output, 'price_frame': price_frame[['ticker', 'cal_dte','exp_date','implied_rate']]}
+        return {'rate_output': rate_output, 'price_frame': price_frame[['ticker', 'cal_dte', 'exp_date','implied_rate']]}
 
     if price_frame_first.empty:
         first_rate = price_frame_middle['implied_rate'].iloc[0]

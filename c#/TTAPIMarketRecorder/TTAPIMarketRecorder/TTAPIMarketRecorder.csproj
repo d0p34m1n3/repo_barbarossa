@@ -69,6 +69,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TA">
+      <HintPath>..\..\TA\TA\bin\Release\TA.dll</HintPath>
+    </Reference>
     <Reference Include="TradingTechnologies.TTAPI, Version=7.17.62.0, Culture=neutral, PublicKeyToken=423079b15fc884a6, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tt\ttapi\bin\TradingTechnologies.TTAPI.dll</HintPath>
@@ -76,6 +79,9 @@
     <Reference Include="TradingTechnologies.TTAPI.Tradebook, Version=7.17.62.0, Culture=neutral, PublicKeyToken=423079b15fc884a6, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tt\ttapi\bin\TradingTechnologies.TTAPI.Tradebook.dll</HintPath>
+    </Reference>
+    <Reference Include="ttapiUtils">
+      <HintPath>..\..\ttapiUtils\ttapiUtils\bin\x64\Release\ttapiUtils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
