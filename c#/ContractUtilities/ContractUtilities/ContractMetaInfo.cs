@@ -98,6 +98,46 @@ namespace ContractUtilities
          {"GC",fullLetterMonthList},
          {"SI",fullLetterMonthList}};
 
+        public static Dictionary<string, double> ContractMultiplier = new Dictionary<string, double>
+        {{"LN", 400},
+         {"LC", 400},
+         {"FC", 500},
+         {"C", 50},
+         {"S", 50},
+         {"SM", 100},
+         {"BO", 600},
+         {"W", 50},
+         {"KW", 50},
+         {"SB", 1120},
+         {"KC", 375},
+         {"CC", 10},
+         {"CT", 500},
+         {"OJ", 150},
+         {"CL", 1000},
+         {"B", 1000},
+         {"HO", 42000},
+         {"RB", 42000},
+         {"NG", 10000},
+         {"ED", 2500},
+         {"E0", 2500},
+         {"E2", 2500},
+         {"E3", 2500},
+         {"E4", 2500},
+         {"E5", 2500},
+         {"ES", 50},
+         {"NQ", 20},
+         {"AD", 100000},
+         {"CD", 100000},
+         {"EC", 125000},
+         {"JY", 1.25},
+         {"BP", 62500},
+         {"FV", 1000},
+         {"TU", 2000},
+         {"TY", 1000},
+         {"US", 1000},
+         {"GC", 100},
+         {"SI", 5000}};
+
         public static string GetOptionExerciseType(string tickerHead)
         {
             if (AmericanExerciseTickerheadList.Contains(tickerHead))

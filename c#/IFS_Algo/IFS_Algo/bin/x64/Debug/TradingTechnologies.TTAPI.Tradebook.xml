@@ -1,0 +1,843 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>TradingTechnologies.TTAPI.Tradebook</name>
+  </assembly>
+  <members>
+    <member name="T:TradingTechnologies.TTAPI.RequestInfo">
+      <summary>Encapsulates the information provided when constructing an InstrumentLookupSubscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.RequestInfo.InstrumentKey">
+      <summary>Gets the InstrumentKey used when constructing the associated InstrumentLookupSubscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.RequestInfo.InstrumentNameOrSeriesKey">
+      <summary>Gets the name of the Instrument used in the lookup subscription, or the SeriesKey if lookup was by key.</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.RequestInfo.IsByName">
+      <summary>Gets whether the associated InstrumentLookupSubscription supplied the ProductKey and an Instrument name</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.RequestInfo.ProductKey">
+      <summary>Gets the ProductKey associated with the subscription, if used</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.InstrumentLookupSubscription">
+      <summary>Provides properties, methods, and events for finding tradable Instruments</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs">
+      <summary>Represents the information returned from InstrumentLookupSubscription.Update events</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.ProductLookupSubscription">
+      <summary>Provides properties, methods, and events for finding available Products</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.ProductLookupSubscriptionEventArgs">
+      <summary>Represents the information returned from ProductLookupSubscription.Update events</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.InstrumentLookupSubscription.#ctor">
+      <summary>Instantiates an instance of the  class</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.InstrumentLookupSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.InstrumentKey)">
+      <summary>Instantiates an instance of the  class from an <paramref name="InstrumentKey" /></summary>
+      <returns>New InstrumentLookupSubscription object</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="instrumentKey">InstrumentKey object corresponding to the Instrument to find</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.InstrumentLookupSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.ProductKey,System.String)">
+      <summary>Instantiates an instance of the InstrumentLookupSubscription class from a Product key and Instrument name</summary>
+      <exception caption="ArgumentException" cref="System.ArgumentException">&lt;i&gt;Instrument name cannot be null or empty&lt;/i&gt;
+&lt;br&gt;
+You must supply a non-null value for the &lt;i&gt;instrumentName&lt;/i&gt; parameter.&lt;i&gt;Searching for AutospreaderSpreads by name is not supported.&lt;/i&gt;
+&lt;br&gt;
+The &lt;i&gt;productKey&lt;/i&gt; parameter represents an Autospreader spread, which is not supported for this subscription.</exception>
+      <returns>New InstrumentLookupSubscription object</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="productKey">ProductKey object corresponding to the Product associated with the Instrument</param>
+      <param name="instrumentName">String containing the name of the Instrument to find</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscription.Error">
+      <summary>Gets the error, if available</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscription.Instrument">
+      <summary>Gets the Instrument associated with this subscription, if available</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.InstrumentLookupSubscription.Update">
+      <summary>Triggered when the InstrumentLookupSubscription.Start method is called and when the Instrument is found</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs.#ctor(System.Exception,TradingTechnologies.TTAPI.Instrument,TradingTechnologies.TTAPI.RequestInfo,System.Boolean)">
+      <summary>Instantiates an instance of the <strong>InstrumentLookupSubscriptionEventArgs</strong> class</summary>
+      <returns>New <strong>InstrumentLookupSubscriptionEventArgs</strong> object</returns>
+      <param name="error">Exception object representing the error or <strong>null</strong></param>
+      <param name="instrument">Instrument object or <strong>null</strong></param>
+      <param name="requestInfo">Structure with information about the original find instrument request.</param>
+      <param name="isFinal">
+        <strong>true</strong> if this is the final callback; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs.Error">
+      <summary>Gets the error, if available</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs.Instrument">
+      <summary>Gets the Instrument matching this lookup subscription, if available</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs.IsFinal">
+      <summary>Gets whether this callback represents the last attempt for this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.InstrumentLookupSubscriptionEventArgs.RequestInfo">
+      <summary>Gets the information specified in the lookup subscription</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.ProductLookupSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.ProductKey)">
+      <summary>Instantiates an instance of the  class</summary>
+      <returns>New  object</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="productKey">ProductKey object corresponding to the Product to find</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.ProductLookupSubscription.Error">
+      <summary>Gets the error, if available</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.ProductLookupSubscription.Product">
+      <summary>Gets the Product found with this subscription, if available</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.ProductLookupSubscription.Update">
+      <summary>Triggered when the ProductLookupSubscription.Start method is initially called and again when the Product is found</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.ProductLookupSubscriptionEventArgs.#ctor(System.Exception,TradingTechnologies.TTAPI.Product,System.Boolean)">
+      <summary>Instantiates an instance of the <strong>ProductLookupSubscriptionEventArgs</strong> class</summary>
+      <returns>New <strong>ProductLookupSubscriptionEventArgs</strong> object</returns>
+      <param name="error">Exception object representing the error or <strong>null</strong></param>
+      <param name="product">Product object or <strong>null</strong></param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.ProductLookupSubscriptionEventArgs.Error">
+      <summary>Gets the error, if available</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.ProductLookupSubscriptionEventArgs.IsFinal">
+      <summary>Gets whether this callback represents the last attempt for this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.ProductLookupSubscriptionEventArgs.Product">
+      <summary>Gets the Product found with this subscription, if available</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason">
+      <summary>Defines constants for reasons for resetting a TradeSubscription</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.FilterAdded">
+      <summary>A filter was added to the set of subscription filters</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.FilterRemoved">
+      <summary>A filter was deleted from set of subscription filters</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.Rollover">
+      <summary>A TT Gateway associated with the subscription performed a session rollover</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.ProfitLossEnableStatusChanged">
+      <summary>The value of the EnablePNL property
+changed</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.TrackTradesStatusChanged">
+      <summary>The value of the TrackTrade property
+changed</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.TradeSubscriptionResetReason.PositionReserveStatusChanged">
+      <summary>The value of the IncludePositionReserve property
+changed</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription">
+      <summary>Provides properties, methods, and events for monitoring trades involving an Autospreader Instrument</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription">
+      <summary>Provides properties, methods, and events for monitoring trades for a single Instrument</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.ProfitLossChangedEventArgs">
+      <summary>Represents the event arguments sent in the TradeSubscription.ProfitLossChanged callback</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.Trade">
+      <summary>Represents a single order and its associated fills</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscription">
+      <summary>Provides properties, methods, and events for monitoring trades</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter">
+      <summary>Represents an account-based filter for a trade subscription</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAndFilter">
+      <summary>Class representing a compound filter that results to TRUE whenever all of the sub-filters it contains evaluate to TRUE.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter">
+      <summary>Abstract base class representing a compound filter to apply to a subscription</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter">
+      <summary>Abstract base class representing a single filter to apply to a subscription</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter">
+      <summary>Provides properties and methods for filtering orders and fills based on their corresponding instruments</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter">
+      <summary>Class representing a compound filter that results to TRUE whenever any of the sub-filters it contains result to TRUE.</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs">
+      <summary>Represents the event arguments sent in an TradeSubscription.TradeSubscriptionReset
+Event callback</summary>
+    </member>
+    <member name="T:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter">
+      <summary>Provides properties and methods for filtering orders and fills based on their corresponding orders</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.#ctor">
+      <summary>Instantiates an instance of the <strong>ASInstrumentTradeSubscription</strong> class</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.AutospreaderInstrument)">
+      <summary>Constructs an instance for an Instrument and attaches it to a specific thread</summary>
+      <returns>New ASInstrumentTradeSubscription instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="instrument">AutospreaderInstrument object representing the Autospreader instrument</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.AutospreaderInstrument,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Constructs a customized instance for an Instrument and attaches it to a specific thread</summary>
+      <returns>New ASInstrumentTradeSubscription instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="instrument">AutospreaderInstrument object representing the Autospreader
+instrument</param>
+      <param name="enablePNLCalculation">
+        <strong>true</strong> to enable Profit and Loss calculations for this subscription; <strong>false</strong>, otherwise</param>
+      <param name="ownOrdersOnly">
+        <strong>true</strong> to include only orders submitted through this subscription; <strong>false</strong>, otherwise</param>
+      <param name="enableTrackTrades">
+        <strong>true</strong> to enable trade tracking for this subscription; <strong>false</strong>, otherwise</param>
+      <param name="includePositionReserve">
+        <strong>true</strong> to include position reserve information in this subscription; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.ModifyPrice(TradingTechnologies.TTAPI.Price)">
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.ModifyPriceAndQuantity(TradingTechnologies.TTAPI.Price,TradingTechnologies.TTAPI.Quantity)">
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.ModifyQuantity(TradingTechnologies.TTAPI.Quantity)">
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.Move(System.Int32)">
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.ProfitLossStatistics">
+      <summary>Gets statistical information relating to the P&amp;L associated with this subscription</summary>
+      <exception caption="InvalidOperationException" cref="T:System.InvalidOperationException">ProfitLoss calculation not enabled.  To enable ProfitLoss calculation, set EnablePNL property to true.</exception>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.AdminFillAdded">
+      <summary>Fired when an administrator adds a fill that matches the subscription's filters</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.AdminFillDeleted">
+      <summary>Fired when an administrator deletes if a fill that matches this subscription's filters</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.ConnectionDataChanged">
+      <summary>Fired when an Autospreader SE order feed connection changes</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.FillAmended">
+      <summary>Fired when a fill in this subscription is modified</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.ASInstrumentTradeSubscription.TradableStatusChanged">
+      <summary>Fired when the status of the OrderFeed associated with the AutospreaderInstrument changes</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.#ctor">
+      <summary>Instantiates an instance of the <strong>InstrumentTradeSubscription</strong> class</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.Instrument)">
+      <summary>Instantiates an instance of the TradeSubscription class with callbacks sent to the specified thread</summary>
+      <exception caption="ArgumentNullException" cref="T:System.ArgumentNullException">&lt;i&gt;instrument&lt;/i&gt;&lt;br /&gt;
+The &lt;i&gt;instrument&lt;/i&gt; parameter contains a null &lt;b&gt;Instrument&lt;/b&gt; object.</exception>
+      <returns>New TradeSubscription instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="instrument">Instrument object identifying the Instrument to use in the subscription</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,TradingTechnologies.TTAPI.Instrument,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Instantiates an instance of the InstrumentTradeSubscription class with custom settings and binds it to the specified Dispatcher</summary>
+      <exception caption="ArgumentNullException" cref="T:System.ArgumentNullException">The &lt;i&gt;instrument&lt;/i&gt; parameter contained a null &lt;b&gt;Instrument&lt;/b&gt; object.</exception>
+      <returns>New InstrumentTradeSubscription instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="instrument">Instrument object identifying the instrument to use in the subscription</param>
+      <param name="enablePNLCalculation">
+        <strong>true</strong> to enable Profit and Loss calculations for this subscription; <strong>false</strong>, otherwise</param>
+      <param name="ownOrdersOnly">
+        <strong>true</strong> to include only orders submitted through this subscription; <strong>false</strong>, otherwise</param>
+      <param name="enableTrackTrades">
+        <strong>true</strong> to enable trade tracking for this subscription; <strong>false</strong>, otherwise</param>
+      <param name="includePositionReserve">
+        <strong>true</strong> to include position reserve information in this subscription; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.ModifyQuantity">
+      <summary>Modifies the quantity for orders in this subscription</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.ModifyPrice(TradingTechnologies.TTAPI.Price)">
+      <summary>Sets a new price for all orders in this subscription</summary>
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="price">Price object representing the new price</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.ModifyPriceAndQuantity(TradingTechnologies.TTAPI.Price,TradingTechnologies.TTAPI.Quantity)">
+      <summary>Modify the price and quantity of all orders in this subscription to the given price and quantity</summary>
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="price">Price object representing the new priceQuantity</param>
+      <param name="quantity">Quantity object representing the new quantity</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.ModifyQuantity(TradingTechnologies.TTAPI.Quantity)">
+      <summary>Modify the quantity of all orders in this book to the given quantity</summary>
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="quantity">Quantity object representing the new quantity</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.Move(System.Int32)">
+      <summary>Moves the price of all the orders within the list by a number of ticks</summary>
+      <exception caption="InvalidOperation" cref="System.InvalidOperationException">&lt;p&gt;
+&lt;i&gt;The Instrument for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+One or more of the specified orders uses a different Instrument than this subscription.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;i&gt;The Session for all of the orders needs to be the same.&lt;/i&gt;
+&lt;br&gt;
+The Session associated with one or more of the specified orders differs from the Session associated with this subscription.
+&lt;/p&gt;</exception>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="tickOffset">Number of ticks to move the price</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.InstrumentTradeSubscription.Instrument">
+      <summary>Gets Instrument associated with this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.ProfitLossChangedEventArgs.TradeSubscription">
+      <summary>Gets the TradeSubscription that changed</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.AverageFillPrice">
+      <summary>Gets the average price for each fill in this trade</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.ChildTrades">
+      <summary>Gets the child trades for this trade</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.CurrentOrder">
+      <summary>Gets the Order associated with the trade</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.Fills">
+      <summary>Gets a collection of Fill objects matching this trade's Order</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.LastFilledQuantity">
+      <summary>Gets the quantity of the most recent Fill included in this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.State">
+      <summary>Gets the current state of the trade</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.TotalCost">
+      <summary>Gets the total cost of Fills for this trade</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.Trade.TotalFilledQuantity">
+      <summary>Gets the total quantity filled for this trade's Order</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.#ctor">
+      <summary>Creates a new TradeSubscription object</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher)">
+      <summary>Instantiates an instance of the TradeSubscription class with callbacks sent to the specified thread</summary>
+      <returns>New TradeSubscription instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.Dispatcher,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Instantiates an instance of the TradeSubscription class using custom settings, with callbacks sent to the specified thread</summary>
+      <returns>New <strong>TradeSubscription</strong> instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="dispatcher">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Dispatcher.html">Dispatcher</a> object associated with the thread that manages the callbacks</param>
+      <param name="enablePNLCalculation">
+        <strong>true</strong> to enable Profit and Loss (P&amp;L) calculation for this subscription; <strong>false</strong>, otherwise</param>
+      <param name="ownOrdersOnly">
+        <strong>true</strong> to track events for only those orders sent from this subscription; <strong>false</strong>, otherwise</param>
+      <param name="enableTrackTrades">
+        <strong>true</strong> to keep track of individual trade transactions; <strong>false</strong>, otherwise</param>
+      <param name="includePositionReserve">
+        <strong>true</strong> to include position reserve orders in the subscription; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.ClearFilter">
+      <summary>Removes the filter associated with this subscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.DeleteAll">
+      <summary>Deletes all working Orders in the subscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.DeleteBySide(TradingTechnologies.TTAPI.BuySell)">
+      <summary>Deletes all working Buy or all Sell Orders included in this subscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="buySell">BuySell enum identifying whether to delete Buy or Sell orders</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.GetTrade(System.String)">
+      <summary>Gets the Trade associated with a site order key</summary>
+      <returns>Matching Trade object or <strong>null</strong> if no match is found</returns>
+      <param name="siteOrderKey">String representing the unique order ID</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.GetTrades">
+      <summary>Returns all Trades in the subscription</summary>
+      <returns>IDictionary of site order key and Trade object pairs</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.HoldAll">
+      <summary>Places all orders in this trade subscription on hold</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.InquireAll">
+      <summary>Requests the status for each Order in this trade subscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.RemoveAllFromHold">
+      <summary>Resubmits all on-hold Orders in the subscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.SendOrder">
+      <summary>Submits one or more orders to the market</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.SetFilter(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Sets the filter to use for this TradeSubscription</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="filter">Filter derived from TradeSubscriptionFilter
+to use as the base filter for this subscription</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.SendOrder(TradingTechnologies.TTAPI.OrderProfileBase)">
+      <summary>Submits an order to a Market</summary>
+      <returns>
+        <strong>true</strong> if successful; <strong>false</strong>, otherwise</returns>
+      <param name="orderProfile">Order profile derived from the OrderProfileBase class (i.e. <see cref="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.OrderProfile.html">OrderProfile</see> or <see cref="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Autospreader.AutospreaderSyntheticOrderProfile.html">AutospreaderSyntheticOrderProfile</see>) representing
+the order to submit</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.SendOrder(System.Collections.Generic.IEnumerable{TradingTechnologies.TTAPI.OrderProfileBase})">
+      <summary>Submits multiple orders to the market</summary>
+      <returns>
+        <strong>true</strong> if all orders successfully routed; <strong>false</strong> otherwise</returns>
+      <param name="orderProfiles">Collection of order profiles derived from the OrderProfileBase class
+(i.e. <see cref="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.OrderProfile.html">OrderProfile</see> or <see cref="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Autospreader.AutospreaderSyntheticOrderProfile.html">AutospreaderSyntheticOrderProfile</see>) representing
+the orders to submit</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.BuyWorking">
+      <summary>Gets the total working quantity of all Buy Orders in the subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.CalculationType">
+      <summary>Gets or sets theoretical exit price to use when calculating unrealized P&amp;L</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.Dispatcher">
+      <summary>Gets the dispatcher associated with this thread</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.EnablePNL">
+      <summary>Enables or disables Profit and Loss (P&amp;L) calculation for this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.Fills">
+      <summary>Gets the working Fills monitored by this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.Filter">
+      <summary>Returns a list of all Filters associated with this trade subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.IncludePositionReserve">
+      <summary>Gets or sets whether to include position reserve orders in the subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.IsDisposed">
+      <summary>Gets whether any reference to the subscription still exists</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OpenProfitLoss">
+      <summary>Gets the trader's open P&amp;L for this trade subscription</summary>
+      <exception caption="InvalidOperationException" cref="T:System.InvalidOperationException">ProfitLoss calculation not enabled. To enable ProfitLoss calculation, set EnablePNL property to true.</exception>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.Orders">
+      <summary>Gets the working Orders monitored by this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OwnOrdersOnly">
+      <summary>Gets whether the TradeSubscription fires events only for those order submitted from itself</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.ProfitLoss">
+      <summary>Gets the total P&amp;L for this subscription</summary>
+      <exception caption="InvalidOperationException" cref="T:System.InvalidOperationException">ProfitLoss calculation not enabled.  To enable Profit and Loss calculation, set the %EnablePNL:P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.EnablePNL% property to true.</exception>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.ProfitLossStatistics">
+      <summary>Gets statistical information relating to the P&amp;L associated with this subscription</summary>
+      <exception caption="InvalidOperationException" cref="T:System.InvalidOperationException">ProfitLoss calculation not enabled.  To enable ProfitLoss calculation, set EnablePNL property to true.</exception>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.RealizedProfitLoss">
+      <summary>Gets the trader's realized P&amp;L for this trade subscription</summary>
+      <exception caption="InvalidOperationException" cref="T:System.InvalidOperationException">ProfitLoss calculation not enabled.  To enable ProfitLoss calculation, set EnablePNL property to true.</exception>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.SellWorking">
+      <summary>Gets the total working quantity of all Sell Orders in this subscription</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.TrackTrade">
+      <summary>Gets or sets whether to keep track of individual trade transactions</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.AdminFillAdded">
+      <summary>Fires when a new Fill, representing a manual fill, is received that matches the subscription filters</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.AdminFillDeleted">
+      <summary>Fires when a Fill, representing a manual fill, monitored by this subsciption is deleted</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.FillAmended">
+      <summary>Fires when a Fill in this subscription is updated.</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.FillBookDownload">
+      <summary>Fires when a list of Fills is received during a fill download</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.FillListEnd">
+      <summary>Fires when a fill download ends</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.FillListStart">
+      <summary>Fires when the application starts downloading Fills from a TT Gateway</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.FillRecordAdded">
+      <summary>Fires when a non-Admin Fill is recieved that matches the subscription filters</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderAdded">
+      <summary>Fires when a new Order is received that matches the subscription filters</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderBookDownload">
+      <summary>Fires when a list of Orders is received during a order download initiated as a result of calling the subscription's <strong>Start</strong> method</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderDeleted">
+      <summary>Fires when an Order monitored by this subsciption is deleted</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderFilled">
+      <summary>Fires when a new Order in the trade subscription gets filled</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderRejected">
+      <summary>Fires when an Exchange rejects an Order submitted through this trade subscription</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderStatusUnknown">
+      <summary>Fires when the TT API cannot determine the status of an Order in this trade subscription</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderTimeout">
+      <summary>Fires when a sent order does not receive an order acknowledgement within a reasonable timeframe</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.OrderUpdated">
+      <summary>Fires when a Order in this subscription is updated.</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.ProfitLossChanged">
+      <summary>Fires with the total P&amp;L (ProfitLoss property) monitored by this subscription changes</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.Rollover">
+      <summary>Fires when a TT Gateway performs a session rollover</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.TradeSubscriptionReset">
+      <summary>Fires the trade subscription resets due to a change in its filters or a TT Gateway rollover</summary>
+    </member>
+    <member name="E:TradingTechnologies.TTAPI.Tradebook.TradeSubscription.WorkupOwnerUpdated">
+      <summary>Fired when the owner of a workup order changes</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.#ctor(System.String,System.Boolean,System.String)">
+      <summary>Instantiates an instance of the TradeSubscriptionAccountFilter class</summary>
+      <returns>TradeSubscriptionAccountFilter instance</returns>
+      <param name="account">String containing the account number to use in the filter</param>
+      <param name="negates">
+        <strong>true</strong> invert the result; <strong>false</strong>, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.GetHashCode">
+      <summary>
+        <para>Implements the standard .NET method</para>
+      </summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.IsEqual(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Determines whether this filter equals another filter</summary>
+      <returns>
+        <strong>true</strong> if the two filters contain the same criteria; <strong>false</strong>, otherwise</returns>
+      <param name="filter">TradeSubscriptionAccountFilter object to compare</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Determines whether an Order passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Order matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="order">Order object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Determines whether a Fill passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Fill matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="fill">Fill object to check</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAccountFilter.Account">
+      <summary>Gets the account number used in this filter</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAndFilter.#ctor(System.Boolean)">
+      <summary>Gets or sets whether to convert this filter to a NAND filter</summary>
+      <returns>New object</returns>
+      <param name="negate">
+        <strong>true</strong> to negate the filter results; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAndFilter.#ctor(System.Boolean,System.String)">
+      <summary>Gets or sets whether to convert this filter to a NAND filter</summary>
+      <returns>New object</returns>
+      <param name="negate">true to negate the filter results; false, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAndFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Determines whether an order passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Order matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="order">Order object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionAndFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Determines whether a fill passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Fill matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="fill">Fill object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.#ctor(System.Boolean,System.String)">
+      <summary>Instantiates an instance of the TradeSubscriptionCompoundFilter class</summary>
+      <returns>TradeSubscriptionCompoundFilter instance</returns>
+      <param name="negate">
+        <strong>true</strong> to apply the NOT operator; <strong>false</strong>, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.AddFilter(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Adds a filter to the current subscription filter</summary>
+      <param name="toAdd">Any filter derived from the TradeSubscriptionFilter class</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.GetHashCode">
+      <summary>Implements the standard .NET method</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.IsEqual(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Implements the standard .NET method</summary>
+      <returns>
+        <strong>true</strong> if the two filters are functionally equivalent; <strong>false</strong>, otherwise</returns>
+      <param name="filter">Filter (derived from TradeSubscriptionCompoundFilter) to compare the with current compound filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.RemoveFilter(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Removes the specified filter from this compound filter</summary>
+      <returns>
+        <strong>true</strong> if the specified filter is removed; <strong>false</strong>, otherwise</returns>
+      <param name="toRemove">Filter object (derived from TradeSubscriptionFilter) in the subscription to remove</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.Filters">
+      <summary>Returns a list of all filters in this compound filter</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionCompoundFilter.LeafFilters">
+      <summary>Returns a list of all leaf nodes in the compound filter tree structure</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.#ctor(System.Boolean,System.String)">
+      <summary>Instantiates an instance of the TradeSubscrptionFilter class</summary>
+      <returns>TradeSubscriptionFilter instance</returns>
+      <param name="negate">true to negate the filter results; false, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.Clone">
+      <summary>Abstract method that needs to be implemented by the derived class. The function of this method is to create a deep copy of the filter.</summary>
+      <returns>Filter object derived from this TradeSubscriptionFilter class</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.GetHashCode">
+      <summary>
+        <para>Implements the standard .NET method</para>
+      </summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.IsEqual(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Abstract method that needs to be implemented by the derived class. The function of this method is to compare the filters and determine whether they are equal.</summary>
+      <returns>A deep copy of the filter</returns>
+      <param name="filter">Deep copy of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Abstract method that needs to be implemented by the derived class. The function of this method is to check if order passes the filter</summary>
+      <returns>True if passes the filter else return false,</returns>
+      <param name="order">The order to filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Abstract method that needs to be implemented by the derived class. The function of this method is to check if order passes the filter</summary>
+      <returns>True if passes the filter else return false,</returns>
+      <param name="fill">The fill to filter</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.Name">
+      <summary>Gets or sets the name of this filter</summary>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.Negates">
+      <summary>Gets or sets whether to use the logical negation operator (!) for this filter</summary>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter.Tag">
+      <summary>Gets or sets the object that contains data about the subscription.</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.#ctor(TradingTechnologies.TTAPI.Session,TradingTechnologies.TTAPI.InstrumentKey,System.Boolean,System.String)">
+      <summary>Instantiates and instance of the TradeSubscriptionInstrumentFilter class</summary>
+      <returns>TradeSubscriptionInstrumentFilter instance</returns>
+      <param name="session">
+        <a href="TradingTechnologies.TTAPI~TradingTechnologies.TTAPI.Session.html">Session</a> object representing the trader's credentials</param>
+      <param name="instrKey">InstrumentKey identifying the Instrumentas the subscription filter</param>
+      <param name="negates">true to negate the filter results; false, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.Clone">
+      <summary>Creates a deep copy of this trade subscription filter</summary>
+      <returns>New TradeSubscriptionFilter</returns>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.GetHashCode">
+      <summary>
+        <para>Implements the standard .NET method</para>
+      </summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.IsEqual(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Determines whether this filter equals another filter</summary>
+      <returns>
+        <strong>true</strong> if the two filters contain the same criteria; <strong>false</strong>, otherwise</returns>
+      <param name="filter">TradeSubscriptionInstrumentFilter object to compare</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Determines if the order passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Order contains the instrument in this filter; <strong>false</strong>, otherwise</returns>
+      <param name="order">Order object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Determines if the fill passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Fill contains the instrument in this filter; <strong>false</strong>, otherwise</returns>
+      <param name="fill">Fill object to check</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionInstrumentFilter.InstrumentKey">
+      <summary>Gets the InstrumentKey that identifies the instrument to use in the filter</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter.#ctor(System.Boolean)">
+      <summary>Gets or sets whether to convert this filter to a NOR filter</summary>
+      <returns>New object</returns>
+      <param name="negate">
+        <strong>true</strong> to negate the filter results; <strong>false</strong>, otherwise</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter.#ctor(System.Boolean,System.String)">
+      <summary>Gets or sets whether to convert this filter to a NOR filter</summary>
+      <returns>New TradeSubscriptionInstrumentFilter object</returns>
+      <param name="negate">true to negate the filter results; false, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter.IsMatch">
+      <summary>Determines whether an Order or Fill would match this filter</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Determines whether an order passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Order matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="order">Order object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionOrFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Determines whether a fill passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Fill matches this filter; <strong>false</strong>, otherwise</returns>
+      <param name="fill">Fill object to check</param>
+    </member>
+    <member name="F:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionResetEventArgs.ResetReason">
+      <summary>Provides the reason the TT API reset the TradeSubscription</summary>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter.#ctor(System.String,System.Boolean,System.String)">
+      <summary>Instantiates an instance of the TradeSubscriptionSiteOrderKeyFilter class</summary>
+      <returns>New TradeSubscriptionSiteOrderKeyFilter instance</returns>
+      <param name="siteOrderKey">String containing the TT site order key that uniquely indentifies an order</param>
+      <param name="negates">true to negate the filter results; false, otherwise</param>
+      <param name="name">String containing the name of the filter</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter.IsEqual(TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionFilter)">
+      <summary>Determines whether this filter matches another filter</summary>
+      <returns>
+        <strong>true</strong> if the two filters contain the same criteria; <strong>false</strong>, otherwise</returns>
+      <param name="filter">TradeSubscriptionSiteOrderKeyFilter object to compare</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter.IsMatch(TradingTechnologies.TTAPI.Order)">
+      <summary>Determines whether an order passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Order contains the site order key in this filter; <strong>false</strong>, otherwise</returns>
+      <param name="order">Order object to check</param>
+    </member>
+    <member name="M:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter.IsMatch(TradingTechnologies.TTAPI.Fill)">
+      <summary>Determines whether a fill passes this filter</summary>
+      <returns>
+        <strong>true</strong> if the Fill contains the site order key in this filter; <strong>false</strong>, otherwise</returns>
+      <param name="fill">Fill object to check</param>
+    </member>
+    <member name="P:TradingTechnologies.TTAPI.Tradebook.TradeSubscriptionSiteOrderKeyFilter.SiteOrderKey">
+      <summary>Gets the TT site order key that identifies the order to use as a basis for this filter</summary>
+    </member>
+  </members>
+</doc>

@@ -155,12 +155,18 @@ def get_spread_weights_4contract_list(**kwargs):
     elif ticker_head_list in [['B', 'CL'], ['CL', 'B']]:
         portfolio_weights = [1, -1]
         spread_weights = [1, -1]
-    elif ticker_head_list == ['S','BO','SM']:
+    elif ticker_head_list == ['S', 'BO', 'SM']:
         portfolio_weights = [1, -1, -1]
         spread_weights = [1, -11, -2.2]
     elif ticker_head_list in [['C', 'W'], ['W', 'C']]:
         portfolio_weights = [1, -1]
         spread_weights = [1, -1]
+    elif ticker_head_list in [['W', 'KW'], ['KW', 'W']]:
+        portfolio_weights = [1, -1]
+        spread_weights = [1, -1]
+    elif ticker_head_list == ['ES', 'NQ']:
+        portfolio_weights = [1, -1]
+        spread_weights = [1, -0.45]
 
     return {'portfolio_weights': portfolio_weights, 'spread_weights': spread_weights}
 

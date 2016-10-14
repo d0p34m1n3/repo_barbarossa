@@ -109,8 +109,8 @@ namespace TTAPI_Sample_Console_OrderRouting
             {
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                    new ProductKey(MarketKey.Ice, ProductType.Future, "Sugar No 11"),
-                    "Oct16");
+                    new ProductKey(MarketKey.Cme, ProductType.Spread, "CL"),
+                    "Calendar: 1xCL Nov16:-1xDec16");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }
@@ -168,14 +168,21 @@ namespace TTAPI_Sample_Console_OrderRouting
                     {
                         // If there is no order working, submit one through the first valid order feed.
                         // You should use the order feed that is valid for your purposes.
+
+                        var wuhu = e.Fields.Instrument.GetValidOrderFeeds();
+
+                        if (wuhu.Count==0)
+                        {
+                            return;
+                        }
                         OrderProfile op = new OrderProfile(e.Fields.Instrument.GetValidOrderFeeds()[0], e.Fields.Instrument);
                         op.BuySell = BuySell.Buy;
                         op.AccountName = "H1KOC";
-                        op.AccountType = AccountType.G2;
+                        op.AccountType = AccountType.P2;
                         op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 1);
                         op.OrderType = OrderType.Limit;
-                        op.GiveUp = "5283";
-                        op.LimitPrice = e.Fields.GetBestBidPriceField().Value;
+                        //op.GiveUp = "5283";
+                        op.LimitPrice = e.Fields.GetBestAskPriceField().Value;
 
                         if (!m_ts.SendOrder(op))
                         {

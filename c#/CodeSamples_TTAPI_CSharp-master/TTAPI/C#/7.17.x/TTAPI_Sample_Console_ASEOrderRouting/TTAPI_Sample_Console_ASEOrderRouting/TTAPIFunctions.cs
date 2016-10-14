@@ -23,14 +23,16 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
         private object m_lock = new object();
         private InstrumentLookupSubscription m_req1 = null;
         private InstrumentLookupSubscription m_req2 = null;
+        private InstrumentLookupSubscription m_req3 = null;
         private CreateAutospreaderInstrumentRequest m_casReq = null;
         private PriceSubscription m_ps = null;
         private ASInstrumentTradeSubscription m_ts = null;
         private string m_orderKey = "";
         private Dictionary<int, Instrument> m_spreadLegKeys = new Dictionary<int, Instrument>();
-        private string m_ASEGateway = "ASE-A";
+        private string m_ASEGateway = "ASE";
         private string m_username = "";
         private string m_password = "";
+        private Instrument Inst;
 
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
             {
                 // lookup the leg instruments
 
-                ProductKey prodKeyLeg = new ProductKey(MarketKey.Cbot, ProductType.Future, "ZN");
+                ProductKey prodKeyLeg = new ProductKey(MarketKey.Cme, ProductType.Future, "CL");
 
                 // We will use a dictionary to hold all instrument requests and update it when each instrument is found.
                 // Once all lookup requests for the legs are complete, we can continue with the creation of the spread.
@@ -106,15 +108,16 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
 
                 int tagValue = 1000;
 
-                m_req1 = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, prodKeyLeg, "Mar13");
+                m_req1 = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, prodKeyLeg, "Nov16");
                 m_req1.Tag = tagValue;
                 m_spreadLegKeys.Add(tagValue, null);
                 m_req1.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req1.Start();
 
                 tagValue++;
+                prodKeyLeg = new ProductKey(MarketKey.Ice, ProductType.Future, "IPE e-Brent");
 
-                m_req2 = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, prodKeyLeg, "Jun13");
+                m_req2 = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, prodKeyLeg, "Dec16");
                 m_req2.Tag = tagValue;
                 m_spreadLegKeys.Add(tagValue, null);
                 m_req2.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
@@ -148,15 +151,29 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
             return true;
         }
 
+        /*
+        Instrument GetInstrumentFromProductAndSeriesKey(ProductKey pKey, string seriesKey)
+        {
+            m_req2 = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, prodKeyLeg, "Dec16");
+            m_req2.Tag = tagValue;
+            m_spreadLegKeys.Add(tagValue, null);
+            m_req2.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
+            m_req2.Start();
+        }
+        */
         /// <summary>
         /// Event notification for instrument lookup
         /// </summary>
+        /// 
+
         void m_req_Update(object sender, InstrumentLookupSubscriptionEventArgs e)
         {
             if (e.Instrument != null && e.Error == null)
             {
                 // Instrument was found
                 Console.WriteLine("Found: {0}", e.Instrument.Name);
+
+              
 
                 // Update the dictionary to indicate that the instrument was found.
                 InstrumentLookupSubscription instrLookupSub = sender as InstrumentLookupSubscription;
@@ -191,7 +208,7 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
                     SpreadLegDetails spreadlegDetails = new SpreadLegDetails(instrument, instrument.GetValidOrderFeeds()[0].ConnectionKey);
                     spreadlegDetails.SpreadRatio = (i % 2 == 0) ? 1 : -1;
                     spreadlegDetails.PriceMultiplier = (i % 2 == 0) ? 1 : -1;
-                    spreadlegDetails.CustomerName = "<Default>";
+                    spreadlegDetails.CustomerName = "<DEFAULT>";
 
                     spreadDetails.Legs.Append(spreadlegDetails);
                     i++;
@@ -299,7 +316,7 @@ namespace TTAPI_Sample_Console_ASEOrderRouting
                         AutospreaderSyntheticOrderProfile op = new AutospreaderSyntheticOrderProfile(((AutospreaderInstrument)e.Fields.Instrument).GetValidGateways()[m_ASEGateway], 
                             (AutospreaderInstrument)e.Fields.Instrument);
                         op.BuySell = BuySell.Buy;
-                        op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 10);
+                        op.OrderQuantity = Quantity.FromInt(e.Fields.Instrument, 1);
                         op.OrderType = OrderType.Limit;
                         op.LimitPrice = e.Fields.GetBestBidPriceField().Value;
 

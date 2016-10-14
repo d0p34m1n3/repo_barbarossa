@@ -18,7 +18,7 @@ def get_spreads_4date(**kwargs):
     futures_dataframe.reset_index(drop=True, inplace=True)
     futures_dataframe['yearMonth'] = 12*futures_dataframe['ticker_year']+futures_dataframe['ticker_month']
     futures_dataframe['yearMonthMerge'] = futures_dataframe['yearMonth']
-    futures_dataframe = futures_dataframe[['ticker','yearMonth','yearMonthMerge','ticker_head']]
+    futures_dataframe = futures_dataframe[['ticker','yearMonth','yearMonthMerge','ticker_head','volume']]
 
     spread_frame = pd.read_excel(dn.get_directory_name(ext='python_file') + '/opportunity_constructs/user_defined_spreads.xlsx')
     output_frame = pd.DataFrame()
@@ -54,6 +54,9 @@ def get_spreads_4date(**kwargs):
             spread_i['ticker_head1'] = tickerhead1
             spread_i['ticker_head2'] = tickerhead2
             spread_i['ticker_head3'] = None
+            spread_i['volume1'] = output_frame2['volume_x']
+            spread_i['volume2'] = output_frame2['volume_y']
+            spread_i['volume3'] = None
 
             output_frame = pd.concat([output_frame, spread_i])
 
@@ -82,6 +85,9 @@ def get_spreads_4date(**kwargs):
             spread_i['ticker_head1'] = tickerhead1
             spread_i['ticker_head2'] = tickerhead2
             spread_i['ticker_head3'] = tickerhead3
+            spread_i['volume1'] = output_frame3['volume_x']
+            spread_i['volume2'] = output_frame3['volume_y']
+            spread_i['volume3'] = output_frame3['volume']
 
             output_frame = pd.concat([output_frame,spread_i])
 
@@ -101,7 +107,7 @@ def generate_ifs_sheet_4date(**kwargs):
         return {'intraday_spreads': intraday_spreads,'success': True}
 
     if 'volume_filter' not in kwargs.keys():
-        kwargs['volume_filter'] = 1000
+        kwargs['volume_filter'] = 2000
 
     intraday_spreads = get_spreads_4date(**kwargs)
 
@@ -116,15 +122,27 @@ def generate_ifs_sheet_4date(**kwargs):
     intraday_spreads['recentTrend'] = [x['recent_trend'] for x in signals_output]
     intraday_spreads['mean'] = [x['intraday_mean'] for x in signals_output]
     intraday_spreads['std'] = [x['intraday_std'] for x in signals_output]
+
+    intraday_spreads['mean2'] = [x['intraday_mean2'] for x in signals_output]
+    intraday_spreads['std2'] = [x['intraday_std2'] for x in signals_output]
+
+    intraday_spreads['mean1'] = [x['intraday_mean1'] for x in signals_output]
+    intraday_spreads['std1'] = [x['intraday_std1'] for x in signals_output]
+
     intraday_spreads['downside'] = [x['downside'] for x in signals_output]
     intraday_spreads['upside'] = [x['upside'] for x in signals_output]
 
     intraday_spreads['settle'] = [x['spread_settle'] for x in signals_output]
+    intraday_spreads['hs'] = [x['historical_sharp'] for x in signals_output]
 
     intraday_spreads['z'] = intraday_spreads['z'].round(2)
     intraday_spreads['upside'] = intraday_spreads['upside'].round(3)
     intraday_spreads['downside'] = intraday_spreads['downside'].round(3)
     intraday_spreads['recentTrend'] = intraday_spreads['recentTrend'].round()
+
+    intraday_spreads['spread_description'] = intraday_spreads.apply(lambda x: x['ticker_head1']+ '_' +x['ticker_head2'] if x['ticker_head3'] is None else x['ticker_head1']+ '_' +x['ticker_head2'] + '_' + x['ticker_head3'] , axis=1)
+    intraday_spreads['ticker'] = intraday_spreads.apply(lambda x: x['contract1']+ '_' +x['contract2'] if x['contract3'] is None else x['contract1']+ '_' +x['contract2'] + '_' + x['contract3'] , axis=1)
+    intraday_spreads['min_volume'] = intraday_spreads.apply(lambda x: min(x['volume1'],x['volume2']) if x['ticker_head3'] is None else min(x['volume1'],x['volume2'],x['volume3']),axis=1)
 
     intraday_spreads.to_pickle(output_dir + '/summary.pkl')
 

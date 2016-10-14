@@ -17,7 +17,9 @@ namespace TA
             {"ttapiConfig", "/c#/config/"},
             {"overnightCandlestick", "/strategy_output/ibo/"},
             {"presavedFuturesData", "/data/FuturesData"},
-            {"ta", "/ta/"}
+            {"ta", "/ta/"},
+            {"daily","/daily/"},
+            {"ifsOutput","/strategy_output/ifs"}
         };
 
         public static string GetDirectoryName(string ext)

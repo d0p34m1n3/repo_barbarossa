@@ -38,3 +38,10 @@ C:\Research\c#\ttapiUtils\ttapiUtils\obj\x64\Release\ttapiUtils.pdb
 C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\MySql.Data.dll
 C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ContractUtilities.dll
 C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ContractUtilities.pdb
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\DatabaseConnection.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ClosedXML.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\DocumentFormat.OpenXml.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\DatabaseConnection.pdb
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\ClosedXML.xml
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\Shared.dll
+C:\Research\c#\ttapiUtils\ttapiUtils\bin\x64\Release\Shared.pdb

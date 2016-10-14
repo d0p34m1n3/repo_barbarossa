@@ -34,3 +34,11 @@ C:\Research\c#\test_apps\workbook\workbook\bin\Debug\InterestCurve.pdb
 C:\Research\c#\test_apps\workbook\workbook\bin\Debug\OptionModels.dll
 C:\Research\c#\test_apps\workbook\workbook\bin\Debug\OptionModels.pdb
 C:\Research\c#\test_apps\workbook\workbook\bin\Debug\QLNet.pdb
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\Excel.dll
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\Excel.pdb
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\ClosedXML.dll
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\ClosedXML.xml
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\Shared.dll
+C:\Research\c#\test_apps\workbook\workbook\bin\Debug\Shared.pdb

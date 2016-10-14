@@ -11,8 +11,9 @@ import pandas as pd
 import numpy as np
 import pytz as pytz
 import datetime as dt
+import time as tm
+import signals.ifs as ifs
 central_zone = pytz.timezone('US/Central')
-
 
 def get_intraday_spread_signals(**kwargs):
 
@@ -21,6 +22,7 @@ def get_intraday_spread_signals(**kwargs):
 
     ticker_list = [x for x in ticker_list if x is not None]
     ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in ticker_list]
+    ticker_class_list = [cmi.ticker_class[x] for x in ticker_head_list]
 
     if 'tr_dte_list' in kwargs.keys():
         tr_dte_list = kwargs['tr_dte_list']
@@ -105,6 +107,30 @@ def get_intraday_spread_signals(**kwargs):
     intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=ticker_list,
                                        date_list=date_list)
 
+    intraday_data['time_stamp'] = [x.to_datetime() for x in intraday_data.index]
+    intraday_data['settle_date'] = intraday_data['time_stamp'].apply(lambda x: x.date())
+
+    end_hour = min([cmi.last_trade_hour_minute[x] for x in ticker_head_list])
+    start_hour = max([cmi.first_trade_hour_minute[x] for x in ticker_head_list])
+
+    trade_start_hour = dt.time(9, 30, 0, 0)
+
+    if 'Ag' in ticker_class_list:
+        start_hour1 = dt.time(0, 45, 0, 0)
+        end_hour1 = dt.time(7, 45, 0, 0)
+        selection_indx = [x for x in range(len(intraday_data.index)) if
+                          ((intraday_data['time_stamp'].iloc[x].time() < end_hour1)
+                           and(intraday_data['time_stamp'].iloc[x].time() >= start_hour1)) or
+                          ((intraday_data['time_stamp'].iloc[x].time() < end_hour)
+                           and(intraday_data['time_stamp'].iloc[x].time() >= start_hour))]
+
+    else:
+        selection_indx = [x for x in range(len(intraday_data.index)) if
+                          (intraday_data.index[x].to_datetime().time() < end_hour)
+                          and(intraday_data.index[x].to_datetime().time() >= start_hour)]
+
+    intraday_data = intraday_data.iloc[selection_indx]
+
     intraday_data['spread'] = 0
 
     for i in range(num_contracts):
@@ -113,8 +139,29 @@ def get_intraday_spread_signals(**kwargs):
 
         intraday_data['spread'] = intraday_data['spread']+intraday_data['c' + str(i+1)]['mid_p']*spread_weights[i]
 
+    unique_settle_dates = intraday_data['settle_date'].unique()
+    intraday_data['spread1'] = np.nan
+
+    for i in range(len(unique_settle_dates)-1):
+        if (intraday_data['settle_date'] == unique_settle_dates[i]).sum() == \
+                (intraday_data['settle_date'] == unique_settle_dates[i+1]).sum():
+            intraday_data.loc[intraday_data['settle_date'] == unique_settle_dates[i],'spread1'] = \
+                intraday_data['spread'][intraday_data['settle_date'] == unique_settle_dates[i+1]].values
+
+    intraday_data = intraday_data[intraday_data['settle_date'].notnull()]
+
     intraday_mean = intraday_data['spread'].mean()
     intraday_std = intraday_data['spread'].std()
+
+    intraday_data_last2days = intraday_data[intraday_data['settle_date'] >= cu.convert_doubledate_2datetime(date_list[-2]).date()]
+    intraday_data_yesterday = intraday_data[intraday_data['settle_date'] == cu.convert_doubledate_2datetime(date_list[-1]).date()]
+
+    intraday_mean2 = intraday_data_last2days['spread'].mean()
+    intraday_std2 = intraday_data_last2days['spread'].std()
+
+    intraday_mean1 = intraday_data_yesterday['spread'].mean()
+    intraday_std1 = intraday_data_yesterday['spread'].std()
+
     intraday_z = (spread_settle-intraday_mean)/intraday_std
 
     num_obs_intraday = len(intraday_data.index)
@@ -126,10 +173,20 @@ def get_intraday_spread_signals(**kwargs):
 
     recent_trend = 100*(num_positives-num_negatives)/(num_positives+num_negatives)
 
+    pnl_frame = ifs.get_pnl_4_date_range(date_to=date_to, num_bus_days_back=20, ticker_list=ticker_list)
+
+    if len(pnl_frame.index)>15:
+        historical_sharp = (250**(0.5))*pnl_frame['total_pnl'].mean()/pnl_frame['total_pnl'].std()
+    else:
+        historical_sharp = np.nan
+
     return {'downside': downside, 'upside': upside,'intraday_data': intraday_data,
             'z': intraday_z,'recent_trend': recent_trend,
             'intraday_mean': intraday_mean, 'intraday_std': intraday_std,
-            'aligned_output': aligned_output, 'spread_settle': spread_settle}
+            'intraday_mean2': intraday_mean2, 'intraday_std2': intraday_std2,
+            'intraday_mean1': intraday_mean1, 'intraday_std1': intraday_std1,
+            'aligned_output': aligned_output, 'spread_settle': spread_settle,
+            'data_last5_years': data_last5_years,'historical_sharp':historical_sharp}
 
 
 def get_intraday_trend_signals(**kwargs):
@@ -137,12 +194,23 @@ def get_intraday_trend_signals(**kwargs):
     ticker = kwargs['ticker']
     date_to = kwargs['date_to']
     datetime_to = cu.convert_doubledate_2datetime(date_to)
+    breakout_method = 2
 
     #print(ticker)
 
     ticker_head = cmi.get_contract_specs(ticker)['ticker_head']
     contract_multiplier = cmi.contract_multiplier[ticker_head]
     ticker_class = cmi.ticker_class[ticker_head]
+
+    daily_settles = gfp.get_futures_price_preloaded(ticker=ticker)
+    daily_settles = daily_settles[daily_settles['settle_date'] <= datetime_to]
+    daily_settles['ewma10'] = pd.ewma(daily_settles['close_price'], span=10)
+    daily_settles['ewma50'] = pd.ewma(daily_settles['close_price'], span=50)
+
+    if daily_settles['ewma10'].iloc[-1] > daily_settles['ewma50'].iloc[-1]:
+        long_term_trend = 1
+    else:
+        long_term_trend = -1
 
     date_list = [exp.doubledate_shift_bus_days(double_date=date_to,shift_in_days=1)]
     date_list.append(date_to)
@@ -196,16 +264,34 @@ def get_intraday_trend_signals(**kwargs):
 
     initial_range = range_max-range_min
 
-    bullish_breakout = trading_data[(trading_data['mid_p'] > range_max)&
+    if breakout_method == 1:
+
+        bullish_breakout = trading_data[(trading_data['mid_p'] > range_max)&
                                     (trading_data['mid_p'] < range_max+0.5*initial_range)&
                                     (trading_data_shifted['mid_p']<range_max)&
                                     (trading_data['ewma25'] > range_max)&
                                     (trading_data['mid_p'] > trading_data['ewma100'])]
-    bearish_breakout = trading_data[(trading_data['mid_p'] < range_min)&
+
+        bearish_breakout = trading_data[(trading_data['mid_p'] < range_min)&
                                     (trading_data['mid_p'] > range_min-0.5*initial_range)&
                                     (trading_data_shifted['mid_p']>range_min)&
                                     (trading_data['ewma25'] < range_min)&
                                     (trading_data['mid_p'] < trading_data['ewma100'])]
+    elif breakout_method == 2:
+
+        bullish_breakout = pd.DataFrame()
+        bearish_breakout = pd.DataFrame()
+
+        if long_term_trend > 0:
+            bullish_breakout = trading_data[(trading_data['mid_p'] > range_max)&
+                                        (trading_data_shifted['mid_p']<range_max)&
+                                        (long_term_trend == 1)&
+                                        (trading_data['mid_p'] > trading_data['ewma100'])]
+        elif long_term_trend < 0:
+            bearish_breakout = trading_data[(trading_data['mid_p'] < range_min)&
+                                        (trading_data_shifted['mid_p']>range_min)&
+                                        (long_term_trend == -1)&
+                                        (trading_data['mid_p'] < trading_data['ewma100'])]
 
     bullish_cross = trading_data[trading_data['mid_p'] > trading_data['ewma100']]
     bearish_cross = trading_data[trading_data['mid_p'] < trading_data['ewma100']]
@@ -256,23 +342,23 @@ def get_intraday_trend_signals(**kwargs):
         exit_time = end_of_day_time_stamp
         daily_trade_no = 1
 
-        bullish_cross_stop_frame = bullish_cross[(bullish_cross['time_stamp'] > bearish_breakout_time_stamp)]
+        #bullish_cross_stop_frame = bullish_cross[(bullish_cross['time_stamp'] > bearish_breakout_time_stamp)]
 
-        if (not bullish_cross_stop_frame.empty) and (bullish_cross_stop_frame.index[0]+1<trading_data.index[-1]):
-            daily_pnl = bearish_breakout_price_entry-trading_data['mid_p'].loc[bullish_cross_stop_frame.index[0]+1]
-            exit_price = trading_data['mid_p'].loc[bullish_cross_stop_frame.index[0]+1]
-            exit_type = 'oso'
-            exit_time = trading_data['time_stamp'].loc[bullish_cross_stop_frame.index[0]+1]
+        #if (not bullish_cross_stop_frame.empty) and (bullish_cross_stop_frame.index[0]+1<trading_data.index[-1]):
+        #    daily_pnl = bearish_breakout_price_entry-trading_data['mid_p'].loc[bullish_cross_stop_frame.index[0]+1]
+        #    exit_price = trading_data['mid_p'].loc[bullish_cross_stop_frame.index[0]+1]
+        #    exit_type = 'oso'
+        #    exit_time = trading_data['time_stamp'].loc[bullish_cross_stop_frame.index[0]+1]
 
-        if valid_bullish_breakoutQ:
-            if bullish_breakout_time_stamp>bearish_breakout_time_stamp:
-                if bullish_breakout_time_stamp<exit_time:
-                    daily_pnl = bearish_breakout_price_entry-bullish_breakout_price_entry
-                    exit_price = bullish_breakout_price_entry
-                    exit_type = 'fso'
-                    exit_time = bullish_breakout_time_stamp
-            else:
-                daily_trade_no = 2
+        #if valid_bullish_breakoutQ:
+        #    if bullish_breakout_time_stamp>bearish_breakout_time_stamp:
+        #        if bullish_breakout_time_stamp<exit_time:
+        #            daily_pnl = bearish_breakout_price_entry-bullish_breakout_price_entry
+        #            exit_price = bullish_breakout_price_entry
+        #            exit_type = 'fso'
+        #            exit_time = bullish_breakout_time_stamp
+        #    else:
+        #        daily_trade_no = 2
 
         exit_time_list.append(exit_time)
         exit_type_list.append(exit_type)
@@ -294,21 +380,21 @@ def get_intraday_trend_signals(**kwargs):
 
         bearish_cross_stop_frame = bearish_cross[(bearish_cross['time_stamp'] > bullish_breakout_time_stamp)]
 
-        if (not bearish_cross_stop_frame.empty) and (bearish_cross_stop_frame.index[0]+1 < trading_data.index[-1]):
-            daily_pnl = trading_data['mid_p'].loc[bearish_cross_stop_frame.index[0]+1]-bullish_breakout_price_entry
-            exit_price = trading_data['mid_p'].loc[bearish_cross_stop_frame.index[0]+1]
-            exit_type = 'oso'
-            exit_time = trading_data['time_stamp'].loc[bearish_cross_stop_frame.index[0]+1]
+        #if (not bearish_cross_stop_frame.empty) and (bearish_cross_stop_frame.index[0]+1 < trading_data.index[-1]):
+        #    daily_pnl = trading_data['mid_p'].loc[bearish_cross_stop_frame.index[0]+1]-bullish_breakout_price_entry
+        #    exit_price = trading_data['mid_p'].loc[bearish_cross_stop_frame.index[0]+1]
+        #    exit_type = 'oso'
+        #    exit_time = trading_data['time_stamp'].loc[bearish_cross_stop_frame.index[0]+1]
 
-        if valid_bearish_breakoutQ:
-            if bearish_breakout_time_stamp>bullish_breakout_time_stamp:
-                if bearish_breakout_time_stamp<exit_time:
-                    daily_pnl = bearish_breakout_price_entry-bullish_breakout_price_entry
-                    exit_price = bearish_breakout_price_entry
-                    exit_type = 'fso'
-                    exit_time = bearish_breakout_time_stamp
-            else:
-                daily_trade_no = 2
+        #if valid_bearish_breakoutQ:
+        #    if bearish_breakout_time_stamp>bullish_breakout_time_stamp:
+        #        if bearish_breakout_time_stamp<exit_time:
+        #            daily_pnl = bearish_breakout_price_entry-bullish_breakout_price_entry
+        #            exit_price = bearish_breakout_price_entry
+        #            exit_type = 'fso'
+        #            exit_time = bearish_breakout_time_stamp
+        #    else:
+         #       daily_trade_no = 2
 
         exit_time_list.append(exit_time)
         exit_type_list.append(exit_type)

@@ -33,6 +33,23 @@
     <Reference Include="ContractUtilities">
       <HintPath>..\..\ContractUtilities\ContractUtilities\bin\Release\ContractUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="GetPrice">
+      <HintPath>..\..\GetPrice\GetPrice\bin\Release\GetPrice.dll</HintPath>
+    </Reference>
+    <Reference Include="InterestCurve">
+      <HintPath>..\..\InterestCurve\InterestCurve\bin\Release\InterestCurve.dll</HintPath>
+    </Reference>
+    <Reference Include="IOUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IOUtilities\IOUtilities\bin\Release\IOUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QLNet">
+      <HintPath>..\..\..\c#ExtensionPackages\qlnet-master\QLNet\bin\Release\QLNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,8 +59,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QuantlibOptionModels.cs" />
+    <Compile Include="Tests.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

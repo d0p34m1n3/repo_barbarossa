@@ -90,8 +90,8 @@ namespace TTAPI_Sample_Console_PriceSubscription
             {
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                    new ProductKey(MarketKey.Cme, ProductType.Future, "CL"),
-                    "Dec16");
+                    new ProductKey(MarketKey.Cme, ProductType.Future, "C"),
+                    "Calendar: 1xC Dec16:-1xMar17");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }

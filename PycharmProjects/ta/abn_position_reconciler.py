@@ -34,6 +34,7 @@ conversion_from_abn_ticker_head = {'CBT BEAN MEAL(0106)': 'SM',
                                    'IMM EURO FX(03EC)': 'EC',
                                    'IMM AUD(03AD)': 'AD',
                                    'IMM CAD(03C1)': 'CD',
+                                   'CDN DOLLAR(03C1)': 'CD',
                                    'IMM GBP(03BP)': 'BP',
                                    'CBT 10Y T-NOTE(0421)': 'TY',
                                    'CBT 5Y T-NOTE(0425)': 'FV',
@@ -46,6 +47,7 @@ abn_strike_multiplier = {'W': 100,
                          'S': 100,
                          'C': 100,
                          'SI': 0.01,
+                         'CD': 0.01,
                          'JY': 1000}
 
 

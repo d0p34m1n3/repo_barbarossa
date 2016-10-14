@@ -1,0 +1,14 @@
+
+(PAGE 7) Sharp ratio of documented strategies can exceed 3.
+
+(PAGE 15) Using high frequency data from US market Mia shows that pairs trading 
+during 2013 and 2013 were extremely lucrative.
+
+(PAGE 36) They are using secondly bars. 
+Formation period of 2-4 days and trading period of 1-2 days.
+
+(PAGE 47) Pairs trading in case of same industry is profitable, whereas not limiting
+to same industry seems to find some spuriously correlated pairs.
+
+(PAGE 56) Gatev's bootstrapping analysis demonstrates that the mechanisms behind a pairs
+trading strategy and a pure mean reversion strategy are fundamentally different.

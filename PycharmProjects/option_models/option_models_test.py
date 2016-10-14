@@ -159,3 +159,53 @@ def test_option_models(**kwargs):
     return data_frame_test
 
     #return 100*(model_wrapper_output['implied_vol']-data_frame_test['impVol'].iloc[no])/data_frame_test['impVol'].iloc[no]
+
+def generate_csv_file(**kwargs):
+
+    output_dir = dn.get_directory_name(ext='test_data')
+    engine_name = kwargs['engine_name']
+
+    data_frame_test = generate_test_cases_from_aligned_option_data()
+    data_frame_test = data_frame_test[data_frame_test['strike'].notnull()]
+
+    if 'num_cases' in kwargs.keys():
+        data_frame_test = data_frame_test.iloc[0:kwargs['num_cases']]
+
+    model_wrapper_output = []
+    for no in range(len(data_frame_test.index)):
+
+        #print('true vol: ' + str(data_frame_test['impVol'].iloc[no]))
+        #print('int rate: ' + str(data_frame_test['rate2OptExp'].iloc[no]))
+        print(no)
+
+        model_wrapper_output.append(omu.option_model_wrapper(ticker=data_frame_test['ticker'].iloc[no],
+                                                        calculation_date=int(data_frame_test['settleDates'].iloc[no]),
+                                                        underlying=data_frame_test['underlying'].iloc[no],
+                                                        strike = data_frame_test['strike'].iloc[no],
+                                                        option_price=data_frame_test['theoValue'].iloc[no],
+                                                        exercise_type = data_frame_test['exercise_type'].iloc[no],
+                                                        option_type=data_frame_test['option_type'].iloc[no],
+                                                        engine_name=engine_name))
+
+    #return model_wrapper_output
+
+    data_frame_test['impVol'] = [model_wrapper_output[no]['implied_vol'] for no in range(len(data_frame_test.index))]
+    data_frame_test['dollarGamma'] = [model_wrapper_output[no]['dollar_gamma'] for no in range(len(data_frame_test.index))]
+    data_frame_test['gamma'] = [model_wrapper_output[no]['gamma'] for no in range(len(data_frame_test.index))]
+    data_frame_test['delta'] = [model_wrapper_output[no]['delta'] for no in range(len(data_frame_test.index))]
+    data_frame_test['dollarVega'] = [model_wrapper_output[no]['dollar_vega']for no in range(len(data_frame_test.index))]
+    data_frame_test['dollarTheta'] = [model_wrapper_output[no]['dollar_theta'] for no in range(len(data_frame_test.index))]
+    data_frame_test['rate2OptExp'] = [model_wrapper_output[no]['interest_rate'] for no in range(len(data_frame_test.index))]
+    data_frame_test['calDTE'] = [model_wrapper_output[no]['cal_dte'] for no in range(len(data_frame_test.index))]
+
+    data_frame_test = data_frame_test[data_frame_test['impVol'].notnull()]
+    data_frame_test = data_frame_test[~data_frame_test['tickerHead'].isin(['ED','E0','E1','E2','E3','E4','E5'])]
+
+    data_frame_test = data_frame_test[['settleDates','ticker','option_type','strike','underlying','theoValue',
+                                       'impVol','delta','dollarVega','dollarTheta','dollarGamma','rate2OptExp']]
+
+    data_frame_test.reset_index(drop=True, inplace=True)
+
+    writer = pd.ExcelWriter(output_dir + '/' + 'option_model_test' + '.xlsx', engine='xlsxwriter')
+    data_frame_test.to_excel(writer, sheet_name='all')
+

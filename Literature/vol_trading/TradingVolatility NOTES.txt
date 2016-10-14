@@ -1,4 +1,24 @@
 
 (PAGE 30) 1x2 call spreads are useful whena  bounce-back is expected.
 
-(PAGE 30) 
+(PAGE 30) Single -stock implied volatlity trades more in line with realised volatility
+than index imlieds. The reason why index implieds are more overpriced than single-stock
+implieds is due to the demand from hedgers and structured product sellers.
+
+(PAGE 34) Enhanced call overwriting is the term given when call overwriting is only done 
+opportunistically or the parameters (strike or expiry) are varied according to market 
+conditions. On the index level, the returns from call overwriting are so high that enhanced 
+call overwriting is difficult, as the opportunity cost from not always overwriting is too high. 
+For single stocks, the returns for call overwriting are less impressive; hence, enhanced call 
+overwriting could be more successful. An example of single-stock enhanced call overwriting 
+is to only overwrite when an implied is high compared to peers in the same sector. We note 
+that even with enhanced single-stock call overwriting, the wider bid-offer cost and smaller 
+implied volatility premium to realised means returns can be lower than call overwriting at the 
+index level.
+
+(PAGE 59) Assuming all other inputs are constant, the payout of a delta-hedged option is based on
+the variance. However, when examining how much carry is earned, or lost, when delta hedging an option,
+it is the difference between realised and implied that matters. This is because the gamma of an option
+is proportional to 1/sigma; hence, if volatlitiy doubles the gamma halves. 
+
+[PAGE 61]

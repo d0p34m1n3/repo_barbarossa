@@ -184,6 +184,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
     run_datetime = cu.convert_doubledate_2datetime(run_date)
 
     for ticker_head in ticker_head_list:
+        #print(ticker_head)
 
         contract_list = []
 

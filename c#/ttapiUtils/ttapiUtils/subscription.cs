@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 using TradingTechnologies.TTAPI;
 using TradingTechnologies.TTAPI.Tradebook;
 using TA;
+using System.Data;
 
 namespace ttapiUtils
 {
     public class Subscription
     {
         public List<string> dbTickerList { set; get; }
+        public DataTable TickerTable { set; get; }
         public List<string> TickerHeadList { set; get;}
         public List<ttapiTicker> TTAPITickerList { set; get; }
+        public List<ttapiUtils.AutoSpreader> AutoSpreaderList { set; get; }
         private MarketKey mkey;
         private ProductType ptype;
         public UniversalLoginTTAPI m_apiInstance { set; get; }
@@ -93,6 +96,24 @@ namespace ttapiUtils
             }
         }
 
+        public void StartASESubscriptions(object sender, AuthenticationStatusUpdateEventArgs e)
+        {
+            if (e.Status.IsSuccess)
+            {
+                foreach (AutoSpreader item in AutoSpreaderList)
+                {
+                    item.m_apiInstance = m_apiInstance;
+                    item.Subs = this;
+                    item.StartASEEventChain();
+                }
+            }
+            else
+            {
+                Console.WriteLine("TT Login failed: {0}", e.Status.StatusMessage);
+                Dispose();
+            }
+        }
+
         
         public void startInstrumentLookupSubscriptions(object sender, AuthenticationStatusUpdateEventArgs e)
         {
@@ -115,6 +136,56 @@ namespace ttapiUtils
                     InstrumentKey IKey = new InstrumentKey(new ProductKey(mkey, ptype, currentTicker.productName), currentTicker.SeriesKey);
     
                     Ils = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, new ProductKey(mkey, ptype, currentTicker.productName), currentTicker.SeriesKey);
+
+                    for (int i = 0; i < ilsUpdateList.Count; i++)
+                    {
+                        Ils.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(ilsUpdateList[i]);
+                    }
+
+                    IlsDictionary.Add(IKey, Ils);
+                    Ils.Start();
+                }
+            }
+            else
+            {
+                Console.WriteLine("TT Login failed: {0}", e.Status.StatusMessage);
+                Dispose();
+            }
+        }
+
+        public void startInstrumentLookupSubscriptionsFromDataTable(object sender, AuthenticationStatusUpdateEventArgs e)
+        {
+            if (e.Status.IsSuccess)
+            {
+                foreach (DataRow item in TickerTable.Rows)
+                {
+                    ttapiTicker currentTicker;
+
+                    if (item.Field<bool>("IsSpreadQ"))
+                {
+                    currentTicker = TA.TickerConverters.ConvertFromDbTicker2ttapiTicker(dbTicker: item.Field<string>("Ticker"), productType: "SPREAD");
+                }
+                else
+                {
+                    currentTicker = TA.TickerConverters.ConvertFromDbTicker2ttapiTicker(dbTicker: item.Field<string>("Ticker"), productType: "FUTURE");
+                }
+                    if (currentTicker.marketKey == "CME")
+                        mkey = MarketKey.Cme;
+                    else if (currentTicker.marketKey == "ICE_IPE")
+                        mkey = MarketKey.Ice;
+
+                    if (currentTicker.productType == "FUTURE")
+                        ptype = ProductType.Future;
+                    else if (currentTicker.productType == "SPREAD")
+                        ptype = ProductType.Spread;
+
+                    InstrumentKey IKey = new InstrumentKey(new ProductKey(mkey, ptype, currentTicker.productName), currentTicker.SeriesKey);
+
+                    Console.WriteLine(currentTicker.SeriesKey);
+
+                    Ils = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, new ProductKey(mkey, ptype, currentTicker.productName), currentTicker.SeriesKey);
+
+                    //Ils = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current, new ProductKey(MarketKey.Cme, ProductType.Spread, "CL"), "Nov16:-1xDec16");
 
                     for (int i = 0; i < ilsUpdateList.Count; i++)
                     {

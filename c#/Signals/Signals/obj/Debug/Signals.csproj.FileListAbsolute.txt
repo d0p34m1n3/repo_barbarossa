@@ -1,0 +1,7 @@
+C:\Research\c#\Signals\Signals\bin\Debug\Signals.dll.config
+C:\Research\c#\Signals\Signals\bin\Debug\Signals.dll
+C:\Research\c#\Signals\Signals\bin\Debug\Signals.pdb
+C:\Research\c#\Signals\Signals\bin\Debug\MySql.Data.dll
+C:\Research\c#\Signals\Signals\obj\Debug\Signals.csprojResolveAssemblyReference.cache
+C:\Research\c#\Signals\Signals\obj\Debug\Signals.dll
+C:\Research\c#\Signals\Signals\obj\Debug\Signals.pdb

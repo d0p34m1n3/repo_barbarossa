@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\CalendarUtilities\CalendarUtilities\bin\Release\CalendarUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="ClosedXML, Version=0.76.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.76.0\lib\net40-client\ClosedXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ContractUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\ContractUtilities\ContractUtilities\bin\Release\ContractUtilities.dll</HintPath>
@@ -46,8 +50,20 @@
     <Reference Include="DatabaseConnection">
       <HintPath>..\..\..\DatabaseConnection\DatabaseConnection\bin\Release\DatabaseConnection.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="GetPrice">
       <HintPath>..\..\..\GetPrice\GetPrice\bin\Release\GetPrice.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="InterestCurve">
       <HintPath>..\..\..\InterestCurve\InterestCurve\bin\Release\InterestCurve.dll</HintPath>
@@ -60,14 +76,22 @@
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OptionModels">
+    <Reference Include="OptionModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\OptionModels\OptionModels\bin\Release\OptionModels.dll</HintPath>
     </Reference>
     <Reference Include="Portfolio">
       <HintPath>..\..\..\Portfolio\Portfolio\bin\Release\Portfolio.dll</HintPath>
     </Reference>
+    <Reference Include="QLNet, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\c#ExtensionPackages\qlnet-master\QLNet\bin\Release\QLNet.dll</HintPath>
+    </Reference>
     <Reference Include="Risk">
       <HintPath>..\..\..\Risk\Risk\bin\Release\Risk.dll</HintPath>
+    </Reference>
+    <Reference Include="Shared">
+      <HintPath>..\..\..\Shared\Shared\bin\Release\Shared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -88,12 +112,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\c#ExtensionPackages\qlnet-master\QLNet\QLNet.csproj">
-      <Project>{f6e762bd-dcdf-4ca0-abad-cb21c7d03bec}</Project>
-      <Name>QLNet</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

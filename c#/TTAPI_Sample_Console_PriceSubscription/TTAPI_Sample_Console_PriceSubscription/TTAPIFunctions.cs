@@ -97,14 +97,14 @@ namespace TTAPI_Sample_Console_PriceSubscription
                 // lookup an instrument
 
 
-                InstrumentKey IKey = new InstrumentKey(new ProductKey(MarketKey.Cme, ProductType.Future, "CL"), "Dec16");
-
-                m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                    IKey);
+                InstrumentKey IKey = new InstrumentKey(new ProductKey(MarketKey.Cme, ProductType.Spread, "CL"), "Nov16:-1xDec16");
 
                 //m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                //    new ProductKey(MarketKey.Cme, ProductType.Future, "CL"),
-                 //   "Dec16");
+                //    IKey);
+
+                m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
+                    new ProductKey(MarketKey.Cme, ProductType.Spread, "CL"),
+                    "Calendar: 1xCL Jun17:-1xJul17");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }

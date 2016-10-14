@@ -23,5 +23,12 @@ namespace TA
                 return "candlestick.xml";
             }
         }
+        public static string CMEDirectIntradayPrice
+        {
+            get
+            {
+                return "cme_direct_prices.csv";
+            }
+        }
     }
 }

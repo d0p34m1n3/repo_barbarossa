@@ -6,3 +6,6 @@ C:\Research\c#\IOUtilities\IOUtilities\bin\Release\Excel.pdb
 C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.csprojResolveAssemblyReference.cache
 C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.dll
 C:\Research\c#\IOUtilities\IOUtilities\obj\Release\IOUtilities.pdb
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\ClosedXML.dll
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\DocumentFormat.OpenXml.dll
+C:\Research\c#\IOUtilities\IOUtilities\bin\Release\ClosedXML.xml

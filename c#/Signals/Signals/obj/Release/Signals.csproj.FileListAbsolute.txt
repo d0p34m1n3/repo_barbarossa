@@ -1,0 +1,6 @@
+C:\Research\c#\Signals\Signals\bin\Release\Signals.dll.config
+C:\Research\c#\Signals\Signals\bin\Release\Signals.dll
+C:\Research\c#\Signals\Signals\bin\Release\Signals.pdb
+C:\Research\c#\Signals\Signals\bin\Release\MySql.Data.dll
+C:\Research\c#\Signals\Signals\obj\Release\Signals.dll
+C:\Research\c#\Signals\Signals\obj\Release\Signals.pdb

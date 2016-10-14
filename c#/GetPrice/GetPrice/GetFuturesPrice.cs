@@ -10,7 +10,7 @@ namespace GetPrice
 {
     public static class GetFuturesPrice
     {
-        public static DataTable getFuturesPrice4Ticker(string ticker="",string tickerHead="",
+        public static DataTable getFuturesPrice4Ticker(string ticker="",string tickerHead="",List<string>tickerHeadList=null,
             Nullable<DateTime> dateTimeFrom=null,Nullable<DateTime> dateTimeTo=null,MySqlConnection conn=null)
         {
             string filterString = "";
@@ -19,6 +19,9 @@ namespace GetPrice
             { filterString = "WHERE sym.ticker=\"" + ticker + "\""; }
             else if (tickerHead.Count()>0)
             { filterString = "WHERE dp.ticker_head=\"" + tickerHead + "\""; }
+            else if (tickerHeadList.Count>0)
+
+            { filterString = "WHERE dp.ticker_head in (" + string.Join(",", tickerHeadList.ConvertAll(t => "'" + t + "'")) + ")"; }
 
             if (dateTimeFrom.HasValue)
             { filterString = filterString + " and dp.price_date>=" + ((DateTime)dateTimeFrom).ToString("yyyyMMdd"); }

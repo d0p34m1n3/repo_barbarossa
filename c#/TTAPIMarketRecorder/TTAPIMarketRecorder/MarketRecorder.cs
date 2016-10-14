@@ -116,7 +116,7 @@ namespace TTAPIMarketRecorder
 
                     foreach (FieldId id in e.Fields.GetChangedFieldIds())
                     {
-                        //Console.WriteLine("    {0} : {1}", id.ToString(), e.Fields[id].FormattedValue);
+                        Console.WriteLine("    {0} : {1}", id.ToString(), e.Fields[id].FormattedValue);
 
                         PriceFileDictionary[e.Fields.Instrument.Name.ToString()].WriteLine("{0},{1},{2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),id.ToString(), e.Fields[id].FormattedValue);
                         

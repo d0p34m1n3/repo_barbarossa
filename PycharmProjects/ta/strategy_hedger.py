@@ -131,7 +131,7 @@ def hedge_strategy_against_delta(**kwargs):
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     trade_frame['trade_quantity'] = -trade_frame['trade_quantity']
-    trade_frame['alias'] = 'delta_jul16'
+    trade_frame['alias'] = 'delta_oct16'
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     if 'con' not in kwargs.keys():

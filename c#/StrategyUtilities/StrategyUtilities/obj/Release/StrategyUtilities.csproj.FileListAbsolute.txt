@@ -1,0 +1,4 @@
+C:\Research\c#\StrategyUtilities\StrategyUtilities\bin\Release\StrategyUtilities.dll
+C:\Research\c#\StrategyUtilities\StrategyUtilities\bin\Release\StrategyUtilities.pdb
+C:\Research\c#\StrategyUtilities\StrategyUtilities\obj\Release\StrategyUtilities.dll
+C:\Research\c#\StrategyUtilities\StrategyUtilities\obj\Release\StrategyUtilities.pdb

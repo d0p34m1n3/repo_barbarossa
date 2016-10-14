@@ -23,7 +23,7 @@ def get_greeks_4strategy_4date(**kwargs):
     if options_frame.empty:
         if 'con' not in kwargs.keys():
             con.close()
-        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','ticker']), 'strike_portfolio': pd.DataFrame()}
+        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','dollar_vega','ticker']), 'strike_portfolio': pd.DataFrame()}
 
     unique_ticker_list = options_frame['ticker'].unique()
     result_list = []
@@ -47,6 +47,7 @@ def get_greeks_4strategy_4date(**kwargs):
         merged_data['oev'] = merged_data['vega']/atm_point['vega']
         merged_data['total_oev'] = merged_data['oev']*merged_data['qty']
         merged_data['dollar_theta'] = merged_data['theta']*merged_data['qty']*contract_multiplier_list[i]
+        merged_data['dollar_vega'] = merged_data['vega']*merged_data['qty']*contract_multiplier_list[i]/100
 
         result_list.append(merged_data)
 
@@ -58,6 +59,7 @@ def get_greeks_4strategy_4date(**kwargs):
     ticker_portfolio['ticker'] = (grouped['ticker'].first()).values
     ticker_portfolio['total_oev'] = (grouped['total_oev'].sum()).values
     ticker_portfolio['theta'] = (grouped['dollar_theta'].sum()).values
+    ticker_portfolio['dollar_vega'] = (grouped['dollar_vega'].sum()).values
 
     if 'con' not in kwargs.keys():
         con.close()

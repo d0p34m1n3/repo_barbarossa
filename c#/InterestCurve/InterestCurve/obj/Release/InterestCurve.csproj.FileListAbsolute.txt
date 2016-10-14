@@ -25,3 +25,10 @@ C:\Research\c#\InterestCurve\InterestCurve\bin\Release\Excel.pdb
 C:\Research\c#\InterestCurve\InterestCurve\obj\Release\InterestCurve.csprojResolveAssemblyReference.cache
 C:\Research\c#\InterestCurve\InterestCurve\obj\Release\InterestCurve.dll
 C:\Research\c#\InterestCurve\InterestCurve\obj\Release\InterestCurve.pdb
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\ClosedXML.dll
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\DatabaseConnection.dll
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\Shared.dll
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\DocumentFormat.OpenXml.dll
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\ClosedXML.xml
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\DatabaseConnection.pdb
+C:\Research\c#\InterestCurve\InterestCurve\bin\Release\Shared.pdb

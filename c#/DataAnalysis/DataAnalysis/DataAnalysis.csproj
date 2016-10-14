@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Align.cs" />
     <Compile Include="CandleStickTable.cs" />
     <Compile Include="DataTableFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
