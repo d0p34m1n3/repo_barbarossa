@@ -50,6 +50,10 @@ namespace IFS_Algo
             DateTime ReportDate = CalendarUtilities.BusinessDays.GetBusinessDayShifted(shiftInDays: -1);
             DateTime TodayDate = DateTime.Now.Date;
 
+            IFSLogger.SW.WriteLine();
+            IFSLogger.Log("NOTES FOR " + TodayDate.ToString("MM/dd/yyyy"));
+            IFSLogger.Log(new String('-', 20));
+
             string DirectoryName = TA.DirectoryNames.GetDirectoryName(ext: "ifsOutput");
             string DirectoryExtension = TA.DirectoryNames.GetDirectoryExtension(directoryDate: ReportDate);
 
@@ -89,7 +93,6 @@ namespace IFS_Algo
             ExistingPositionTickerHeadColumn.DefaultValue = 0;
             MarketPriceTable.Columns.Add(ExistingPositionTickerHeadColumn);
 
-
             MarketPriceTable.Columns.Add("Mean", typeof(double));
             MarketPriceTable.Columns.Add("Std", typeof(double));
 
@@ -117,10 +120,7 @@ namespace IFS_Algo
                 else
                 {
                     IFSLogger.Log("Check " + OpenStrategyList[i] + " ! Position may be incorrect.");
-                }
-
-                
-                
+                }  
             }
 
             DataTable newDataTable = IfsSheet.AsEnumerable()
@@ -132,7 +132,6 @@ namespace IFS_Algo
             DataRow[] ExistingPositions = IfsSheet.Select("ExistingPositionAbs>0");
 
             LiquidSpreads = newDataTable.AsEnumerable().GroupBy(r => r["spread_description"]).Select(w => w.First()).CopyToDataTable();
-
 
             LiquidSpreads = LiquidSpreads.Select("upside<" + MaxBetSize).CopyToDataTable();
 
@@ -194,13 +193,12 @@ namespace IFS_Algo
             }
 
 
-
             ASENameList = MarketPriceTable.AsEnumerable().Select(x => x.Field<string>("Ticker")).ToList();
             TagList = MarketPriceTable.AsEnumerable().Select(x => x.Field<string>("Tag")).ToList();
 
             TTAPISubs = new ttapiUtils.Subscription(m_username, m_password);
             TTAPISubs.AutoSpreaderList = AutoSpreaderList;
-            TTAPISubs.asu_update = TTAPISubs.StartASESubscriptions;
+            TTAPISubs.AsuUpdateList = new List<EventHandler<AuthenticationStatusUpdateEventArgs>> { TTAPISubs.StartASESubscriptions };
             TTAPISubs.priceUpdatedEventHandler = m_ps_FieldsUpdated;
             TTAPISubs.orderFilledEventHandler = m_ts_OrderFilled;
 
@@ -281,7 +279,6 @@ namespace IFS_Algo
                             MarketPriceTable.Rows[RowIndex]["WorkingPosition"] = 1;
 
                             IFSLogger.Log(MarketPriceTable.Rows[RowIndex].Field<string>("Alias") + " entering a long position...");
-
 
                             ttapiUtils.Trade.SendAutospreaderOrder(instrument: e.Fields.Instrument, instrumentDetails: e.Fields.InstrumentDetails, autoSpreader: As, qty: 1,
                                 price: MarketPriceTable.Rows[RowIndex].Field<decimal>("Mid"), orderTag: MarketPriceTable.Rows[RowIndex].Field<string>("Tag"), logger: IFSLogger);

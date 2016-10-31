@@ -51,7 +51,8 @@ conversion_from_cme_direct_ticker_head = {'S': 'S',
                                           'OG': 'GC',
                                           'GC': 'GC',
                                           'ES': 'ES',
-                                          '07': 'BO'}
+                                          '07': 'BO',
+                                          '06': 'SM'}
 
 product_type_instrument_conversion = {'Future': 'F'}
 
@@ -134,6 +135,7 @@ def convert_from_cme_contract_code(contract_code):
 
     return result_dictionary
 
+
 def load_latest_tt_fills(**kwargs):
 
     file_list = os.listdir(dn.tt_fill_directory)
@@ -149,6 +151,9 @@ def load_latest_tt_fills(**kwargs):
     tt_export_frame = pd.read_csv(dn.tt_fill_directory + '/' + file_list[loc_latest_file])
 
     tt_export_frame_filtered = tt_export_frame[tt_export_frame['Product Type']=='Future']
+
+    if 'tags2exclude' in kwargs.keys():
+        tt_export_frame_filtered = tt_export_frame_filtered[~tt_export_frame_filtered['Order Tag'].isin(kwargs['tags2exclude'])]
 
     return tt_export_frame_filtered
 
@@ -166,7 +171,7 @@ def load_cme__fills(**kwargs):
 
 def get_formatted_tt_fills(**kwargs):
 
-    fill_frame = load_latest_tt_fills()
+    fill_frame = load_latest_tt_fills(**kwargs)
 
     str_indx = fill_frame['Contract'].values[0].find('-')
 
@@ -325,7 +330,7 @@ def assign_trades_2strategies(**kwargs):
     trade_source = kwargs['trade_source']
 
     if trade_source == 'tt':
-        formatted_fills = get_formatted_tt_fills()
+        formatted_fills = get_formatted_tt_fills(**kwargs)
     elif trade_source == 'cme_direct':
         formatted_fills = get_formatted_cme_direct_fills()
     elif trade_source == 'manual_entry':
@@ -354,7 +359,7 @@ def assign_trades_2strategies(**kwargs):
 
 def load_tt_trades(**kwargs):
 
-    trade_frame = assign_trades_2strategies(trade_source='tt')
+    trade_frame = assign_trades_2strategies(trade_source='tt',**kwargs)
     con = msu.get_my_sql_connection(**kwargs)
     ts.load_trades_2strategy(trade_frame=trade_frame,con=con,**kwargs)
 

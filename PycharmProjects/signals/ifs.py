@@ -14,7 +14,8 @@ import numpy as np
 def calc_pnl4date(**kwargs):
 
     ticker_list = kwargs['ticker_list']
-    report_date = kwargs['report_date']
+    pnl_date = kwargs['pnl_date']
+    #print(pnl_date)
 
     ticker_list = [x for x in ticker_list if x is not None]
     ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in ticker_list]
@@ -22,8 +23,8 @@ def calc_pnl4date(**kwargs):
 
     contract_multiplier_list = [cmi.contract_multiplier[x] for x in ticker_head_list]
 
-    date_list = [exp.doubledate_shift_bus_days(double_date=report_date,shift_in_days=x) for x in [-1, -2]]
-    date_list.insert(0,report_date)
+    date_list = [exp.doubledate_shift_bus_days(double_date=pnl_date,shift_in_days=x) for x in [2, 1]]
+    date_list.append(pnl_date)
 
     intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=ticker_list,
                                        date_list=date_list)
@@ -66,6 +67,9 @@ def calc_pnl4date(**kwargs):
 
     unique_settle_dates = intraday_data['settle_date'].unique()
 
+    if len(unique_settle_dates)<3:
+        return {'pnl_date': pnl_date, 'total_pnl': np.nan,'long_pnl':np.nan, 'short_pnl': np.nan }
+
     final_spread_price = np.mean(intraday_data['spread'][(intraday_data['settle_date'] == unique_settle_dates[2])&(intraday_data['time']>=trade_start_hour)])
 
     calibration_data = intraday_data[(intraday_data['settle_date'] == unique_settle_dates[0])]
@@ -90,7 +94,7 @@ def calc_pnl4date(**kwargs):
     else:
         short_pnl = -expensive_data['spread_diff'].mean()-2*2*num_contracts
 
-    return {'report_date':report_date, 'total_pnl': long_pnl+short_pnl,'long_pnl':long_pnl, 'short_pnl': short_pnl }
+    return {'pnl_date': pnl_date, 'total_pnl': long_pnl+short_pnl,'long_pnl':long_pnl, 'short_pnl': short_pnl }
 
 
 def get_pnl_4_date_range(**kwargs):
@@ -106,30 +110,30 @@ def get_pnl_4_date_range(**kwargs):
     if os.path.isfile(directory_name + '/ifs_pnls/' + file_name + '.pkl'):
         pnl_frame = pd.read_pickle(directory_name + '/ifs_pnls/' + file_name + '.pkl')
     else:
-        pnl_frame = pd.DataFrame(columns=['report_date', 'long_pnl', 'short_pnl','total_pnl'])
+        pnl_frame = pd.DataFrame(columns=['pnl_date', 'long_pnl', 'short_pnl','total_pnl'])
 
     date_from = exp.doubledate_shift_bus_days(double_date=date_to,shift_in_days=num_bus_days_back)
 
     date_list = exp.get_bus_day_list(date_from=date_from,date_to=date_to)
 
-    dates2calculate = list(set(date_list)-set(pnl_frame['report_date']))
+    dates2calculate = list(set(date_list)-set(pnl_frame['pnl_date']))
 
     if not dates2calculate:
-        return pnl_frame[(pnl_frame['report_date']>=date_list[0])&(pnl_frame['report_date']<=date_list[-1])]
+        return pnl_frame[(pnl_frame['pnl_date']>=date_list[0])&(pnl_frame['pnl_date']<=date_list[-1])]
 
     pnl_list = []
 
     for i in dates2calculate:
         #print(i)
-        pnl_list.append(calc_pnl4date(ticker_list=ticker_list,report_date=i))
+        pnl_list.append(calc_pnl4date(ticker_list=ticker_list,pnl_date=i))
 
     pnl_frame = pd.concat([pnl_frame,pd.DataFrame(pnl_list)])
 
-    pnl_frame = pnl_frame[['report_date', 'long_pnl', 'short_pnl','total_pnl']]
-    pnl_frame.sort('report_date',ascending=True,inplace=True)
+    pnl_frame = pnl_frame[['pnl_date', 'long_pnl', 'short_pnl','total_pnl']]
+    pnl_frame.sort('pnl_date',ascending=True,inplace=True)
     pnl_frame.to_pickle(directory_name + '/ifs_pnls/' + file_name + '.pkl')
 
-    return pnl_frame[(pnl_frame['report_date']>=date_list[0])&(pnl_frame['report_date']<=date_list[-1])]
+    return pnl_frame[(pnl_frame['pnl_date']>=date_list[0])&(pnl_frame['pnl_date']<=date_list[-1])]
 
 
 

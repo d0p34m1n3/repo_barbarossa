@@ -39,6 +39,7 @@ namespace TTAPI_Sample_Console_OrderRouting
         private InstrumentLookupSubscription m_req = null;
         private PriceSubscription m_ps = null;
         private InstrumentTradeSubscription m_ts = null;
+        private FillsSubscription m_fs = null;
         private string m_orderKey = "";
         private string m_username = "";
         private string m_password = "";
@@ -113,6 +114,10 @@ namespace TTAPI_Sample_Console_OrderRouting
                     "Calendar: 1xCL Nov16:-1xDec16");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
+
+                m_fs = new FillsSubscription(m_apiInstance.Session, Dispatcher.Current);
+                m_fs.FillAdded += new EventHandler<FillAddedEventArgs>(m_fs_FillAdded);
+                m_fs.Start();
             }
             else
             {
@@ -249,6 +254,12 @@ namespace TTAPI_Sample_Console_OrderRouting
 
             Console.WriteLine("Average Buy Price = {0} : Net Position = {1} : P&L = {2}", m_ts.ProfitLossStatistics.BuyAveragePrice,
                 m_ts.ProfitLossStatistics.NetPosition, m_ts.ProfitLoss.AsPrimaryCurrency);
+        }
+
+        void m_fs_FillAdded(object sender, FillAddedEventArgs e)
+        {
+            Console.WriteLine("Fill Added:");
+            Console.WriteLine("    Fill: FillKey={0}, InstrKey={1}, Qty={2}, MatchPrice={3}", e.Fill.FillKey, e.Fill.InstrumentKey, e.Fill.Quantity, e.Fill.MatchPrice);
         }
 
         /// <summary>

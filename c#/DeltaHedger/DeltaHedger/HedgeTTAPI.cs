@@ -52,6 +52,7 @@ namespace DeltaHedger
             List<string> TickerHeadList = DataAnalysis.DataTableFunctions.GetColumnAsList<string>(dataTableInput: UnderlyingTickerTable, columnName: "TickerHead", uniqueQ: true);
 
             DateTo = CalendarUtilities.BusinessDays.GetBusinessDayShifted(shiftInDays:-1);
+            DateTime TodayDate = DateTime.Now.Date;
             DateTime DateFrom = CalendarUtilities.BusinessDays.GetBusinessDayShifted(shiftInDays: -10);
 
             DataTable HistoricPriceTable = GetPrice.GetFuturesPrice.getFuturesPrice4Ticker(tickerHeadList: TickerHeadList, dateTimeFrom: DateFrom, dateTimeTo: DateTo, conn: conn);
@@ -66,9 +67,9 @@ namespace DeltaHedger
             TTAPISubs.TickerTable = UnderlyingTickerTable;
             ilsUpdateList = new List<EventHandler<InstrumentLookupSubscriptionEventArgs>> { TTAPISubs.startPriceSubscriptions, TTAPISubs.startTradeSubscriptions };
             TTAPISubs.ilsUpdateList = ilsUpdateList;
-            TTAPISubs.asu_update = TTAPISubs.startInstrumentLookupSubscriptionsFromDataTable;
+            TTAPISubs.AsuUpdateList = new List<EventHandler<AuthenticationStatusUpdateEventArgs>> { TTAPISubs.startInstrumentLookupSubscriptionsFromDataTable, TTAPISubs.Subscribe2OrderFills };
             TTAPISubs.priceUpdatedEventHandler = GetBidAsk;
-            TTAPISubs.orderFilledEventHandler = OrderFilledEventHandler;
+            TTAPISubs.FillAddedEventHandler = OrderFilledEventHandler;
 
             PriceData = new DataTable();
             PriceData.Columns.Add("Ticker", typeof(string));
@@ -99,6 +100,11 @@ namespace DeltaHedger
             string OutputFolder = TA.DirectoryNames.GetDirectoryName("daily");
             StreamWriter LogFile = new StreamWriter(OutputFolder + "/Delta.txt", true);
             DeltaLogger = new Logger(LogFile);
+
+            DeltaLogger.SW.WriteLine();
+            DeltaLogger.Log("NOTES FOR " + TodayDate.ToString("MM/dd/yyyy"));
+            DeltaLogger.Log(new String('-', 20));
+
             DeltaStrategyAlias = HedgeStrategies.GetActiveDeltaStrategy(conn: conn);
 
 
@@ -139,14 +145,13 @@ namespace DeltaHedger
                     if ((IlsDictionary.Count == 0)&(!PricesReceivedQ))
                     {
                         PricesReceivedQ = true;
-                        //HedgeStrategies.HedgeStrategiesAgainstDelta(conn: conn, priceTable: PriceData);
 
-
-
+                       HedgeStrategies.HedgeStrategiesAgainstDelta(conn: conn, priceTable: PriceData);
 
                         DataTable StdMoves = CalculateStdMoves(priceData: PriceData);
                         DataTable HedgeTable = GenerateHedgeTable(conn: conn);
                         NetHedgeTable = CalculateUrgency(hedgeTable: HedgeTable);
+                        //NetHedgeTable = NetHedgeTable.Select("IsSpreadQ=true").CopyToDataTable();
 
                         List<string> TickerHeads2Report = DataAnalysis.DataTableFunctions.GetColumnAsList<string>(dataTableInput: StdMoves, columnName: "TickerHead", uniqueQ: true);
 
@@ -168,8 +173,6 @@ namespace DeltaHedger
                             {
                                 DeltaLogger.Log(Row.Field<int>("Hedge") + "  " + Row.Field<string>("Ticker") + " with urgency " + Row.Field<decimal>("Urgency"));
                             }
-
-
                         }
 
 
@@ -177,8 +180,6 @@ namespace DeltaHedger
                         WorkingOrdersColumn.DefaultValue = 0;
                         NetHedgeTable.Columns.Add(WorkingOrdersColumn);
                         NetHedgeTickerList = DataAnalysis.DataTableFunctions.GetColumnAsList<string>(dataTableInput: NetHedgeTable, columnName: "Ticker");
-
-
 
                         }
 
@@ -191,28 +192,60 @@ namespace DeltaHedger
                         return;
                     }
 
-                    Decimal MidPrice = (Convert.ToDecimal(e.Fields.GetDirectBidPriceField().FormattedValue) + Convert.ToDecimal(e.Fields.GetDirectAskPriceField().FormattedValue)) / 2;
+                    Price BidPrice = e.Fields.GetDirectBidPriceField().Value;
+                    Price AskPrice = e.Fields.GetDirectAskPriceField().Value;
 
+                    Price MidPrice = (AskPrice + BidPrice) / 2;
+
+                    //double BidPriceDb = BidPrice.ToDouble();
+                    //double AskPriceDb = AskPrice.ToDouble();
+
+                    //double BidAskSpread = (AskPriceDb - BidPriceDb);
+                    Price TradePrice;
+
+                    //double TickSize = (double)e.Fields.InstrumentDetails.TickSize.Numerator /(double)e.Fields.InstrumentDetails.TickSize.Denominator;
+                    //double BidAskSpreadInTicks = BidAskSpread / TickSize;
 
                     NetHedgeTable.Rows[RowIndex]["WorkingOrders"] = NetHedgeTable.Rows[RowIndex].Field<int>("Hedge");
 
                     if (NetHedgeTable.Rows[RowIndex].Field<int>("Hedge")>0)
                     {
-                        ttapiUtils.Trade.SendLimitOrder(instrument: e.Fields.Instrument, price: e.Fields.GetBestBidPriceField().Value, 
-                            qty: NetHedgeTable.Rows[RowIndex].Field<int>("Hedge"), ttapisubs:TTAPISubs,orderTag:"DeltaHedge");
+                        if (NetHedgeTable.Rows[RowIndex].Field<decimal>("Urgency")>5)
+                        {
+                            //TradePrice = BidPrice.Add((int)Math.Ceiling(BidAskSpreadInTicks / 2));     
+                            TradePrice = MidPrice.Round(Rounding.Up);
+                        }
+                        else
+                        {
+                            TradePrice = BidPrice;
+                        }
                     }
-                    else if  (NetHedgeTable.Rows[RowIndex].Field<int>("Hedge")<0)
+                    else if (NetHedgeTable.Rows[RowIndex].Field<int>("Hedge")<0)
                     {
-                        ttapiUtils.Trade.SendLimitOrder(instrument:e.Fields.Instrument, price:e.Fields.GetBestAskPriceField().Value,
-                            qty: NetHedgeTable.Rows[RowIndex].Field<int>("Hedge"), ttapisubs: TTAPISubs, orderTag: "DeltaHedge");
+                        if (NetHedgeTable.Rows[RowIndex].Field<decimal>("Urgency")>5)
+                        {
+                            //TradePrice = AskPrice.Add(-(int)Math.Ceiling(BidAskSpreadInTicks / 2));
+                            TradePrice = MidPrice.Round(Rounding.Down);
+                        }
+                        else
+                        {
+                            TradePrice = AskPrice;
+                        }
+                    }
+                    else
+                    {
+                        return;
                     }
 
-                    string FilledTicker = TA.TickerConverters.ConvertFromTTAPIFields2DB(e.Fields.Instrument.Product.ToString(), e.Fields.Instrument.Name.ToString());
-                    string wuhu = TA.TickerheadConverters.ConvertFromTT2DB(e.Fields.Instrument.Product.ToString());
-                    
-                    
+                    //TradePrice = Price.FromDouble(e.Fields.Instrument, 1007.25);
 
-                        
+                    DeltaLogger.Log(TickerDB + " for " + TradePrice + 
+                        ", Bid: " + e.Fields.GetDirectBidPriceField().FormattedValue + 
+                        ", Ask: " + e.Fields.GetDirectAskPriceField().FormattedValue);
+                     ttapiUtils.Trade.SendLimitOrder(instrument: e.Fields.Instrument, price: TradePrice,
+                            qty: NetHedgeTable.Rows[RowIndex].Field<int>("Hedge"), ttapisubs: TTAPISubs, orderTag: "DeltaHedge");
+
+                   
             }
                         
 
@@ -549,25 +582,35 @@ namespace DeltaHedger
             return StdMovesTable;
         }
 
-        void OrderFilledEventHandler(object sender, OrderFilledEventArgs e)
+        void OrderFilledEventHandler(object sender, FillAddedEventArgs e)
         {
-            Instrument Inst = ((InstrumentTradeSubscription)sender).Instrument;
-            string FilledTicker = TA.TickerConverters.ConvertFromTTAPIFields2DB(Inst.Product.ToString(), Inst.Name.ToString());
-            string TickerHead = TA.TickerheadConverters.ConvertFromTT2DB(Inst.Product.ToString());
-            int FilledQuantity;
 
-            if (e.Fill.BuySell == BuySell.Buy)
+            if (e.Fill.OrderTag=="DeltaHedge")
             {
-                FilledQuantity = e.Fill.Quantity;
-            }
-            else
-            {
-                FilledQuantity = -e.Fill.Quantity;
-            }
 
-            TA.Strategy.LoadTrade2Strategy(ticker: FilledTicker, trade_price: (decimal)TA.PriceConverters.FromTT2DB(ttPrice: Convert.ToDecimal(e.Fill.MatchPrice.ToString()),
-                tickerHead: TickerHead), trade_quantity: FilledQuantity, instrument: "F", alias: DeltaStrategyAlias, conn: conn);
+                Instrument Inst = TTAPISubs.InstrumentDictionary[e.Fill.InstrumentKey];
+                string InstrumentName = Inst.Name.ToString();
 
+                if (!InstrumentName.Contains("Calendar"))
+                {
+                    string FilledTicker = TA.TickerConverters.ConvertFromTTAPIFields2DB(Inst.Product.ToString(), Inst.Name.ToString());
+                    string TickerHead = TA.TickerheadConverters.ConvertFromTT2DB(Inst.Product.ToString());
+                    int FilledQuantity;
+
+                    if (e.Fill.BuySell == BuySell.Buy)
+                    {
+                        FilledQuantity = e.Fill.Quantity;
+                    }
+                    else
+                    {
+                        FilledQuantity = -e.Fill.Quantity;
+                    }
+
+                    TA.Strategy.LoadTrade2Strategy(ticker: FilledTicker, trade_price: (decimal)TA.PriceConverters.FromTT2DB(ttPrice: Convert.ToDecimal(e.Fill.MatchPrice.ToString()),
+                        tickerHead: TickerHead), trade_quantity: FilledQuantity, instrument: "F", alias: DeltaStrategyAlias, conn: conn);
+                }
+                
+            }
         }
             
         public void Dispose()

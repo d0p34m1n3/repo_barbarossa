@@ -34,21 +34,31 @@ namespace TA
         public static string ConvertFromTTAPIFields2DB(string productName,string instrumentName)
         {
             string[] words = instrumentName.Split();
+            string TickerHead = TickerheadConverters.ConvertFromTT2DB(productName);
+            string ExchangeName = ContractUtilities.ContractMetaInfo.GetExchange4Tickerhead(TickerHead);
 
-            if (instrumentName.Contains("Calendar"))
+            if (instrumentName.Contains("Calendar") && (ExchangeName=="CME"))
             {
                 string MaturityString = words.Last();
-                
-                return TickerheadConverters.ConvertFromTT2DB(productName) + TickerMonthFromTT2DB[MaturityString.Substring(0, 3)] +
+
+                return TickerHead + TickerMonthFromTT2DB[MaturityString.Substring(0, 3)] +
                  Convert.ToString(2000 + Int32.Parse(MaturityString.Substring(3, 2))) + "-" +
-                 TickerheadConverters.ConvertFromTT2DB(productName) +
+                 TickerHead +
                  TickerMonthFromTT2DB[MaturityString.Substring(9, 3)] +
                  Convert.ToString(2000 + Int32.Parse(MaturityString.Substring(12, 2)));
-
+            }
+            else if (instrumentName.Contains("Spread") && (ExchangeName == "ICE"))
+            {
+                string MaturityString = words.Last();
+                return TickerHead + TickerMonthFromTT2DB[MaturityString.Substring(0, 3)] +
+                 Convert.ToString(2000 + Int32.Parse(MaturityString.Substring(3, 2))) + "-" +
+                 TickerHead +
+                 TickerMonthFromTT2DB[MaturityString.Substring(6, 3)] +
+                 Convert.ToString(2000 + Int32.Parse(MaturityString.Substring(9, 2)));
             }
             else
             {
-                return TickerheadConverters.ConvertFromTT2DB(productName) + TickerMonthFromTT2DB[words[words.Count() - 1].Substring(0, 3)] +
+                return TickerHead + TickerMonthFromTT2DB[words[words.Count() - 1].Substring(0, 3)] +
                  Convert.ToString(2000 + Int32.Parse(words[words.Count() - 1].Substring(3, 2)));
             }
            
@@ -56,26 +66,19 @@ namespace TA
 
         public static ttapiTicker ConvertFromDbTicker2ttapiTicker(string dbTicker)
         {
-            ttapiTicker ttapiTickerOut = new ttapiTicker();
-            ContractUtilities.ContractSpecs contractSpecsOut = ContractUtilities.ContractMetaInfo.GetContractSpecs(dbTicker);
-            ttapiTickerOut.productName = TA.TickerheadConverters.ConvertFromDB2TT(contractSpecsOut.tickerHead);
-            ttapiTickerOut.productType = "FUTURE";
+            string ProductType;
 
-            string exchangeName = ContractUtilities.ContractMetaInfo.GetExchange4Tickerhead(contractSpecsOut.tickerHead);
-            ttapiTickerOut.marketKey = "";
+            if (dbTicker.Contains("-"))
+            {
+                ProductType = "SPREAD";
+            }
+            else
+            {
+                ProductType = "FUTURE";
+            }
 
-            if (exchangeName == "ICE")
-                ttapiTickerOut.marketKey = "ICE_IPE";
-            else if (exchangeName == "CME")
-                ttapiTickerOut.marketKey = "CME";
+            return ConvertFromDbTicker2ttapiTicker(dbTicker, ProductType);
 
-            ttapiTickerOut.SeriesKey = ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
-
-            ttapiTickerOut.instrumentName = ttapiTickerOut.marketKey + " " + 
-                                    ttapiTickerOut.productName + " " +
-                                    ttapiTickerOut.SeriesKey;
-
-            return ttapiTickerOut;
         }
 
         public static ttapiTicker ConvertFromDbTicker2ttapiTicker(string dbTicker, string productType)
@@ -101,18 +104,34 @@ namespace TA
                 ContractUtilities.ContractSpecs contractSpecsOut = ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerList[0]);
                 ttapiTickerOut.productName = TA.TickerheadConverters.ConvertFromDB2TT(contractSpecsOut.tickerHead);
                 ttapiTickerOut.productType = "SPREAD";
+                string SeriesKey;
 
                 exchangeName = ContractUtilities.ContractMetaInfo.GetExchange4Tickerhead(contractSpecsOut.tickerHead);
 
-                string SeriesKey = "Calendar: 1x" + ttapiTickerOut.productName + " " + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
-
-                for (int i = 1; i < TickerList.Length; i++)
+                if (exchangeName == "CME")
                 {
-                    contractSpecsOut = ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerList[i]);
-                    SeriesKey = SeriesKey + ":-1x" + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
+                    SeriesKey = "Calendar: 1x" + ttapiTickerOut.productName + " " + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
+                    for (int i = 1; i < TickerList.Length; i++)
+                    {
+                        contractSpecsOut = ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerList[i]);
+                        SeriesKey = SeriesKey + ":-1x" + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
+                    }
                 }
+                else if (exchangeName == "ICE")
+                {
+                    SeriesKey = ttapiTickerOut.productName + " Spread " + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
+                    for (int i = 1; i < TickerList.Length; i++)
+                    {
+                        contractSpecsOut = ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerList[i]);
+                        SeriesKey = SeriesKey + "/" + ConvertMonthFromDB2TT(contractSpecsOut.tickerMonthStr) + (contractSpecsOut.tickerYear % 100).ToString();
+                    }
+                }
+                else
+                {
+                    SeriesKey = "";
+                }
+                
                 ttapiTickerOut.SeriesKey = SeriesKey;
-
             }
             else
             {

@@ -28,19 +28,22 @@ namespace ttapiUtils
         private InstrumentLookupSubscription Ils = null;
         private PriceSubscription ps = null;
         private InstrumentTradeSubscription ts = null;
+        private FillsSubscription Fs = null;
 
         public Dictionary<ProductKey, ProductLookupSubscription> PlsDictionary;
         public Dictionary<ProductKey, InstrumentCatalogSubscription> IcsDictionary;
         public Dictionary<InstrumentKey, InstrumentLookupSubscription> IlsDictionary;
         public Dictionary<InstrumentKey, PriceSubscription> PsDictionary;
+        public Dictionary<InstrumentKey, Instrument> InstrumentDictionary;
         public Dictionary<InstrumentKey, InstrumentTradeSubscription> TsDictionary;
 
-        public EventHandler<AuthenticationStatusUpdateEventArgs> asu_update { get; set; }
+        public List<EventHandler<AuthenticationStatusUpdateEventArgs>> AsuUpdateList { get; set; }
         public EventHandler<ProductLookupSubscriptionEventArgs> PLSEventHandler { get; set; }
         public EventHandler<InstrumentCatalogUpdatedEventArgs> ICUEventHandler { get; set; }
         public List<EventHandler<InstrumentLookupSubscriptionEventArgs>> ilsUpdateList { get; set; }
         public FieldsUpdatedEventHandler priceUpdatedEventHandler { get; set; }
         public EventHandler<OrderFilledEventArgs> orderFilledEventHandler { get; set; }
+        public EventHandler<FillAddedEventArgs> FillAddedEventHandler { get; set; }
         
         private string m_username = "";
         private string m_password = "";
@@ -56,6 +59,7 @@ namespace ttapiUtils
             IcsDictionary = new Dictionary<ProductKey, InstrumentCatalogSubscription>();
             IlsDictionary = new Dictionary<InstrumentKey, InstrumentLookupSubscription>();
             PsDictionary = new Dictionary<InstrumentKey, PriceSubscription>();
+            InstrumentDictionary = new Dictionary<InstrumentKey, Instrument>();
             TsDictionary = new Dictionary<InstrumentKey, InstrumentTradeSubscription>();
             m_username = u;
             m_password = p;
@@ -86,7 +90,13 @@ namespace ttapiUtils
             {
                 // Authenticate your credentials
                 m_apiInstance = (UniversalLoginTTAPI)api;
-                m_apiInstance.AuthenticationStatusUpdate += new EventHandler<AuthenticationStatusUpdateEventArgs>(asu_update);
+                
+                for (int i = 0; i < AsuUpdateList.Count; i++)
+                {
+                    m_apiInstance.AuthenticationStatusUpdate += new EventHandler<AuthenticationStatusUpdateEventArgs>(AsuUpdateList[i]);
+                }
+
+
                 m_apiInstance.Start();
             }
             else
@@ -340,6 +350,24 @@ namespace ttapiUtils
             }
         }
 
+        public void Subscribe2OrderFills(object sender, AuthenticationStatusUpdateEventArgs e)
+        {
+             if (e.Status.IsSuccess)
+            {
+                // Start a fill subscription
+                Fs = new FillsSubscription(m_apiInstance.Session, Dispatcher.Current);
+                Fs.FillAdded += new EventHandler<FillAddedEventArgs>(FillAddedEventHandler);
+                Fs.Start();
+            }
+             else
+             {
+                 Console.WriteLine("TT Login failed: {0}", e.Status.StatusMessage);
+                 Dispose();
+             }
+        }
+
+
+
 
         public void startPriceSubscriptions(object sender, InstrumentLookupSubscriptionEventArgs e)
         {
@@ -353,6 +381,7 @@ namespace ttapiUtils
                 ps.Settings = new PriceSubscriptionSettings(PriceSubscriptionType.InsideMarket);
                 ps.FieldsUpdated += new FieldsUpdatedEventHandler(priceUpdatedEventHandler);
                 PsDictionary.Add(e.Instrument.Key,ps);
+                InstrumentDictionary.Add(e.Instrument.Key, e.Instrument);
 
                 ps.Start();
                 
@@ -374,7 +403,12 @@ namespace ttapiUtils
                 ts.OrderUpdated += new EventHandler<OrderUpdatedEventArgs>(m_ts_OrderUpdated);
                 ts.OrderAdded += new EventHandler<OrderAddedEventArgs>(m_ts_OrderAdded);
                 ts.OrderDeleted += new EventHandler<OrderDeletedEventArgs>(m_ts_OrderDeleted);
-                ts.OrderFilled += new EventHandler<OrderFilledEventArgs>(orderFilledEventHandler);
+
+                if (orderFilledEventHandler !=null)
+                {
+                    ts.OrderFilled += new EventHandler<OrderFilledEventArgs>(orderFilledEventHandler);
+                }
+               
                 ts.OrderRejected += new EventHandler<OrderRejectedEventArgs>(m_ts_OrderRejected);
 
                 TsDictionary.Add(e.Instrument.Key,ts);
@@ -387,6 +421,9 @@ namespace ttapiUtils
                 Dispose();
             }
         }
+
+
+
 
         void m_ts_OrderRejected(object sender, OrderRejectedEventArgs e)
         {

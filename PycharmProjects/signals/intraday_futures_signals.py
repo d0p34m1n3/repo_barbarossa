@@ -24,6 +24,8 @@ def get_intraday_spread_signals(**kwargs):
     ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in ticker_list]
     ticker_class_list = [cmi.ticker_class[x] for x in ticker_head_list]
 
+    print('-'.join(ticker_list))
+
     if 'tr_dte_list' in kwargs.keys():
         tr_dte_list = kwargs['tr_dte_list']
     else:
@@ -175,7 +177,7 @@ def get_intraday_spread_signals(**kwargs):
 
     pnl_frame = ifs.get_pnl_4_date_range(date_to=date_to, num_bus_days_back=20, ticker_list=ticker_list)
 
-    if len(pnl_frame.index)>15:
+    if (len(pnl_frame.index)>15)&(pnl_frame['total_pnl'].std() != 0):
         historical_sharp = (250**(0.5))*pnl_frame['total_pnl'].mean()/pnl_frame['total_pnl'].std()
     else:
         historical_sharp = np.nan

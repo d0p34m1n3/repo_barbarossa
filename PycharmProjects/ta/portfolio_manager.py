@@ -77,6 +77,10 @@ def get_position_4portfolio(**kwargs):
     net_position = pd.DataFrame()
 
     net_position['generalized_ticker'] = (grouped['generalized_ticker'].first()).values
+    net_position['ticker'] = (grouped['ticker'].first()).values
+    net_position['option_type'] = (grouped['option_type'].first()).values
+    net_position['strike_price'] = (grouped['strike_price'].first()).values
+    net_position['instrument'] = (grouped['instrument'].first()).values
     net_position['qty'] = (grouped['trade_quantity'].sum()).values
     net_position = net_position[net_position['qty'] != 0]
 

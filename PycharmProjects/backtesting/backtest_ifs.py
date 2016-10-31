@@ -31,11 +31,13 @@ def backtest_ifs_4date(**kwargs):
     intraday_spreads['pnl2'] = 0
     intraday_spreads['pnl5'] = 0
     intraday_spreads['pnl6'] = 0
+    intraday_spreads['pnl7'] = 0
 
     intraday_spreads['pnl1_wc'] = 0
     intraday_spreads['pnl2_wc'] = 0
     intraday_spreads['pnl5_wc'] = 0
     intraday_spreads['pnl6_wc'] = 0
+    intraday_spreads['pnl7_wc'] = 0
 
     intraday_spreads['report_date'] = report_date
 
@@ -44,6 +46,9 @@ def backtest_ifs_4date(**kwargs):
 
     intraday_spreads.sort(['spread_description','min_volume'],ascending=[True, False],inplace=True)
     intraday_spreads.drop_duplicates('spread_description',inplace=True)
+
+    intraday_spreads = intraday_spreads[intraday_spreads['hs']>-1]
+
     intraday_spreads.reset_index(drop=True,inplace=True)
 
     date_list = [exp.doubledate_shift_bus_days(double_date=report_date, shift_in_days=x) for x in [-1,-2]]
@@ -62,6 +67,8 @@ def backtest_ifs_4date(**kwargs):
 
         intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=ticker_list,
                                        date_list=date_list)
+
+
         intraday_data['spread'] = 0
 
         for j in range(num_contracts):
@@ -85,13 +92,11 @@ def backtest_ifs_4date(**kwargs):
         if len(unique_settle_dates)<2:
             continue
 
-        if (intraday_data['settle_date'] == unique_settle_dates[0]).sum() == (intraday_data['settle_date'] == unique_settle_dates[1]).sum():
-            intraday_data.loc[intraday_data['settle_date'] == unique_settle_dates[0],'spread1'] = intraday_data['spread'][intraday_data['settle_date'] == unique_settle_dates[1]].values
-        else:
-            continue
+        final_spread_price = np.mean(intraday_data['spread'][(intraday_data['settle_date'] == unique_settle_dates[1])])
 
-        intraday_data = intraday_data[intraday_data['spread1'].notnull()]
-        intraday_data['spread_diff'] = contract_multiplier_list[0]*(intraday_data['spread1']-intraday_data['spread'])/spread_weights[0]
+        intraday_data = intraday_data[(intraday_data['settle_date'] == unique_settle_dates[0])]
+
+        intraday_data['spread_diff'] = contract_multiplier_list[0]*(final_spread_price-intraday_data['spread'])/spread_weights[0]
 
         mean5 = intraday_spreads.iloc[i]['mean']
         std5 = intraday_spreads.iloc[i]['std']
@@ -178,15 +183,34 @@ def backtest_ifs_4date(**kwargs):
             pnl61 = short_qty*intraday_data61['spread_diff'].mean()
             pnl61_wc = pnl61 + 2*2*short_qty*num_contracts
 
+        intraday_data71 = intraday_data[(intraday_data['z6']>0.1)&(intraday_data['z5']>0.5)]
+        intraday_data7_1 = intraday_data[(intraday_data['z6']<-0.1)&(intraday_data['z5']<0.5)]
+
+        if intraday_data7_1.empty:
+            pnl7_1 = 0
+            pnl7_1_wc = 0
+        else:
+            pnl7_1 = long_qty*intraday_data7_1['spread_diff'].mean()
+            pnl7_1_wc = pnl7_1 - 2*2*long_qty*num_contracts
+
+        if intraday_data71.empty:
+            pnl71 = 0
+            pnl71_wc = 0
+        else:
+            pnl71 = short_qty*intraday_data71['spread_diff'].mean()
+            pnl71_wc = pnl71 + 2*2*short_qty*num_contracts
+
         intraday_spreads['pnl1'].iloc[i] = pnl1_1 + pnl11
         intraday_spreads['pnl2'].iloc[i] = pnl2_1 + pnl21
         intraday_spreads['pnl5'].iloc[i] = pnl5_1 + pnl51
         intraday_spreads['pnl6'].iloc[i] = pnl6_1 + pnl61
+        intraday_spreads['pnl7'].iloc[i] = pnl7_1 + pnl71
 
         intraday_spreads['pnl1_wc'].iloc[i] = pnl1_1_wc + pnl11_wc
         intraday_spreads['pnl2_wc'].iloc[i] = pnl2_1_wc + pnl21_wc
         intraday_spreads['pnl5_wc'].iloc[i] = pnl5_1_wc + pnl51_wc
         intraday_spreads['pnl6_wc'].iloc[i] = pnl6_1_wc + pnl61_wc
+        intraday_spreads['pnl7_wc'].iloc[i] = pnl7_1_wc + pnl71_wc
 
     intraday_spreads.to_pickle(output_dir + '/backtest_results.pkl')
     return intraday_spreads

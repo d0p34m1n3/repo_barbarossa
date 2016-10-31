@@ -9,7 +9,7 @@ namespace Shared
 {
     public class Logger
     {
-        StreamWriter SW;
+        public StreamWriter SW;
         public bool consolePrintQ { set; get;}
         public bool includeTimeQ { set; get; }
 

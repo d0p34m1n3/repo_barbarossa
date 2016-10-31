@@ -43,9 +43,18 @@ namespace ttapiUtils
             IlsDictionary = new Dictionary<InstrumentKey, InstrumentLookupSubscription>();
             InstrumentDictionary = new Dictionary<InstrumentKey, Instrument>();
 
-            foreach (var item in dbTickerList)
+            foreach (string item in dbTickerList)
             {
-                TickerHeadList.Add(ContractUtilities.ContractMetaInfo.GetContractSpecs(item).tickerHead);
+                if  (item.Contains("-"))
+                {
+                    string[] TickerListAux = item.Split('-');
+                    TickerHeadList.Add(ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerListAux[0]).tickerHead);
+                    TickerHeadList.Add(ContractUtilities.ContractMetaInfo.GetContractSpecs(TickerListAux[1]).tickerHead);
+                }
+                else
+                {
+                    TickerHeadList.Add(ContractUtilities.ContractMetaInfo.GetContractSpecs(item).tickerHead);
+                }
             }
 
             AutoSpreaderTickerHead = String.Join("_", TickerHeadList);
@@ -83,7 +92,14 @@ namespace ttapiUtils
                 Ratio = new List<double> { 1, -1 };
                 Multiplier = new List<double> { 100, -1 };
             }
-            else if ((tickerHead == "C_W") || (tickerHead == "W_C") || (tickerHead == "W_KW") || (tickerHead == "KW_W"))
+            else if ((tickerHead == "C_W") || (tickerHead == "W_C") || (tickerHead == "W_KW") || (tickerHead == "KW_W") ||
+                     (tickerHead == "LN_LN_LN_LN") || (tickerHead == "LC_LC_LC_LC") || (tickerHead == "FC_FC_FC_FC") ||
+                     (tickerHead == "C_C_C_C") || (tickerHead == "S_S_S_S") || (tickerHead == "SM_SM_SM_SM") ||
+                     (tickerHead == "BO_BO_BO_BO") || (tickerHead == "W_W_W_W") || (tickerHead == "KW_KW_KW_KW") ||
+                     (tickerHead == "SB_SB_SB_SB") || (tickerHead == "KC_KC_KC_KC") || (tickerHead == "CC_CC_CC_CC") ||
+                     (tickerHead == "CT_CT_CT_CT") || (tickerHead == "OJ_OJ_OJ_OJ") ||
+                     (tickerHead == "CL_CL_CL_CL") || (tickerHead == "B_B_B_B") || (tickerHead == "HO_HO_HO_HO") ||
+                     (tickerHead == "RB_RB_RB_RB") || (tickerHead == "NG_NG_NG_NG") || (tickerHead == "ED_ED_ED_ED"))
             {
                 Ratio = new List<double> { 1, -1 };
                 Multiplier = new List<double> { 1, -1 };

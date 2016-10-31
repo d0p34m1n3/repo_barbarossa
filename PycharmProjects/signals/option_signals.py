@@ -37,7 +37,11 @@ def get_vcs_signals(**kwargs):
     settle_datetime_1year_back = settle_datetime-dt.timedelta(360)
 
     hist['atm_vol_ratio'] = hist['c1']['imp_vol']/hist['c2']['imp_vol']
-    atm_vol_ratio = current['imp_vol'][0]/current['imp_vol'][1]
+
+    if 'atm_vol_ratio' in kwargs.keys():
+        atm_vol_ratio = kwargs['atm_vol_ratio']
+    else:
+        atm_vol_ratio = current['imp_vol'][0]/current['imp_vol'][1]
 
     hist_1year = hist[hist.index >= settle_datetime_1year_back]
 

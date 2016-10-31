@@ -51,12 +51,19 @@ def generate_futures_butterfly_followup_report(**kwargs):
     merged_frame1 = pd.merge(butterfly_followup_frame,pnl_frame, how='left', on='alias')
     merged_frame2 = pd.merge(merged_frame1, risk_output['strategy_risk_frame'], how='left', on='alias')
 
-    butterfly_followup_frame = merged_frame2[['alias', 'holding_tr_dte', 'short_tr_dte',
+    butterfly_followup_frame = merged_frame2[['alias', 'ticker_head', 'holding_tr_dte', 'short_tr_dte',
                                                          'z1_initial', 'z1', 'QF_initial', 'QF',
-                                                         'total_pnl', 'downside']]
+                                                         'total_pnl', 'downside','recommendation']]
+
+    butterfly_followup_frame.rename(columns={'alias': 'Alias', 'ticker_head': 'TickerHead',
+                                             'holding_tr_dte': 'HoldingTrDte', 'short_tr_dte': 'ShortTrDte',
+                                             'z1_initial': 'Z1Initial', 'z1': 'Z1',
+                                             'QF_initial': 'QFInitial','total_pnl': 'TotalPnl',
+                                             'downside': 'Downside','recommendation':'Recommendation'}, inplace=True)
+
     butterfly_followup_frame.sort('QF', ascending=False,inplace=True)
 
-    butterfly_followup_frame['z1'] = butterfly_followup_frame['z1'].round(2)
+    butterfly_followup_frame['Z1'] = butterfly_followup_frame['Z1'].round(2)
 
     butterfly_followup_frame.to_excel(writer, sheet_name='butterflies')
     worksheet_butterflies = writer.sheets['butterflies']

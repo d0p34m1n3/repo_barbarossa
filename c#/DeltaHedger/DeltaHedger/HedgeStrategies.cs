@@ -181,7 +181,7 @@ namespace DeltaHedger
                             return HedgeTable;
                         }
 
-                        HedgeRow["HedgePrice"] = PriceRows[0].Field<double>("MidPrice");
+                        HedgeRow["HedgePrice"] = PriceRows[0].Field<decimal>("MidPrice");
                         HedgeRow["OptionDelta"] = 0;
                         HedgeRow["UnderlyingDelta"] = FuturesRow.Field<double>("UnderlyingDelta");
                         HedgeRow["TotalDelta"] = FuturesRow.Field<double>("UnderlyingDelta");

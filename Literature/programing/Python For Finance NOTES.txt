@@ -64,6 +64,32 @@ numpy vectorization.
 
 (PAGE 229) The overhead of GPU is too large for low workloads however for heavy workloads GPU has speed advantage and scales well.
 
+(PAGE 283) Simulation of a stochastic volatility model.
+
+(PAGE 351) Using PyMC3 runs a MCMC algorithm to calculate regression coefficients that are random walk.
+
+(PAGE 417) Bokeh shines when it comes to real-time visualization of, for example, high-frequency financial data.
+
+(PAGE 418) They have an example where they receive real time high frequency forex data from OANDA and plot it real time with Bokeh.
+
+(Page 422) They have an example where they receive real-time data from Netfonds (a Norwegian Broker) and plot it with Bokeh.
+
+(Page 434) They design a webpage using Flask and SQLite3.
+
+(Page 465) A major advantage of object-oriented modeling approach is, for example, that instances of the constant_short_rate class
+can live in multiple environments. Once the instance is updated--for example, when a new constant short rate is set--all the instances
+of the market_environment class containing that particular instance of the discounting class will be updated automatically.
+
+(PAGE 504) They use Longstaff-Schwartz model to price american options.
+
+[DONE]
 
 
-[PAGE 233]
+
+
+
+
+
+
+
+

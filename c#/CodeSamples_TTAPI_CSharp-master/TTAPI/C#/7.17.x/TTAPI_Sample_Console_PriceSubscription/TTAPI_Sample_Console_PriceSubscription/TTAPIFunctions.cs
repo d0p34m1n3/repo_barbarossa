@@ -90,8 +90,8 @@ namespace TTAPI_Sample_Console_PriceSubscription
             {
                 // lookup an instrument
                 m_req = new InstrumentLookupSubscription(m_apiInstance.Session, Dispatcher.Current,
-                    new ProductKey(MarketKey.Cme, ProductType.Future, "C"),
-                    "Calendar: 1xC Dec16:-1xMar17");
+                    new ProductKey(MarketKey.Ice, ProductType.Spread, "IPE e-Brent"),
+                    "IPE e-Brent Spread Jul17/Aug17");
                 m_req.Update += new EventHandler<InstrumentLookupSubscriptionEventArgs>(m_req_Update);
                 m_req.Start();
             }
@@ -137,6 +137,17 @@ namespace TTAPI_Sample_Console_PriceSubscription
                 {
                     // Received a market data snapshot
                     Console.WriteLine("Market Data Snapshot:");
+
+                    Price BidPrice = e.Fields.GetDirectBidPriceField().Value;
+                    Price AskPrice = e.Fields.GetDirectAskPriceField().Value;
+
+                    Console.WriteLine(BidPrice.ToDouble());
+                    Console.WriteLine(AskPrice.ToDouble());
+
+                    Price MidPrice = (BidPrice + AskPrice) / 2;
+                    MidPrice = MidPrice.Round(Rounding.Down);
+
+                    Console.WriteLine(MidPrice.ToDouble());
 
                     foreach (FieldId id in e.Fields.GetFieldIds())
                     {

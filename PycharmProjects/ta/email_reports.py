@@ -3,6 +3,7 @@ import shared.email as se
 import contract_utilities.expiration as exp
 import shared.directory_names as dn
 import ta.strategy as ts
+import ta.expiration_followup as ef
 
 
 def send_hrsn_report(**kwargs):
@@ -23,8 +24,19 @@ def send_hrsn_report(**kwargs):
     except Exception:
         pass
 
+    try:
+        expiration_report = ef.get_expiration_report(report_date=report_date)
+        expiration_report = expiration_report[expiration_report['tr_dte'] < 10]
+
+        if expiration_report.empty:
+            expiration_text = 'No near expirations.'
+        else:
+            expiration_text = 'Check for approaching expirations!'
+    except Exception:
+        expiration_text = 'Check expiration report for errors!'
+
     se.send_email_with_attachment(subject='hrsn_' + str(report_date),
-                                  email_text='cov_data_integrity: ' + cov_data_integrity,
+                                  email_text='cov_data_integrity: ' + cov_data_integrity + "\r\n" + expiration_text,
                                   attachment_list = [daily_dir + '/' + 'pnl_' + str(report_date) + '.xlsx', daily_dir +
                                                      '/' + 'followup_' + str(report_date) + '.xlsx'])
 
