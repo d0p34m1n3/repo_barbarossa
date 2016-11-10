@@ -79,6 +79,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     zscore2_list = [None]*num_butterflies
     zscore3_list = [None]*num_butterflies
     zscore4_list = [None]*num_butterflies
+    zscore5_list = [None]*num_butterflies
+    zscore6_list = [None]*num_butterflies
+    zscore7_list = [None]*num_butterflies
 
     rsquared1_list = [None]*num_butterflies
     rsquared2_list = [None]*num_butterflies
@@ -150,6 +153,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
         zscore2_list[i] = bf_signals_output['zscore2']
         zscore3_list[i] = bf_signals_output['zscore3']
         zscore4_list[i] = bf_signals_output['zscore4']
+        zscore5_list[i] = bf_signals_output['zscore5']
+        zscore6_list[i] = bf_signals_output['zscore6']
+        zscore7_list[i] = bf_signals_output['zscore7']
         rsquared1_list[i] = bf_signals_output['rsquared1']
         rsquared2_list[i] = bf_signals_output['rsquared2']
 
@@ -205,6 +211,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['z2'] = zscore2_list
     butterflies['z3'] = zscore3_list
     butterflies['z4'] = zscore4_list
+    butterflies['z5'] = zscore5_list
+    butterflies['z6'] = zscore6_list
+    butterflies['z7'] = zscore7_list
 
     butterflies['r1'] = rsquared1_list
     butterflies['r2'] = rsquared2_list
@@ -259,6 +268,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     butterflies['z2'] = butterflies['z2'].round(2)
     butterflies['z3'] = butterflies['z3'].round(2)
     butterflies['z4'] = butterflies['z4'].round(2)
+    butterflies['z5'] = butterflies['z5'].round(2)
+    butterflies['z6'] = butterflies['z6'].round(2)
+    butterflies['z7'] = butterflies['z7'].round(2)
     butterflies['r1'] = butterflies['r1'].round(2)
     butterflies['r2'] = butterflies['r2'].round(2)
     butterflies['RC'] = butterflies['RC'].round(2)

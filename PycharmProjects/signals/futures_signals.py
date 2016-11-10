@@ -123,19 +123,24 @@ def get_futures_butterfly_signals(**kwargs):
                                                                      'x_current': yield2_current, 'y_current': yield1_current,
                                                                      'clean_num_obs': max(100, round(3*len(yield1_last5_years.values)/4))})
 
-    recent_zscore_list = [(yield1[-40+i]-yield_regress_output['alpha']-yield_regress_output['beta']*yield2[-40+i])/yield_regress_output['residualstd'] for i in range(40)]
+    bf_qz_frame_short = pd.DataFrame()
+    bf_qz_frame_long = pd.DataFrame()
 
-    bf_qz_frame = pd.DataFrame.from_items([('bf_price', butterfly_price.values[-40:]),
+    if (len(yield1) >= 40)&(len(yield2) >= 40):
+
+        recent_zscore_list = [(yield1[-40+i]-yield_regress_output['alpha']-yield_regress_output['beta']*yield2[-40+i])/yield_regress_output['residualstd'] for i in range(40)]
+
+        bf_qz_frame = pd.DataFrame.from_items([('bf_price', butterfly_price.values[-40:]),
                                            ('q',recent_quantile_list),
                                            ('zscore', recent_zscore_list)])
 
-    bf_qz_frame = np.round(bf_qz_frame, 8)
-    bf_qz_frame.drop_duplicates(['bf_price'], take_last=True, inplace=True)
+        bf_qz_frame = np.round(bf_qz_frame, 8)
+        bf_qz_frame.drop_duplicates(['bf_price'], take_last=True, inplace=True)
 
     # return bf_qz_frame
 
-    bf_qz_frame_short = bf_qz_frame[(bf_qz_frame['zscore'] >= 0.6) & (bf_qz_frame['q'] >= 85)]
-    bf_qz_frame_long = bf_qz_frame[(bf_qz_frame['zscore'] <= -0.6) & (bf_qz_frame['q'] <= 12)]
+        bf_qz_frame_short = bf_qz_frame[(bf_qz_frame['zscore'] >= 0.6) & (bf_qz_frame['q'] >= 85)]
+        bf_qz_frame_long = bf_qz_frame[(bf_qz_frame['zscore'] <= -0.6) & (bf_qz_frame['q'] <= 12)]
 
     if bf_qz_frame_short.empty:
         short_price_limit = np.NAN
@@ -236,6 +241,9 @@ def get_futures_butterfly_signals(**kwargs):
             'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
             'zscore1': zscore1, 'rsquared1': rsquared1, 'zscore2': zscore2, 'rsquared2': rsquared2,
             'zscore3': z3, 'zscore4': z4,
+            'zscore5': zscore1-regime_change_ind,
+            'zscore6': zscore1-contract_seasonality_ind,
+            'zscore7': zscore1-regime_change_ind-contract_seasonality_ind,
             'theo_pnl': theo_pnl,
             'regime_change_ind' : regime_change_ind,'contract_seasonality_ind': contract_seasonality_ind,
             'second_spread_weight_1': second_spread_weight_1, 'second_spread_weight_2': second_spread_weight_2,
