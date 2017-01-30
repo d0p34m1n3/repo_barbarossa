@@ -126,6 +126,9 @@ def get_futures_price_preloaded(**kwargs):
     if 'settle_date_from_exclusive' in kwargs.keys():
         data_out = data_out[data_out['settle_date']>cu.convert_doubledate_2datetime(kwargs['settle_date_from_exclusive'])]
 
+    if 'settle_date_from' in kwargs.keys():
+        data_out = data_out[data_out['settle_date']>=cu.convert_doubledate_2datetime(kwargs['settle_date_from'])]
+
     if 'ticker' in kwargs.keys():
         data_out = data_out[data_out['ticker']==ticker]
 
