@@ -1,1 +1,0 @@
-OvernightPriceCandles.exe > OvernightPriceCandles.log

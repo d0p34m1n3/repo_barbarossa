@@ -46,7 +46,7 @@ namespace CalendarUtilities
              DateTime BusinessDayOut;
 
 
-             int ShiftInCalDaysAbs = (int)(Math.Max(Math.Ceiling((double)ShiftInDaysAbs * 7 / 5), ShiftInDaysAbs + 5));
+             int ShiftInCalDaysAbs = (int)(Math.Max(Math.Ceiling((double)ShiftInDaysAbs * 7 / 5), ShiftInDaysAbs + 8));
              int ShiftInCalDays = ShiftInCalDaysAbs * ShiftSign;
 
              if (ShiftSign < 0)

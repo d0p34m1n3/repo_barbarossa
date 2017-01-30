@@ -11,26 +11,6 @@ import os.path
 import numpy as np
 
 
-def get_ttapi_filename(**kwargs):
-
-    ticker = kwargs['ticker']
-    contract_specs_output = cmi.get_contract_specs(ticker)
-
-    ticker_head = contract_specs_output['ticker_head']
-    exchange_traded = cmi.get_exchange_traded(ticker_head)
-
-    ttapi_ticker_head = su.get_key_in_dictionary(dictionary_input=tfl.conversion_from_tt_ticker_head, value=ticker_head)
-
-    if exchange_traded == 'CME':
-        exchange_string = 'CME'
-    elif exchange_traded == 'ICE':
-        exchange_string = 'ICE_IPE'
-
-    maturity_string = dt.date(contract_specs_output['ticker_year'],contract_specs_output['ticker_month_num'],1).strftime('%b%y')
-
-    return exchange_string + ' ' + ttapi_ticker_head + ' ' + maturity_string + '.csv'
-
-
 def load_csv_file_4ticker(**kwargs):
 
     ticker = kwargs['ticker']
@@ -42,7 +22,8 @@ def load_csv_file_4ticker(**kwargs):
 
     data_dir = dn.get_dated_directory_extension(ext='intraday_ttapi_data', folder_date=folder_date)
 
-    file_name = get_ttapi_filename(ticker=ticker)
+    file_name = tfl.convert_ticker_from_db2tt(ticker) + '.csv'
+    #print(file_name)
 
     if os.path.isfile(data_dir + '/' + file_name):
         data_frame_out = pd.read_csv(data_dir + '/' + file_name,names=['time','field','value'],dtype={2: 'str'})
@@ -86,21 +67,44 @@ def get_book_snapshot_4ticker(**kwargs):
     merged_index = pd.date_range(start=start_datetime,end=end_datetime,freq=freq_str)
 
     data_frame_out.set_index('time', inplace=True, drop=True)
-    best_bid_p = data_frame_out[data_frame_out['field'] == 'BestBidPrice']
+    field_list = data_frame_out['field'].unique()
+
+    if 'BestBidPrice' in field_list:
+        best_bid_p = data_frame_out[data_frame_out['field'] == 'BestBidPrice']
+    else:
+        best_bid_p = data_frame_out[data_frame_out['field'] == 'BestBidPrice_0']
     best_bid_p = best_bid_p.groupby(best_bid_p.index).last()
     best_bid_p = best_bid_p.reindex(merged_index,method='pad')
 
-    best_bid_q = data_frame_out[data_frame_out['field'] == 'BestBidQuantity']
+    if 'BestBidQuantity' in field_list:
+        best_bid_q = data_frame_out[data_frame_out['field'] == 'BestBidQuantity']
+    else:
+        best_bid_q = data_frame_out[data_frame_out['field'] == 'BestBidQuantity_0']
     best_bid_q = best_bid_q.groupby(best_bid_q.index).last()
     best_bid_q = best_bid_q.reindex(merged_index,method='pad')
 
-    best_ask_p = data_frame_out[data_frame_out['field'] == 'BestAskPrice']
+    if 'BestAskPrice' in field_list:
+        best_ask_p = data_frame_out[data_frame_out['field'] == 'BestAskPrice']
+    else:
+        best_ask_p = data_frame_out[data_frame_out['field'] == 'BestAskPrice_0']
     best_ask_p = best_ask_p.groupby(best_ask_p.index).last()
     best_ask_p = best_ask_p.reindex(merged_index,method='pad')
 
-    best_ask_q = data_frame_out[data_frame_out['field'] == 'BestAskQuantity']
+    if 'BestAskQuantity' in field_list:
+        best_ask_q = data_frame_out[data_frame_out['field'] == 'BestAskQuantity']
+    else:
+        best_ask_q = data_frame_out[data_frame_out['field'] == 'BestAskQuantity_0']
     best_ask_q = best_ask_q.groupby(best_ask_q.index).last()
     best_ask_q = best_ask_q.reindex(merged_index,method='pad')
+
+    #last_traded_quantity = data_frame_out[data_frame_out['field'] == 'LastTradedQuantity']
+    #last_traded_price = data_frame_out[data_frame_out['field'] == 'LastTradedPrice']
+
+    #last_traded_price['value'] = [tfl.convert_trade_price_from_tt(price=x,ticker_head=ticker_head) for x in last_traded_price['value']]
+    #last_traded_price['value'] = last_traded_price['value'].astype('float64')
+    #last_traded_quantity['value'] = last_traded_quantity['value'].astype('float64')
+
+
 
     book_snapshot = pd.DataFrame(index=merged_index)
 
@@ -109,7 +113,30 @@ def get_book_snapshot_4ticker(**kwargs):
     book_snapshot['best_ask_p'] = best_ask_p['value'].astype('float64')
     book_snapshot['best_ask_q'] = best_ask_q['value']
 
-    ticker_head = cmi.get_contract_specs(kwargs['ticker'])['ticker_head']
+    ticker_head = cmi.get_contract_specs(kwargs['ticker'].split('-')[0])['ticker_head']
+
+    for i in range(1, 10):
+
+        bid_price_field = 'BestBidPrice_' + str(i)
+        ask_price_field = 'BestAskPrice_' + str(i)
+
+        bid_quantity_field = 'BestBidQuantity_' + str(i)
+        ask_quantity_field = 'BestAskQuantity_' + str(i)
+
+        field_name_list = [bid_price_field,ask_price_field,bid_quantity_field,ask_quantity_field]
+
+        for field in field_name_list:
+
+            if field in field_list:
+                field_frame = data_frame_out[data_frame_out['field'] == field]
+                field_frame = field_frame.groupby(field_frame.index).last()
+                field_frame = field_frame.reindex(merged_index,method='pad')
+
+                if field in [bid_price_field,ask_price_field]:
+                    book_snapshot[field] = field_frame['value'].astype('float64')
+                    book_snapshot[field] = [tfl.convert_trade_price_from_tt(price=x,ticker_head=ticker_head) for x in book_snapshot[field]]
+                else:
+                    book_snapshot[field] = field_frame['value']
 
     book_snapshot['best_bid_p'] = [tfl.convert_trade_price_from_tt(price=x,ticker_head=ticker_head) for x in book_snapshot['best_bid_p']]
     book_snapshot['best_ask_p'] = [tfl.convert_trade_price_from_tt(price=x,ticker_head=ticker_head) for x in book_snapshot['best_ask_p']]

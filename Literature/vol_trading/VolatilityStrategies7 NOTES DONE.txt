@@ -1,0 +1,4 @@
+
+The performance of two different volatility models are show to be better than VIX.
+These models are James Gatheral's Rough Fractional Stochastic Volatility and
+Fulvio Corsi's HAR model.

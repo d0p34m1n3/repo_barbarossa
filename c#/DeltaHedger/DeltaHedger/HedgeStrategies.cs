@@ -114,15 +114,6 @@ namespace DeltaHedger
 
                 Row["UnderlyingPrice"] = PriceRows[0].Field<decimal>("MidPrice");
 
-                Console.WriteLine(Row.Field<string>("Ticker"));
-                Console.WriteLine(Row.Field<string>("OptionType"));
-                Console.WriteLine(Row.Field<double>("StrikePrice"));
-                Console.WriteLine(CurrentDate);
-                Console.WriteLine(Row.Field<double>("ImpVol"));
-                Console.WriteLine((double)Row.Field<decimal>("UnderlyingPrice"));
-                Console.WriteLine(SettlePriceDate);
-
-
                 Row["Delta"] = OptionModels.Utils.OptionModelWrapper(modelName: "BS", ticker: Row.Field<string>("Ticker"),
                     optionType: Row.Field<string>("OptionType"), strike: Row.Field<double>("StrikePrice"), conn: conn,
                     calculationDate: CurrentDate, impliedVol: Row.Field<double>("ImpVol"),
@@ -267,9 +258,13 @@ namespace DeltaHedger
             }
 
             List<string> OptionStrategyClassList = new List<string> { "vcs", "scv", "optionInventory" };
-            return (from x in StrategyTable.AsEnumerable()
-                                             where OptionStrategyClassList.Any(b => x.Field<string>("StrategyClass").Contains(b))
-                                             select x.Field<string>("alias")).ToList();
+
+            List<string> StList = (from x in StrategyTable.AsEnumerable()
+                                   where OptionStrategyClassList.Any(b => x.Field<string>("StrategyClass").Contains(b))
+                                   select x.Field<string>("alias")).ToList();
+
+            //StList.Remove("SI_inventory_Aug16");
+            return StList;
         }
 
         public static List<string> GetDeltaStrategyList(MySqlConnection conn)
@@ -298,10 +293,12 @@ namespace DeltaHedger
             List<string> HedgeStrategyList = HedgeStrategies.GetStrategyList2Hedge(conn: conn);
             List<string> DeltaStrategyList = HedgeStrategies.GetDeltaStrategyList(conn: conn);
             string ActiveDeltaStrategy = DeltaStrategyList[DeltaStrategyList.Count - 1];
-            //string ActiveDeltaStrategy = DeltaStrategyList[0];
+
+            Console.WriteLine("Calculating hedges for strategies...");
 
             foreach (string item in HedgeStrategyList)
             {
+                Console.WriteLine(item);
                 HedgeStrategies.HedgeStrategyAgainstDelta(alias: item, deltaAlias: ActiveDeltaStrategy, conn: conn,priceTable:priceTable);
             }
         }

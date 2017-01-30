@@ -1,0 +1,6 @@
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Debug\TechnicalSignals.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Debug\TechnicalSignals.pdb
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Debug\DataAnalysis.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Debug\DataAnalysis.pdb
+C:\Research\c#\TechnicalSignals\TechnicalSignals\obj\Debug\TechnicalSignals.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\obj\Debug\TechnicalSignals.pdb

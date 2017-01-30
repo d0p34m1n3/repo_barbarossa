@@ -62,7 +62,7 @@ def bucket_data(**kwargs):
                                                   max_value=100,
                                                   num_parts=num_buckets)
 
-    bucket_limits = stats.get_number_from_quantile(y=data_input[bucket_var].values,
+    bucket_limits = stats.get_number_from_quantile(y=data_input[bucket_var].values.astype(np.float64),
                                                    quantile_list=quantile_limits)
 
     bucket_data_list = []

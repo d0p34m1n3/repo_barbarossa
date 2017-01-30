@@ -91,6 +91,10 @@ def get_spreads_4date(**kwargs):
 
             output_frame = pd.concat([output_frame,spread_i])
 
+    output_frame['spread_description'] = output_frame.apply(lambda x: x['ticker_head1']+ '_' +x['ticker_head2'] if x['ticker_head3'] is None else x['ticker_head1']+ '_' +x['ticker_head2'] + '_' + x['ticker_head3'] , axis=1)
+    output_frame['min_volume'] = output_frame.apply(lambda x: min(x['volume1'],x['volume2']) if x['ticker_head3'] is None else min(x['volume1'],x['volume2'],x['volume3']),axis=1)
+    output_frame.sort(['spread_description','min_volume'],ascending=[True, False],inplace=True)
+    output_frame.drop_duplicates('spread_description',inplace=True)
     output_frame.reset_index(drop=True,inplace=True)
 
     return output_frame
@@ -112,7 +116,6 @@ def generate_ifs_sheet_4date(**kwargs):
     intraday_spreads = get_spreads_4date(**kwargs)
 
     num_spreads = len(intraday_spreads.index)
-
     signals_output = [ifs.get_intraday_spread_signals(ticker_list=[intraday_spreads.iloc[x]['contract1'],
                                                    intraday_spreads.iloc[x]['contract2'],
                                                    intraday_spreads.iloc[x]['contract3']],
@@ -120,8 +123,11 @@ def generate_ifs_sheet_4date(**kwargs):
 
     intraday_spreads['z'] = [x['z'] for x in signals_output]
     intraday_spreads['recentTrend'] = [x['recent_trend'] for x in signals_output]
-    intraday_spreads['mean'] = [x['intraday_mean'] for x in signals_output]
-    intraday_spreads['std'] = [x['intraday_std'] for x in signals_output]
+    intraday_spreads['mean10'] = [x['intraday_mean10'] for x in signals_output]
+    intraday_spreads['std10'] = [x['intraday_std10'] for x in signals_output]
+
+    intraday_spreads['mean5'] = [x['intraday_mean5'] for x in signals_output]
+    intraday_spreads['std5'] = [x['intraday_std5'] for x in signals_output]
 
     intraday_spreads['mean2'] = [x['intraday_mean2'] for x in signals_output]
     intraday_spreads['std2'] = [x['intraday_std2'] for x in signals_output]
@@ -133,16 +139,21 @@ def generate_ifs_sheet_4date(**kwargs):
     intraday_spreads['upside'] = [x['upside'] for x in signals_output]
 
     intraday_spreads['settle'] = [x['spread_settle'] for x in signals_output]
-    intraday_spreads['hs'] = [x['historical_sharp'] for x in signals_output]
+    intraday_spreads['spread_weight'] = [x['spread_weight'] for x in signals_output]
+    intraday_spreads['portfolio_weight'] = [x['portfolio_weight'] for x in signals_output]
+
+    intraday_spreads['maSpreadLow'] = [x['ma_spread_low'] for x in signals_output]
+    intraday_spreads['maSpreadHigh'] = [x['ma_spread_high'] for x in signals_output]
+    intraday_spreads['maSpreadLowL'] = [x['ma_spread_lowL'] for x in signals_output]
+    intraday_spreads['maSpreadHighL'] = [x['ma_spread_highL'] for x in signals_output]
+    intraday_spreads['is'] = [x['intraday_sharp'] for x in signals_output]
 
     intraday_spreads['z'] = intraday_spreads['z'].round(2)
     intraday_spreads['upside'] = intraday_spreads['upside'].round(3)
     intraday_spreads['downside'] = intraday_spreads['downside'].round(3)
     intraday_spreads['recentTrend'] = intraday_spreads['recentTrend'].round()
 
-    intraday_spreads['spread_description'] = intraday_spreads.apply(lambda x: x['ticker_head1']+ '_' +x['ticker_head2'] if x['ticker_head3'] is None else x['ticker_head1']+ '_' +x['ticker_head2'] + '_' + x['ticker_head3'] , axis=1)
     intraday_spreads['ticker'] = intraday_spreads.apply(lambda x: x['contract1']+ '_' +x['contract2'] if x['contract3'] is None else x['contract1']+ '_' +x['contract2'] + '_' + x['contract3'] , axis=1)
-    intraday_spreads['min_volume'] = intraday_spreads.apply(lambda x: min(x['volume1'],x['volume2']) if x['ticker_head3'] is None else min(x['volume1'],x['volume2'],x['volume3']),axis=1)
 
     intraday_spreads.to_pickle(output_dir + '/summary.pkl')
 

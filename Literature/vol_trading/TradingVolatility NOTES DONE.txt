@@ -1,0 +1,121 @@
+
+(PAGE 30) 1x2 call spreads are useful whena  bounce-back is expected.
+
+(PAGE 30) Single -stock implied volatlity trades more in line with realised volatility
+than index imlieds. The reason why index implieds are more overpriced than single-stock
+implieds is due to the demand from hedgers and structured product sellers.
+
+(PAGE 34) Enhanced call overwriting is the term given when call overwriting is only done 
+opportunistically or the parameters (strike or expiry) are varied according to market 
+conditions. On the index level, the returns from call overwriting are so high that enhanced 
+call overwriting is difficult, as the opportunity cost from not always overwriting is too high. 
+For single stocks, the returns for call overwriting are less impressive; hence, enhanced call 
+overwriting could be more successful. An example of single-stock enhanced call overwriting 
+is to only overwrite when an implied is high compared to peers in the same sector. We note 
+that even with enhanced single-stock call overwriting, the wider bid-offer cost and smaller 
+implied volatility premium to realised means returns can be lower than call overwriting at the 
+index level.
+
+(PAGE 59) Assuming all other inputs are constant, the payout of a delta-hedged option is based on
+the variance. However, when examining how much carry is earned, or lost, when delta hedging an option,
+it is the difference between realised and implied that matters. This is because the gamma of an option
+is proportional to 1/sigma; hence, if volatlitiy doubles the gamma halves. 
+
+(PAGE 65) Dispersion traders profit from overpriced index-implied volatility by going long single-stock
+variance and short index variance.
+
+(PAGE 71) If clients are net buyers of variance swaps, they leave the counterparty trader short. The trader
+will hedge this short position by buying a portfolio of options and delta hedging them on the close. Hence
+variance buying suppresses equity market moves whereas variance selling exaggerates equity market moves. 
+
+(PAGE 112) While forward starting products have zero mathematical theta, they do suffer from the fact that
+volatility and variance term structure is usually expensive and upward sloping. The average implied volatility
+of a forward starting product is likely to be higher than a vanilla product, which will cause the long forward
+starting position to suffer carry as the volatility is re-marked lower during the forward starting period. 
+
+(PAGE 138) While the ratio of beta to roll-down cost is similar across different maturity volatility products,
+near-dated products do have a worse ratio. There are some products that try to benefit from the excess demand
+for near 1-month ETN/ETFs (medium-dated 5-month ETN/ETFs are less popular)
+
+(PAGE 139) Given the imbalance in the VIX futures market resulting from the size of ETN/ETF
+products for near-dated VIX products, investors could short these products. The XXV ETF 
+(inverse of the VXX, whose ticker is also the letters of the VXX backwards) based on short 
+1-month VIX futures is also a viable method of profiting from this imbalance. As the size of 
+the XXV is only c20% of the size of the VXX, a significant imbalance still remains in our
+view. As vStoxx-based products are not sufficiently large to be causing an imbalance, a short 
+VIX product long vStoxx product is an attractive way to profit from the VIX imbalance 
+while hedging the overall level of volatility (we note that this trade does not hedge any US or 
+Europe specific volatility). As can be seen in Figure 77 below, the profile of 1m vStoxx/1m 
+VIX (proxy for long 1m vStoxx and short 1m VIX rebalanced every day) offers an attractive 
+performance.
+
+(PAGE 170) Single-stock relative value volatility trading is possible, but less attractive due to wider
+bid-offer spreads.
+
+(PAGE 173) The volatility of an index is capped at the weighted average volatility of its 
+constituents. Due to diversification (or less than 100% correlation), the volatility of 
+indices tends to trade significantly less than its constituents. The flow from both 
+institutions and structured products tends to put upward pressure on implied 
+correlation, making index implied volatility expensive. Hedge funds and proprietary 
+trading desks try to profit from this anomaly by either selling correlation swaps, or 
+through dispersion trading (going short index implied volatility and long single stock 
+implied volatility). Selling correlation became an unpopular strategy following losses 
+during the credit crunch, but demand is now recovering.
+
+(PAGE 182) We believe that using OTM strangles rather than straddles is a better method of using vanilla 
+options to trade dispersion as OTM strangles have a flatter vega profile. This means that spot moving  
+away from strike is less of an issue, but we acknowledge that this is a less practical way 
+of trading. 
+
+(PAGE 193) They have an intuitive way of calculating expected earnings jump using additive variance.
+
+(PAGE 203) A decline in near dated ATM implied volatility lifts term structure and skew as low strike
+and long maturity implied volatility is 'sticky'. Hence skew and term structure should be correlated
+as a fall in near-dated ATM implied lifts both of them.
+
+(PAGE 204) There's a lot of intuition about the risks and correlations of dispersion trading with other positions
+throughout the book.
+
+(PAGE 205) When implied volatility changes, the change in ATM volatility multiplied by the square root of time is generally constant.
+
+(PAGE 206) In practice, implied volatility tends to move with power 0.44, suggesting that surfaces move primarily 
+in a square root of time manner but at times also in parallel. 
+If implieds rise (or decline) in a square root of time manner when equities decline (or rise),
+then this causes skew to decay by the square root of time as well (assuming sticky strike)
+This means that the skews of different maturities can be compared with each other by simply multiplying the skew by the square root of the maturity.
+
+(PAGE 210) Given that the square root of time appears in the Black-Scholes formula for premium,
+the price of a 1x1 calendar (long one far-dated option, short one near-dated option) remains approximately constant 
+if implied volatility surfaces move in a square root of time manner. 
+Calendars can therefore be used to trade term structure imbalances as the trade is indifferent
+to the level of volatility as long as volatility moves in a power weighted manner.
+
+(PAGE 211) If surfaces rise with a power less than 0.5 (ie, a more parallel move) then near-dated implieds 
+have not risen as much as expected and a short calendar (long near-dated, short far-dated) 
+position should be initiated. 
+
+(PAGE 219) Both Strike skew (90%vol-110%vol) and Delta Skew (25 Delta Put Vol -25 Delta Call Vol)/50 Delta Vol 
+are reasonable measures of skew.
+
+(PAGE 222) Sticky delta assumes a constant volatility for options of the same strike as a percentage of spot.
+Not a particularly realistic model. A sticky volatility surface has a constant volatility for options with the
+same fixed currency strike. Sticky local vol assumes negative vol-spot correlation. The reality is somewhere in
+between sticky delta and sticky local vol.
+
+(PAGE 233) While a sticky local volatility regime causes long skew positions to profit from implied volatility changes,
+the position still suffers from skew theta.
+The combination of these two cancel exactly, causing a long (or short) skew trade to break even.
+As skew trades break even under a static local volatility model, and as there is a negative spot vol correlation,
+it is arguably the most realistic volatility model.
+
+(PAGE 249) Intraday volatility is not constant. 
+Volatility tends to be greatest at the open, but also rises into the close.
+
+(PAGE 251) Among different realized volatility measures, 
+Yang-Zhang seem to be more efficient for small window size calculations.
+
+(PAGE 266) Price of a put spread cannot be negative, this will enforce a limit on how expensive the skew could be.
+Traders are likely to sell skew long before it hits the mathematical bounds for arbitrage.
+As mathematical bound decays by the square root of time, so should the market bound.
+
+[DONE]

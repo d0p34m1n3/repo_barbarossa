@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TradingTechnologies.TTAPI;
 using TradingTechnologies.TTAPI.Autospreader;
 using TradingTechnologies.TTAPI.Tradebook;
@@ -20,7 +21,7 @@ namespace IFS_Algo
         private string m_username;
         private string m_password;
         public ttapiUtils.Subscription TTAPISubs;
-        DataTable MarketPriceTable;
+        DataTable SummaryTable;
         DataTable LiquidSpreads;
         List<string> ASENameList;
         List<string> TagList;
@@ -28,17 +29,19 @@ namespace IFS_Algo
         int NumBets;
         double MaxBetSize;
         List<ttapiUtils.AutoSpreader> AutoSpreaderList;
+        Dictionary<string, ttapiUtils.AutoSpreader> AutoSpreaderDictionary;
         mysql connection;
         MySqlConnection conn;
         Logger IFSLogger;
+        System.Timers.Timer TradeTimer;
 
         public Algo(string u, string p)
         {
             m_username = u;
             m_password = p;
 
-            NumBets = 1;
-            MaxBetSize = 900;
+            NumBets = 3;
+            MaxBetSize = 700;
 
             connection = new mysql();
             conn = connection.conn;
@@ -60,6 +63,12 @@ namespace IFS_Algo
             DataSet PythonOutput = IOUtilities.ExcelDataReader.LoadFile(DirectoryName + "/" + DirectoryExtension + "/ifs.xlsx");
             DataTable IfsSheet = PythonOutput.Tables["all"];
 
+            TradeTimer = new System.Timers.Timer();
+            TradeTimer.Elapsed += new ElapsedEventHandler(PeriodicCall);
+            TradeTimer.Interval = 30000;
+            // And start it        
+            TradeTimer.Enabled = true;
+
             DataColumn ExistingPositionColumn = new DataColumn("ExistingPosition", typeof(int));
             ExistingPositionColumn.DefaultValue = 0;
             IfsSheet.Columns.Add(ExistingPositionColumn);
@@ -71,30 +80,35 @@ namespace IFS_Algo
             IfsSheet.Columns.Add("Alias", typeof(string));
 
             AutoSpreaderList = new List<ttapiUtils.AutoSpreader>();
+            AutoSpreaderDictionary = new Dictionary<string, ttapiUtils.AutoSpreader>();
 
-            MarketPriceTable = new DataTable();
-            MarketPriceTable.Columns.Add("Ticker", typeof(string));
-            MarketPriceTable.Columns.Add("TickerHead", typeof(string));
-            MarketPriceTable.Columns.Add("Tag", typeof(string));
-            MarketPriceTable.Columns.Add("Alias", typeof(string));
-            MarketPriceTable.Columns.Add("DescriptionString", typeof(string));
-            MarketPriceTable.Columns.Add("Settle", typeof(decimal));
-            MarketPriceTable.Columns.Add("Bid", typeof(decimal));
-            MarketPriceTable.Columns.Add("Ask", typeof(decimal));
-            MarketPriceTable.Columns.Add("Mid", typeof(decimal));
-            MarketPriceTable.Columns.Add("MidConverted", typeof(decimal));
-            MarketPriceTable.Columns.Add("SuggestedPosition", typeof(int));
-            MarketPriceTable.Columns.Add("WorkingPosition", typeof(int));
+            SummaryTable = new DataTable();
+            SummaryTable.Columns.Add("Ticker", typeof(string));
+            SummaryTable.Columns.Add("TickerHead", typeof(string));
+            SummaryTable.Columns.Add("Tag", typeof(string));
+            SummaryTable.Columns.Add("Alias", typeof(string));
+            SummaryTable.Columns.Add("DescriptionString", typeof(string));
+            SummaryTable.Columns.Add("Settle", typeof(decimal));
+            SummaryTable.Columns.Add("Bid", typeof(double));
+            SummaryTable.Columns.Add("Ask", typeof(double));
+            SummaryTable.Columns.Add("Mid", typeof(double));
+            SummaryTable.Columns.Add("MidConverted", typeof(double));
+            SummaryTable.Columns.Add("SuggestedSize", typeof(int));
+            SummaryTable.Columns.Add("WorkingPosition", typeof(int));
             DataColumn ExistingPositionColumn2 = new DataColumn("ExistingPosition", typeof(int));
             ExistingPositionColumn2.DefaultValue = 0;
-            MarketPriceTable.Columns.Add(ExistingPositionColumn2);
+            SummaryTable.Columns.Add(ExistingPositionColumn2);
 
             DataColumn ExistingPositionTickerHeadColumn = new DataColumn("ExistingPositionTickerHead", typeof(int));
             ExistingPositionTickerHeadColumn.DefaultValue = 0;
-            MarketPriceTable.Columns.Add(ExistingPositionTickerHeadColumn);
+            SummaryTable.Columns.Add(ExistingPositionTickerHeadColumn);
 
-            MarketPriceTable.Columns.Add("Mean", typeof(double));
-            MarketPriceTable.Columns.Add("Std", typeof(double));
+            DataColumn ValidPriceColumn = new DataColumn("ValidPrice", typeof(bool));
+            ValidPriceColumn.DefaultValue = false;
+            SummaryTable.Columns.Add(ValidPriceColumn);
+
+            SummaryTable.Columns.Add("Mean", typeof(double));
+            SummaryTable.Columns.Add("Std", typeof(double));
 
             List<string> OpenStrategyList = TA.Strategy.GetFilteredOpenStrategyList(asOfDate: TodayDate, conn: conn, strategyClass: "ifs");
 
@@ -134,6 +148,7 @@ namespace IFS_Algo
             LiquidSpreads = newDataTable.AsEnumerable().GroupBy(r => r["spread_description"]).Select(w => w.First()).CopyToDataTable();
 
             LiquidSpreads = LiquidSpreads.Select("upside<" + MaxBetSize).CopyToDataTable();
+            LiquidSpreads = LiquidSpreads.Select("spread_description='C_W' or spread_description='W_KW' or spread_description='S_BO_SM'").CopyToDataTable();
 
             foreach (DataRow item in ExistingPositions)
             {
@@ -148,7 +163,9 @@ namespace IFS_Algo
                 TickerList.RemoveAll(item => item == null);
                 AutoSpreaderList.Add(new ttapiUtils.AutoSpreader(dbTickerList:TickerList,payUpTicks:2));
 
-                DataRow Row = MarketPriceTable.NewRow();
+                AutoSpreaderDictionary.Add(AutoSpreaderList[i].AutoSpreaderName, AutoSpreaderList[i]);
+
+                DataRow Row = SummaryTable.NewRow();
                 Row["Ticker"] = AutoSpreaderList[i].AutoSpreaderName;
                 Row["TickerHead"] = LiquidSpreads.Rows[i].Field<string>("spread_description");
                 Row["Tag"] = "ifs_" + i.ToString();
@@ -166,18 +183,19 @@ namespace IFS_Algo
                 Row["DescriptionString"] = "strategy_class=ifs&betsize=" + MaxBetSize.ToString();
                 Row["WorkingPosition"] = 0;
                 Row["Settle"] = LiquidSpreads.Rows[i].Field<double>("settle");
-                Row["Mean"] = LiquidSpreads.Rows[i].Field<double>("mean1");
-                Row["Std"] = LiquidSpreads.Rows[i].Field<double>("std1");
+                Row["Mean"] = LiquidSpreads.Rows[i].Field<double>("mean10");
+                Row["Std"] = LiquidSpreads.Rows[i].Field<double>("std10");
+                Row["SuggestedSize"] = Math.Min(10,Math.Round(2 * MaxBetSize /(LiquidSpreads.Rows[i].Field<double>("upside") + Math.Abs(LiquidSpreads.Rows[i].Field<double>("downside")))));
 
-                MarketPriceTable.Rows.Add(Row);
+                SummaryTable.Rows.Add(Row);
                 
             }
 
-            List<string> TickerHeadList = DataAnalysis.DataTableFunctions.GetColumnAsList<string>(dataTableInput: MarketPriceTable, columnName: "TickerHead", uniqueQ: true);
+            List<string> TickerHeadList = DataAnalysis.DataTableFunctions.GetColumnAsList<string>(dataTableInput: SummaryTable, columnName: "TickerHead", uniqueQ: true);
 
             foreach (string item in TickerHeadList)
             {
-                DataRow[] RowList = MarketPriceTable.Select("TickerHead='" + item + "'");
+                DataRow[] RowList = SummaryTable.Select("TickerHead='" + item + "'");
                 int TotalPosition = 0;
 
                 foreach (DataRow Row in RowList)
@@ -193,14 +211,94 @@ namespace IFS_Algo
             }
 
 
-            ASENameList = MarketPriceTable.AsEnumerable().Select(x => x.Field<string>("Ticker")).ToList();
-            TagList = MarketPriceTable.AsEnumerable().Select(x => x.Field<string>("Tag")).ToList();
+            ASENameList = SummaryTable.AsEnumerable().Select(x => x.Field<string>("Ticker")).ToList();
+            TagList = SummaryTable.AsEnumerable().Select(x => x.Field<string>("Tag")).ToList();
 
             TTAPISubs = new ttapiUtils.Subscription(m_username, m_password);
             TTAPISubs.AutoSpreaderList = AutoSpreaderList;
             TTAPISubs.AsuUpdateList = new List<EventHandler<AuthenticationStatusUpdateEventArgs>> { TTAPISubs.StartASESubscriptions };
             TTAPISubs.priceUpdatedEventHandler = m_ps_FieldsUpdated;
             TTAPISubs.orderFilledEventHandler = m_ts_OrderFilled;
+            TTAPISubs.OrderDeletedEventHandler = OrderDeleted;
+
+        }
+
+        private void PeriodicCall(object source, ElapsedEventArgs e)
+        {
+            Console.WriteLine(new String('-', 20));
+
+            for (int i = 0; i < SummaryTable.Rows.Count; i++)
+            {
+                DataRow SelectedRow = SummaryTable.Rows[i];
+
+                if (SelectedRow.Field<bool>("ValidPrice"))
+                {
+                    double Zscore = (SelectedRow.Field<double>("MidConverted") - SelectedRow.Field<double>("Mean")) / (1.75 * SelectedRow.Field<double>("Std"));
+
+                    ttapiUtils.AutoSpreader SelectedAutospreader = AutoSpreaderList[i];
+                    Instrument SelectedInstrument = SelectedAutospreader.AutoSpreaderInstrument;
+
+                    Console.WriteLine(SelectedRow.Field<string>("Ticker") + " Z-Score: " + Math.Round(Zscore,2));
+
+                    if ((SelectedRow.Field<int>("ExistingPosition") < 0) && (Zscore > 1))
+                    {
+                        continue;
+                    }
+                    else if (((SelectedRow.Field<int>("ExistingPosition") < 0) && (Zscore < 0.75)) ||
+                            ((SelectedRow.Field<int>("ExistingPosition") > 0) && (Zscore > -0.75)))
+                    {
+
+                        DataRow[] RowList = SummaryTable.Select("TickerHead='" + SelectedRow.Field<string>("TickerHead") + "'");
+
+                        foreach (DataRow Row in RowList)
+                        {
+                            Row["ExistingPositionTickerHead"] = Row.Field<int>("ExistingPositionTickerHead") - SelectedRow.Field<int>("ExistingPosition");
+                        }
+
+                        IFSLogger.Log(SelectedRow.Field<string>("Alias") + " has normalized. Closing position...");
+
+                        ttapiUtils.Trade.SendAutospreaderOrder(autoSpreader: SelectedAutospreader,
+                            qty: -SelectedRow.Field<int>("ExistingPosition"),
+                            price: (decimal)SelectedRow.Field<double>("Mid"), orderTag: SelectedRow.Field<string>("Tag"), logger: IFSLogger,reloadQuantity:1);
+
+                        SelectedRow["ExistingPosition"] = 0;
+
+                    }
+
+                    else if (SummaryTable.Select("WorkingPosition<>0").Count() >= NumBets)
+                        continue;
+
+                    else if ((Zscore > 1) &&
+                             (SelectedRow.Field<int>("WorkingPosition") == 0) &&
+                             (SelectedRow.Field<int>("ExistingPositionTickerHead") >= 0))
+                    {
+                        SelectedRow["WorkingPosition"] = -SelectedRow.Field<int>("SuggestedSize");
+
+                        IFSLogger.Log(SelectedRow.Field<string>("Alias") + " entering a short position...");
+
+
+                        ttapiUtils.Trade.SendAutospreaderOrder(autoSpreader: SelectedAutospreader,
+                            qty: -SelectedRow.Field<int>("SuggestedSize"), price: (decimal)SelectedRow.Field<double>("Mid"), orderTag: SelectedRow.Field<string>("Tag"), logger: IFSLogger, reloadQuantity:1);
+
+
+                    }
+                    else if ((Zscore < -1) &&
+                        (SelectedRow.Field<int>("WorkingPosition") == 0) &&
+                        (SelectedRow.Field<int>("ExistingPositionTickerHead") <= 0))
+                    {
+                        SelectedRow["WorkingPosition"] = SelectedRow.Field<int>("SuggestedSize");
+
+                        IFSLogger.Log(SelectedRow.Field<string>("Alias") + " entering a long position...");
+
+                        ttapiUtils.Trade.SendAutospreaderOrder(autoSpreader: SelectedAutospreader, 
+                            qty: SelectedRow.Field<int>("SuggestedSize"),
+                            price: (decimal)SelectedRow.Field<double>("Mid"), orderTag: SelectedRow.Field<string>("Tag"), logger: IFSLogger, reloadQuantity:1);
+
+                    }
+                }
+
+            }
+
 
         }
 
@@ -212,82 +310,20 @@ namespace IFS_Algo
               
                         int RowIndex = ASENameList.IndexOf(e.Fields.Instrument.Name);
 
-                        MarketPriceTable.Rows[RowIndex]["Bid"] = Convert.ToDecimal(e.Fields.GetDirectBidPriceField().FormattedValue);
-                        MarketPriceTable.Rows[RowIndex]["Ask"] = Convert.ToDecimal(e.Fields.GetDirectAskPriceField().FormattedValue);
+                        Price BidPrice = e.Fields.GetDirectBidPriceField().Value;
+                        Price AskPrice = e.Fields.GetDirectAskPriceField().Value;
 
-                        MarketPriceTable.Rows[RowIndex]["Mid"] = (MarketPriceTable.Rows[RowIndex].Field<decimal>("Bid") + MarketPriceTable.Rows[RowIndex].Field<decimal>("Ask")) / 2;
+                        double BidPriceDb = BidPrice.ToDouble();
+                        double AskPriceDb = AskPrice.ToDouble();
 
-                        MarketPriceTable.Rows[RowIndex]["MidConverted"] = TA.PriceConverters.FromTTAutoSpreader2DB(ttPrice: MarketPriceTable.Rows[RowIndex].Field<decimal>("Mid"), tickerHead: MarketPriceTable.Rows[RowIndex].Field<string>("TickerHead"));
+                        SummaryTable.Rows[RowIndex]["Bid"] = BidPrice.ToDouble();
+                        SummaryTable.Rows[RowIndex]["Ask"] = AskPrice.ToDouble();
 
-                        double MidPriceConverted = (double)MarketPriceTable.Rows[RowIndex].Field<decimal>("MidConverted");
-                        double YesterdayMean = MarketPriceTable.Rows[RowIndex].Field<double>("Mean");
-                        double YesterdayStd = MarketPriceTable.Rows[RowIndex].Field<double>("Std");
+                        SummaryTable.Rows[RowIndex]["Mid"] = (SummaryTable.Rows[RowIndex].Field<double>("Bid") + SummaryTable.Rows[RowIndex].Field<double>("Ask")) / 2;
 
-                        ttapiUtils.AutoSpreader As = AutoSpreaderList[RowIndex];
+                        SummaryTable.Rows[RowIndex]["MidConverted"] = TA.PriceConverters.FromTTAutoSpreader2DB(ttPrice: (decimal)SummaryTable.Rows[RowIndex].Field<double>("Mid"), tickerHead: SummaryTable.Rows[RowIndex].Field<string>("TickerHead"));
 
-
-                        if ((MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPosition")<0) && (MidPriceConverted > YesterdayMean + YesterdayStd))
-                        {
-                            return;
-                        }
-                        else if (((MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPosition")<0) && (MidPriceConverted < YesterdayMean + YesterdayStd))||
-                                ((MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPosition")>0) && (MidPriceConverted > YesterdayMean - YesterdayStd)))
-
-                        {
-
-                            DataRow[] RowList = MarketPriceTable.Select("TickerHead='" + MarketPriceTable.Rows[RowIndex].Field<string>("TickerHead") + "'");
-
-                            foreach (DataRow Row in RowList)
-                            {
-                                Row["ExistingPositionTickerHead"] = Row.Field<int>("ExistingPositionTickerHead") - MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPosition");
-                            }
-
-                            IFSLogger.Log(MarketPriceTable.Rows[RowIndex].Field<string>("Alias") + " has normalized. Closing position...");
-
-                            ttapiUtils.Trade.SendAutospreaderOrder(instrument: e.Fields.Instrument, instrumentDetails: e.Fields.InstrumentDetails, autoSpreader: As, 
-                                qty: -MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPosition"),
-                               price: MarketPriceTable.Rows[RowIndex].Field<decimal>("Mid"), orderTag: MarketPriceTable.Rows[RowIndex].Field<string>("Tag"), logger: IFSLogger);
-
-                            MarketPriceTable.Rows[RowIndex]["ExistingPosition"] = 0;
-                            
-                        }
-
-                        else if (MarketPriceTable.Select("WorkingPosition<>0").Count() >= NumBets)
-                            return;
-
-                        else if ((MidPriceConverted > YesterdayMean + YesterdayStd) &&
-                                 (MarketPriceTable.Rows[RowIndex].Field<int>("WorkingPosition")==0) &&
-                                 (MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPositionTickerHead")>=0))
-
-                        {
-                            MarketPriceTable.Rows[RowIndex]["SuggestedPosition"] = -1;
-                            MarketPriceTable.Rows[RowIndex]["WorkingPosition"] = -1;
-
-                            IFSLogger.Log(MarketPriceTable.Rows[RowIndex].Field<string>("Alias") + " entering a short position...");
-
-
-                            ttapiUtils.Trade.SendAutospreaderOrder(instrument: e.Fields.Instrument, instrumentDetails: e.Fields.InstrumentDetails, autoSpreader: As, qty: -1,
-                                price: MarketPriceTable.Rows[RowIndex].Field<decimal>("Mid"), orderTag: MarketPriceTable.Rows[RowIndex].Field<string>("Tag"), logger: IFSLogger);
-
-                           
-                        }
-                        else if ((MidPriceConverted<YesterdayMean-YesterdayStd) && 
-                            (MarketPriceTable.Rows[RowIndex].Field<int>("WorkingPosition")==0) &&
-                            (MarketPriceTable.Rows[RowIndex].Field<int>("ExistingPositionTickerHead")<=0))
-                        {
-                            MarketPriceTable.Rows[RowIndex]["SuggestedPosition"] = 1;
-                            MarketPriceTable.Rows[RowIndex]["WorkingPosition"] = 1;
-
-                            IFSLogger.Log(MarketPriceTable.Rows[RowIndex].Field<string>("Alias") + " entering a long position...");
-
-                            ttapiUtils.Trade.SendAutospreaderOrder(instrument: e.Fields.Instrument, instrumentDetails: e.Fields.InstrumentDetails, autoSpreader: As, qty: 1,
-                                price: MarketPriceTable.Rows[RowIndex].Field<decimal>("Mid"), orderTag: MarketPriceTable.Rows[RowIndex].Field<string>("Tag"), logger: IFSLogger);
-
-                        }
-                        else
-                        {
-                            MarketPriceTable.Rows[RowIndex]["SuggestedPosition"] = 0;
-                        }
+                        SummaryTable.Rows[RowIndex]["ValidPrice"] = true; 
 
             }
             else
@@ -305,13 +341,13 @@ namespace IFS_Algo
 
             string Tag = e.Fill.OrderTag;
             int RowIndex = TagList.IndexOf(Tag);
-            string Alias = MarketPriceTable.Rows[RowIndex].Field<string>("Alias");
+            string Alias = SummaryTable.Rows[RowIndex].Field<string>("Alias");
 
             //ASENameList[RowIndex].
 
             if (!TA.Strategy.CheckIfStrategyExist(alias:Alias,conn:conn))
             {
-                TA.Strategy.GenerateDbStrategyFromAlias(alias: Alias, descriptionString: MarketPriceTable.Rows[RowIndex].Field<string>("DescriptionString"), conn: conn);
+                TA.Strategy.GenerateDbStrategyFromAlias(alias: Alias, descriptionString: SummaryTable.Rows[RowIndex].Field<string>("DescriptionString"), conn: conn);
             }
 
             // ProducttKey and SeriesKey are seperately accesible
@@ -342,37 +378,12 @@ namespace IFS_Algo
             IFSLogger.Log(Alias + ": " + TradeQuantity.ToString() + " " + TickerDB + " for " + TA.PriceConverters.FromTT2DB(ttPrice: Convert.ToDecimal(e.Fill.MatchPrice.ToString()),
                 tickerHead: TickerHead).ToString());
 
+        }
 
+        void OrderDeleted(object sender, OrderDeletedEventArgs e)
+        {
 
-            //e.Fill.Quantity
-
-            //e.Fill.BuySell
-
-            //e.Fill.MatchPrice
-
-                
-
-
-
-
-
-
-            //tickerDB = TA.TickerConverters.ConvertFromTTAPIFields2DB(inst.Product.ToString(), inst.Name.ToString());
-            /*
-            if (e.Fill.SiteOrderKey == OrderKey)
-            {
-                // Our parent order has been filled
-                Console.WriteLine("Our parent order has been " + (e.Fill.FillType == FillType.Full ? "fully" : "partially") + " filled");
-            }
-            else if (e.Fill.ParentKey == OrderKey)
-            {
-                // A child order of our parent order has been filled
-                Console.WriteLine("A child order of our parent order has been " + (e.Fill.FillType == FillType.Full ? "fully" : "partially") + " filled");
-            }
-
-            Console.WriteLine("Average Buy Price = {0} : Net Position = {1} : P&L = {2}", ts.ProfitLossStatistics.BuyAveragePrice,
-                ts.ProfitLossStatistics.NetPosition, ts.ProfitLoss.AsPrimaryCurrency);
-             * */
+           
         }
         
         public void Dispose()

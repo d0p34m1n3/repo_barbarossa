@@ -16,6 +16,14 @@ namespace TA
             }
         }
 
+        public static string BetSizeFile
+        {
+            get
+            {
+                return "BetSize.txt";
+            }
+        }
+
         public static string candlestick_signal_file
         {
             get

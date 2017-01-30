@@ -39,6 +39,8 @@ def calc_intrday_pnl_from_prices(**kwargs):
 
     structure_price = sum(option_frame['close_price']*option_frame['qty'])/structure_quantity
 
+    #return option_frame
+
     if structure_price<0:
         structure_quantity = -structure_quantity
         structure_price = -structure_price
@@ -80,6 +82,11 @@ def calc_intraday_structure_pnl_from_prices(**kwargs):
                                                 ('option_type', ['C', 'P', 'C', 'P']),
                                                 ('strike_price', [strike_list[0], strike_list[0], strike_list[1],strike_list[1]]),
                                                 ('qty', [-1, -1, 1, 1])])
+    elif structure_type == 'straddle':
+        option_frame = pd.DataFrame.from_items([('ticker', [ticker_list[0], ticker_list[0]]),
+                                                ('option_type', ['C', 'P']),
+                                                ('strike_price', [strike_list[0], strike_list[0]]),
+                                                ('qty', [1, 1])])
 
     option_price_output = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                   strike=option_frame['strike_price'].iloc[x],

@@ -1,0 +1,82 @@
+
+[249] Website of the book www.systematictrading.org includes some details on strategy automation.
+
+
+(550) Trading system should be objective to avoid psychological biases creep in to make back-testing possible.
+
+(667) You or your investors need to be comfortable with the losses you're likely to make. The size of your positions must reflect the amount of risk you can handle.
+
+(774) Understanding why trading rules make money is very important. If you know why something was profitable in the past you can also have some idea of whether profits will continue, or if and when the rule might fail.
+
+(902) Relative value strategies tend to exhibit negative skew, so investors should demand a skew premium for investing in them.
+
+(902) Most of us overestimate very rare probabilities. This means we will overpay for disaster insurance, such as deep out of the money put options
+that will only pay off if stocks drop 20%.
+
+(946) The fact that most investors don't have access to leverage means that certain assets with high sharp ratio and low returns will be out of favor.
+However, leverage can be costly during times of widespread deleveraging.
+
+(1061) Be aware that if you are making steady profits nearly every day, and most of your trades are winners, then there is a good chance
+you are engaged in negative skew trading. It's just that you haven't yet seen any rare large losses.
+
+(1129) Technical systems are easier to build and run, but in another example of barriers to entry the additional effort required 
+for including fundamental rules is usually rewarded with higher returns.
+
+(1161) Beware of gearing up on apparently low risk with an asset or with a style of trading which is likely to have negative skew,
+even if you haven't yet seen any evidence of the large downside.
+
+(1267) Reasonable sharp ratios for different frequencies are reported in a table.
+
+(1571) Andrew Lo has a paper about statistically analyzing calculated sharp ratios. The average trading rule for one instrument has
+a realistic Sharp Ratio of around 0.3; so it would take nearly 40 years to have %97.5 confidence that this is a money making strategy
+
+(1636) Pooling your data and fitting multiple instruments together is an excellent way of getting  more data history,
+which gives you a better shot at being able to distinguish profitable and loss making trading rules.
+To make pooling easier you should design trading rules that are generic and can work with any instrument.
+
+(1658) Comparing a positively skewed rule and a negatively skewed alternative purely on SR is highly misleading,
+as negative skew rules will tend to have flatteringly high SR.
+
+(1719) The marginal value of adding additional rules is low, especially if they are of the same trading style.
+The average correlation between different rules a particular instrument is higher than between instruments trading the same rule.
+So diversification amongst instruments is preferable to rule diversification.
+
+(1925) Portfolio optimization can be problematic because the expected returns are really hard to estimate.
+One can use bootstrap and get average weights.
+
+(2614) Instruments which have extremely low risk like pegged currencies should be excluded.
+Firstly, when risk returns to normal it is liable to do so very sharply. potentially creating significant losses.
+Secondly, these positions need more leverage  to achieve a given amount of risk, magnifying the danger when they do inevitably blow up.
+
+(2646) Static strategies will inherit the skew of the underlying instruments, but the skew of a dynamic strategy also depends on the
+style of your trading rule. So using a positive skew rule like trend following on a negative skew asset will alleviate some of the danger.
+
+(2819) Expected Sharpe ratios make good forecasts.
+
+(2854) Even if your forecast is looking extremely good, you should cap it to two times the average for risk control purposes.
+
+(3301) The author combines different forecasts from trading rules using a weighted average. 
+He uses a diversification multiplier to make sure the end result is as volatile as the individual forecasts.
+
+(3603) Low volatility instruments, requiring insanely high leverage, should be excluded from any trading system.
+
+(7516) A systematic trader should be humble, and underestimate their intelligence, skill and luck. Assume your trading will go badly, be prepared for that eventuality, and be pleasantly surprised if it doesn't.
+
+(7516) Be pessimistic. Do not trust back-tests, even if you haven't over-fitted them, and even if they've been done on a rolling out of sample basis. The future is unlikely to be quite as good as the past. In my opinion a highly diversified system of systematic trading rules is unlikely to beat a Sharpe ratio of 1.0. 
+
+(7529) If you're making, or expect to make, steady gains with very few losses then there is a good chance you have a negative skew trading style which hasn't yet blown up, but probably will eventually.
+
+(7529) A good systematic investor will be thoughtful. You should know why you might be making money and why you might not. Understand your markets and your trading rules.
+
+(7529) Thriftiness is another virtue. Know your trading costs. Stick to speed limits: I recommend you set your turnover so you never spend more than a third of the pessimistic expected Sharpe ratio for each trading subsystem on trading costs.
+
+(7529) You should be nervous. Only commit trading capital you can afford to lose. Use Half-Kelly: your maximum percentage volatility target should be half what you pessimistically expect your Sharpe ratio to be. 
+
+(7529) The best systematic traders will be diligent when creating their systems, but lazy when running them.
+
+(7895) Some good suggested reading. 
+
+There's a lot of hardcoded methodology in this book which makes it hard to read and pretty tedious to follow after a while. Moreoever the main points are pretty repetitive
+throughout the book.
+
+[DONE]

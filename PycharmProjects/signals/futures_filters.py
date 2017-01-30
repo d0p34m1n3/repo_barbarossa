@@ -1,6 +1,7 @@
 __author__ = 'kocat_000'
 
 import shared.utils as su
+import numpy as np
 
 
 def get_futures_butterfly_filters(**kwargs):
@@ -63,6 +64,15 @@ def get_futures_butterfly_filters(**kwargs):
         selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) &
                                          (data_frame_input['QF'] >= 85) &
                                          (data_frame_input['mean_reversion_signif'] == True))
+
+    if 'long7' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] <= -1.2) & (data_frame_input['QF'] <= 12) & (data_frame_input['tickerHead'].isin(['CL', 'B'])) & (data_frame_input['z6'] <= -0.6))|\
+                                        ((data_frame_input['z1'] <= -1.2) &(data_frame_input['QF'] <= 12) & (np.logical_not(data_frame_input['tickerHead'].isin(['CL', 'B']))))
+
+    if 'short7' in filter_list:
+        selection_indx = selection_indx|((data_frame_input['z1'] >= 0.6) &(data_frame_input['QF'] >= 85)& (data_frame_input['tickerHead'].isin(['CL', 'B'])) & (data_frame_input['z6'] >= 0.3))|\
+                                        ((data_frame_input['z1'] >= 0.6) &(data_frame_input['QF'] >= 85)& (np.logical_not(data_frame_input['tickerHead'].isin(['CL', 'B']))))
+
 
     return {'selected_frame': data_frame_input[selection_indx],'selection_indx': selection_indx }
 

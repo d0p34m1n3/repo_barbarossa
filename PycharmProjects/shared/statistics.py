@@ -98,9 +98,16 @@ def get_regression_results(regression_input):
     results = sm.OLS(clean_y, sm.add_constant(clean_x), hasconst=True).fit()
     parameters = results.params
 
-    zscore = (y_current-parameters[0]-parameters[1]*x_current)/np.sqrt(results.mse_resid)
+    if len(parameters)>1:
+        zscore = (y_current-parameters[0]-parameters[1]*x_current)/np.sqrt(results.mse_resid)
+        alpha = parameters[0]
+        beta = parameters[1]
+    else:
+        zscore = np.nan
+        alpha = parameters[0]
+        beta = np.nan
 
-    return {'alpha': parameters[0], 'beta': parameters[1],
+    return {'alpha': alpha, 'beta': beta,
             'conf_int': results.conf_int(),
             'rsquared': 100*results.rsquared,
             'residualstd': np.sqrt(results.mse_resid),

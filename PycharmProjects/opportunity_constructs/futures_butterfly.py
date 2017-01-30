@@ -138,6 +138,7 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
     datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
 
     for i in range(num_butterflies):
+
         bf_signals_output = fs.get_futures_butterfly_signals(ticker_list=[butterflies['ticker1'][i], butterflies['ticker2'][i], butterflies['ticker3'][i]],
                                           tr_dte_list=[butterflies['trDte1'][i], butterflies['trDte2'][i], butterflies['trDte3'][i]],
                                           aggregation_method=butterflies['agg'][i],
@@ -146,6 +147,9 @@ def generate_futures_butterfly_sheet_4date(**kwargs):
                                           futures_data_dictionary=futures_data_dictionary,
                                           contract_multiplier=butterflies['multiplier'][i],
                                           datetime5_years_ago=datetime5_years_ago)
+
+        if not bf_signals_output['success']:
+            continue
 
         q_list[i] = bf_signals_output['q']
         qf_list[i] = bf_signals_output['qf']

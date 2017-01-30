@@ -67,6 +67,9 @@ def get_futures_butterfly_signals(**kwargs):
                                                           date_to=date_to,
                                                           futures_data_dictionary=futures_data_dictionary,
                                                           use_last_as_current=use_last_as_current)
+    if not aligned_output['success']:
+        return {'success': False}
+
     current_data = aligned_output['current_data']
     aligned_data = aligned_output['aligned_data']
 
@@ -235,7 +238,7 @@ def get_futures_butterfly_signals(**kwargs):
 
     theo_pnl_list = [x*contract_multiplier*2  for x in theo_spread_move_output['theo_spread_move_list']]
 
-    return {'aligned_output': aligned_output, 'q': q, 'qf': qf,
+    return {'success': True,'aligned_output': aligned_output, 'q': q, 'qf': qf,
             'theo_pnl_list': theo_pnl_list,
             'ratio_target_list': theo_spread_move_output['ratio_target_list'],
             'weight1': weight1, 'weight2': weight2, 'weight3': weight3,
@@ -329,7 +332,6 @@ def get_futures_spread_carry_signals(**kwargs):
     price_current_list = [current_data['c' + str(x+1)]['close_price']-current_data['c' + str(x+2)]['close_price']
                             for x in range(len(ticker_list)-1)]
 
-
     yield_history = [100*(aligned_data['c' + str(x+1)]['close_price']-
                            aligned_data['c' + str(x+2)]['close_price'])/
                            aligned_data['c' + str(x+2)]['close_price']
@@ -372,6 +374,11 @@ def get_futures_spread_carry_signals(**kwargs):
     upside = [contract_multiplier*(q85[x]+q99[x])/2 for x in range(len(q1))]
     carry = [contract_multiplier*(price_current_list[x]-price_current_list[x+1]) for x in range(len(q_list)-1)]
     q_carry = [q_list[x]-q_list[x+1] for x in range(len(q_list)-1)]
+
+    q_average = np.mean(q_list)
+
+    q_carry_average = [q_list[x]-q_average for x in range(len(q_list))]
+
     reward_risk = [5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*abs(downside[x+1])) if carry[x]>0
       else 5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
 
@@ -381,6 +388,7 @@ def get_futures_spread_carry_signals(**kwargs):
                          ('front_tr_dte',front_tr_dte),
                          ('carry',[np.NAN]+carry),
                          ('q_carry',[np.NAN]+q_carry),
+                         ('q_carry_average',q_carry_average),
                          ('reward_risk',[np.NAN]+reward_risk),
                          ('price',price_current_list),
                          ('q',q_list),

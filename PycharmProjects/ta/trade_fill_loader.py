@@ -1,5 +1,6 @@
 
 import shared.directory_names as dn
+import shared.utils as su
 import pandas as pd
 import os as os
 import datetime as dt
@@ -175,9 +176,9 @@ def get_formatted_tt_fills(**kwargs):
 
     str_indx = fill_frame['Contract'].values[0].find('-')
 
-    if str_indx==2:
+    if str_indx == 2:
         date_format = '%y-%b'
-    elif str_indx==-1:
+    elif str_indx == -1:
         date_format = '%b%y'
 
     datetime_conversion = [dt.datetime.strptime(x,date_format) for x in fill_frame['Contract']]
@@ -215,21 +216,68 @@ def get_formatted_tt_fills(**kwargs):
 def get_ticker_from_tt_instrument_name_and_product_name(**kwargs):
 
     instrument_name = kwargs['instrument_name']
+    #print(instrument_name)
     product_name = kwargs['product_name']
 
-    maturity_string = instrument_name.split()[-1]
-
-    if len(maturity_string)>=5:
-        datetime_conversion = dt.datetime.strptime(maturity_string,'%b%y')
-    else:
-        return {'ticker': '', 'ticker_head': '' }
-
-    ticker_year = datetime_conversion.year
-    ticker_month = datetime_conversion.month
     ticker_head = conversion_from_tt_ticker_head[product_name]
 
-    ticker = ticker_head + cmi.full_letter_month_list[ticker_month-1] + str(ticker_year)
+    string_list = instrument_name.split()
+
+    exchange_string = string_list[0]
+    maturity_string = string_list[-1]
+
+    if ('Spread' in instrument_name) & \
+            ('Q1' not in instrument_name) & ('Q2' not in instrument_name) &('Q3' not in instrument_name) &('Q4' not in instrument_name) &\
+            (exchange_string == 'ICE_IPE'):
+        contract1_datetime = dt.datetime.strptime(maturity_string[0:5],'%b%y')
+        contract2_datetime = dt.datetime.strptime(maturity_string[6:11],'%b%y')
+        ticker = ticker_head + cmi.full_letter_month_list[contract1_datetime.month-1] + str(contract1_datetime.year) + '-' + \
+               ticker_head + cmi.full_letter_month_list[contract2_datetime.month-1] + str(contract2_datetime.year)
+
+    elif ('Calendar' in instrument_name) & (exchange_string == 'CME'):
+        contract1_datetime = dt.datetime.strptime(maturity_string[0:5],'%b%y')
+        contract2_datetime = dt.datetime.strptime(maturity_string[9:14],'%b%y')
+        ticker = ticker_head + cmi.full_letter_month_list[contract1_datetime.month-1] + str(contract1_datetime.year) + '-' + \
+               ticker_head + cmi.full_letter_month_list[contract2_datetime.month-1] + str(contract2_datetime.year)
+    elif (len(maturity_string) >= 5) &('Spread' not in instrument_name)&('Butterfly' not in instrument_name)&('x' not in instrument_name):
+        contract_datetime = dt.datetime.strptime(maturity_string,'%b%y')
+        ticker = ticker_head + cmi.full_letter_month_list[contract_datetime.month-1] + str(contract_datetime.year)
+    else:
+        ticker = ''
+
     return {'ticker': ticker, 'ticker_head': ticker_head }
+
+
+def convert_ticker_from_db2tt(db_ticker):
+
+    if '-' in db_ticker:
+        spreadQ = True
+        ticker_list = db_ticker.split('-')
+    else:
+        spreadQ = False
+        ticker_list = [db_ticker]
+
+    contract_specs_list = [cmi.get_contract_specs(x) for x in ticker_list]
+    ticker_head_list = [x['ticker_head'] for x in contract_specs_list]
+    exchange_traded = cmi.get_exchange_traded(ticker_head_list[0])
+
+    if exchange_traded == 'CME':
+        exchange_string = 'CME'
+    elif exchange_traded == 'ICE':
+        exchange_string = 'ICE_IPE'
+
+    tt_ticker_head = su.get_key_in_dictionary(dictionary_input=conversion_from_tt_ticker_head, value=ticker_head_list[0])
+    maturity_string_list = [dt.date(x['ticker_year'],x['ticker_month_num'],1).strftime('%b%y') for x in contract_specs_list]
+
+    if spreadQ:
+        if exchange_traded == 'ICE':
+            tt_ticker = exchange_string + ' ' + tt_ticker_head + ' Spread ' + maturity_string_list[0] + '-' + maturity_string_list[1]
+        elif exchange_traded == 'CME':
+            tt_ticker = exchange_string + ' Calendar- 1x' + tt_ticker_head + ' ' + maturity_string_list[0] + '--1x' + maturity_string_list[1]
+    else:
+        tt_ticker = exchange_string + ' ' + tt_ticker_head + ' ' + maturity_string_list[0]
+
+    return tt_ticker
 
 
 def get_formatted_cme_direct_fills(**kwargs):

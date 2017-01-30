@@ -395,7 +395,7 @@ def doubledate_shift_bus_days(**kwargs):
         dts = [x for x in dts_aux if x.to_datetime() != double_date_datetime]
         shifted_datetime = dts[-shift_in_days-1]
     elif shift_in_days > 0:
-        dts_aux = pd.date_range(start=double_date_datetime-dt.timedelta(max(m.ceil(shift_in_days*7/4), shift_in_days+5)),
+        dts_aux = pd.date_range(start=double_date_datetime-dt.timedelta(max(m.ceil(shift_in_days*7/4), shift_in_days+8)),
                             end=double_date_datetime, freq=bday_us)
         dts = [x for x in dts_aux if x.to_datetime() != double_date_datetime]
         shifted_datetime = dts[-shift_in_days]

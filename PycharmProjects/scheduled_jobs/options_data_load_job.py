@@ -11,6 +11,7 @@ import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
 import opportunity_constructs.vcs as vcs
 import formats.options_strategy_formats as osf
+import formats.futures_strategy_formats as fsf
 import formats.intraday_futures_strategy_formats as ifsf
 import ta.prepare_daily as prep
 
@@ -104,6 +105,11 @@ except Exception:
 
 try:
     ifsf.generate_ibo_formatted_output(report_date=folder_date)
+except Exception:
+    pass
+
+try:
+    fsf.generate_ifs_formatted_output(report_date=folder_date)
 except Exception:
     pass
 

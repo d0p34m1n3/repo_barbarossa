@@ -20,6 +20,11 @@ def generate_db_strategy_from_strategy_sheet(**kwargs):
     strategy_class = kwargs['strategy_class']
 
     strategy_output = load_strategy_file(**kwargs)
+
+    del strategy_output['z5']
+    del strategy_output['z6']
+    del strategy_output['z7']
+
     strategy = strategy_output.loc[id]
 
     if strategy_class == 'futures_butterfly':
@@ -372,8 +377,14 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/scv/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ifs':
          output_dir = strategy_output_folder + '/ifs/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ics':
+         output_dir = strategy_output_folder + '/ics/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ibo':
          output_dir = strategy_output_folder + '/ibo/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ts':
+         output_dir = strategy_output_folder + '/ts/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ocs':
+         output_dir = strategy_output_folder + '/ocs/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

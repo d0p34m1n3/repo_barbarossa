@@ -1,0 +1,10 @@
+
+(PAGE 7) Lin, Yang and Song paper might be interesting but hard to download for free.
+
+(PAGE 11) The way that compute averages (which is a little esoteric) is explained here.
+
+(PAGE 14) The strategies considered here are pretty agressive market takers that will buy at the ask and sell at the bid.
+
+[PAGE 41] They seem to have find some strategies that are profitable out of sample.
+
+[DONE]

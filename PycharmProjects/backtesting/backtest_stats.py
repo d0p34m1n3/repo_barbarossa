@@ -5,6 +5,7 @@ import pandas as pd
 import shared.statistics as stats
 import shared.utils as su
 import signals.utils as sigut
+import scipy.stats as scs
 
 
 def get_summary_stats(pnl_series):
@@ -47,7 +48,8 @@ def get_indicator_rr_table(**kwargs):
     else:
         num_buckets = 9
 
-    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field])) & (np.isfinite(trade_data[short_pnl_field]))]
+    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field].values.astype(np.float64))) &
+                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))]
 
     signal_correlation = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_name)
     ascending_q = True if signal_correlation<0 else False
@@ -68,7 +70,7 @@ def get_indicator_rr_table(**kwargs):
         else:
             signed_pnl = bucket_data[short_pnl_field]
 
-        stats_output = get_summary_stats(signed_pnl.values)
+        stats_output = get_summary_stats(signed_pnl.values.astype(np.float64))
         mean_pnl_list.append(stats_output['mean_pnl'])
         reward_risk_list.append(stats_output['reward_risk'])
 
@@ -95,7 +97,8 @@ def get_indicator_rr_double_table(**kwargs):
     else:
         num_buckets = 3
 
-    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field])) & (np.isfinite(trade_data[short_pnl_field]))]
+    trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field].values.astype(np.float64))) &
+                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))]
 
     signal_correlation1 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[0])
     signal_correlation2 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[1])
@@ -196,7 +199,6 @@ def rank_indicators(**kwargs):
     if 'granular_ranking_type' in kwargs.keys():
         granular_ranking_type = kwargs['granular_ranking_type']
 
-
     selection_indx = [True]*len(trade_data.index)
 
     for indicator_i in indicator_list_raw:
@@ -262,3 +264,45 @@ def rank_indicators(**kwargs):
 
     return {'indicator_ranking_total': indicator_ranking_total,
             'indicator_ranking_granular_total': granular_ranking_frame.sort('ranking', ascending=False,inplace=False)}
+
+
+def get_chisquare_independence_results(**kwargs):
+
+    indicator_name = kwargs['indicator_name']
+    target_name = kwargs['target_name']
+    dataframe_input = kwargs['dataframe_input']
+
+    dataframe_input = dataframe_input[dataframe_input[indicator_name].notnull()&dataframe_input[target_name].notnull()]
+
+    dataframe_input['target_category'] = 0
+    dataframe_input['indicator_category'] = 0
+
+    quantile_values = stats.get_number_from_quantile(y=dataframe_input[target_name].values,quantile_list=[33, 66])
+    dataframe_input.loc[dataframe_input[target_name]<quantile_values[0],'target_category'] = -1
+    dataframe_input.loc[dataframe_input[target_name]>quantile_values[1],'target_category'] = 1
+
+    quantile_values = stats.get_number_from_quantile(y=dataframe_input[indicator_name].values,quantile_list=[10, 90])
+    dataframe_input.loc[dataframe_input[indicator_name]<quantile_values[0],'indicator_category'] = -1
+    dataframe_input.loc[dataframe_input[indicator_name]>quantile_values[1],'indicator_category'] = 1
+
+    dataframe_input = dataframe_input[dataframe_input['indicator_category']!=0]
+
+    contingency_table = [[sum((dataframe_input['indicator_category'] == cat1) & (dataframe_input['target_category'] == cat2))
+               for cat2 in [-1,0,1]]
+              for cat1 in [-1,1]]
+
+    chi_square_output = scs.chi2_contingency(contingency_table)
+
+    chi_square_stat = chi_square_output[0]
+
+    return {'chi_square': chi_square_stat, 'cramers_v': np.sqrt(chi_square_stat/len(dataframe_input.index))}
+
+
+
+
+
+
+
+
+
+

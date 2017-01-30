@@ -57,13 +57,6 @@ namespace IFS_Algo
             Console.WriteLine("SUCCESS!! ");
             
 
-
-            
-
-            
-
-
-
             string emre = "emre";
 
         }

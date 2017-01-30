@@ -65,6 +65,29 @@ def get_signal_correlation(**kwargs):
     elif strategy_class == 'curve_pca':
         if signal_name == 'z':
             correlation = 1
+    elif strategy_class == 'ifs':
+        if signal_name in ['z2', 'z5', 'z6','z10']:
+            correlation = -1
+        elif signal_name in ['z1']:
+            correlation = 1
+    elif strategy_class == 'ics':
+        if signal_name in ['z1', 'z2', 'z5', 'z6']:
+            correlation = -1
+    elif strategy_class == 'ocs':
+        if signal_name in ['ts_slope5', 'ts_slope10', 'momentum5','momentum10','underlying_zscore']:
+            correlation = -1
+        elif signal_name in ['linear_deviation5', 'linear_deviation10']:
+            correlation = 1
+    elif strategy_class == 'ibo':
+        if signal_name in ['delta_60','delta_120','delta_180','ewma_spread','z1', 'z2', 'z5', 'z6']:
+            correlation = -1
+        elif signal_name in ['ewma10_50_spread', 'ewma20_100_spread','z1', 'z2', 'z5', 'z6']:
+            correlation = 1
+    elif strategy_class == 'ts':
+        if signal_name in ['ma10_spread','ma20_spread','ma50_spread','ma100_spread','ts_slope5', 'ts_slope10', 'ts_slope20']:
+            correlation = -1
+        elif signal_name in ['linear_deviation5', 'linear_deviation10','linear_deviation20']:
+            correlation = 1
 
     return correlation
 
@@ -152,6 +175,9 @@ def get_spread_weights_4contract_list(**kwargs):
     elif ticker_head_list in [['HO', 'CL'], ['RB', 'CL']]:
         portfolio_weights = [1, -1]
         spread_weights = [42, -1]
+    elif ticker_head_list == ['HO', 'RB', 'CL']:
+        portfolio_weights = [1, 1, -2]
+        spread_weights = [42, 42, -2]
     elif ticker_head_list in [['B', 'CL'], ['CL', 'B']]:
         portfolio_weights = [1, -1]
         spread_weights = [1, -1]
@@ -164,9 +190,6 @@ def get_spread_weights_4contract_list(**kwargs):
     elif ticker_head_list in [['W', 'KW'], ['KW', 'W']]:
         portfolio_weights = [1, -1]
         spread_weights = [1, -1]
-    elif ticker_head_list == ['ES', 'NQ']:
-        portfolio_weights = [1, -1]
-        spread_weights = [1, -0.45]
 
     return {'portfolio_weights': portfolio_weights, 'spread_weights': spread_weights}
 

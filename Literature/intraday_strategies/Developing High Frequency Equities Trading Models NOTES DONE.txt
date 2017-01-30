@@ -1,0 +1,17 @@
+
+(PAGE 12) The authors complain about the lack of literature in high frequency trading space.
+
+(PAGE 14) Apparently Khandani and Lo paper has strategies with 60 minutes to 5 minutes holding periods.
+
+(PAGE 24) We intervalized the tick data to one-second intervals.
+
+(PAGE 25) They are using returns per second to run PCA.
+
+(PAGE 28) They are combining a number of periods together so this is still similar to level based PCA.
+
+(PAGE 29) They assume they can transact at mid price within a second.
+
+(PAGE 52) They come up with a regime switching strategy by looking at the variance of principal components.
+The resuls imporove phenomenally.
+
+[DONE]

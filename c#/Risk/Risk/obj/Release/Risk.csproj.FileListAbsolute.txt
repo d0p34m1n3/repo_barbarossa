@@ -21,3 +21,9 @@ C:\Research\c#\Risk\Risk\obj\Release\Risk.dll
 C:\Research\c#\Risk\Risk\obj\Release\Risk.pdb
 C:\Research\c#\Risk\Risk\bin\Release\Shared.dll
 C:\Research\c#\Risk\Risk\bin\Release\Shared.pdb
+C:\Research\c#\Risk\Risk\bin\Release\ClosedXML.dll
+C:\Research\c#\Risk\Risk\bin\Release\DatabaseConnection.dll
+C:\Research\c#\Risk\Risk\bin\Release\DocumentFormat.OpenXml.dll
+C:\Research\c#\Risk\Risk\bin\Release\ClosedXML.xml
+C:\Research\c#\Risk\Risk\bin\Release\DatabaseConnection.pdb
+C:\Research\c#\Risk\Risk\obj\Release\Risk.csprojResolveAssemblyReference.cache

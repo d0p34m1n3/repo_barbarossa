@@ -1,0 +1,8 @@
+
+[PAGE 1] Plenty of examples of machine learning trading systems in the literature review.
+
+[PAGE 2] Essentially the idea is to use the past ewma spreads to predict the future crossovers
+and to detect trend formations and reversals early. For EWMA, 15 and 45 window sizes are used.
+The results are promising...
+
+[DONE]

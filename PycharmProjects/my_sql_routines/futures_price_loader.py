@@ -63,7 +63,12 @@ def load_price_data_4ticker(load_price_data_input):
     low_indx = column_names.index('Low')
     settle_indx = column_names.index('Settle')
     volume_indx = column_names.index('Volume')
-    interest_indx = column_names.index('Open Interest')
+
+    if 'Previous Day Open Interest' in column_names:
+        interest_indx = column_names.index('Previous Day Open Interest')
+    else:
+        interest_indx = column_names.index('Open Interest')
+
     date_indx = column_names.index('price_date')
 
     tuples = [tuple([data_vendor_id, symbol_id,
@@ -184,7 +189,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
     run_datetime = cu.convert_doubledate_2datetime(run_date)
 
     for ticker_head in ticker_head_list:
-        #print(ticker_head)
+        print(ticker_head)
 
         contract_list = []
 

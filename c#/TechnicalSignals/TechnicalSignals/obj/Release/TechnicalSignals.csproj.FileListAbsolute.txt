@@ -1,0 +1,7 @@
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Release\TechnicalSignals.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Release\TechnicalSignals.pdb
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Release\DataAnalysis.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\bin\Release\DataAnalysis.pdb
+C:\Research\c#\TechnicalSignals\TechnicalSignals\obj\Release\TechnicalSignals.dll
+C:\Research\c#\TechnicalSignals\TechnicalSignals\obj\Release\TechnicalSignals.pdb
+C:\Research\c#\TechnicalSignals\TechnicalSignals\obj\Release\TechnicalSignals.csprojResolveAssemblyReference.cache

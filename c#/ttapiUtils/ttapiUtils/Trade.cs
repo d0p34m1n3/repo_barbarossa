@@ -12,7 +12,7 @@ namespace ttapiUtils
 {
     public static class Trade
     {
-        public static void SendLimitOrder(TradingTechnologies.TTAPI.Instrument instrument,
+        public static string SendLimitOrder(TradingTechnologies.TTAPI.Instrument instrument,
             TradingTechnologies.TTAPI.Price price, int qty, Subscription ttapisubs, string orderTag="")
 
         {
@@ -66,11 +66,68 @@ namespace ttapiUtils
             {
                 Console.WriteLine("Send new order succeeded.");
             }
+
+            return op.SiteOrderKey;
         }
 
-        public static bool SendAutospreaderOrder(TradingTechnologies.TTAPI.Instrument instrument, InstrumentDetails instrumentDetails, ttapiUtils.AutoSpreader autoSpreader, 
-            int qty, decimal price, string orderTag,Logger logger)
+        public static bool ChangeLimitOrder(string orderKey, TradingTechnologies.TTAPI.Instrument instrument, Subscription ttapisubs,double price, Logger logger)
+
         {
+            InstrumentTradeSubscription TS = ttapisubs.TsDictionary[instrument.Key];
+            bool Status = true;
+
+            OrderProfileBase Op = TS.Orders[orderKey].GetOrderProfile();
+            Price LimitPrice = Price.FromDouble(instrument.InstrumentDetails, price);
+
+                if (Op.LimitPrice != LimitPrice)
+                {
+                    Op.LimitPrice = LimitPrice;
+                    Op.Action = OrderAction.Change;
+
+                    if (!TS.SendOrder(Op))
+                    {
+                        logger.Log("Send change order failed.  {0}" + Op.RoutingStatus.Message);
+                        Status = false;
+
+                    }
+                    else
+                    {
+                        logger.Log("Send change order succeeded.");
+                    }
+                }
+            
+            return Status;
+        }
+
+        public static bool CancelLimitOrder(string orderKey, TradingTechnologies.TTAPI.Instrument instrument, Subscription ttapisubs, Logger logger)
+        {
+            InstrumentTradeSubscription TS = ttapisubs.TsDictionary[instrument.Key];
+            bool Status = true;
+
+            OrderProfileBase Op = TS.Orders[orderKey].GetOrderProfile();
+            Op.Action = OrderAction.Delete;
+
+                if (!TS.SendOrder(Op))
+                {
+                    logger.Log("Cancal order failed.  {0}" + Op.RoutingStatus.Message);
+                    Status = false;
+                }
+                else
+                {
+                    logger.Log("Cancel order succeeded.");
+                }
+
+            return Status;
+
+        }
+
+        public static string SendAutospreaderOrder(ttapiUtils.AutoSpreader autoSpreader, 
+            int qty, decimal price, string orderTag,Logger logger,int reloadQuantity=0)
+
+        {
+            Instrument instrument = autoSpreader.AutoSpreaderInstrument;
+            InstrumentDetails instrumentDetails = instrument.InstrumentDetails;
+
             AutospreaderSyntheticOrderProfile op = new AutospreaderSyntheticOrderProfile(((AutospreaderInstrument)instrument).GetValidGateways()[autoSpreader.GateWay],
                             (AutospreaderInstrument)instrument);
 
@@ -84,6 +141,13 @@ namespace ttapiUtils
                 Rounding = Rounding.Up;
             }
 
+            string OrderKey = op.SiteOrderKey;
+
+            if (reloadQuantity!=0)
+            {
+                op.SlicerType = SlicerType.Reload;
+                op.DisclosedQuantity = Quantity.FromInt(instrument, reloadQuantity);
+            }
 
             op.BuySell = Direction;
             op.OrderQuantity = Quantity.FromInt(instrument, qty);
@@ -94,17 +158,76 @@ namespace ttapiUtils
             if (!autoSpreader.ts.SendOrder(op))
             {
                 logger.Log("Send new order failed: " +  op.RoutingStatus.Message);
-                return false;
                 
             }
             else
             {
                 logger.Log("Send new order succeeded.");
-                return true;
             }
+
+            return OrderKey;
 
         }
 
+        public static bool ChangeAutospreaderOrder(string orderKey, decimal price, ttapiUtils.AutoSpreader autoSpreader,
+            TradingTechnologies.TTAPI.Instrument instrument, Logger logger)
+        {
+            ASInstrumentTradeSubscription Ts = autoSpreader.ts;
+            bool Status = false;
+            
+            if (Ts.Orders.ContainsKey(orderKey))
+            {
+                AutospreaderSyntheticOrderProfile Op = Ts.Orders[orderKey].GetOrderProfile() as AutospreaderSyntheticOrderProfile;
+                Rounding Rounding = Rounding.Down;
 
+                if (Op.BuySell==BuySell.Sell)
+                {
+                    Rounding = Rounding.Up;
+                }
+
+                Price LimitPrice = Price.FromDouble(instrument.InstrumentDetails, Convert.ToDouble(price), Rounding);
+
+                if (Op.LimitPrice != LimitPrice)
+                {
+                    Op.LimitPrice = LimitPrice;
+                    Op.Action = OrderAction.Change;
+
+                    if (!Ts.SendOrder(Op))
+                    {
+                        logger.Log("Send change order failed.  {0}" + Op.RoutingStatus.Message);
+                    }
+                    else
+                    {
+                        logger.Log("Send change order succeeded.");
+                        Status = true;
+                    }
+                }
+            }
+            return Status;
+        }
+
+        public static bool CancelAutospreaderOrder(string orderKey, ttapiUtils.AutoSpreader autoSpreader, Logger logger)
+        {
+            ASInstrumentTradeSubscription Ts = autoSpreader.ts;
+            bool Status = false;
+            if (Ts.Orders.ContainsKey(orderKey))
+            {
+                AutospreaderSyntheticOrderProfile Op = Ts.Orders[orderKey].GetOrderProfile() as AutospreaderSyntheticOrderProfile;
+
+                Op.Action = OrderAction.Delete;
+
+                if (!Ts.SendOrder(Op))
+                {
+                    logger.Log("Cancal order failed.  {0}" + Op.RoutingStatus.Message);
+                }
+                else
+                {
+                    logger.Log("Cancel order succeeded.");
+                    Status = true;
+                }
+            }
+
+            return Status;
+        }
     }
 }

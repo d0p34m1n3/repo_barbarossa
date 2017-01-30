@@ -19,7 +19,8 @@ namespace TA
             {"presavedFuturesData", "/data/FuturesData"},
             {"ta", "/ta/"},
             {"daily","/daily/"},
-            {"ifsOutput","/strategy_output/ifs"}
+            {"ifsOutput","/strategy_output/ifs"},
+            {"futuresButterflyOutput","/strategy_output/futures_butterfly"}
         };
 
         public static string GetDirectoryName(string ext)

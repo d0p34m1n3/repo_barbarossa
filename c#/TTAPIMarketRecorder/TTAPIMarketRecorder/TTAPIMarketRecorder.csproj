@@ -55,6 +55,10 @@
     <Reference Include="CalendarUtilities">
       <HintPath>..\..\CalendarUtilities\CalendarUtilities\bin\Release\CalendarUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="ContractUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ContractUtilities\ContractUtilities\bin\Release\ContractUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.2.15.0.0\lib\net45\CsvHelper.dll</HintPath>
       <Private>True</Private>

@@ -9,6 +9,7 @@ import shared.calendar_utilities as cu
 import pandas as pd
 import contract_utilities.expiration as exp
 import reformat_intraday_data.reformat_ttapi_intraday_data as rid
+import datetime as dt
 import scipy.io
 
 pd.options.mode.chained_assignment = None
@@ -92,12 +93,20 @@ def get_aligned_futures_data(**kwargs):
         ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in contract_list]
         futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in ticker_head_list}
 
+    if 'tr_days_half_band_width_selected' in kwargs.keys():
+        tr_days_half_band_width_selected = kwargs['tr_days_half_band_width_selected']
+    else:
+        tr_days_half_band_width_selected = tr_days_half_band_with[aggregation_method]
+
+    if 'get_uniqe_data' in kwargs.keys():
+        get_uniqe_data = kwargs['get_uniqe_data']
+    else:
+        get_uniqe_data = True
+
     date_from = cu.doubledate_shift(date_to, 2*3650)
 
     date_to_datetime = cu.convert_doubledate_2datetime(date_to)
     date_from_datetime = cu.convert_doubledate_2datetime(date_from)
-
-    tr_days_half_band_width_selected = tr_days_half_band_with[aggregation_method]
 
     num_contracts = len(contract_list)
 
@@ -139,24 +148,35 @@ def get_aligned_futures_data(**kwargs):
     aligned_dataframe = pd.concat(merged_dataframe_list)
     aligned_dataframe.sort_index(inplace=True)
 
-    aligned_dataframe['tr_dte_match'] = abs(aligned_dataframe['c1']['tr_dte']-tr_dte_list[0])
     aligned_dataframe['settle_date'] = aligned_dataframe.index
 
-    aligned_dataframe.sort(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
-    aligned_dataframe.drop_duplicates('settle_date',inplace=True)
+    if get_uniqe_data:
+        aligned_dataframe['tr_dte_match'] = abs(aligned_dataframe['c1']['tr_dte']-tr_dte_list[0])
+        aligned_dataframe.sort(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
+        aligned_dataframe.drop_duplicates('settle_date',inplace=True)
+
+    success = True
 
     if use_last_as_current:
         current_data = aligned_dataframe.iloc[-1]
-    else:
+    elif date_to_datetime in aligned_dataframe.index:
         current_data = aligned_dataframe.loc[cu.convert_doubledate_2datetime(date_to)]
+    else:
+        current_data = []
+        success = False
 
-    return {'aligned_data': aligned_dataframe, 'current_data': current_data}
+    return {'aligned_data': aligned_dataframe, 'current_data': current_data,'success': success}
 
 
 def get_aligned_futures_data_intraday(**kwargs):
 
     contract_list = kwargs['contract_list']
     date_list = kwargs['date_list']
+
+    if 'freq_str' in kwargs.keys():
+        freq_str = kwargs['freq_str']
+    else:
+        freq_str = 'T'
 
     num_contracts = len(contract_list)
     merged_dataframe_list = [None]*len(date_list)
@@ -166,12 +186,72 @@ def get_aligned_futures_data_intraday(**kwargs):
         contract_data_list = [None]*num_contracts
         for j in range(num_contracts):
 
-            contract_data_list[j] = rid.get_book_snapshot_4ticker(ticker=contract_list[j], folder_date=date_list[i])
+            contract_data_list[j] = rid.get_book_snapshot_4ticker(ticker=contract_list[j], folder_date=date_list[i], freq_str=freq_str)
 
         merged_dataframe_list[i] = pd.concat(contract_data_list, axis=1, join='inner',keys=['c'+ str(x+1) for x in range(num_contracts)])
+
     aligned_dataframe = pd.concat(merged_dataframe_list)
 
     return aligned_dataframe
+
+
+def get_clean_intraday_data(**kwargs):
+
+    ticker = kwargs['ticker']
+    date_to = kwargs['date_to']
+    #print(ticker)
+
+    if 'num_days_back' in kwargs.keys():
+        num_days_back = kwargs['num_days_back']
+    else:
+        num_days_back = 10
+
+    if 'freq_str' in kwargs.keys():
+        freq_str = kwargs['freq_str']
+    else:
+        freq_str = 'T'
+
+    ticker_list = ticker.split('-')
+
+    ticker_head = cmi.get_contract_specs(ticker_list[0])['ticker_head']
+    ticker_class = cmi.ticker_class[ticker_head]
+
+    date_list = [exp.doubledate_shift_bus_days(double_date=date_to,shift_in_days=x) for x in reversed(range(1,num_days_back))]
+    date_list.append(date_to)
+
+    intraday_data = get_aligned_futures_data_intraday(contract_list=[ticker],
+                                       date_list=date_list,freq_str=freq_str)
+
+    if intraday_data.empty:
+        return pd.DataFrame()
+
+    intraday_data['time_stamp'] = [x.to_datetime() for x in intraday_data.index]
+
+    intraday_data['hour_minute'] = [100*x.hour+x.minute for x in intraday_data['time_stamp']]
+    intraday_data['settle_date'] = [x.date() for x in intraday_data['time_stamp']]
+
+    end_datetime = cmi.last_trade_hour_minute[ticker_head]
+    start_datetime = cmi.first_trade_hour_minute[ticker_head]
+
+    end_hour_minute = 100*end_datetime.hour + end_datetime.minute
+    start_hour_minute = 100*start_datetime.hour + start_datetime.minute
+
+    if ticker_class in ['Ag']:
+
+        start_hour_minute1 = 45
+        end_hour_minute1 = 745
+
+        selected_data = intraday_data[((intraday_data['hour_minute']< end_hour_minute1)&(intraday_data['hour_minute'] >= start_hour_minute1))|
+                    ((intraday_data['hour_minute'] < end_hour_minute)&(intraday_data['hour_minute'] >= start_hour_minute))]
+
+    else:
+        selected_data = intraday_data[(intraday_data['hour_minute'] < end_hour_minute)&(intraday_data['hour_minute'] >= start_hour_minute)]
+
+    selected_data['mid_p'] = (selected_data['c1']['best_bid_p']+selected_data['c1']['best_ask_p'])/2
+
+    return selected_data
+
+
 
 
 

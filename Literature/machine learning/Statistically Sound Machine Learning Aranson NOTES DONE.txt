@@ -1,0 +1,360 @@
+
+(PAGE 4) It should be obvious that the threshold determines a tradeoff in the number of trades versus the accuracy rate of trades.
+If we set a threshold near zero, the magnitude of the predictions will frequently exceed the threshold, and a position will be taken often.
+Conversely, if we set a threshold that is far from zero, predicted market moves will only rarely lie beyond the threshold, so trades will be rare.
+We already noted that there is a large correspondence between the magnitude of a prediction and the likelihood of a trade's success.
+Thus, by choosing an appropriate threshold, we can control whether we have a system that trades often but with only mediocre accuracy, or a system
+that trades rarely but with excellent accuracy.
+
+(PAGE 7) Walkforward Testing: Train the model using data from 1990 through 2007. Test the model on 2008 data. 
+Train the model using data from 1991 through 2008. Test the model on 2009 data.
+Train the model using data from 1992 through 2009. Test the model on 2010 data. 
+Pool all trades from the tests of 2008,2009, and 2010. These trades are used to compute an unbiased estimate of the performance of the model.
+
+(PAGE 7) Suppose a model achieves excellent walkforard results when the test block is very short.
+In other words, the model is never asked to make predictions for data that is far past the date on which its training block ended.
+Now suppose the walkforward performance deteriorates if the test block is made longer.
+This indicates that the market is rapidly changing in ways that the model is not capable of handling. 
+Such a model is risky and will require frequent retraining if it is to keep abreast of current market conditions.
+On the other hand, if walkforward performance holds up well as the length of the test block is increased, the model is robust against nonstationarity. 
+This is a valuable attribute of a predictive model.
+
+(PAGE 8) It can be useful to perform several walkforward tests of varying test block lengths in order to evaluate the degree to which 
+the prediction model is robust against nonstatonarity. 
+Walkforward testing has only one disadvantage relative to alternative testing methods such as cross validation: 
+it is relatively inefficient when it comes to use of the available data. 
+Only cases past the end of the first training block are ever used for testing.
+If you are willing to believe that the indicators and targets are reasonably stationary, this is a tragic waste of data.
+
+(PAGE 9) Cross Validation: Train using data from 2006 through 2008. Test the model on 2005 data.
+Train using data from 2005 through 2008, excluding 2006. Test the model on 2006 data.
+Train using data from 2005 through 2008, excluding 2007. Test the model on 2007 data.
+Train using data from 2005 through 2008, excluding 2008. Test the model on 2008 data.
+
+(PAGE 10) Targets that look ahead more than one bar usually preclude tests of significance or
+force one to rely on tests having questionable validity. 
+
+(PAGE 11) Autocorrelation due to slow moving indicator and target values will create positive bias in Walkforward and Cross Validation 
+results if the border between training and test data is not handled carefully. 
+
+(PAGE 11) A fold is a single partitioning of the available data into a training set and a test set. 
+The in-sample (IS) performance for a fold is the performance of the model or trading system in the current training set.
+The out-of-sample (OOS) performance for a fold is the performance of the model or trading system in the current test set.
+
+(PAGE 12) The degree of correspondence between model and trade performance may not always be as high as one might expect.
+It is not uncommon for a model-based trading system with respectable financial performance to be driven by a predictive model that has a negative R-squared.
+This peculiar behavior happens because trades are signaled only for extremely high or low predictions, which are almost always the most reliable decisions.
+For less extreme predictions, those lying between the short and long thresholds where no trades are taken, errors can be so large that they overwhelm the
+predictive quality at the extremes. 
+Because of this frequent discrepancy, financial performance statistics for the trading system, such as profit factor, are much more useful than 
+predictive performance of the model. Nonetheless, model accuracy is of some interest and should always be examined, if for no other reason than to check for
+anomalous behavior. 
+
+(PAGE 29) Profit factor is the total wins divided by the total losses. 
+
+(PAGE 34) In the first section a simple regression model is used to predict one day return. 
+First variable is Least Squares Linear Slope divided by Average True Range.
+The linear slope is fit over a window of five bars, and ATR is fit over a window of 100 bars.
+The next day return is the price change from tomorrow's open to the next day's open, normalized by 250-day ATR.
+The volatility variable is the ratio of the variance of the log of price over a 5-bar window, divided by the variance over a 20 bar window.
+This simple regression model is used to predict 1 day ahead returns and thresholds are selected to maximize profit factor over 10 year training period
+with the requirement that at least 10% of the days will be short and %10 percent of the days will be long. The results are promising.
+
+(PAGE 38) For the entire price history of each market, the closing price of each bar is divided by the closing price of the prior bar.
+If this ratio, or its reciprocal, is less than the specified quantity (0.65 in this example) than this bar is flagged as erroneous data
+and is not used for computing any variable.
+
+(PAGE 46) In the second section the goal is to filter out existing trades. This does reduce the number of results by 1/10th and creates some
+questionable results because of this. However the author still insists on focusing on the extremes even for this type of filtering.
+
+(PAGE 61) The ratio of the range to the interquartile range is an extremely useful measure of the degree to which a variable contains extreme values.
+The interquartile range is the difference between the 75th percentile and the 25th percentile.
+The range is the difference between the largest and the smallest values of the variable.
+
+(PAGE 63) Anderson-Darling test. This will test if variables across different markets have similar distributions. 
+The best use of this test is for revealing the worst performers (lowest p=values). 
+These variables/markets should be subjected to visual examination by histograms or other tests.
+Kullback-Liebler  test is very similar to Anderson-Darling in nature. 
+
+(PAGE 64) The interquartile range test roughly measures the degree to which the interquartile range of each tested market 
+overlaps the interquartile range of the pooled data. This is an intuitive test but ignores the tails.
+
+(PAGE 65) To test for stationarity, divide the time extent into five periods and divide the range of the variable into three sections: large, medium, and small.
+If the series is stationary, the vertical distribution of counts should be similar across time (columns of the grid).
+This decision can be made rigorous by using an ordinary chi-square test.
+
+(PAGE 66) Another family of tests searches for a single point in time at which the nature of the series changes dramatically, a structural break.
+The p-value is the probability that, if there is truly no structural break, we would have seen an apparent break as large as that found. 
+Thus, very small p-values are bad, indicating a likely structural break.
+
+(PAGE 66) It's important to check for seasonality because if it exists it might swamp out more subtle but important behavior. 
+
+(PAGE 66) The software has Monte Carlo Permutation Test that will help to check for selectin bias if a large number of variables are being tested.
+
+(PAGE 89) Using a look back period based median and interquartile range one can standardize the variables which would make them stationary as well.
+
+(PAGE 92) There's a function to sort stocks into deciles based on an indicator value. 
+This can be particularly useful in a long/short market-neutral trading system.
+
+(PAGE 96) A standard mathematical technique for quantifying change in terms of not only individual components but interrelationships as well
+is the Mahalanobis Distance that seperates a vector from its historical mean, with historical covariance taken into account.
+
+(PAGE 97) Another way to measure distress in the market is to see how many eigenvalues are needed to explain a certain percantage of the market variance.
+
+(PAGE 99-112) Trend indicators.
+
+(PAGE 105) One of the trend indicators is reactivity which is used to avoid mean reversion trading when there's a strong trend.
+
+(PAGE 112) Another good deviation from trend indicator is detrended RSI. This will remove the impact of long term trend on the range
+of RSI values that are realized during that long term trend.
+
+(Page 113) Most of the provided vol are relative to historical volatility which would make it easier to compare across markets.
+
+(PAGE 133) They have a variable that classifies what happened in past two bars and what happens in the next bar.
+This variable shows if there's any predictability. 
+
+(PAGE 137) Indicators based on Morlet waves are explained.
+
+(PAGE 141) Indicators based on Daubechies waves are explained.
+
+(PAGE 143) Follow through index by Khalsa is discussed. This might be a good way to find markets that has large trend to noise ratio.
+
+(PAGE 161) For screening variables the indicator-target only  chi-square tests are usully the better choice.
+It produces a ranked ordering of the indicator candidates which can often allow the developer to partition the candidates into three groups.
+The largest group is typically those candidates which clearly have no useful relationship with target. This allows fast and easy pruning of the candidate set.
+The smallest group is usually those candidates which have a significant relationship with the target.
+These indicators should be included in the development procedure with high priority.
+Those candidates which do not fall into either of the above categories are the fallback choices,
+ignored at first and included later if the most significant indicators prove insufficient.
+
+(PAGE 162) The advantage of chi-square test over ordinary correlation is that it is sensitive to nonlinear relationships. 
+An interaction that results in certain regions of the predictor being associated with unexpected values of the target can be detected.
+
+(PAGE 163) When you test many indicators and look for the best, lucky indicators will be favored. 
+This is called selection bias, and it can be severe, causing huge underestimation of the correct p-value.
+A Monte-Carlo Permutation Test can be employed to approximately control for selection bias.
+Note that if the target has significant serial correlation, as would be for look-aheads more than one bar,
+the computed p-value will be biased downward.
+
+(PAGE 164) When sorting the indicators based on their strength, Cramer's V is a better statistic to look at.
+
+(PAGE 166) Keeping more than 10 percent of each tail usually results in significant loss of predictive power.
+The majority of predictive power in most indicators lies in the most extreme values.
+
+(PAGE 172) In the case of selecting muptliple indicators at the same time in a stepwise fashion,
+uncertainity reduction statistic is the recommended criteria.
+
+(PAGE 175) An essential part of the predictability testing seems to be diving the predictors into bins 2 or more
+as well as dividing the target into bins of 2 or more. When  testing for multiple predictors at the same time,
+it is important to keep the number of bins to a minimum.
+
+[PAGE 179] The following models are provided by the software although the author doesn't sound enthusiastic about
+some of these models: Linear regression, quadratic regression, General Regression Neural Network, 
+Multiple-Layer Feedforward Network, Tree, Forest, Boosted Tree, Operation String, Split Linear
+
+[PAGE 184] It seems like the software is providing a way to select small number of relevant explanatory variables
+from a big list of variables. A variety of selection criteria is provided.
+
+[PAGE 189] When training a model, it makes sense to force the model to take short and long positions in certain percentage
+of cases. This could vary between 5 to 20 percent.
+
+[PAGE 191] If you have outliers in the target, it might make sense to compress the target and do the analysis again and see
+if the results change dramatically. 
+
+[PAGE 192] A more thorough way of stepwise selection, one that is less likely to miss out some good combinations is discussed.
+
+[PAGE 193] One can remove 1/10th of the data and do this 10 times for each 1/10th portion too see how the selected model is doing
+for out of sample although the author is not very enthusiastic about the results of this method and it takes time. The author is
+more enthusiastic about stepwise selection with multiple indicators at a time.
+
+[PAGE 195] If one wishes to use the signals for individual markets as a way to rank them and take long/short positions, that's possible.
+
+[PAGE 196] It might makes sense to train different models for different market environments such as high vol/low vol etc.
+
+[PAGE 198] Unless the training set is huge and varied, using more than two or three indicators in a model practically guarantees overfitting.
+A good way to take advantage of the information contained in many indicators, while still discouraging overfitting, is to train several models,
+each of which employs just two or three indicators. Then combine the predictions of these models with a committee. Once can use stepwise selection
+to find the best two or three indicators, and assign them to a model. Then exclude these chosen indicators from the pool and repeat the selection
+process for a second model. Repeat as desired.
+
+[PAGE 199] One can use resampling and subsampling to train different models with different selected indicators. This is another way of incorporating
+many indicators to your committes. In resampling repetition of cases is allowed, in subsampling repetition is not allowed.
+
+[PAGE 201] One needs to pay attention to boundary contamination in cross validation and walkforward testing. This will become an issue if there's 
+autocorrelation in the signals and targets.
+
+[PAGE 204] The software has bootstrap tests to compute the probability that the superior returns obtained in test sample are pure luck.
+
+[PAGE 208] Sequential prediction is having one model to predict the broad pattern and another model to predict the more subtle patterns
+that can be discrened in the noise of the first model. If we were to try to find one grand model that incorporated the dominant pattern
+and its indicators as well as the more subtle pattern and its indicators, we would probably end up with a model so complicated that it 
+would take a long time to train, and it would overfit the data.
+A much better appraoch would be to use one simple model to predict the dominant pattern. 
+Then we find the errors that this model makes, the differences between its predictions and the target.
+These errors will be made up of the more subtle pattern along with noise. We use a simple model to learn these differences.
+We use a simple model to learn these differences.
+Although sequential prediction is more robust against overfitting than a single comprehensive model, it is not immune to the
+problem if one decides to put more than 3 layers of models on top of each oter.
+
+[PAGE 213] Standard linear regression puts too much emphasis in large errors and try to get it right although it's not really
+likely to predict these errors outside of the training set. So the software has different options to maximize profit factor etc.
+Although these methods does seem to require more computation time.
+
+[PAGE 216] If linear regression fails to perform well, quadratic regression should be next choice before jumping into massively 
+nonlinear models which are prone to overfitting.
+
+[PAGE 217] When doing nonlinear regression it is important to eliminate some of the cross product terms using stepwise selection and cross validation.
+
+[PAGE 219] The General Regression Neural Network (GRNN) is arguably the most nonlinear of the available models. It's crucial to limit the number of indicators.
+
+[PAGE 220] The multiple-layer feedforward network (MLFN) is an adjustable compromise, ranging from slight nonlinearity to an extreme that approaches that of the GRNN.
+This adjustability can be a useful property, because the user can often find a sweet spot that captures any nonlinearity inherent in the data without being so excessive
+that overfitting occurs. In most situations, is is appropriate to set first hidden layer to 2 (for modest nonlinearity) or 3 (for considerable nonlinearity).
+Larger values will allow degrees of nonlinearity that, for most financial applications will produce serious overfitting.
+If you decide to use a second layer which is usually not necessary, it is a good idea to use less number of neurons than the first layer.
+
+[PAGE 221] For most applications, functional form of the output neuron should be linear.
+
+[PAGE 224] If you are using complex valued indicators such as Mortlet Wavelets is makes sense to use complex-domain neural network to process these.
+
+[PAGE 225] Simple tree model is weak and not very good in taking advantage of subtleties in data.
+
+[PAGE 226] It often happens that a deep tree, despite its many weaknesses, still manages to overfit. This overfitting is detected by the cross validation, 
+and the depth of the tree is reduced accordingly.
+
+[PAGE 227] One can train hundreds of different trees on randomly selected subsets of the training set and then take the mean. This forest method isn't encouraged
+for financial prediction by the author.
+
+[PAGE 229] Boosted tree does better with financial data compared to forest. 
+Each new tree focuses its efforts on handling cases that give trouble to prior trees in the sequence.
+All the indicators are made available to the model, the model training algorithm will efficiently find its own optimal indicator set.
+
+[PAGE 231] Operation string model is trained using genetic algorithm. This makes the end result a little random, 
+although if population size is largge, after considerable number of generations, the resulting models will usually have similar performance.
+All indicators are made available to the model, the evolutionary training algorithm will efficiently find its own optimal indicator set.
+
+[PAGE 236] An example of a split linear model: One sub-model uses X2 and X3 as indicators.
+The other sub-model uses X3 and X4 as indicators. V2 is chosen as the best volatility indicator for choosing the sub-model.
+The first sub-model is used when V2 is less than or equal to 2.7 (a threshold that is automatically chosen as optimal)
+The second sub-model is used when V2 is greater than 2.7.
+
+[PAGE 244] The main advantage of the Average committee is that, other than selection of the models to include, it does no optimization.
+As a result, it is the least likely of all committees to overfit the data. This strength is also its weakness; it has no choice but to weight all models
+as equally important, even though in fact some models may be better than others.
+
+[PAGE 245] When running a linear regression committee some model weights can be negative. This generally happens when two or more of the models 
+are so similar that their outputs are highly correlated. If this is observed, the developer should search for such correlation and remove redundant models.
+Such a situation is dangerous and should always be avoided.
+
+[PAGE 246] To avoid overfitting it's a good idea to run a constrained linear regression. No weight is allowed to be negative and weights must some to one.
+
+[PAGE 247] One can use more sophisticated models as committees however this is usually not a good idea. 
+As a general rule, if the training set is small, the average committee, with its considerable immunity to overfitting, is best.
+If dataset is large, the constrained committee is an excellent way to weight the models according to their abilities.
+These two workhorse committees are all that most people will ever need.
+
+[PAGE 248] It is a common myth that the models must be independent, or nearly so for a committee. 
+However, even highly correlated models are usable, because to whatever degree we have independent information,
+even if very little, a good committee can use it.
+
+[PAGE 248] The two most common methods for generating component models are by varying the indicators chosen as predictors
+and by varying the cases selected from the training set. These are both effective, and they complement each other.
+Neither should be considered superior to the other.
+
+[PAGE 248] To vary indicators selected as predictors one can forbid indicators used in some models from being used in other models.
+One can vary the training dataset using subsampling and resampling.
+
+[PAGE 253] An oracle is an advanced form of a committee that allows the relative importance of the component models to vary 
+according to the values of one or more gate variables.
+
+[PAGE 253] Oracles bring a dilemma with them. They are more likely to overfit compared to committees. And training time is almost
+at the order of the cube of number of training cases. So one should have only one gate variable and use as few component models as possible.
+
+[PAGE 253] There are two quite different philosophies for using an oracle. Neither is inherently superior to the other. 
+Different applications may favor different alternatives. In the traditional approach, every model is trained on every case in the training set.
+The gate variable then controls the differential weighting of the predictions of the component models.
+The other option is to train each component model with only a subset of the entire training set, according to a market condition defined by 
+the value of prescreen variables. Then the oracle is used to choose the appropriate models according to the prescreen conditions.
+
+[PAGE 298] When you are running an oracle it is treated as a model in and of itself, with its own long and short trading thresholds that were optimized
+in the training set.
+
+[PAGE 299] What is the probability that if the trading system were truly worthless, good luck could have produced results as good as those observed?
+We want this probability, called the p-value, to be small. Another question we need to answer before signing off on real-life trading is what is the 
+average performance that can be expected in the future (assuming that the market behavior does not change, which of course may be unrealistic but 
+unavoidable assumption.
+
+[PAGE 300] One can shuffle the data keeping the changes intact and retrain the model multiple times too see the performance. If the real data performance
+isn't significantly better than shuffled data performance then there's a problem.
+
+[PAGE 304] You can also see if the market trend has an influence on your trading results especially if you are running an unbalanced model.
+
+[PAGE 306] The software can also take into account selection bias when we are choosing the best performing model among a group of models.
+
+[PAGE 311] When multiple markets are being modeled, permuation test will move around the dates but the relationship between different markets will be preserved.
+
+[PAGE 330] One can use principal component analysis to reduce the number of indicators to feed into the model.
+
+[PAGE 332]  One can olso use linear regression to capture the related parts of a number of indicators before feeding them into a model.
+
+[PAGE 334] The software has a way of transforming nominal indicators to real indicators.
+
+[PAGE 349] Another potential indicator is derived by fitting an ARMA model to the series and looking at the unpredictable shock.
+
+[PAGE 359] The software has a way of removing the influence of certain variable on another variable and use that purified variable as an indicator.
+
+[PAGE 385] One can plot the difference between actual density and marginal density to see if there are simultanous occurences of unlikely events for 
+two variables. These kind of predictabilities will be hard to see on a normal scatter plot.
+
+[PAGE 397] A valid model will tend to have predictions that vary smoothly across the range of predictors, while those that model noise
+will tend to have predictions that clump into numerous small groups with irregular boundaries.
+
+[PAGE 400] The software has an option to plot the consistency of a relationship between indicators and target across time period.
+
+[PAGE 410] The software has a simple R-Squared driven algorithm to find independent groups of indicators from a large group of indicators.
+
+[PAGE 417] The software has algorithms to find groups of markets that can be combined together to be traded using the same model.
+
+[PAGE 431] Predictive power should come primarily from the predictor variables, not from the model.
+
+[PAGE 431] As for choosing target the author doesn't recommend holding periods of more than 1 day. As this will allow multiple positions and 
+extreme wins and losses that would make the model harder to train. One day holding periods or tightly specified profit/loss hit/miss is more preferable.
+
+[PAGE 434] There is almost always a huge correlation between the target distance and the historical lookback period for computing useful indicatos.
+If you are designing a one-day ahead system, it would be unusual to find useful predictive information in an indicator that is based on more than
+20 or so days of history. There are exceptions to this rule, but not many. In fact, looking back as few as five days is often ideal for a one-day-ahead system.
+Similarly, if you are designing a hit-or-miss system that will typically be in the market for 30-50 days, it is unlikely that an indicator based on
+the most recent five days will be of much value.
+
+[PAGE 435] When in doubt, look to price momentum indicators. Recent trend, and sudden deviation from recent trend are often the best choices.
+They tend to have monotonic relationships with targets, so they are particularly useful indicators for weak models such as linear regression.
+More exotic indicators based on volume, information content, and other esoteric quantities can contain valuable predictive information,
+but it almost always is in a highly nonlinear relationship with the target, necessitating powerful nonlinear models.
+
+[PAGE 435] Stationarity, at least at a reasonable visual level, is crucial for predictors. 
+Visual examination of a time-series plot of every predictor candidate is mandatory.
+If an indicator hovers around, say 20-40 for a year or two, then drops to 5-15 for a few years, this predictor is worthless.
+
+[PAGE 435] In a multiple-market situation, it is crucial that the distribution of each indicator be similar in all markets.
+If this is not the case, some markets will dominate training and trading while others will be ignored.
+This will almost always be a serious problem. The software has conformity tests to check for this.
+
+[PAGE 439] Formal stationarity tests are far more strict than is needed for most applications. Simple visual
+confirmation to see that extremes are distributed relatively uniformly across time is enough.
+
+[PAGE 441] For selected indicators look at the ratio of the range to interquartile range. Large ratios should make you suspicious.
+You should have your indicators compressed to make the model training easy. 
+
+[PAGE 451] It almost goes without saying that modern model-based trading systems use a committee of some sort for making the final trading decisions.
+The performance of a committe of models is almost always superior to that of a single model, often extremely so.
+
+[PAGES 431-457] A good example of  developing a stand-alone trading system.
+
+[PAGE 459] The software has functionality to test more sophisticated version of trading rules that can specify requirements for maintaining a position as well as entry.
+
+[PAGE 466] The software has functionality to analyze best ways to combine different trading models into a portfolio.
+
+[PAGE 482] It is well known that it is difficult to find a single trading system (a Model or set of Models combined with a Committe or Oracle) that works well
+for both long and short trades. Specialization in one or the other almost always provides the best performance.
+
+[DONE]

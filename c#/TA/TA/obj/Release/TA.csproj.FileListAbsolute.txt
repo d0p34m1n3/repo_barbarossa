@@ -33,6 +33,5 @@ C:\Research\c#\TA\TA\bin\Release\GetPrice.pdb
 C:\Research\c#\TA\TA\bin\Release\OptionModels.pdb
 C:\Research\c#\TA\TA\bin\Release\QLNet.pdb
 C:\Research\c#\TA\TA\bin\Release\InterestCurve.pdb
-C:\Research\c#\TA\TA\obj\Release\TA.csprojResolveAssemblyReference.cache
 C:\Research\c#\TA\TA\bin\Release\Shared.dll
 C:\Research\c#\TA\TA\bin\Release\Shared.pdb

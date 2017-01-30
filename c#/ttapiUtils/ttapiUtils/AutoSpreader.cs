@@ -25,6 +25,7 @@ namespace ttapiUtils
         public Dictionary<string, List<double>> RatioAndMultiplier;
         public string AutoSpreaderTickerHead;
         public string AutoSpreaderName;
+        public Instrument AutoSpreaderInstrument;
         private MarketKey mkey;
         private ProductType ptype;
         private Dictionary<int, Instrument> SpreadLegKeys = new Dictionary<int, Instrument>();
@@ -62,7 +63,7 @@ namespace ttapiUtils
             RatioAndMultiplier = GetRatioAndMultiplierFromTickerHead(AutoSpreaderTickerHead);
 
             ASEGTickerHeadList = new List<string> { "CL", "RB", "HO", "NG" };
-            ASEZTickerHeadList = new List<string> { "C", "W", "S", "KW", "SM", "BO" };
+            ASEZTickerHeadList = new List<string> { "C", "W", "S", "KW", "SM", "BO" ,"ED" };
             GateWay = GetGateWay(TickerHeadList);
         }
 
@@ -220,7 +221,16 @@ namespace ttapiUtils
                 for (int i = 0; i < DbTickerList.Count; i++)
                 {
                     Instrument instrument = SpreadLegKeys[i + 1];
-                    SpreadLegDetails spreadlegDetails = new SpreadLegDetails(instrument, instrument.GetValidOrderFeeds()[0].ConnectionKey);
+
+                    var ValidOrderFeeds = instrument.GetValidOrderFeeds();
+
+                    while (ValidOrderFeeds.Count == 0)
+                    {
+                        ValidOrderFeeds = instrument.GetValidOrderFeeds();
+                        Console.WriteLine("Attempting to get valid forder feed for: " + DbTickerList[i]);
+                    }
+
+                    SpreadLegDetails spreadlegDetails = new SpreadLegDetails(instrument, ValidOrderFeeds[0].ConnectionKey);
                     spreadlegDetails.SpreadRatio = (int)RatioAndMultiplier["Ratio"][i];
                     spreadlegDetails.PriceMultiplier = RatioAndMultiplier["Multiplier"][i];
                     spreadlegDetails.CustomerName = "<DEFAULT>";
@@ -243,6 +253,7 @@ namespace ttapiUtils
                 {
                     // In this example, the AutospreaderInstrument is launched to ASE-A.
                     // You should use the order feed that is appropriate for your purposes.
+                    AutoSpreaderInstrument = e.Instrument;
                     OrderFeed oFeed = this.GetOrderFeedByName(e.Instrument, GateWay);
                     if (oFeed.IsTradingEnabled)
                     {
@@ -293,7 +304,7 @@ namespace ttapiUtils
                 ts = new ASInstrumentTradeSubscription(m_apiInstance.Session, Dispatcher.Current, instr, true, true, false, false);
                 ts.OrderUpdated += new EventHandler<OrderUpdatedEventArgs>(m_ts_OrderUpdated);
                 ts.OrderAdded += new EventHandler<OrderAddedEventArgs>(m_ts_OrderAdded);
-                ts.OrderDeleted += new EventHandler<OrderDeletedEventArgs>(m_ts_OrderDeleted);
+                ts.OrderDeleted += new EventHandler<OrderDeletedEventArgs>(Subs.OrderDeletedEventHandler);
                 ts.OrderFilled += new EventHandler<OrderFilledEventArgs>(Subs.orderFilledEventHandler);
                 ts.OrderRejected += new EventHandler<OrderRejectedEventArgs>(m_ts_OrderRejected);
                 ts.Start();

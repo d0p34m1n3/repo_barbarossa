@@ -92,6 +92,7 @@ def generate_spread_carry_sheet_4date(**kwargs):
     spread_report = pd.concat([carry_signals_list[x] for x in range(len(spread_list)) if success_list[x]])
 
     spread_report['carry'] = spread_report['carry'].round(2)
+    spread_report['q_carry_average'] = spread_report['q_carry_average'].round()
     spread_report['reward_risk'] = spread_report['reward_risk'].round(2)
     spread_report['upside'] = spread_report['upside'].round(2)
     spread_report['downside'] = spread_report['downside'].round(2)

@@ -13,6 +13,7 @@ namespace ttapiUtils
     public class Subscription
     {
         public List<string> dbTickerList { set; get; }
+        public List<string> LiquidDbTickerList { set; get; }
         public DataTable TickerTable { set; get; }
         public List<string> TickerHeadList { set; get;}
         public List<ttapiTicker> TTAPITickerList { set; get; }
@@ -43,6 +44,7 @@ namespace ttapiUtils
         public List<EventHandler<InstrumentLookupSubscriptionEventArgs>> ilsUpdateList { get; set; }
         public FieldsUpdatedEventHandler priceUpdatedEventHandler { get; set; }
         public EventHandler<OrderFilledEventArgs> orderFilledEventHandler { get; set; }
+        public EventHandler<OrderDeletedEventArgs> OrderDeletedEventHandler { get; set; }
         public EventHandler<FillAddedEventArgs> FillAddedEventHandler { get; set; }
         
         private string m_username = "";
@@ -61,6 +63,7 @@ namespace ttapiUtils
             PsDictionary = new Dictionary<InstrumentKey, PriceSubscription>();
             InstrumentDictionary = new Dictionary<InstrumentKey, Instrument>();
             TsDictionary = new Dictionary<InstrumentKey, InstrumentTradeSubscription>();
+            LiquidDbTickerList = new List<string>();
             m_username = u;
             m_password = p;
         }
@@ -367,8 +370,6 @@ namespace ttapiUtils
         }
 
 
-
-
         public void startPriceSubscriptions(object sender, InstrumentLookupSubscriptionEventArgs e)
         {
             if (e.Instrument != null && e.Error == null)
@@ -376,9 +377,23 @@ namespace ttapiUtils
                 // Instrument was found
                 Console.WriteLine("Found: {0}", e.Instrument.Name);
 
-                // Subscribe for Inside Market Data
+                string TickerDB = TA.TickerConverters.ConvertFromTTAPIFields2DB(e.Instrument.Product.ToString(), 
+                    e.Instrument.Name.ToString());
+
+                // Subscribe for Market Data
                 ps = new PriceSubscription(e.Instrument, Dispatcher.Current);
-                ps.Settings = new PriceSubscriptionSettings(PriceSubscriptionType.InsideMarket);
+
+                if (LiquidDbTickerList.Contains(TickerDB))
+                {
+                    ps.Settings = new PriceSubscriptionSettings(PriceSubscriptionType.MarketDepth);
+                }
+                else
+                {
+                    ps.Settings = new PriceSubscriptionSettings(PriceSubscriptionType.InsideMarket);
+                }
+
+                
+                
                 ps.FieldsUpdated += new FieldsUpdatedEventHandler(priceUpdatedEventHandler);
                 PsDictionary.Add(e.Instrument.Key,ps);
                 InstrumentDictionary.Add(e.Instrument.Key, e.Instrument);
