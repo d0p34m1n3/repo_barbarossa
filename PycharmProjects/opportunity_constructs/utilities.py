@@ -248,6 +248,7 @@ def get_clean_intraday_data(**kwargs):
         selected_data = intraday_data[(intraday_data['hour_minute'] < end_hour_minute)&(intraday_data['hour_minute'] >= start_hour_minute)]
 
     selected_data['mid_p'] = (selected_data['c1']['best_bid_p']+selected_data['c1']['best_ask_p'])/2
+    selected_data['total_traded_q'] = selected_data['c1']['total_traded_q']
 
     return selected_data
 

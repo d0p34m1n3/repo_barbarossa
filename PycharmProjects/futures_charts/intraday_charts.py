@@ -10,7 +10,7 @@ import shared.calendar_utilities as cu
 def get_intraday_breakout_chart(**kwargs):
 
     intraday_results = its.get_technical_scalper_4ticker(ticker=kwargs['ticker'],date_to=kwargs['trade_date'])
-    intraday_data = intraday_results['hloc_data']
+    intraday_data = intraday_results['trade_data']
 
     if 'hour_minute_from' in kwargs.keys():
         hour_minute_from = kwargs['hour_minute_from']
@@ -21,11 +21,10 @@ def get_intraday_breakout_chart(**kwargs):
 
     plt.figure(figsize=(16, 7))
     plt.subplot(211)
-    plt.plot(intraday_data.index,intraday_data['close'])
+    plt.plot(intraday_data.index,intraday_data['close'],intraday_data.index, intraday_data['ma50'])
     plt.grid()
     plt.subplot(212)
-    plt.plot(intraday_data.index,intraday_data['D1'],
-             intraday_data.index,intraday_data['D2'])
+    plt.plot(intraday_data.index,intraday_data['ts_slope20'])
 
     plt.grid()
     plt.show()

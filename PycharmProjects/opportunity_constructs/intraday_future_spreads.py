@@ -111,7 +111,7 @@ def generate_ifs_sheet_4date(**kwargs):
         return {'intraday_spreads': intraday_spreads,'success': True}
 
     if 'volume_filter' not in kwargs.keys():
-        kwargs['volume_filter'] = 2000
+        kwargs['volume_filter'] = 10000   #2000
 
     intraday_spreads = get_spreads_4date(**kwargs)
 

@@ -21,7 +21,7 @@ def get_vcs_signals(**kwargs):
 
     if not aligned_indicators_output['success']:
         return {'hist': [], 'current': [],
-            'atm_vol_ratio': np.NaN,
+                'atm_vol_ratio': np.NaN,
             'fwd_vol': np.NaN,
             'downside': np.NaN,
             'upside': np.NaN,
@@ -317,6 +317,7 @@ def get_aligned_option_indicators_legacy(**kwargs):
     current_data.set_index('ticker', drop=True, inplace=True)
 
     return {'hist': merged_dataframe, 'current': current_data, 'success': True}
+
 
 def get_aligned_option_indicators(**kwargs):
 

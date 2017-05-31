@@ -2,10 +2,13 @@
   <dictionary name="ekocatulum">
     <words>
       <w>bday</w>
+      <w>cftc</w>
       <w>doubledate</w>
       <w>indx</w>
       <w>intraday</w>
       <w>openpyxl</w>
+      <w>presave</w>
+      <w>quandl</w>
       <w>tickerhead</w>
       <w>ttapi</w>
       <w>xlsx</w>

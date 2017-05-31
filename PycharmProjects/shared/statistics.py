@@ -20,6 +20,21 @@ def get_stdev(**kwargs):
 
     return np.nanstd(x)
 
+def get_mean(**kwargs):
+
+    x = kwargs['x']
+
+    if 'clean_num_obs' in kwargs.keys():
+        clean_num_obs = kwargs['clean_num_obs']
+    else:
+        clean_num_obs = round(3*len(x)/4)
+
+    nan_indx = np.isnan(x)
+
+    if len(x)-nan_indx.sum() < clean_num_obs:
+        return float('NaN')
+
+    return np.nanmean(x)
 
 def get_quantile_from_number(quantile_input):
 

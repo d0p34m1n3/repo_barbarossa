@@ -289,6 +289,7 @@ def get_intraday_trend_signals(**kwargs):
     daily_settles['close_price_daily_diff'] = daily_settles['close_price']-daily_settles['close_price'].shift(1)
 
     daily_noise = np.std(daily_settles['close_price_daily_diff'].iloc[-60:])
+    average_volume = np.mean(daily_settles['volume'].iloc[-20:])
 
     ewma10_50_spread = (daily_settles['ewma10'].iloc[-1] - daily_settles['ewma50'].iloc[-1])/daily_noise
     ewma20_100_spread = (daily_settles['ewma20'].iloc[-1] - daily_settles['ewma100'].iloc[-1])/daily_noise
@@ -347,7 +348,8 @@ def get_intraday_trend_signals(**kwargs):
         intraday_std1 = intraday_data_yesterday['mid_p'].std()
 
     return {'ewma10_50_spread': ewma10_50_spread,'ewma20_100_spread': ewma20_100_spread,
-            'daily_noise':daily_noise,'contract_noise': contract_multiplier*daily_noise,
+            'daily_noise': daily_noise,'contract_noise': contract_multiplier*daily_noise,
+            'average_volume' : average_volume,
             'intraday_mean5': intraday_mean5,
             'intraday_std5': intraday_std5,
             'intraday_mean2': intraday_mean2,

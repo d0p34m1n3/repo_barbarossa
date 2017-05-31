@@ -59,7 +59,7 @@ def get_book_snapshot_4ticker(**kwargs):
     data_frame_out = load_csv_file_4ticker(**kwargs)
 
     if data_frame_out.empty:
-        return pd.DataFrame(columns=['best_bid_p','best_bid_q','best_ask_p','best_ask_q'])
+        return pd.DataFrame(columns=['best_bid_p','best_bid_q','best_ask_p','best_ask_q','total_traded_q'])
 
     start_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[0].tolist()/1e9).replace(microsecond=0, second=0)
     end_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[-1].tolist()/1e9).replace(microsecond=0, second=0)
@@ -97,14 +97,9 @@ def get_book_snapshot_4ticker(**kwargs):
     best_ask_q = best_ask_q.groupby(best_ask_q.index).last()
     best_ask_q = best_ask_q.reindex(merged_index,method='pad')
 
-    #last_traded_quantity = data_frame_out[data_frame_out['field'] == 'LastTradedQuantity']
-    #last_traded_price = data_frame_out[data_frame_out['field'] == 'LastTradedPrice']
-
-    #last_traded_price['value'] = [tfl.convert_trade_price_from_tt(price=x,ticker_head=ticker_head) for x in last_traded_price['value']]
-    #last_traded_price['value'] = last_traded_price['value'].astype('float64')
-    #last_traded_quantity['value'] = last_traded_quantity['value'].astype('float64')
-
-
+    total_traded_q = data_frame_out[data_frame_out['field'] == 'TotalTradedQuantity']
+    total_traded_q = total_traded_q.groupby(total_traded_q.index).last()
+    total_traded_q = total_traded_q.reindex(merged_index, method='pad')
 
     book_snapshot = pd.DataFrame(index=merged_index)
 
@@ -112,6 +107,7 @@ def get_book_snapshot_4ticker(**kwargs):
     book_snapshot['best_bid_q'] = best_bid_q['value']
     book_snapshot['best_ask_p'] = best_ask_p['value'].astype('float64')
     book_snapshot['best_ask_q'] = best_ask_q['value']
+    book_snapshot['total_traded_q'] = total_traded_q['value'].astype('float64')
 
     ticker_head = cmi.get_contract_specs(kwargs['ticker'].split('-')[0])['ticker_head']
 

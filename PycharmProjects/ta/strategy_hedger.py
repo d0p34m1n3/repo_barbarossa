@@ -52,6 +52,7 @@ def get_hedge_4strategy(**kwargs):
                                 for x in range(len(options_frame.index))]
 
     options_frame['underlying_ticker'] = [omu.get_option_underlying(ticker=x) for x in options_frame['ticker']]
+    #print(options_frame)
 
     options_frame = pd.merge(options_frame, intraday_price_frame, how='left', on='underlying_ticker')
 
@@ -131,7 +132,7 @@ def hedge_strategy_against_delta(**kwargs):
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     trade_frame['trade_quantity'] = -trade_frame['trade_quantity']
-    trade_frame['alias'] = 'delta_oct16'
+    trade_frame['alias'] = 'delta_mar17'
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     if 'con' not in kwargs.keys():
@@ -152,7 +153,7 @@ def strategy_hedge_report(**kwargs):
     hedge_indx = [x in ['vcs', 'scv','optionInventory'] for x in strategy_class_list]
     hedge_frame = strategy_frame[hedge_indx]
 
-    #hedge_frame = hedge_frame[hedge_frame['alias'] != 'LNZ16V16VCS']
+    hedge_frame = hedge_frame[(hedge_frame['alias'] == 'LNV17M17VCS')|(hedge_frame['alias'] == 'LNQ17M17VCS')]
     [hedge_strategy_against_delta(alias=x, con=con) for x in hedge_frame['alias']]
 
     if 'con' not in kwargs.keys():

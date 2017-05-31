@@ -49,7 +49,8 @@ def get_indicator_rr_table(**kwargs):
         num_buckets = 9
 
     trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field].values.astype(np.float64))) &
-                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))]
+                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))&
+                            (np.isfinite(trade_data[indicator_name].values.astype(np.float64)))]
 
     signal_correlation = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_name)
     ascending_q = True if signal_correlation<0 else False
@@ -92,13 +93,17 @@ def get_indicator_rr_double_table(**kwargs):
     long_pnl_field = kwargs['long_pnl_field']
     short_pnl_field = kwargs['short_pnl_field']
 
+    #print(indicator_list)
+
     if 'num_buckets' in kwargs.keys():
         num_buckets = kwargs['num_buckets']
     else:
         num_buckets = 3
 
     trade_data = trade_data[(np.isfinite(trade_data[long_pnl_field].values.astype(np.float64))) &
-                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))]
+                            (np.isfinite(trade_data[short_pnl_field].values.astype(np.float64)))&
+                            (np.isfinite(trade_data[indicator_list[0]].values.astype(np.float64)))&
+                            (np.isfinite(trade_data[indicator_list[1]].values.astype(np.float64)))]
 
     signal_correlation1 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[0])
     signal_correlation2 = sigut.get_signal_correlation(strategy_class=strategy_class,signal_name=indicator_list[1])

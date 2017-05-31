@@ -43,6 +43,7 @@ conversion_from_cme_direct_ticker_head = {'S': 'S',
                                           'LC': 'LC',
                                           'LN': 'LN',
                                           'J1': 'JY',
+                                          '21': 'TY',
                                           'C1': 'CD',
                                           'EC': 'EC',
                                           'LO': 'CL',
@@ -50,6 +51,7 @@ conversion_from_cme_direct_ticker_head = {'S': 'S',
                                           'SO': 'SI',
                                           'SI': 'SI',
                                           'OG': 'GC',
+                                          'ON': 'NG',
                                           'GC': 'GC',
                                           'ES': 'ES',
                                           '07': 'BO',
@@ -154,7 +156,9 @@ def load_latest_tt_fills(**kwargs):
     tt_export_frame_filtered = tt_export_frame[tt_export_frame['Product Type']=='Future']
 
     if 'tags2exclude' in kwargs.keys():
-        tt_export_frame_filtered = tt_export_frame_filtered[~tt_export_frame_filtered['Order Tag'].isin(kwargs['tags2exclude'])]
+
+        tt_export_frame_filtered['Order Tag'] = tt_export_frame_filtered['Order Tag'].astype('str')
+        tt_export_frame_filtered = tt_export_frame_filtered[[not any([y in x for y in kwargs['tags2exclude']]) for x in tt_export_frame_filtered['Order Tag']]]
 
     return tt_export_frame_filtered
 

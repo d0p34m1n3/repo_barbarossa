@@ -197,6 +197,7 @@ dirty_data_points = pd.DataFrame([('BM2006', dt.datetime(2005, 11, 18), True),
                                   ('CLF2009', dt.datetime(2007, 9, 27), True),
                                   ('CLN2009', dt.datetime(2008, 10, 16), True),
                                   ('CLZ2010', dt.datetime(2009, 3, 18), True),
+                                  ('CLQ2017', dt.datetime(2017, 5, 15), True),
                                   ('EDZ2017', dt.datetime(2014, 2, 24), True),
                                   ('HOF2007', dt.datetime(2005, 12, 1), True),
                                   ('HOF2007', dt.datetime(2006, 1, 12), True),
@@ -388,6 +389,8 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
         merged_dataframe_list[i]['change1'] = merged_dataframe_list[i]['close_price'].shift(-2)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change1_instant'] = merged_dataframe_list[i]['close_price'].shift(-1)-merged_dataframe_list[i]['close_price']
+        merged_dataframe_list[i]['high1_instant'] = merged_dataframe_list[i]['high_price'].shift(-1)
+        merged_dataframe_list[i]['low1_instant'] = merged_dataframe_list[i]['low_price'].shift(-1)
         merged_dataframe_list[i]['change2'] = merged_dataframe_list[i]['close_price'].shift(-3)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change5'] = merged_dataframe_list[i]['close_price'].shift(-6)-merged_dataframe_list[i]['close_price'].shift(-1)
         merged_dataframe_list[i]['change10'] = merged_dataframe_list[i]['close_price'].shift(-11)-merged_dataframe_list[i]['close_price'].shift(-1)

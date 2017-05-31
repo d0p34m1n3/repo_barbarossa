@@ -302,12 +302,6 @@ def get_futures_spread_carry_signals(**kwargs):
         date5_years_ago = cu.doubledate_shift(date_to,5*365)
         datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
 
-    if 'datetime2_months_ago' in kwargs.keys():
-        datetime2_months_ago = kwargs['datetime2_months_ago']
-    else:
-        date2_months_ago = cu.doubledate_shift(date_to,60)
-        datetime2_months_ago = cu.convert_doubledate_2datetime(date2_months_ago)
-
     aligned_output = opUtil.get_aligned_futures_data(contract_list=ticker_list,
                                                           tr_dte_list=tr_dte_list,
                                                           aggregation_method=aggregation_method,
@@ -329,6 +323,12 @@ def get_futures_spread_carry_signals(**kwargs):
                            current_data['c' + str(x+2)]['close_price']
                             for x in range(len(ticker_list)-1)]
 
+    butterfly_current_list = [100*(current_data['c' + str(x+1)]['close_price']-
+                           2*current_data['c' + str(x+2)]['close_price']+
+                             current_data['c' + str(x+3)]['close_price'])/
+                           current_data['c' + str(x+2)]['close_price']
+                            for x in range(len(ticker_list)-2)]
+
     price_current_list = [current_data['c' + str(x+1)]['close_price']-current_data['c' + str(x+2)]['close_price']
                             for x in range(len(ticker_list)-1)]
 
@@ -336,6 +336,12 @@ def get_futures_spread_carry_signals(**kwargs):
                            aligned_data['c' + str(x+2)]['close_price'])/
                            aligned_data['c' + str(x+2)]['close_price']
                             for x in range(len(ticker_list)-1)]
+
+    butterfly_history = [100*(aligned_data['c' + str(x+1)]['close_price']-
+                              2*aligned_data['c' + str(x+2)]['close_price']+
+                              aligned_data['c' + str(x+3)]['close_price'])/
+                         aligned_data['c' + str(x+2)]['close_price']
+                            for x in range(len(ticker_list)-2)]
 
     change_5_history = [data_last5_years['c' + str(x+1)]['change_5']-
                            data_last5_years['c' + str(x+2)]['change_5']
@@ -360,6 +366,20 @@ def get_futures_spread_carry_signals(**kwargs):
                                 'clean_num_obs': max(100, round(3*len(yield_history[x].values)/4))})
                                 for x in range(len(ticker_list)-1)]
 
+    butterfly_q_list = [stats.get_quantile_from_number({'x': butterfly_current_list[x],
+                                'y': butterfly_history[x].values[-40:],
+                                'clean_num_obs': round(3*len(butterfly_history[x].values[-40:])/4)})
+                                for x in range(len(ticker_list)-2)]
+
+    extreme_quantiles_list = [stats.get_number_from_quantile(y=x.values[:-40], quantile_list=[28, 72]) for x in butterfly_history]
+    lower_butterfly_limit = [x[0] for x in extreme_quantiles_list]
+    upper_butterfly_limit = [x[1] for x in extreme_quantiles_list]
+
+    butterfly_noise_list = [stats.get_stdev(x=butterfly_history[i].values[-20:]) for i in range(len(ticker_list)-2)]
+    butterfly_mean_list = [stats.get_mean(x=butterfly_history[i].values[-10:]) for i in range(len(ticker_list)-2)]
+
+    butterfly_z_list = [(butterfly_current_list[i] - butterfly_mean_list[i])/butterfly_noise_list[i] for i in range(len(ticker_list)-2)]
+
     percentile_vector = [stats.get_number_from_quantile(y=change_5_history[x].values,
                                                        quantile_list=[1, 15, 85, 99],
                                                        clean_num_obs=max(100, round(3*len(change_5_history[x].values)/4)))
@@ -383,14 +403,22 @@ def get_futures_spread_carry_signals(**kwargs):
       else 5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
 
     return pd.DataFrame.from_items([('ticker1',ticker1_list),
-                         ('ticker2',ticker2_list),
+                                    ('ticker2',ticker2_list),
+                                    ('ticker1L', [''] + ticker1_list[:-1]),
+                                    ('ticker2L', [''] + ticker2_list[:-1]),
                          ('ticker_head',cmi.get_contract_specs(ticker_list[0])['ticker_head']),
                          ('front_tr_dte',front_tr_dte),
                          ('carry',[np.NAN]+carry),
                          ('q_carry',[np.NAN]+q_carry),
                          ('q_carry_average',q_carry_average),
+                         ('butterfly_q',[np.NAN]+butterfly_q_list),
+                         ('butterfly_z',[np.NAN]+butterfly_z_list),
                          ('reward_risk',[np.NAN]+reward_risk),
                          ('price',price_current_list),
+                         ('lower_butterfly_limit', [np.NAN]+lower_butterfly_limit),
+                         ('upper_butterfly_limit', [np.NAN]+upper_butterfly_limit),
+                         ('butterfly_mean', [np.NAN]+butterfly_mean_list),
+                         ('butterfly_noise', [np.NAN]+butterfly_noise_list),
                          ('q',q_list),
                          ('upside',upside),
                          ('downside',downside),

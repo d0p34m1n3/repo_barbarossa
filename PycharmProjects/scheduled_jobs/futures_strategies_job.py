@@ -7,6 +7,7 @@ import my_sql_routines.futures_price_loader as fpl
 import my_sql_routines.my_sql_utilities as msu
 import get_price.presave_price as pp
 import opportunity_constructs.futures_butterfly as fb
+import opportunity_constructs.overnight_calendar_spreads as ocs
 import contract_utilities.expiration as exp
 import ta.prepare_daily as prep
 import ta.email_reports as er
@@ -18,6 +19,12 @@ pp.generate_and_update_futures_data_files(ticker_head_list='butterfly')
 
 report_date = exp.doubledate_shift_bus_days()
 fb.generate_futures_butterfly_sheet_4date(date_to=report_date, con=con)
+
+try:
+    ocs.generate_overnight_spreads_sheet_4date(date_to=report_date, con=con)
+    fsf.generate_ocs_formatted_output(report_date=report_date)
+except Exception:
+    pass
 
 fsf.generate_futures_butterfly_formatted_output()
 

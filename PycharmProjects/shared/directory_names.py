@@ -10,6 +10,7 @@ tt_fill_directory = r'C:\tt\datfiles\Export'
 
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
+                  'commitments_of_traders_data': '/data/fundamental_data/cot_data',
                   'intraday_ttapi_data': '/data/intraday_data/tt_api',
                   'intraday_ttapi_data_fixed_interval': '/data/intraday_data/tt_api_fixed_interval',
                   'raw_options_data': '/data/options_data_raw',

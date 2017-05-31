@@ -40,7 +40,6 @@ def get_results_4strategy(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
 
     strategy_info_dict = sc.convert_from_string_to_dictionary(string_input=strategy_info_output['description_string'])
-    #print(kwargs['alias'])
 
     strategy_class = strategy_info_dict['strategy_class']
 
@@ -64,35 +63,49 @@ def get_results_4strategy(**kwargs):
                                           contracts_back=int(strategy_info_dict['cBack']),
                                           date_to=date_to,**signal_input)
 
-        aligned_output = bf_signals_output['aligned_output']
-        current_data = aligned_output['current_data']
-        holding_tr_dte = int(strategy_info_dict['trDte1'])-current_data['c1']['tr_dte']
+        if bf_signals_output['success']:
+            aligned_output = bf_signals_output['aligned_output']
+            current_data = aligned_output['current_data']
+            holding_tr_dte = int(strategy_info_dict['trDte1'])-current_data['c1']['tr_dte']
+            success_status = True
+            QF = bf_signals_output['qf']
+            z1 = bf_signals_output['zscore1']
+            short_tr_dte = current_data['c1']['tr_dte']
+            second_spread_weight = bf_signals_output['second_spread_weight_1']
 
-        if strategy_position.empty:
-            recommendation = 'CLOSE'
-        elif (z1_initial>0)&(holding_tr_dte > 5) &\
-                (bf_signals_output['qf']<QF_initial-20)&\
+            if strategy_position.empty:
+                recommendation = 'CLOSE'
+            elif (z1_initial>0)&(holding_tr_dte > 5) &\
+                    (bf_signals_output['qf']<QF_initial-20)&\
+                    (pnl_frame['total_pnl'].iloc[0] > 3*t_cost*total_contracts2trade):
+                recommendation = 'STOP'
+            elif (z1_initial<0)&(holding_tr_dte > 5) &\
+                    (bf_signals_output['qf']>QF_initial+20)&\
+                    (pnl_frame['total_pnl'].iloc[0] > 3*t_cost*total_contracts2trade):
+                recommendation = 'STOP'
+            elif (current_data['c1']['tr_dte'] < 35)&\
                 (pnl_frame['total_pnl'].iloc[0] > 3*t_cost*total_contracts2trade):
-            recommendation = 'STOP'
-        elif (z1_initial<0)&(holding_tr_dte > 5) &\
-                (bf_signals_output['qf']>QF_initial+20)&\
-                (pnl_frame['total_pnl'].iloc[0] > 3*t_cost*total_contracts2trade):
-            recommendation = 'STOP'
-        elif (current_data['c1']['tr_dte'] < 35)&\
-            (pnl_frame['total_pnl'].iloc[0] > 3*t_cost*total_contracts2trade):
-            recommendation = 'STOP'
-        elif (current_data['c1']['tr_dte'] < 35)&\
-            (pnl_frame['total_pnl'].iloc[0] < 3*t_cost*total_contracts2trade):
-            recommendation = 'WINDDOWN'
+                recommendation = 'STOP'
+            elif (current_data['c1']['tr_dte'] < 35)&\
+                (pnl_frame['total_pnl'].iloc[0] < 3*t_cost*total_contracts2trade):
+                recommendation = 'WINDDOWN'
+            else:
+                recommendation = 'HOLD'
         else:
-            recommendation = 'HOLD'
+            success_status = False
+            QF = np.nan
+            z1 = np.nan
+            short_tr_dte = np.nan
+            holding_tr_dte = np.nan
+            second_spread_weight = np.nan
+            recommendation = 'MISSING DATA'
 
-        result_output = {'success': True,'ticker_head': ticker_head,
+        result_output = {'success': success_status,'ticker_head': ticker_head,
                         'QF_initial':QF_initial,'z1_initial': z1_initial,
-                        'QF': bf_signals_output['qf'],'z1': bf_signals_output['zscore1'],
-                        'short_tr_dte': current_data['c1']['tr_dte'],
+                        'QF': QF,'z1': z1,
+                        'short_tr_dte': short_tr_dte,
                         'holding_tr_dte': holding_tr_dte,
-                        'second_spread_weight': bf_signals_output['second_spread_weight_1'],'recommendation': recommendation}
+                        'second_spread_weight': second_spread_weight,'recommendation': recommendation}
 
     elif strategy_class == 'spread_carry':
         trades4_strategy = ts.get_trades_4strategy_alias(**kwargs)
@@ -104,7 +117,7 @@ def get_results_4strategy(**kwargs):
 
         net_position['ticker_head'] = [cmi.get_contract_specs(x)['ticker_head'] for x in net_position['ticker']]
         price_output = [gfp.get_futures_price_preloaded(ticker=x, settle_date=date_to) for x in net_position['ticker']]
-        net_position['tr_dte'] = [x['tr_dte'].values[0] for x in price_output]
+        net_position['tr_dte'] = [np.nan if x.empty else x['tr_dte'].values[0] for x in price_output]
 
         results_frame = pd.DataFrame()
         unique_tickerhead_list = net_position['ticker_head'].unique()
@@ -132,48 +145,53 @@ def get_results_4strategy(**kwargs):
             selected_spread = spread_report[(spread_report['ticker1'] == net_position_per_tickerhead['ticker'].values[0]) &
                              (spread_report['ticker2'] == net_position_per_tickerhead['ticker'].values[1])]
 
-            results_frame['ticker1'][i] = selected_spread['ticker1'].values[0]
-            results_frame['ticker2'][i] = selected_spread['ticker2'].values[0]
             results_frame['qty'][i] = net_position_per_tickerhead['qty'].values[0]
 
-            selected_trades = trades4_strategy[trades4_strategy['ticker'] == results_frame['ticker1'].values[i]]
+            if selected_spread.empty:
+                results_frame['ticker1'][i] = net_position_per_tickerhead['ticker'].values[0]
+                results_frame['ticker2'][i] = net_position_per_tickerhead['ticker'].values[1]
+            else:
+                results_frame['ticker1'][i] = selected_spread['ticker1'].values[0]
+                results_frame['ticker2'][i] = selected_spread['ticker2'].values[0]
 
-            price_output = gfp.get_futures_price_preloaded(ticker=results_frame['ticker1'].values[i],
+                selected_trades = trades4_strategy[trades4_strategy['ticker'] == results_frame['ticker1'].values[i]]
+
+                price_output = gfp.get_futures_price_preloaded(ticker=results_frame['ticker1'].values[i],
                                                            settle_date=pd.to_datetime(selected_trades['trade_date'].values[0]))
 
-            results_frame['timeHeld'][i] = price_output['tr_dte'].values[0]-net_position_per_tickerhead['tr_dte'].values[0]
-            results_frame['pnl'][i] = pnl_per_tickerhead[unique_tickerhead_list[i]].sum()
+                results_frame['timeHeld'][i] = price_output['tr_dte'].values[0]-net_position_per_tickerhead['tr_dte'].values[0]
+                results_frame['pnl'][i] = pnl_per_tickerhead[unique_tickerhead_list[i]].sum()
 
-            if unique_tickerhead_list[i] in ['CL', 'B', 'ED']:
-                results_frame['indicator'][i] = selected_spread['reward_risk'].values[0]
+                if unique_tickerhead_list[i] in ['CL', 'B', 'ED']:
+                    results_frame['indicator'][i] = selected_spread['reward_risk'].values[0]
+
+                    if results_frame['qty'][i] > 0:
+                        results_frame['recommendation'][i] = 'STOP'
+                    elif results_frame['qty'][i] < 0:
+                        if results_frame['indicator'][i] > -0.06:
+                            results_frame['recommendation'][i] = 'STOP'
+                        else:
+                            results_frame['recommendation'][i] = 'HOLD'
+                else:
+
+                    results_frame['indicator'][i] = selected_spread['q_carry'].values[0]
+
+                    if results_frame['qty'][i] > 0:
+                        if results_frame['indicator'][i] < 19:
+                            results_frame['recommendation'][i] = 'STOP'
+                        else:
+                            results_frame['recommendation'][i] = 'HOLD'
+
+                    elif results_frame['qty'][i] < 0:
+                        if results_frame['indicator'][i] > -9:
+                            results_frame['recommendation'][i] = 'STOP'
+                        else:
+                            results_frame['recommendation'][i] = 'HOLD'
 
                 if results_frame['qty'][i] > 0:
-                    results_frame['recommendation'][i] = 'STOP'
-                elif results_frame['qty'][i] < 0:
-                    if results_frame['indicator'][i] > -0.06:
-                        results_frame['recommendation'][i] = 'STOP'
-                    else:
-                        results_frame['recommendation'][i] = 'HOLD'
-            else:
-
-                results_frame['indicator'][i] = selected_spread['q_carry'].values[0]
-
-                if results_frame['qty'][i] > 0:
-                    if results_frame['indicator'][i] < 19:
-                        results_frame['recommendation'][i] = 'STOP'
-                    else:
-                        results_frame['recommendation'][i] = 'HOLD'
-
-                elif results_frame['qty'][i] < 0:
-                    if results_frame['indicator'][i] > -9:
-                        results_frame['recommendation'][i] = 'STOP'
-                    else:
-                        results_frame['recommendation'][i] = 'HOLD'
-
-            if results_frame['qty'][i] > 0:
-                results_frame['downside'][i] = selected_spread['downside'].values[0]*results_frame['qty'][i]
-            else:
-                results_frame['downside'][i] = selected_spread['upside'].values[0]*results_frame['qty'][i]
+                    results_frame['downside'][i] = selected_spread['downside'].values[0]*results_frame['qty'][i]
+                else:
+                    results_frame['downside'][i] = selected_spread['upside'].values[0]*results_frame['qty'][i]
 
         return {'success': True, 'results_frame': results_frame}
 

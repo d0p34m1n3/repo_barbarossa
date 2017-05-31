@@ -189,6 +189,7 @@ def get_technical_scalper_4ticker(**kwargs):
     ticker = kwargs['ticker']
     date_to = kwargs['date_to']
 
+    #print(ticker)
     datetime_to = cu.convert_doubledate_2datetime(date_to)
     daily_settles = gfp.get_futures_price_preloaded(ticker=ticker)
     daily_settles = daily_settles[daily_settles['settle_date'] <= datetime_to]
@@ -198,6 +199,7 @@ def get_technical_scalper_4ticker(**kwargs):
     yesterdays_low = daily_settles['low_price'].iloc[-2]
 
     daily_noise = np.std(daily_settles['close_price_daily_diff'].iloc[-60:])
+    average_volume = np.mean(daily_settles['volume'].iloc[-20:])
 
     ticker_head = cmi.get_contract_specs(ticker)['ticker_head']
     ticker_class = cmi.ticker_class[ticker_head]
@@ -215,6 +217,9 @@ def get_technical_scalper_4ticker(**kwargs):
     #return {'morning_low':morning_low,'morning_high':morning_high}
 
     hloc_data = intraday_data['mid_p'].resample('5T', how='ohlc')
+    volume_data = intraday_data['total_traded_q'].resample('5T', how='ohlc')
+
+    hloc_data['volume'] = volume_data['close']
 
     hloc_data['close_lead'] = hloc_data['close'].shift(-1)
 
@@ -236,6 +241,7 @@ def get_technical_scalper_4ticker(**kwargs):
     hloc_data['D1_Lag'] = hloc_data['D1'].shift(1)
     hloc_data['D2_Lag'] = hloc_data['D2'].shift(1)
 
+    hloc_data['ma10_Lag'] = hloc_data['ma10'].shift(1)
     hloc_data['ewma10_Lag'] = hloc_data['ewma10'].shift(1)
     hloc_data['ewma20_Lag'] = hloc_data['ewma20'].shift(1)
     hloc_data['ewma50_Lag'] = hloc_data['ewma50'].shift(1)
@@ -246,6 +252,11 @@ def get_technical_scalper_4ticker(**kwargs):
 
     hloc_data['CloseChange15'] = hloc_data['close'].shift(-3)-hloc_data['close']
     hloc_data['CloseChange60'] = hloc_data['close'].shift(-12)-hloc_data['close']
+
+    hloc_data['CloseChange_15'] = hloc_data['close']-hloc_data['close'].shift(3)
+    hloc_data['CloseChange_60'] = hloc_data['close']-hloc_data['close'].shift(12)
+
+    hloc_data['hourly_normalized_volume'] = (hloc_data['volume']-hloc_data['volume'].shift(12))/average_volume
 
     hloc_data['high_Lag'] = hloc_data['high'].shift(1)
     hloc_data['low_Lag'] = hloc_data['low'].shift(1)
@@ -296,6 +307,12 @@ def get_technical_scalper_4ticker(**kwargs):
 
     hloc_data = hloc_data[(hloc_data['settle_date'] == datetime_to.date())]
 
+    morning_data = hloc_data[hloc_data['hour_minute']<800]
+    morning_average = morning_data['close'].mean()
+
+    hloc_data['ma10Hybrid'] = (hloc_data['ma10']+morning_average)/2
+    hloc_data['ma20Hybrid'] = (hloc_data['ma20']+morning_average)/2
+
     hloc_data['ticker'] = ticker
     hloc_data['tickerHead'] = ticker_head
     hloc_data['tickerClass'] = ticker_class
@@ -342,22 +359,18 @@ def get_technical_scalper_4ticker(**kwargs):
     tradeable_data['ma50_spread'] = (tradeable_data['close']-hloc_data['ma50'])/daily_noise
     tradeable_data['ma100_spread'] = (tradeable_data['close']-hloc_data['ma100'])/daily_noise
 
+    tradeable_data['ma10Hybrid_spread'] = (tradeable_data['close']-hloc_data['ma10Hybrid'])/daily_noise
+    tradeable_data['ma20Hybrid_spread'] = (tradeable_data['close']-hloc_data['ma20Hybrid'])/daily_noise
+    tradeable_data['morning_spread'] = (tradeable_data['close']-morning_average)/daily_noise
+    tradeable_data['NormCloseChange_15'] = tradeable_data['CloseChange_15']/daily_noise
+    tradeable_data['NormCloseChange_60'] = tradeable_data['CloseChange_60']/daily_noise
 
-
-
-    return {'trade_data':tradeable_data}
-
-
-
-
-
-
-    trend_long_indx = (tradeable_data['close'] > tradeable_data['lma240'])&(tradeable_data['close_Lag'] < tradeable_data['lma240_Lag'])
-    trend_short_indx =  (tradeable_data['close'] < tradeable_data['lma240'])&(tradeable_data['close_Lag'] > tradeable_data['lma240_Lag'])
-    range_long_indx = (tradeable_data['close'] > tradeable_data['ewma50'])&(tradeable_data['close_Lag'] < tradeable_data['ewma50_Lag'])
-    range_short_indx = (tradeable_data['close'] < tradeable_data['ewma50'])&(tradeable_data['close_Lag'] > tradeable_data['ewma50_Lag'])
-    ma_long_index = (tradeable_data['close'] > tradeable_data['ewma100'])&(tradeable_data['close_Lag'] < tradeable_data['ewma100_Lag'])
-    ma_short_index = (tradeable_data['close'] < tradeable_data['ewma100'])&(tradeable_data['close_Lag'] > tradeable_data['ewma100_Lag'])
+    trend_long_indx = (tradeable_data['close'] > tradeable_data['ma10'])&(tradeable_data['ma50_spread']<-0.4)&(tradeable_data['hourly_normalized_volume'] < 0.25)
+    trend_short_indx = (tradeable_data['close'] < tradeable_data['ma10'])&(tradeable_data['ma50_spread']>0.4)&(tradeable_data['hourly_normalized_volume'] < 0.25)
+    range_long_indx = (tradeable_data['close'] > tradeable_data['ma10'])&(tradeable_data['close_Lag'] < tradeable_data['ma10_Lag'])&(tradeable_data['ma50_spread']<-0.4)
+    range_short_indx = (tradeable_data['close'] < tradeable_data['ma10'])&(tradeable_data['close_Lag'] > tradeable_data['ma10_Lag'])&(tradeable_data['ma50_spread']>0.4)
+    ma_long_index = (tradeable_data['close'] > tradeable_data['ma10'])&(tradeable_data['close_Lag'] < tradeable_data['ma10_Lag'])&(tradeable_data['ma50_spread']<-0.4)&(tradeable_data['hourly_normalized_volume'] < 0.25)
+    ma_short_index = (tradeable_data['close'] < tradeable_data['ma10'])&(tradeable_data['close_Lag'] > tradeable_data['ma10_Lag'])&(tradeable_data['ma50_spread']>0.4)&(tradeable_data['hourly_normalized_volume'] < 0.25)
 
     indx_list = [trend_long_indx, trend_short_indx, range_long_indx, range_short_indx, ma_long_index, ma_short_index]
     trade_type_list = ['trend_long', 'trend_short', 'range_long', 'range_short', 'ma_long', 'ma_short']
@@ -437,8 +450,7 @@ def get_technical_scalper_4ticker(**kwargs):
             merged_frame['NormPnl60WS'].iloc[i] = (5000/daily_noise)*(post_entry['close'].loc[stop_point]-trade_i['close'])*trade_i['trade_direction']
             merged_frame['Holding_Period'].iloc[i] = ((stop_point-merged_frame.index[i]).total_seconds()/60)
 
-            merged_frame['NormPnl60WSPerContract'] = merged_frame['NormPnl60WS']/merged_frame['Qty']
-
+            merged_frame['NormPnl60WSPerContract'] = merged_frame['NormPnl60WS']/(5000/(contract_multiplier*daily_noise))
 
 
     else:

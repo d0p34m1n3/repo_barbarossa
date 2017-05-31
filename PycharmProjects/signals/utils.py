@@ -12,6 +12,14 @@ import shared.constants as const
 import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
 
+fixed_weight_future_spread_list = [['CL', 'HO'], ['CL', 'RB'],
+                                   ['HO', 'CL'], ['RB', 'CL'],
+                                   ['HO', 'RB', 'CL'],
+                                   ['B', 'CL'], ['CL', 'B'],
+                                   ['S', 'BO', 'SM'],
+                                   ['C', 'W'], ['W', 'C'],
+                                   ['W', 'KW'], ['KW', 'W']]
+
 
 def calc_theo_spread_move_from_ratio_normalization(**kwargs):
 
@@ -76,7 +84,10 @@ def get_signal_correlation(**kwargs):
     elif strategy_class == 'ocs':
         if signal_name in ['ts_slope5', 'ts_slope10', 'momentum5','momentum10','underlying_zscore']:
             correlation = -1
-        elif signal_name in ['linear_deviation5', 'linear_deviation10']:
+        elif signal_name in ['linear_deviation5', 'linear_deviation10','q_carry', 'q_carry_average',
+                             'q_carry2','q_carry3','q_carry4','q_carry5','q_carry6',
+                             'butterfly_q','butterfly_q2','butterfly_q3','butterfly_q4','butterfly_q5','butterfly_q6',
+                             'butterfly_z1','butterfly_z2','butterfly_z3']:
             correlation = 1
     elif strategy_class == 'ibo':
         if signal_name in ['delta_60','delta_120','delta_180','ewma_spread','z1', 'z2', 'z5', 'z6']:
@@ -84,10 +95,28 @@ def get_signal_correlation(**kwargs):
         elif signal_name in ['ewma10_50_spread', 'ewma20_100_spread','z1', 'z2', 'z5', 'z6']:
             correlation = 1
     elif strategy_class == 'ts':
-        if signal_name in ['ma10_spread','ma20_spread','ma50_spread','ma100_spread','ts_slope5', 'ts_slope10', 'ts_slope20']:
+        if signal_name in ['ma10_spread','ma20_spread','ma50_spread','ma100_spread','ts_slope5', 'ts_slope10', 'ts_slope20',
+                           'ma10Hybrid_spread','ma20Hybrid_spread','morning_spread','NormCloseChange_15','NormCloseChange_60']:
             correlation = -1
         elif signal_name in ['linear_deviation5', 'linear_deviation10','linear_deviation20']:
             correlation = 1
+    elif strategy_class == 'cot':
+        if signal_name in ['change_10_norm', 'comm_net_change_1_normalized','regress_forecast1','regress_forecast2','regress_forecast3',
+                           'svr_forecast1','svr_forecast2','vote1_instant','vote12_instant','vote13_instant']:
+            correlation = 1
+        elif signal_name in ['change_1_norm']:
+            correlation = -1
+    elif strategy_class == 'arma':
+        if signal_name in ['normalized_forecast']:
+            correlation = 1
+    elif strategy_class == 'ofs':
+        if signal_name in ['regress_forecast1Instant1','regress_forecast1Instant2','regress_forecast1Instant3','regress_forecast1Instant4',
+                           'regress_forecast11','regress_forecast12','regress_forecast13','regress_forecast14',
+                           'regress_forecast51','regress_forecast52','regress_forecast53','regress_forecast54',
+                           'regress_forecast101','regress_forecast102','regress_forecast103','change_2Delta']:
+            correlation = 1
+        elif signal_name in ['change_1Normalized','change_5Normalized','change_10Normalized','change_20Normalized','change_40Normalized']:
+            correlation = -1
 
     return correlation
 

@@ -18,7 +18,7 @@ def generate_ibo_formatted_output(**kwargs):
     out_dictionary = ibo.generate_ibo_sheet_4date(date_to=report_date)
     cov_matrix = out_dictionary['cov_output']['cov_matrix']
 
-    cov_matrix.reset_index(drop=False,inplace=True)
+    cov_matrix.reset_index(drop=False, inplace=True)
 
     writer = pd.ExcelWriter(output_dir + '/' + 'cov_matrix.xlsx', engine='xlsxwriter')
     cov_matrix.to_excel(writer, sheet_name='cov_matrix')
@@ -28,3 +28,16 @@ def generate_ibo_formatted_output(**kwargs):
 
     with open(output_dir + '/' + 'covDataIntegrity.txt','w') as text_file:
         text_file.write(str(cov_data_integrity))
+
+    sheet_4date = out_dictionary['sheet_4date']
+
+    writer = pd.ExcelWriter(output_dir + '/summary.xlsx', engine='xlsxwriter')
+
+    sheet_4date.to_excel(writer, sheet_name='all')
+
+    worksheet_all = writer.sheets['all']
+    worksheet_all.freeze_panes(1, 0)
+    worksheet_all.autofilter(0, 0, len(sheet_4date.index),len(sheet_4date.columns))
+
+
+

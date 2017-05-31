@@ -27,7 +27,7 @@ def send_email_with_attachment(**kwargs):
     if 'password' in kwargs.keys():
         password = kwargs['password']
     else:
-        password = 'rubicon1789'
+        password = 'H5Vsh7S2vmyz'
 
     if 'email_text' in kwargs.keys():
         email_text = kwargs['email_text']

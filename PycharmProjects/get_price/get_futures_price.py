@@ -15,6 +15,11 @@ def get_futures_prices_4date(**kwargs):
 
     date_to = kwargs['date_to']
 
+    filter_string = 'WHERE dp.price_date=' + str(date_to)
+
+    if 'date_from' in kwargs.keys():
+        filter_string = 'WHERE dp.price_date<=' + str(date_to) + ' and dp.price_date>=' + str(kwargs['date_from'])
+
     con = msu.get_my_sql_connection(**kwargs)
 
     sql_query = 'SELECT dp.price_date, sym.ticker, dp.ticker_head, dp.ticker_month, ' + \
@@ -22,7 +27,7 @@ def get_futures_prices_4date(**kwargs):
     'dp.open_price, dp.high_price, dp.low_price, dp.close_price, dp.volume ' + \
     'FROM symbol as sym ' + \
     'INNER JOIN daily_price as dp ON dp.symbol_id = sym.id ' + \
-    'WHERE dp.price_date=' + str(date_to) + \
+     filter_string + \
     ' ORDER BY dp.ticker_head, dp.cal_dte '
 
     cur = con.cursor()
@@ -128,6 +133,9 @@ def get_futures_price_preloaded(**kwargs):
 
     if 'settle_date_from' in kwargs.keys():
         data_out = data_out[data_out['settle_date']>=cu.convert_doubledate_2datetime(kwargs['settle_date_from'])]
+
+    if 'settle_date_to' in kwargs.keys():
+        data_out = data_out[data_out['settle_date']<=cu.convert_doubledate_2datetime(kwargs['settle_date_to'])]
 
     if 'ticker' in kwargs.keys():
         data_out = data_out[data_out['ticker']==ticker]

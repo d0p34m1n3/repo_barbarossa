@@ -3,6 +3,7 @@ __author__ = 'kocat_000'
 import contract_utilities.expiration as exp
 import opportunity_constructs.futures_butterfly as fb
 import opportunity_constructs.intraday_future_spreads as ifs
+import opportunity_constructs.overnight_calendar_spreads as ocs
 import opportunity_constructs.curve_pca as cpc
 import signals.futures_filters as ff
 import shared.directory_names as dn
@@ -115,6 +116,24 @@ def generate_ifs_formatted_output(**kwargs):
     writer = pd.ExcelWriter(output_dir + '/' + futil.xls_file_names['ifs'] + '.xlsx', engine='xlsxwriter')
 
     intraday_spreads.to_excel(writer, sheet_name='all')
+
+
+def generate_ocs_formatted_output(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='ocs', report_date=report_date)
+
+    ocs_output = ocs.generate_overnight_spreads_sheet_4date(date_to=report_date)
+    overnight_calendars = ocs_output['overnight_calendars']
+    overnight_calendars = overnight_calendars[overnight_calendars['butterflyQ'].notnull()]
+
+    writer = pd.ExcelWriter(output_dir + '/' + futil.xls_file_names['ocs'] + '.xlsx', engine='xlsxwriter')
+
+    overnight_calendars.to_excel(writer, sheet_name='all')
 
 
 

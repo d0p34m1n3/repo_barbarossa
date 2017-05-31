@@ -21,9 +21,9 @@ def get_ts_results_4date(**kwargs):
     date_to = kwargs['date_to']
     output_dir = ts.create_strategy_output_dir(strategy_class='ts', report_date=date_to)
 
-    #if os.path.isfile(output_dir + '/trades.pkl'):
-    #    trades = pd.read_pickle(output_dir + '/trades.pkl')
-    #    return trades
+    if os.path.isfile(output_dir + '/trades.pkl'):
+        trades = pd.read_pickle(output_dir + '/trades.pkl')
+        return trades
 
     tickers_4date = get_tickers_4date(**kwargs)
     trade_list = []

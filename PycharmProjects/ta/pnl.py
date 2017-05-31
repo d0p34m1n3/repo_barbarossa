@@ -5,6 +5,7 @@ import get_price.get_futures_price as gfp
 import get_price.get_options_price as gop
 import contract_utilities.expiration as exp
 import shared.calendar_utilities as cu
+import shared.converters as sc
 import my_sql_routines.my_sql_utilities as msu
 import pandas as pd
 import numpy as np
@@ -16,6 +17,11 @@ def get_strategy_pnl_4day(**kwargs):
 
     alias = kwargs['alias']
     pnl_date = kwargs['pnl_date']
+
+    if 'shift_in_days' in kwargs.keys():
+        shift_in_days = kwargs['shift_in_days']
+    else:
+        shift_in_days = 1
 
     #print(pnl_date)
 
@@ -40,7 +46,7 @@ def get_strategy_pnl_4day(**kwargs):
         unique_ticker_head_list = list(set(ticker_head_list))
         futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in unique_ticker_head_list}
 
-    pnl_date_1 = exp.doubledate_shift_bus_days(double_date=pnl_date)
+    pnl_date_1 = exp.doubledate_shift_bus_days(double_date=pnl_date,shift_in_days=shift_in_days)
 
     underlying_frame = trades_frame[trades_frame['instrument'] == 'F']
     option_frame = trades_frame[trades_frame['instrument'] == 'O']
@@ -80,6 +86,9 @@ def get_strategy_pnl_4day(**kwargs):
     trades_frame = pd.concat([option_frame, underlying_frame])
 
     position_frame = trades_frame[trades_frame['trade_date'] < pnl_datetime]
+
+    nan_price_q = position_frame['price'].isnull().values.any()
+
     intraday_frame = trades_frame[trades_frame['trade_date'] == pnl_datetime]
 
     position_pnl_per_ticker = pd.DataFrame(columns=['ticker','pnl_position'])
@@ -146,6 +155,7 @@ def get_strategy_pnl_4day(**kwargs):
             'position_pnl': int(position_pnl),
             'intraday_pnl': int(intraday_pnl),
             't_cost': int(t_cost),
+            'nan_price_q':nan_price_q,
             'pnl_per_ticker': pnl_per_ticker,
             'pnl_per_tickerhead':pnl_per_tickerhead}
 
@@ -187,6 +197,23 @@ def get_strategy_pnl(**kwargs):
     pnl_path = [get_strategy_pnl_4day(alias=alias,pnl_date=x,con=con,
                                       trades_frame=trades_frame,
                                       futures_data_dictionary=futures_data_dictionary) for x in bus_day_list]
+
+    nan_price_q_list = [x['nan_price_q'] for x in pnl_path]
+    good_price_q_list = [not i for i in nan_price_q_list]
+
+    bus_day_after_nan_list = [bus_day_list[x+1] for x in range(len(bus_day_list)-1) if nan_price_q_list[x]]
+
+    pnl_path = [pnl_path[x] for x in range(len(pnl_path)) if good_price_q_list[x]]
+    bus_day_list = [bus_day_list[x] for x in range(len(bus_day_list)) if good_price_q_list[x]]
+
+    if len(bus_day_after_nan_list)>0:
+         pnl_path_after_nan = [get_strategy_pnl_4day(alias=alias,pnl_date=x,con=con,
+                                      trades_frame=trades_frame,
+                                                     shift_in_days=2,
+                                      futures_data_dictionary=futures_data_dictionary) for x in bus_day_after_nan_list]
+         for i in range(len(bus_day_after_nan_list)):
+             index_val = bus_day_list.index(bus_day_after_nan_list[i])
+             pnl_path[index_val] = pnl_path_after_nan[i]
 
     pnl_per_tickerhead_list = [x['pnl_per_tickerhead'] for x in pnl_path]
     pnl_per_tickerhead = pd.concat(pnl_per_tickerhead_list, axis=1)

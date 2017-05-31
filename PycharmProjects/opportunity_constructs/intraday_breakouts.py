@@ -31,6 +31,8 @@ def generate_ibo_sheet_4date(**kwargs):
 
     signals_output = [ifs.get_intraday_trend_signals(ticker=sheet_4date.iloc[x]['ticker'],date_to=date_to) for x in range(num_tickers)]
     sheet_4date['contract_noise'] = [x['contract_noise'] for x in signals_output]
+    sheet_4date['daily_noise'] = [x['daily_noise'] for x in signals_output]
+    sheet_4date['average_volume'] = [x['average_volume'] for x in signals_output]
     sheet_4date['ewma10_50_spread'] = [x['ewma10_50_spread'] for x in signals_output]
     sheet_4date['ewma20_100_spread'] = [x['ewma20_100_spread'] for x in signals_output]
     sheet_4date['intraday_mean5'] = [x['intraday_mean5'] for x in signals_output]
