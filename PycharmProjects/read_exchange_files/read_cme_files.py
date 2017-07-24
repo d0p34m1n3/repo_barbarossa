@@ -276,27 +276,27 @@ def process_title(title_input):
         title_indx = 2
     elif title_list[0] == 'AD' and asset_type == 'futures':
         ticker_head = 'AD'
-    elif title_list[0] == 'ZA' and asset_type == 'options':
+    elif title_list[0] == 'ADU' and asset_type == 'options':
         ticker_head = 'AD'
         title_indx = 2
     elif title_list[0] == 'CD' and asset_type == 'futures':
         ticker_head = 'CD'
-    elif title_list[0] == 'OV' and asset_type == 'options':
+    elif title_list[0] == 'CAU' and asset_type == 'options':
         ticker_head = 'CD'
         title_indx = 2
     elif title_list[0] == 'EC' and asset_type == 'futures':
         ticker_head = 'EC'
-    elif title_list[0] == 'ZC' and asset_type == 'options':
+    elif title_list[0] == 'EUU' and asset_type == 'options':
         ticker_head = 'EC'
         title_indx = 2
     elif title_list[0] == 'JY' and asset_type == 'futures':
         ticker_head = 'JY'
-    elif title_list[0] == 'OJ' and asset_type == 'options':
+    elif title_list[0] == 'JPU' and asset_type == 'options':
         ticker_head = 'JY'
         title_indx = 2
     elif title_list[0] == 'NB' and asset_type == 'futures':
         ticker_head = 'BP'
-    elif title_list[0] == 'OB' and asset_type == 'options':
+    elif title_list[0] == 'GBU' and asset_type == 'options':
         ticker_head = 'BP'
         title_indx = 2
     elif title_list[0] == 'FV' and asset_type == 'futures':

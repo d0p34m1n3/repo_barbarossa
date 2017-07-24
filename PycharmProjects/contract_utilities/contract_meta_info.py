@@ -69,10 +69,13 @@ def get_option_exercise_type(**kwargs):
 
     ticker_head = kwargs['ticker_head']
 
-    if ticker_head in ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+    if ticker_head in ['LN', 'LC', 'ES', 'GC', 'SI',
                        'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
                        'ED', 'E0', 'E2', 'E3', 'E4', 'E5']:
         exercise_type = 'A'
+
+    elif ticker_head in ['EC', 'JY', 'AD', 'CD', 'BP']:
+        exercise_type = 'E'
     else:
         exercise_type = None
 

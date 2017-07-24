@@ -13,6 +13,7 @@ import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
 import opportunity_constructs.spread_carry as osc
 import opportunity_constructs.vcs as ovcs
+import opportunity_constructs.overnight_calendar_spreads as ocs
 import ta.strategy_greeks as sg
 import ta.portfolio_manager as tpm
 
@@ -289,6 +290,36 @@ def get_results_4strategy(**kwargs):
             result_output = {'success': True, 'net_oev': net_oev, 'net_theta': net_theta, 'long_short_ratio': long_short_ratio,
                          'recommendation': recommendation, 'last_adjustment_days_ago': last_adjustment_days_ago,
                          'min_tr_dte': min_tr_dte, 'long_oev': long_oev, 'short_oev': short_oev, 'favQMove': favQMove}
+
+    elif strategy_class == 'ocs':
+
+        datetime_to = cu.convert_doubledate_2datetime(date_to)
+        time_held = (datetime_to.date()-strategy_info_output['created_date'].date()).days
+        notes = ''
+
+        strategy_position = ts.get_net_position_4strategy_alias(alias=kwargs['alias'],as_of_date=date_to,con=con)
+
+        if len(strategy_position.index) == 0:
+            tpnl.close_strategy(alias=kwargs['alias'], close_date=date_to, con=con)
+            result_output = {'success': True, 'time_held': time_held,'dollar_noise': np.nan , 'notes': 'closed'}
+        elif strategy_position['qty'].sum()!=0:
+            result_output = {'success': True, 'time_held': time_held, 'dollar_noise': np.nan , 'notes': 'check position'}
+        else:
+            strategy_position['cont_indx'] = [cmi.get_contract_specs(x)['cont_indx'] for x in strategy_position['ticker']]
+            strategy_position.sort('cont_indx',ascending=True,inplace=True)
+
+            ocs_output = ocs.generate_overnight_spreads_sheet_4date(date_to=date_to)
+            overnight_calendars = ocs_output['overnight_calendars']
+
+            selection_indx = (overnight_calendars['ticker1'] == strategy_position['ticker'].iloc[0])&\
+                             (overnight_calendars['ticker2'] == strategy_position['ticker'].iloc[1])
+
+            if sum(selection_indx)>0:
+                dollar_noise = (overnight_calendars.loc[selection_indx,'dollarNoise100'].values[0])*abs(strategy_position['qty'].iloc[0])
+            else:
+                dollar_noise = np.nan
+
+            result_output = {'success': True, 'time_held': time_held, 'dollar_noise': dollar_noise , 'notes': 'hold'}
 
     else:
         result_output = {'success': False}

@@ -7,7 +7,6 @@ import numpy as np
 day_count_obj = ql.Actual365Fixed()
 calendar_obj = ql.UnitedStates()
 
-
 def get_option_greeks(**kwargs):
 
     # risk_free_rate and volatility in whole points not percentage points
@@ -112,10 +111,12 @@ def get_option_greeks(**kwargs):
     payoff = ql.PlainVanillaPayoff(option_type_obj, strike)
     option_obj = ql.VanillaOption(payoff, exercise_obj)
 
-    if engine_name == 'baw':
+    if (engine_name == 'baw')&(exercise_type == 'A'):
         option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
-    elif engine_name == 'fda':
+    elif (engine_name == 'fda')&(exercise_type == 'A'):
         option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
+    elif exercise_type == 'E':
+        option_obj.setPricingEngine(ql.AnalyticEuropeanEngine(bsm_process))
     option_price = option_obj.NPV()
 
     if 'option_price' in kwargs.keys():
@@ -125,10 +126,12 @@ def get_option_greeks(**kwargs):
             #bsm_process = ql.BlackScholesMertonProcess(underlying_obj, dividend_yield_obj, flat_ts_obj, flat_vol_ts_obj)
             bsm_process = ql.BlackProcess(underlying_obj, flat_ts_obj, flat_vol_ts_obj)
 
-            if engine_name == 'baw':
+            if (engine_name == 'baw')&(exercise_type == 'A'):
                 option_obj.setPricingEngine(ql.BaroneAdesiWhaleyEngine(bsm_process))
-            elif engine_name == 'fda':
+            elif (engine_name == 'fda')&(exercise_type == 'A'):
                 option_obj.setPricingEngine(ql.FDAmericanEngine(bsm_process, 100, 100))
+            elif exercise_type == 'E':
+                option_obj.setPricingEngine(ql.AnalyticEuropeanEngine(bsm_process))
 
             option_price = option_obj.NPV()
         except Exception:

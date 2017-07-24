@@ -40,6 +40,24 @@ def get_strategy_pnl_4day(**kwargs):
 
     trades_frame['ticker_head'] = ticker_head_list
 
+    option_indx = trades_frame['instrument'] == 'O'
+    trades_frame['generalized_ticker'] = trades_frame['ticker']
+    trades_frame['generalized_ticker'][option_indx] = trades_frame['ticker'][option_indx] + '-' + \
+                                                         trades_frame['option_type'][option_indx] + '-' + \
+                                                         trades_frame['strike_price'][option_indx].astype(str)
+
+    position_frame_aux = trades_frame[trades_frame['trade_date'] < pnl_datetime]
+    intraday_frame_aux = trades_frame[trades_frame['trade_date'] == pnl_datetime]
+
+    grouped = position_frame_aux.groupby(['generalized_ticker'])
+    net_position = pd.DataFrame()
+    net_position['qty'] = grouped['trade_quantity'].sum()
+    net_position['generalized_ticker'] = grouped['generalized_ticker'].first()
+    net_position = net_position[abs(net_position['qty'])>0.1]
+
+    useful_generalized_ticker_list = list(set(net_position['generalized_ticker'].values) | set(intraday_frame_aux['generalized_ticker'].unique()))
+    trades_frame = trades_frame[trades_frame['generalized_ticker'].isin(useful_generalized_ticker_list)]
+
     if 'futures_data_dictionary' in kwargs.keys():
         futures_data_dictionary = kwargs['futures_data_dictionary']
     else:
@@ -175,6 +193,7 @@ def get_strategy_pnl(**kwargs):
         as_of_date = exp.doubledate_shift_bus_days()
 
     open_date = int(strategy_info['open_date'].strftime('%Y%m%d'))
+    #open_date = 20160920
     close_date = int(strategy_info['close_date'].strftime('%Y%m%d'))
 
     if close_date>as_of_date:
@@ -206,7 +225,10 @@ def get_strategy_pnl(**kwargs):
     pnl_path = [pnl_path[x] for x in range(len(pnl_path)) if good_price_q_list[x]]
     bus_day_list = [bus_day_list[x] for x in range(len(bus_day_list)) if good_price_q_list[x]]
 
-    if len(bus_day_after_nan_list)>0:
+    #print(bus_day_list)
+    #print(bus_day_after_nan_list)
+
+    if len(bus_day_after_nan_list) > 0:
          pnl_path_after_nan = [get_strategy_pnl_4day(alias=alias,pnl_date=x,con=con,
                                       trades_frame=trades_frame,
                                                      shift_in_days=2,

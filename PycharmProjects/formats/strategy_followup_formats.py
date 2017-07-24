@@ -1,6 +1,7 @@
 
 import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.contract_meta_info as cmi
+import shared.calendar_utilities as cu
 import get_price.get_futures_price as gfp
 import contract_utilities.expiration as exp
 import ta.strategy as ts
@@ -10,7 +11,9 @@ import ta.portfolio_manager as pm
 import risk.historical_risk as hr
 import shared.directory_names as dn
 from openpyxl import load_workbook
+import datetime as dt
 import pandas as pd
+import numpy as np
 
 
 def generate_futures_butterfly_followup_report(**kwargs):
@@ -186,7 +189,75 @@ def generate_vcs_followup_report(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
+    return writer
+
+def generate_ocs_followup_report(**kwargs):
+
+    if 'as_of_date' in kwargs.keys():
+        as_of_date = kwargs['as_of_date']
+    else:
+        as_of_date = exp.doubledate_shift_bus_days()
+        kwargs['as_of_date'] = as_of_date
+
+    ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    if 'writer' in kwargs.keys():
+        writer = kwargs['writer']
+    else:
+        writer = pd.ExcelWriter(ta_output_dir + '/followup.xlsx', engine='xlsxwriter')
+
+    strategy_frame = ts.get_open_strategies(**kwargs)
+
+    strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=strategy_frame['description_string'][x])['strategy_class']
+                           for x in range(len(strategy_frame.index))]
+
+    ocs_indx = [x == 'ocs' for x in strategy_class_list]
+    ocs_frame = strategy_frame[ocs_indx]
+
+    results = [sf.get_results_4strategy(alias=ocs_frame['alias'].iloc[x],strategy_info_output=ocs_frame.iloc[x], con=con, date_to=as_of_date)
+               for x in range(len(ocs_frame.index))]
+
+    ocs_followup_frame = pd.DataFrame(results)
+    ocs_followup_frame['alias'] = ocs_frame['alias'].values
+
+    pnl_frame = pm.get_daily_pnl_snapshot(**kwargs)
+    merged_frame1 = pd.merge(ocs_followup_frame,pnl_frame, how='left', on='alias')
+    ocs_followup_frame = merged_frame1[['alias','dollar_noise','time_held','daily_pnl','total_pnl','notes']]
+    ocs_followup_frame.reset_index(drop=True,inplace=True)
+    ocs_followup_frame.loc[max(ocs_followup_frame.index)+1] = ['TOTAL',np.nan,np.nan, ocs_followup_frame['daily_pnl'].sum(), ocs_followup_frame['total_pnl'].sum(),'']
+
+    date_from30 = cu.doubledate_shift(as_of_date, 30)
+    history_frame = ts.select_strategies(close_date_from=date_from30,close_date_to=as_of_date,con=con)
+    strategy_class_list = [sc.convert_from_string_to_dictionary(string_input=history_frame['description_string'][x])['strategy_class']
+                           for x in range(len(history_frame.index))]
+
+    ocs_indx = [x == 'ocs' for x in strategy_class_list]
+
+    ocs_history_frame = history_frame[ocs_indx]
+    pnl_past_month = ocs_history_frame['pnl'].sum()
+
+    as_of_datetime = cu.convert_doubledate_2datetime(as_of_date)
+    date_from7 = as_of_datetime+dt.timedelta(days=-7)
+    ocs_short_history_frame = ocs_history_frame[ocs_history_frame['close_date'] >= date_from7]
+    pnl_past_week = ocs_short_history_frame['pnl'].sum()
+
+    ocs_followup_frame.loc[max(ocs_followup_frame.index)+1] = ['WEEKLY PERFORMANCE',np.nan,np.nan, np.nan, pnl_past_week,'']
+    ocs_followup_frame.loc[max(ocs_followup_frame.index)+1] = ['MONTHLY PERFORMANCE',np.nan,np.nan, np.nan, pnl_past_month,'']
+
+    ocs_followup_frame.to_excel(writer, sheet_name='ocs')
+    worksheet_ocs = writer.sheets['ocs']
+    worksheet_ocs.freeze_panes(1, 0)
+
+    worksheet_ocs.autofilter(0, 0, len(ocs_followup_frame.index),
+                              len(ocs_followup_frame.columns))
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
     writer.save()
+
 
 
 

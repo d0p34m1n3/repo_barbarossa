@@ -36,6 +36,9 @@ def process_cme_options_4ticker(**kwargs):
 
         selected_frame = title_frame[(title_frame['asset_type'] == 'options') & (title_frame['ticker_head'] == ticker_head)]
 
+        if selected_frame.empty:
+            return {'success': False, 'settle_frame': pd.DataFrame()}
+
         datetime_conversion = [dt.datetime.strptime(x.replace('JLY', 'JUL'), '%b%y') for x in selected_frame['maturity_string']]
         selected_frame['ticker_year'] = [x.year for x in datetime_conversion]
         selected_frame['ticker_month'] = [x.month for x in datetime_conversion]

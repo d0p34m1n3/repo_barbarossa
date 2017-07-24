@@ -335,6 +335,12 @@ def select_strategies(**kwargs):
     if 'open_date_to' in kwargs.keys():
         sql_query = sql_query + ' and open_date<=' + str(kwargs['open_date_to'])
 
+    if 'close_date_from' in kwargs.keys():
+        sql_query = sql_query + ' and close_date>=' + str(kwargs['close_date_from'])
+
+    if 'close_date_to' in kwargs.keys():
+        sql_query = sql_query + ' and close_date<=' + str(kwargs['close_date_to'])
+
     cur = con.cursor()
 
     cur.execute(sql_query)
