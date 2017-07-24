@@ -1,6 +1,7 @@
 __author__ = 'kocat_000'
 
 import math as m
+import numpy as np
 import pytz as pytz
 import datetime as dt
 
@@ -69,13 +70,10 @@ def get_option_exercise_type(**kwargs):
 
     ticker_head = kwargs['ticker_head']
 
-    if ticker_head in ['LN', 'LC', 'ES', 'GC', 'SI',
+    if ticker_head in ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
                        'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
                        'ED', 'E0', 'E2', 'E3', 'E4', 'E5']:
         exercise_type = 'A'
-
-    elif ticker_head in ['EC', 'JY', 'AD', 'CD', 'BP']:
-        exercise_type = 'E'
     else:
         exercise_type = None
 
@@ -358,6 +356,19 @@ aligned_data_tickerhead = {'LN': 'LNH',
                            'E4': 'E4',
                            'E5': 'E5'}
 
+def get_ib_exchange_name(ticker_head):
+    if ticker_head in ['CL', 'HO', 'RB', 'NG']:
+        exchange = 'NYMEX'
+    elif ticker_head in ['C', 'W', 'KW', 'S', 'SM', 'BO']:
+        exchange = 'ECBOT'
+    elif ticker_head in ['LC', 'LN', 'FC']:
+        exchange = 'GLOBEX'
+    else:
+        exchange = ''
+
+    return exchange
+
+
 aligned_data_tr_dte_list = [10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100,
                            120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 330, 360, 390]
 
@@ -454,6 +465,24 @@ t_cost = {'CL': 0.80,
           'SB': 2.1,
           'OJ': 2.1,
           'CT': 2.1}
+
+t_cost_ib = {'S': 2.81,
+             'FC': 2.89,
+             'LN': 2.89,
+             'LC': 2.89}
+
+def get_t_cost(**kwargs):
+
+    broker = kwargs['broker']
+    ticker_head = kwargs['ticker_head']
+    t_cost_out = np.nan
+
+    if broker=='abn':
+        t_cost_out = t_cost[ticker_head]
+    elif broker=='ib':
+        t_cost_out = t_cost_ib[ticker_head]
+
+    return t_cost_out
 
 
 def get_contract_specs(ticker):

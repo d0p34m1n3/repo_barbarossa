@@ -85,12 +85,23 @@ def generate_overnight_spreads_sheet_4date(**kwargs):
     overnight_calendars['butterflyQ'] = [x['butterfly_q'] for x in signals_output]
     overnight_calendars['butterflyZ'] = [x['butterfly_z'] for x in signals_output]
     overnight_calendars['spreadPrice'] = [x['spread_price'] for x in signals_output]
-    overnight_calendars['lowerButterflyLimit'] = [x['lower_butterfly_limit'] for x in signals_output]
-    overnight_calendars['upperButterflyLimit'] = [x['upper_butterfly_limit'] for x in signals_output]
+    overnight_calendars['butterfly_q10'] = [x['butterfly_q10'] for x in signals_output]
+    overnight_calendars['butterfly_q25'] = [x['butterfly_q25'] for x in signals_output]
+    overnight_calendars['butterfly_q35'] = [x['butterfly_q35'] for x in signals_output]
+    overnight_calendars['butterfly_q50'] = [x['butterfly_q50'] for x in signals_output]
+    overnight_calendars['butterfly_q65'] = [x['butterfly_q65'] for x in signals_output]
+    overnight_calendars['butterfly_q75'] = [x['butterfly_q75'] for x in signals_output]
+    overnight_calendars['butterfly_q90'] = [x['butterfly_q90'] for x in signals_output]
     overnight_calendars['butterflyMean'] = [x['butterfly_mean'] for x in signals_output]
     overnight_calendars['butterflyNoise'] = [x['butterfly_noise'] for x in signals_output]
     overnight_calendars['noise100'] = [x['noise_100'] for x in signals_output]
     overnight_calendars['dollarNoise100'] = [x['dollar_noise_100'] for x in signals_output]
+
+    overnight_calendars['pnl1'] = [x['pnl1'] for x in signals_output]
+    overnight_calendars['pnl1_instant'] = [x['pnl1_instant'] for x in signals_output]
+    overnight_calendars['pnl2'] = [x['pnl2'] for x in signals_output]
+    overnight_calendars['pnl5'] = [x['pnl5'] for x in signals_output]
+    overnight_calendars['pnl10'] = [x['pnl10'] for x in signals_output]
 
     overnight_calendars.to_pickle(output_dir + '/summary.pkl')
 

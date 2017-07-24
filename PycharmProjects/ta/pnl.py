@@ -23,6 +23,11 @@ def get_strategy_pnl_4day(**kwargs):
     else:
         shift_in_days = 1
 
+    if 'broker' in kwargs.keys():
+        broker = kwargs['broker']
+    else:
+        broker = 'abn'
+
     #print(pnl_date)
 
     pnl_datetime = cu.convert_doubledate_2datetime(pnl_date)
@@ -36,7 +41,7 @@ def get_strategy_pnl_4day(**kwargs):
         trades_frame = ts.get_trades_4strategy_alias(alias=alias,con=con)
         ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in trades_frame['ticker']]
         trades_frame['contract_multiplier'] = [cmi.contract_multiplier[x] for x in ticker_head_list]
-        trades_frame['t_cost'] = [cmi.t_cost[x] for x in ticker_head_list]
+        trades_frame['t_cost'] = [cmi.get_t_cost(ticker_head=x,broker=broker) for x in ticker_head_list]
 
     trades_frame['ticker_head'] = ticker_head_list
 
@@ -192,6 +197,11 @@ def get_strategy_pnl(**kwargs):
     else:
         as_of_date = exp.doubledate_shift_bus_days()
 
+    if 'broker' in kwargs.keys():
+        broker = kwargs['broker']
+    else:
+        broker = 'abn'
+
     open_date = int(strategy_info['open_date'].strftime('%Y%m%d'))
     #open_date = 20160920
     close_date = int(strategy_info['close_date'].strftime('%Y%m%d'))
@@ -211,10 +221,10 @@ def get_strategy_pnl(**kwargs):
         futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in unique_ticker_head_list}
 
     trades_frame['contract_multiplier'] = [cmi.contract_multiplier[x] for x in ticker_head_list]
-    trades_frame['t_cost'] = [cmi.t_cost[x] for x in ticker_head_list]
+    trades_frame['t_cost'] = [cmi.get_t_cost(ticker_head=x,broker=broker) for x in ticker_head_list]
 
     pnl_path = [get_strategy_pnl_4day(alias=alias,pnl_date=x,con=con,
-                                      trades_frame=trades_frame,
+                                      trades_frame=trades_frame,broker=broker,
                                       futures_data_dictionary=futures_data_dictionary) for x in bus_day_list]
 
     nan_price_q_list = [x['nan_price_q'] for x in pnl_path]
@@ -230,7 +240,7 @@ def get_strategy_pnl(**kwargs):
 
     if len(bus_day_after_nan_list) > 0:
          pnl_path_after_nan = [get_strategy_pnl_4day(alias=alias,pnl_date=x,con=con,
-                                      trades_frame=trades_frame,
+                                      trades_frame=trades_frame,broker=broker,
                                                      shift_in_days=2,
                                       futures_data_dictionary=futures_data_dictionary) for x in bus_day_after_nan_list]
          for i in range(len(bus_day_after_nan_list)):

@@ -64,7 +64,11 @@ def get_quantile_from_number(quantile_input):
 def get_number_from_quantile(**kwargs):
 
      y = kwargs['y']
+
      quantile_list = kwargs['quantile_list']
+
+     if len(y)==0:
+         return [float('NaN')] * len(quantile_list)
 
      if 'clean_num_obs' in kwargs.keys():
         clean_num_obs = kwargs['clean_num_obs']

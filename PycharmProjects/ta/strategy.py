@@ -116,7 +116,7 @@ def generate_db_strategy_from_alias(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return strategy_id
+    return {'alias': alias, 'strategy_id': strategy_id}
 
 
 def get_trades_4strategy_alias(**kwargs):
@@ -318,6 +318,15 @@ def get_open_strategies(**kwargs):
 
     return pd.DataFrame(data,columns=['id','alias','open_date','close_date','pnl','created_date','last_updated_date','description_string'])
 
+def get_filtered_open_strategies(**kwargs):
+
+
+    open_strategy_frame = get_open_strategies(**kwargs)
+    open_strategy_frame['strategy_class'] = [conv.convert_from_string_to_dictionary(string_input=x)['strategy_class'] for
+                                             x in open_strategy_frame['description_string']]
+
+    return open_strategy_frame[open_strategy_frame['strategy_class'].isin(kwargs['strategy_class_list'])]
+
 
 def select_strategies(**kwargs):
 
@@ -334,12 +343,6 @@ def select_strategies(**kwargs):
 
     if 'open_date_to' in kwargs.keys():
         sql_query = sql_query + ' and open_date<=' + str(kwargs['open_date_to'])
-
-    if 'close_date_from' in kwargs.keys():
-        sql_query = sql_query + ' and close_date>=' + str(kwargs['close_date_from'])
-
-    if 'close_date_to' in kwargs.keys():
-        sql_query = sql_query + ' and close_date<=' + str(kwargs['close_date_to'])
 
     cur = con.cursor()
 

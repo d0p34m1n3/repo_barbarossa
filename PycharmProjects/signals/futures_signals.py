@@ -371,9 +371,14 @@ def get_futures_spread_carry_signals(**kwargs):
                                 'clean_num_obs': round(3*len(butterfly_history[x].values[-40:])/4)})
                                 for x in range(len(ticker_list)-2)]
 
-    extreme_quantiles_list = [stats.get_number_from_quantile(y=x.values[:-40], quantile_list=[28, 72]) for x in butterfly_history]
-    lower_butterfly_limit = [x[0] for x in extreme_quantiles_list]
-    upper_butterfly_limit = [x[1] for x in extreme_quantiles_list]
+    extreme_quantiles_list = [stats.get_number_from_quantile(y=x.values[:-40], quantile_list=[10,25,35,50,65,75,90]) for x in butterfly_history]
+    butterfly_q10 = [x[0] for x in extreme_quantiles_list]
+    butterfly_q25 = [x[1] for x in extreme_quantiles_list]
+    butterfly_q35 = [x[2] for x in extreme_quantiles_list]
+    butterfly_q50 = [x[3] for x in extreme_quantiles_list]
+    butterfly_q65 = [x[4] for x in extreme_quantiles_list]
+    butterfly_q75 = [x[5] for x in extreme_quantiles_list]
+    butterfly_q90 = [x[6] for x in extreme_quantiles_list]
 
     butterfly_noise_list = [stats.get_stdev(x=butterfly_history[i].values[-20:]) for i in range(len(ticker_list)-2)]
     butterfly_mean_list = [stats.get_mean(x=butterfly_history[i].values[-10:]) for i in range(len(ticker_list)-2)]
@@ -415,8 +420,13 @@ def get_futures_spread_carry_signals(**kwargs):
                          ('butterfly_z',[np.NAN]+butterfly_z_list),
                          ('reward_risk',[np.NAN]+reward_risk),
                          ('price',price_current_list),
-                         ('lower_butterfly_limit', [np.NAN]+lower_butterfly_limit),
-                         ('upper_butterfly_limit', [np.NAN]+upper_butterfly_limit),
+                         ('butterfly_q10', [np.NAN]+butterfly_q10),
+                         ('butterfly_q25', [np.NAN]+butterfly_q25),
+                         ('butterfly_q35', [np.NAN] + butterfly_q35),
+                         ('butterfly_q50', [np.NAN] + butterfly_q50),
+                         ('butterfly_q65', [np.NAN] + butterfly_q65),
+                         ('butterfly_q75', [np.NAN] + butterfly_q75),
+                         ('butterfly_q90', [np.NAN] + butterfly_q90),
                          ('butterfly_mean', [np.NAN]+butterfly_mean_list),
                          ('butterfly_noise', [np.NAN]+butterfly_noise_list),
                          ('q',q_list),
