@@ -114,6 +114,19 @@ def get_cot_strategy_signals(**kwargs):
             'normalized_pnl_20': normalized_pnl_20}
 
 
+def get_contract_summary_stats(**kwargs):
+    ticker = kwargs['ticker']
+    date_to = kwargs['date_to']
+    data_out = gfp.get_futures_price_preloaded(ticker=ticker)
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+    data_out = data_out[data_out['settle_date'] <= datetime_to]
+
+    data_out['close_price_daily_diff'] = data_out['close_price'] - data_out['close_price'].shift(1)
+    daily_noise = np.std(data_out['close_price_daily_diff'].iloc[-60:])
+    average_volume = np.mean(data_out['volume'].iloc[-20:])
+    return {'daily_noise': daily_noise, 'average_volume':average_volume}
+
+
 def get_arma_signals(**kwargs):
 
     ticker_head = kwargs['ticker_head']

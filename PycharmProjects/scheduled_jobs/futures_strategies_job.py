@@ -49,6 +49,11 @@ except Exception:
     pass
 
 try:
+    fsf.generate_outright_summary_formatted_output(report_date=folder_date)
+except Exception:
+    pass
+
+try:
     writer_out = sff.generate_futures_butterfly_followup_report(as_of_date=report_date, con=con)
     writer_out = sff.generate_spread_carry_followup_report(as_of_date=report_date, con=con, writer=writer_out)
     writer_out = sff.generate_vcs_followup_report(as_of_date=report_date, con=con, writer=writer_out)

@@ -200,9 +200,13 @@ def get_results_4strategy(**kwargs):
 
         greeks_out = sg.get_greeks_4strategy_4date(alias=kwargs['alias'], as_of_date=date_to)
         ticker_portfolio = greeks_out['ticker_portfolio']
+        options_position = greeks_out['options_position']
 
-        if ticker_portfolio.empty:
-            min_tr_dte = np.NaN
+        if ticker_portfolio.empty and not options_position.empty:
+            result_output = {'success': False, 'net_oev': np.NaN, 'net_theta': np.NaN, 'long_short_ratio': np.NaN,
+                         'recommendation': 'MISSING DATA', 'last_adjustment_days_ago': np.NaN,
+                         'min_tr_dte': np.NaN, 'long_oev': np.NaN, 'short_oev': np.NaN, 'favQMove': np.NaN}
+        elif ticker_portfolio.empty and options_position.empty:
             result_output = {'success': False, 'net_oev': np.NaN, 'net_theta': np.NaN, 'long_short_ratio': np.NaN,
                          'recommendation': 'EMPTY', 'last_adjustment_days_ago': np.NaN,
                          'min_tr_dte': np.NaN, 'long_oev': np.NaN, 'short_oev': np.NaN, 'favQMove': np.NaN}

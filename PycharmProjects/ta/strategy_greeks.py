@@ -23,7 +23,7 @@ def get_greeks_4strategy_4date(**kwargs):
     if options_frame.empty:
         if 'con' not in kwargs.keys():
             con.close()
-        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','dollar_vega','ticker']), 'strike_portfolio': pd.DataFrame()}
+        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','dollar_vega','ticker']), 'strike_portfolio': pd.DataFrame(), 'options_position': options_frame}
 
     unique_ticker_list = options_frame['ticker'].unique()
     result_list = []
@@ -34,8 +34,10 @@ def get_greeks_4strategy_4date(**kwargs):
     for i in range(len(unique_ticker_list)):
 
         skew_output = gop.get_options_price_from_db(ticker=unique_ticker_list[i],
-                                                    settle_date=as_of_date,
+                                                    settle_date=as_of_date, con=con,
                                                     column_names=['option_type', 'strike', 'theta', 'vega', 'delta'])
+        if skew_output.empty:
+            continue
 
         skew_output.reset_index(drop=True,inplace=True)
         skew_output['delta_diff'] = abs(skew_output['delta']-0.5)
@@ -51,6 +53,9 @@ def get_greeks_4strategy_4date(**kwargs):
 
         result_list.append(merged_data)
 
+    if len(result_list) == 0:
+        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','dollar_vega','ticker']), 'strike_portfolio': pd.DataFrame(), 'options_position': options_frame}
+
     strike_portfolio = pd.concat(result_list)
 
     grouped = strike_portfolio.groupby('ticker')
@@ -64,4 +69,4 @@ def get_greeks_4strategy_4date(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return {'ticker_portfolio': ticker_portfolio, 'strike_portfolio': strike_portfolio }
+    return {'ticker_portfolio': ticker_portfolio, 'strike_portfolio': strike_portfolio, 'options_position': options_frame}

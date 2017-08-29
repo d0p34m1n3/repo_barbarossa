@@ -388,10 +388,12 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/ifs/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ics':
          output_dir = strategy_output_folder + '/ics/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ibo':
-         output_dir = strategy_output_folder + '/ibo/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'os':
+         output_dir = strategy_output_folder + '/os/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ts':
          output_dir = strategy_output_folder + '/ts/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'itt':
+         output_dir = strategy_output_folder + '/itt/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ocs':
          output_dir = strategy_output_folder + '/ocs/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ofs':

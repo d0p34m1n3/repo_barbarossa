@@ -77,6 +77,10 @@ def process_cme_options_4ticker(**kwargs):
 
         settle_frame = pd.DataFrame()
         selected_frame = data_read_out[data_read_out['ticker_head'] == ticker_head]
+
+        if selected_frame.empty:
+            return {'success': False, 'settle_frame': pd.DataFrame()}
+
         selected_frame['ticker_month'] = selected_frame['CONTRACT MONTH'].astype('int')
 
         selected_frame['ticker'] = [ticker_head +

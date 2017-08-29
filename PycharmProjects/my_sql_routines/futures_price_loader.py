@@ -200,6 +200,8 @@ def update_futures_price_database_from_cme_file(**kwargs):
 
         cme_output = pcf.process_cme_futures_4tickerhead(ticker_head=ticker_head, report_date=run_date)
         settle_frame = cme_output['settle_frame']
+        if settle_frame.empty:
+            continue
 
         for ticker_month in cmi.futures_contract_months[ticker_head]:
             ticker_month_num = cmi.letter_month_string.find(ticker_month)+1

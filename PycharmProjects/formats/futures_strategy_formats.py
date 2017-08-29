@@ -4,6 +4,7 @@ import contract_utilities.expiration as exp
 import opportunity_constructs.futures_butterfly as fb
 import opportunity_constructs.intraday_future_spreads as ifs
 import opportunity_constructs.overnight_calendar_spreads as ocs
+import opportunity_constructs.outright_contract_summary as out_cs
 import opportunity_constructs.curve_pca as cpc
 import signals.futures_filters as ff
 import shared.directory_names as dn
@@ -136,4 +137,36 @@ def generate_ocs_formatted_output(**kwargs):
     overnight_calendars.to_excel(writer, sheet_name='all')
 
 
+def generate_outright_summary_formatted_output(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='os', report_date=report_date)
+
+    out_dictionary = out_cs.generate_outright_summary_sheet_4date(date_to=report_date)
+    cov_matrix = out_dictionary['cov_output']['cov_matrix']
+
+    cov_matrix.reset_index(drop=False, inplace=True)
+
+    writer = pd.ExcelWriter(output_dir + '/' + 'cov_matrix.xlsx', engine='xlsxwriter')
+    cov_matrix.to_excel(writer, sheet_name='cov_matrix')
+    writer.save()
+
+    cov_data_integrity = round(out_dictionary['cov_output']['cov_data_integrity'], 2)
+
+    with open(output_dir + '/' + 'covDataIntegrity.txt','w') as text_file:
+        text_file.write(str(cov_data_integrity))
+
+    sheet_4date = out_dictionary['sheet_4date']
+
+    writer = pd.ExcelWriter(output_dir + '/summary.xlsx', engine='xlsxwriter')
+
+    sheet_4date.to_excel(writer, sheet_name='all')
+
+    worksheet_all = writer.sheets['all']
+    worksheet_all.freeze_panes(1, 0)
+    worksheet_all.autofilter(0, 0, len(sheet_4date.index),len(sheet_4date.columns))
 

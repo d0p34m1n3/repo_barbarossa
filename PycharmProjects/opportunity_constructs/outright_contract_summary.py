@@ -1,0 +1,47 @@
+
+import pandas as pd
+import numpy as np
+import pickle as pckl
+import contract_utilities.contract_lists as cl
+import ta.strategy as ts
+import signals.intraday_futures_signals as ifs
+import signals.futures_directional_signals as fds
+import os.path
+
+
+def get_tickers_4date(**kwargs):
+
+    liquid_futures_frame = cl.get_liquid_outright_futures_frame(settle_date=kwargs['date_to'])
+    liquid_futures_frame.reset_index(drop=True,inplace=True)
+    return liquid_futures_frame[['ticker', 'ticker_head']]
+
+
+def generate_outright_summary_sheet_4date(**kwargs):
+
+    date_to = kwargs['date_to']
+    output_dir = ts.create_strategy_output_dir(strategy_class='os', report_date=date_to)
+
+    if os.path.isfile(output_dir + '/summary.pkl') and os.path.isfile(output_dir + '/cov.pkl'):
+        sheet_4date = pd.read_pickle(output_dir + '/summary.pkl')
+        cov_output = pckl.load(open(output_dir + '/cov.pkl', 'rb'))
+        return {'sheet_4date': sheet_4date, 'cov_output': cov_output, 'success': True}
+
+    sheet_4date = get_tickers_4date(**kwargs)
+
+    num_tickers = len(sheet_4date.index)
+
+    signals_output = [fds.get_contract_summary_stats(ticker=sheet_4date.iloc[x]['ticker'], date_to=date_to) for x in range(num_tickers)]
+    sheet_4date['daily_noise'] = [x['daily_noise'] for x in signals_output]
+    sheet_4date['average_volume'] = [x['average_volume'] for x in signals_output]
+
+    sheet_4date.to_pickle(output_dir + '/summary.pkl')
+
+    cov_output = ifs.get_intraday_outright_covariance(**kwargs)
+
+    with open(output_dir + '/cov.pkl', 'wb') as handle:
+        pckl.dump(cov_output, handle)
+
+    return {'sheet_4date': sheet_4date, 'cov_output': cov_output, 'success': True}
+
+
+

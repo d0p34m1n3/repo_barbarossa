@@ -57,9 +57,12 @@ def get_book_snapshot_4ticker(**kwargs):
         return book_snapshot
 
     data_frame_out = load_csv_file_4ticker(**kwargs)
+    data_frame_out = data_frame_out[~data_frame_out['time'].isnull()]
 
     if data_frame_out.empty:
         return pd.DataFrame(columns=['best_bid_p','best_bid_q','best_ask_p','best_ask_q','total_traded_q'])
+
+    data_frame_out = data_frame_out[~data_frame_out['time'].isnull()]
 
     start_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[0].tolist()/1e9).replace(microsecond=0, second=0)
     end_datetime = dt.datetime.utcfromtimestamp(data_frame_out['time'].values[-1].tolist()/1e9).replace(microsecond=0, second=0)

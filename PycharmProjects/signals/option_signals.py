@@ -546,6 +546,7 @@ def calc_volume_interest_4ticker(**kwargs):
 def calc_realized_vol_4options_ticker(**kwargs):
 
     ticker = kwargs['ticker']
+    print(ticker)
     contract_specs_output = cmi.get_contract_specs(ticker)
 
     if contract_specs_output['ticker_class'] in ['Index', 'FX', 'Metal']:
