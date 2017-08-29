@@ -34,11 +34,8 @@ class ib_reconciler(subs.subscription):
         position_frame = self.position_frame
         selection_index = position_frame['con_id']==contract.conId
         if sum(selection_index)==0:
-            print("Position Multi. Request:", reqId, "Account:", account,
-                  "ModelCode:", modelCode, "Symbol:", contract.symbol, "SecType:",
-                  contract.secType, "Currency:", contract.currency, ",Position:",
-                  pos, "AvgCost:", avgCost)
             position_frame.loc[len(position_frame.index),'ib_position'] = pos
+            position_frame.loc[len(position_frame.index)-1, 'qty'] = 0
             position_frame.loc[len(position_frame.index)-1, 'con_id'] = contract.conId
             position_frame.loc[len(position_frame.index) - 1, 'ib_symbol'] = contract.localSymbol
         else:
@@ -83,7 +80,7 @@ def test_ib_reconciler():
     position_frame['ib_symbol'] = ''
     position_frame.reset_index(drop=True, inplace=True)
     app.position_frame = position_frame
-    app.connect()
+    app.connect(client_id=1)
     app.run()
 
 

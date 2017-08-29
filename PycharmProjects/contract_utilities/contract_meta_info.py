@@ -70,10 +70,12 @@ def get_option_exercise_type(**kwargs):
 
     ticker_head = kwargs['ticker_head']
 
-    if ticker_head in ['LN', 'LC', 'ES', 'EC', 'JY', 'AD', 'CD', 'BP', 'GC', 'SI',
+    if ticker_head in ['LN', 'LC', 'ES', 'GC', 'SI',
                        'TY', 'US', 'FV', 'TU', 'C', 'S', 'SM', 'BO', 'W', 'CL', 'NG',
                        'ED', 'E0', 'E2', 'E3', 'E4', 'E5']:
         exercise_type = 'A'
+    elif ticker_head in ['EC', 'JY', 'AD', 'CD', 'BP']:
+        exercise_type = 'E'
     else:
         exercise_type = None
 
@@ -357,11 +359,11 @@ aligned_data_tickerhead = {'LN': 'LNH',
                            'E5': 'E5'}
 
 def get_ib_exchange_name(ticker_head):
-    if ticker_head in ['CL', 'HO', 'RB', 'NG']:
+    if ticker_head in ['CL', 'HO', 'RB', 'NG','GC','SI']:
         exchange = 'NYMEX'
-    elif ticker_head in ['C', 'W', 'KW', 'S', 'SM', 'BO']:
+    elif ticker_head in ['C', 'W', 'KW', 'S', 'SM', 'BO' ,'TU', 'FV', 'TY', 'US']:
         exchange = 'ECBOT'
-    elif ticker_head in ['LC', 'LN', 'FC']:
+    elif ticker_head in ['LC', 'LN', 'FC', 'EC', 'BP', 'JY', 'AD', 'CD', 'ES']:
         exchange = 'GLOBEX'
     else:
         exchange = ''
@@ -432,6 +434,10 @@ tick_size = {'LN': 0.025,
              'NG': 0.001,
              'ED': 0.005}
 
+option_tick_size = {'LC': 0.025,
+                    'C': 0.125,
+                    'W': 0.125}
+
 t_cost = {'CL': 0.80,
           'NG': 0.78,
           'B': 0.93,
@@ -467,9 +473,16 @@ t_cost = {'CL': 0.80,
           'CT': 2.1}
 
 t_cost_ib = {'S': 2.81,
+             'C': 2.81,
+             'KW': 2.81,
+             'W': 2.81,
+             'SM': 2.81,
+             'BO': 2.81,
              'FC': 2.89,
              'LN': 2.89,
-             'LC': 2.89}
+             'LC': 2.89,
+             'HO': 2.36,
+             'NG': 2.36}
 
 def get_t_cost(**kwargs):
 

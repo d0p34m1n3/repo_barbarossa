@@ -199,6 +199,8 @@ def generate_ocs_followup_report(**kwargs):
         as_of_date = exp.doubledate_shift_bus_days()
         kwargs['as_of_date'] = as_of_date
 
+    broker = kwargs['broker']
+
     ta_output_dir = dn.get_dated_directory_extension(folder_date=as_of_date, ext='ta')
 
     con = msu.get_my_sql_connection(**kwargs)
@@ -216,7 +218,7 @@ def generate_ocs_followup_report(**kwargs):
     ocs_indx = [x == 'ocs' for x in strategy_class_list]
     ocs_frame = strategy_frame[ocs_indx]
 
-    results = [sf.get_results_4strategy(alias=ocs_frame['alias'].iloc[x],strategy_info_output=ocs_frame.iloc[x], con=con, date_to=as_of_date)
+    results = [sf.get_results_4strategy(alias=ocs_frame['alias'].iloc[x],strategy_info_output=ocs_frame.iloc[x], con=con, broker=broker , date_to=as_of_date)
                for x in range(len(ocs_frame.index))]
 
     ocs_followup_frame = pd.DataFrame(results)

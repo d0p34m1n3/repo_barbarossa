@@ -116,7 +116,7 @@ def generate_db_strategy_from_alias(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    return {'alias': alias, 'strategy_id': strategy_id}
+    return {'alias': alias_modified, 'strategy_id': strategy_id}
 
 
 def get_trades_4strategy_alias(**kwargs):

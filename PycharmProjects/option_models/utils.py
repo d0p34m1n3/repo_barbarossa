@@ -4,8 +4,13 @@ import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.expiration as exp
 import interest_curve.get_rate_from_stir as grfs
 import option_models.quantlib_option_models as qom
+import get_price.get_options_price as gop
+import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
+import pandas as pd
+pd.options.mode.chained_assignment = None
 import numpy as np
+import math as m
 
 
 def option_model_wrapper(**kwargs):
@@ -92,6 +97,63 @@ def get_option_underlying(**kwargs):
         underlying_month_year = ticker_year+1
 
     return ticker_head + cmi.letter_month_string[underlying_month_num-1] + str(underlying_month_year)
+
+def get_strike_4current_delta(**kwargs):
+
+    ticker = kwargs['ticker']
+    settle_date = kwargs['settle_date']
+    underlying_current_price = kwargs['underlying_current_price']
+
+    if m.isnan(underlying_current_price):
+        return np.nan
+
+    underlying_ticker = get_option_underlying(ticker=ticker)
+    contract_specs_output = cmi.get_contract_specs(underlying_ticker)
+    ticker_head = contract_specs_output['ticker_head']
+
+    if 'futures_data_dictionary' in kwargs.keys():
+        futures_data_dictionary = kwargs['futures_data_dictionary']
+    else:
+        futures_data_dictionary = {x: gfp.get_futures_price_preloaded(ticker_head=x) for x in [ticker_head]}
+
+    if 'call_delta_target' in kwargs.keys():
+        call_delta_target = kwargs['call_delta_target']
+    else:
+        call_delta_target = 0.5
+
+    con = msu.get_my_sql_connection(**kwargs)
+
+    option_data = gop.get_options_price_from_db(ticker=ticker, settle_date=settle_date,
+                                                column_names=['id', 'option_type', 'strike', 'cal_dte', 'tr_dte',
+                                                              'close_price', 'volume', 'open_interest', 'delta'])
+
+    underlying_settle_price = gfp.get_futures_price_preloaded(ticker=underlying_ticker, settle_date=settle_date,
+                                                              futures_data_dictionary=futures_data_dictionary)['close_price'].iloc[0]
+
+    call_data = option_data[option_data['option_type'] == 'C']
+
+    call_data['delta_abs_centered'] = abs(call_data['delta'] - call_delta_target)
+
+    call_data.sort('delta_abs_centered', ascending=True, inplace=True)
+
+    strike_at_settle = (call_data['strike'].iloc[0] * call_data['delta_abs_centered'].iloc[1] + call_data['strike'].iloc[1]*call_data['delta_abs_centered'].iloc[0])/\
+                       (call_data['delta_abs_centered'].iloc[0] + call_data['delta_abs_centered'].iloc[1])
+
+    strike_offset = strike_at_settle - underlying_settle_price
+    strike_current_approximate = underlying_current_price + strike_offset
+
+    call_data['strike_diff'] = abs(call_data['strike'] - strike_current_approximate)
+    call_data.sort('strike_diff', ascending=True, inplace=True)
+    strike_current = call_data['strike'].iloc[0]
+
+    if 'con' not in kwargs.keys():
+        con.close()
+
+    return strike_current
+
+
+
+
 
 
 

@@ -9,7 +9,10 @@ import get_price.presave_price as pp
 import opportunity_constructs.spread_carry as sc
 import opportunity_constructs.overnight_calendar_spreads as ocs
 import formats.futures_strategy_formats as fsf
+import formats.strategy_followup_formats as sff
 import contract_utilities.expiration as exp
+import formats.risk_pnl_formats as rpf
+import ta.prepare_daily as prep
 
 con = msu.get_my_sql_connection()
 report_date = exp.doubledate_shift_bus_days()
@@ -25,6 +28,20 @@ try:
     pp.generate_and_update_futures_data_files(ticker_head_list='butterfly')
 except Exception:
     log.error('generate_and_update_futures_data_files failed', exc_info=True)
+    quit()
+
+try:
+    rpf.generate_portfolio_pnl_report(as_of_date=report_date, broker='ib', con=con)
+    prep.move_from_dated_folder_2daily_folder(ext='ta', file_name='pnl', folder_date=report_date)
+except Exception:
+    log.error('generate_portfolio_pnl_report', exc_info=True)
+    quit()
+
+try:
+    sff.generate_ocs_followup_report(as_of_date=report_date, con=con, broker='ib')
+    prep.move_from_dated_folder_2daily_folder(ext='ta', file_name='followup', folder_date=report_date)
+except Exception:
+    log.error('generate_ocs_followup_report', exc_info=True)
     quit()
 
 try:

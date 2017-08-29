@@ -14,14 +14,18 @@ def get_intraday_vcs(**kwargs):
     else:
         report_date = exp.doubledate_shift_bus_days()
 
-    id = kwargs['id']
     atm_vol_ratio = kwargs['atm_vol_ratio']
 
     vcs_output = vcs.generate_vcs_sheet_4date(date_to=report_date)
     vcs_pairs = vcs_output['vcs_pairs']
 
-    ticker1 = vcs_pairs['ticker1'].iloc[id]
-    ticker2 = vcs_pairs['ticker2'].iloc[id]
+    if 'id' in kwargs.keys():
+        id = kwargs['id']
+        ticker1 = vcs_pairs['ticker1'].iloc[id]
+        ticker2 = vcs_pairs['ticker2'].iloc[id]
+    else:
+        ticker1 = kwargs['ticker1']
+        ticker2 = kwargs['ticker2']
 
     ticker_head = cmi.get_contract_specs(ticker1)['ticker_head']
     ticker_class = cmi.ticker_class[ticker_head]
@@ -40,11 +44,8 @@ def get_intraday_vcs(**kwargs):
     else:
         validQ = True
 
-    print(ticker1)
-    print(ticker2)
-    print('Q: ' + str(q))
-    print('Q1: ' + str(q1))
-    print('Valid?: ' + str(validQ))
+    return {'ticker1': ticker1, 'ticker2': ticker2, 'Q': q, 'Q1': q1, 'validQ':validQ}
+
 
 
 

@@ -276,6 +276,7 @@ def get_strategy_pnl(**kwargs):
 def close_strategy(**kwargs):
 
     alias = kwargs['alias']
+    broker = kwargs['broker']
 
     if 'close_date' in kwargs.keys():
         close_date = kwargs['close_date']
@@ -291,7 +292,7 @@ def close_strategy(**kwargs):
 
     if net_position.empty:
 
-        pnl_output = get_strategy_pnl(alias=alias, con=con, as_of_date=close_date)
+        pnl_output = get_strategy_pnl(alias=alias, broker=broker, con=con, as_of_date=close_date)
         total_pnl = pnl_output['total_pnl']
         cur = con.cursor()
 

@@ -38,13 +38,18 @@ def get_results_4strategy(**kwargs):
     else:
         strategy_info_output = ts.get_strategy_info_from_alias(**kwargs)
 
+    if 'broker' in kwargs.keys():
+        broker = kwargs['broker']
+    else:
+        broker = 'abn'
+
     con = msu.get_my_sql_connection(**kwargs)
 
     strategy_info_dict = sc.convert_from_string_to_dictionary(string_input=strategy_info_output['description_string'])
 
     strategy_class = strategy_info_dict['strategy_class']
 
-    pnl_frame = tpm.get_daily_pnl_snapshot(as_of_date=date_to)
+    pnl_frame = tpm.get_daily_pnl_snapshot(as_of_date=date_to, broker=broker)
     pnl_frame = pnl_frame[pnl_frame['alias']==kwargs['alias']]
     strategy_position = ts.get_net_position_4strategy_alias(alias=kwargs['alias'],as_of_date=date_to)
 
@@ -208,8 +213,9 @@ def get_results_4strategy(**kwargs):
                          'min_tr_dte': np.NaN, 'long_oev': np.NaN, 'short_oev': np.NaN, 'favQMove': np.NaN}
         elif ticker_portfolio.empty and options_position.empty:
             result_output = {'success': False, 'net_oev': np.NaN, 'net_theta': np.NaN, 'long_short_ratio': np.NaN,
-                         'recommendation': 'EMPTY', 'last_adjustment_days_ago': np.NaN,
-                         'min_tr_dte': np.NaN, 'long_oev': np.NaN, 'short_oev': np.NaN, 'favQMove': np.NaN}
+                             'recommendation': 'EMPTY', 'last_adjustment_days_ago': np.NaN,
+                             'min_tr_dte': np.NaN, 'long_oev': np.NaN, 'short_oev': np.NaN, 'favQMove': np.NaN}
+
         else:
             min_tr_dte = min([exp.get_days2_expiration(ticker=x,date_to=date_to,instrument='options',con=con)['tr_dte'] for x in ticker_portfolio['ticker']])
 
@@ -304,7 +310,7 @@ def get_results_4strategy(**kwargs):
         strategy_position = ts.get_net_position_4strategy_alias(alias=kwargs['alias'],as_of_date=date_to,con=con)
 
         if len(strategy_position.index) == 0:
-            tpnl.close_strategy(alias=kwargs['alias'], close_date=date_to, con=con)
+            tpnl.close_strategy(alias=kwargs['alias'], close_date=date_to, broker=broker, con=con)
             result_output = {'success': True, 'time_held': time_held,'dollar_noise': np.nan , 'notes': 'closed'}
         elif strategy_position['qty'].sum()!=0:
             result_output = {'success': True, 'time_held': time_held, 'dollar_noise': np.nan , 'notes': 'check position'}

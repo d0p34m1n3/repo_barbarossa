@@ -17,8 +17,8 @@ class subscription(EWrapper, EClient):
         self.started = False
         self.next_val_id = None
 
-    def connect(self):
-        super().connect("127.0.0.1", 7496, clientId=0)
+    def connect(self,**kwargs):
+        super().connect("127.0.0.1", 7496, clientId=kwargs['client_id'])
 
     def nextValidId(self, orderId: int):
         super().nextValidId(orderId)
