@@ -363,7 +363,7 @@ def get_ib_exchange_name(ticker_head):
         exchange = 'NYMEX'
     elif ticker_head in ['C', 'W', 'KW', 'S', 'SM', 'BO' ,'TU', 'FV', 'TY', 'US']:
         exchange = 'ECBOT'
-    elif ticker_head in ['LC', 'LN', 'FC', 'EC', 'BP', 'JY', 'AD', 'CD', 'ES']:
+    elif ticker_head in ['LC', 'LN', 'FC', 'EC', 'BP', 'JY', 'AD', 'CD', 'ES', 'NQ']:
         exchange = 'GLOBEX'
     else:
         exchange = ''
@@ -448,8 +448,10 @@ tick_size = {'C': 0.25,
              'B': 0.01}
 
 option_tick_size = {'LC': 0.025,
+                    'LN': 0.025,
                     'C': 0.125,
-                    'W': 0.125}
+                    'W': 0.125,
+                    'BO': 0.005}
 
 t_cost = {'CL': 0.80,
           'NG': 0.78,
@@ -494,6 +496,7 @@ t_cost_ib = {'S': 2.81,
              'FC': 2.89,
              'LN': 2.89,
              'LC': 2.89,
+             'CL': 2.36,
              'HO': 2.36,
              'NG': 2.36}
 

@@ -4,6 +4,7 @@ import my_sql_routines.my_sql_utilities as msu
 import ta.portfolio_manager as tpm
 import shared.calendar_utilities as cu
 import ib_api_utils.ib_contract as ib_contract
+import decimal as dec
 from ibapi.contract import *
 import sys
 import pandas as pd
@@ -63,12 +64,14 @@ class ib_reconciler(subs.subscription):
 
             if position_frame.loc[i,'instrument'] == 'F':
                 contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i,'ticker'], sec_type='F')
-                self.contractDetailReqIdDictionary[self.next_val_id] = i
-                self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)
-                self.reqContractDetails(self.next_valid_id(), contract_i)
+            elif position_frame.loc[i,'instrument'] == 'O':
+                contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i, 'ticker'],sec_type='OF',
+                                                                        option_type=position_frame.loc[i, 'option_type'],
+                                                                        strike=dec.Decimal(position_frame.loc[i, 'strike_price']))
 
-
-
+            self.contractDetailReqIdDictionary[self.next_val_id] = i
+            self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)
+            self.reqContractDetails(self.next_valid_id(), contract_i)
 
 def test_ib_reconciler():
     app = ib_reconciler()

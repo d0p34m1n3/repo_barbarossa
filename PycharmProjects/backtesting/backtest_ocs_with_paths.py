@@ -16,14 +16,15 @@ def get_backtest_summary_4_date(**kwargs):
         use_existing_filesQ = True
 
     output_dir = ts.create_strategy_output_dir(strategy_class='ocs', report_date=report_date)
+    file_name = 'backtest_results2'
 
-    if os.path.isfile(output_dir + '/backtest_results.pkl') and use_existing_filesQ:
-        return pd.read_pickle(output_dir + '/backtest_results.pkl')
+    if os.path.isfile(output_dir + '/'  + file_name + '.pkl') and use_existing_filesQ:
+        return pd.read_pickle(output_dir + '/'  + file_name + '.pkl')
 
     ocs_output = ocs.generate_overnight_spreads_sheet_4date(date_to=report_date)
     strategy_sheet = ocs_output['overnight_calendars']
 
-    date_list = [exp.doubledate_shift_bus_days(double_date=report_date, shift_in_days=-x) for x in range(1, 11)]
+    date_list = [exp.doubledate_shift_bus_days(double_date=report_date, shift_in_days=-x) for x in range(1, 15)]
 
     fwd_looking_dictionary = {}
 
@@ -31,8 +32,8 @@ def get_backtest_summary_4_date(**kwargs):
         ocs_output = ocs.generate_overnight_spreads_sheet_4date(date_to=date_list[i])
         fwd_looking_dictionary[i+1] = ocs_output['overnight_calendars']
 
-    long_frame = strategy_sheet[(strategy_sheet['butterflyZ'] > 1) & (strategy_sheet['butterflyQ'] > 72)]
-    short_frame = strategy_sheet[(strategy_sheet['butterflyZ'] < -1) & (strategy_sheet['butterflyQ'] < 28)]
+    long_frame = strategy_sheet[(strategy_sheet['butterflyZ'] > 1) & (strategy_sheet['butterflyQ'] > 72) & (strategy_sheet['qCarry'] > 18)]
+    short_frame = strategy_sheet[(strategy_sheet['butterflyZ'] < -1) & (strategy_sheet['butterflyQ'] < 28) & (strategy_sheet['qCarry'] < -9)]
 
     long_frame.reset_index(inplace=True,drop=True)
     short_frame.reset_index(inplace=True, drop=True)
@@ -61,24 +62,24 @@ def get_backtest_summary_4_date(**kwargs):
         holding_period1 = 0
         holding_period2 = 0
         holding_period3 = 0
-        for j in range(1, 11):
+        for j in range(1, 15):
             fwd_looking_data = fwd_looking_dictionary[j]
             select_data = fwd_looking_data[
                 (fwd_looking_data['ticker1'] == ticker1) & (fwd_looking_data['ticker2'] == ticker2)]
 
             if select_data.empty:
                 continue
-            if ((select_data['butterflyZ'].iloc[0] < 0.5) | (j == 10)) & (holding_period1 == 0):
+            if ((select_data['butterflyZ'].iloc[0] < 0.5) | (j == 14)) & (holding_period1 == 0):
                 long_frame['path_pnl1'].loc[i] = contract_multiplier * (
                 select_data['spreadPrice'].iloc[0] - spread_price_initial)
                 long_frame['holding_period1'].loc[i] = j
                 holding_period1 = j
-            if ((select_data['butterflyZ'].iloc[0] < 0) | (j == 10)) & (holding_period2 == 0):
+            if ((select_data['butterflyZ'].iloc[0] < 0) | (j == 14)) & (holding_period2 == 0):
                 long_frame['path_pnl2'].loc[i] = contract_multiplier * (
                 select_data['spreadPrice'].iloc[0] - spread_price_initial)
                 long_frame['holding_period2'].loc[i] = j
                 holding_period2 = j
-            if ((select_data['butterflyQ'].iloc[0] < 60) | (j == 10)) & (holding_period3 == 0):
+            if ((select_data['qCarry'].iloc[0] < 9) | (j == 14)) & (holding_period3 == 0):
                 long_frame['path_pnl3'].loc[i] = contract_multiplier * (
                 select_data['spreadPrice'].iloc[0] - spread_price_initial)
                 long_frame['holding_period3'].loc[i] = j
@@ -92,24 +93,24 @@ def get_backtest_summary_4_date(**kwargs):
         holding_period1 = 0
         holding_period2 = 0
         holding_period3 = 0
-        for j in range(1, 11):
+        for j in range(1, 15):
             fwd_looking_data = fwd_looking_dictionary[j]
             select_data = fwd_looking_data[
                 (fwd_looking_data['ticker1'] == ticker1) & (fwd_looking_data['ticker2'] == ticker2)]
 
             if select_data.empty:
                 continue
-            if ((select_data['butterflyZ'].iloc[0] > -0.5) | (j == 10)) & (holding_period1 == 0):
+            if ((select_data['butterflyZ'].iloc[0] > -0.5) | (j == 14)) & (holding_period1 == 0):
                 short_frame['path_pnl1'].loc[i] = contract_multiplier * (
                 spread_price_initial - select_data['spreadPrice'].iloc[0])
                 short_frame['holding_period1'].loc[i] = j
                 holding_period1 = j
-            if ((select_data['butterflyZ'].iloc[0] > 0) | (j == 10)) & (holding_period2 == 0):
+            if ((select_data['butterflyZ'].iloc[0] > 0) | (j == 14)) & (holding_period2 == 0):
                 short_frame['path_pnl2'].loc[i] = contract_multiplier * (
                 spread_price_initial - select_data['spreadPrice'].iloc[0])
                 short_frame['holding_period2'].loc[i] = j
                 holding_period2 = j
-            if ((select_data['butterflyQ'].iloc[0] > 40) | (j == 10)) & (holding_period3 == 0):
+            if ((select_data['qCarry'].iloc[0] > -4) | (j == 14)) & (holding_period3 == 0):
                 short_frame['path_pnl3'].loc[i] = contract_multiplier * (
                 spread_price_initial - select_data['spreadPrice'].iloc[0])
                 short_frame['holding_period3'].loc[i] = j
@@ -120,7 +121,7 @@ def get_backtest_summary_4_date(**kwargs):
     trades_frame['path_pnl2Net'] = trades_frame['path_pnl2']-12
     trades_frame['path_pnl3Net'] = trades_frame['path_pnl3']-12
 
-    trades_frame.to_pickle(output_dir + '/backtest_results.pkl')
+    trades_frame.to_pickle(output_dir + '/'  + file_name + '.pkl')
 
     return trades_frame
 

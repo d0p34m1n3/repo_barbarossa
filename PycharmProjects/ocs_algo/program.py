@@ -9,7 +9,6 @@ import ta.strategy as ts
 import ta.position_manager as pm
 import contract_utilities.contract_meta_info as cmi
 import contract_utilities.expiration as exp
-from OrderSamples import OrderSamples
 import api_utils.portfolio as aup
 import shared.utils as su
 import shared.calendar_utilities as cu
@@ -30,15 +29,12 @@ import ocs_algo.algo as algo
 
 import shared.log as lg
 
-
-
-
 def main():
     app = algo.Algo()
     con = msu.get_my_sql_connection()
     date_now = cu.get_doubledate()
     report_date = exp.doubledate_shift_bus_days()
-    report_date_list = [exp.doubledate_shift_bus_days(shift_in_days=x) for x in range(1, 3)]
+    report_date_list = [exp.doubledate_shift_bus_days(shift_in_days=x) for x in range(1, 10)]
     overnight_calendars_list = []
 
     for i in range(len(report_date_list)):
@@ -62,6 +58,8 @@ def main():
         overnight_calendars['alias'] = [overnight_calendars['ticker1'].iloc[x] + '_' + overnight_calendars['ticker2'].iloc[x] + '_ocs' for x in range(len(overnight_calendars.index))]
         overnight_calendars['total_quantity'] = 0
         overnight_calendars['total_risk'] = 0
+        overnight_calendars['holding_period'] = 0
+        #overnight_calendars['expiring_position_q'] = 0
 
         overnight_calendars.reset_index(drop=True,inplace=True)
 
@@ -71,7 +69,12 @@ def main():
     open_strategy_frame = ts.get_filtered_open_strategies(strategy_class_list=['ocs'],as_of_date=date_now)
 
     for i in range(len(open_strategy_frame.index)):
-        position_manager_output = pm.get_ocs_position(alias=open_strategy_frame['alias'].iloc[i], as_of_date=date_now)
+        position_manager_output = pm.get_ocs_position(alias=open_strategy_frame['alias'].iloc[i], as_of_date=date_now, con=con)
+
+        trades_frame = ts.get_trades_4strategy_alias(alias=open_strategy_frame['alias'].iloc[i], con=con)
+
+        datetime_now = cu.convert_doubledate_2datetime(date_now)
+        holding_period = (datetime_now - trades_frame['trade_date'].min()).days
 
         if (not position_manager_output['empty_position_q'])&(not position_manager_output['correct_position_q']):
             print('Check ' + open_strategy_frame['alias'].iloc[i] + ' ! Position may be incorrect')
@@ -97,6 +100,7 @@ def main():
                 overnight_calendars.loc[selection_indx, 'total_quantity'] = position_manager_output['scale']
                 overnight_calendars.loc[selection_indx, 'total_risk'] = position_manager_output['scale']*overnight_calendars.loc[selection_indx, 'dollarNoise100']
                 overnight_calendars.loc[selection_indx, 'alias'] = open_strategy_frame['alias'].iloc[i]
+                overnight_calendars.loc[selection_indx, 'holding_period'] = holding_period
 
                 app.ocs_risk_portfolio.order_send(ticker=position_name, qty=abs(position_manager_output['scale']*overnight_calendars.loc[selection_indx, 'dollarNoise100']))
                 app.ocs_risk_portfolio.order_fill(ticker=position_name, qty=abs(position_manager_output['scale']*overnight_calendars.loc[selection_indx, 'dollarNoise100']))
@@ -109,6 +113,8 @@ def main():
                         overnight_calendars_past.loc[selection_indx, 'total_quantity'] = position_manager_output['scale']
                         overnight_calendars_past.loc[selection_indx, 'total_risk'] = position_manager_output['scale'] * overnight_calendars_past.loc[selection_indx, 'dollarNoise100']
                         overnight_calendars_past.loc[selection_indx, 'alias'] = open_strategy_frame['alias'].iloc[i]
+                        overnight_calendars_past.loc[selection_indx, 'holding_period'] = holding_period
+
 
                         app.ocs_risk_portfolio.order_send(ticker=position_name, qty=abs(position_manager_output['scale'] * overnight_calendars_past.loc[selection_indx, 'dollarNoise100']))
                         app.ocs_risk_portfolio.order_fill(ticker=position_name, qty=abs(position_manager_output['scale'] * overnight_calendars_past.loc[selection_indx, 'dollarNoise100']))
@@ -117,12 +123,11 @@ def main():
                             overnight_calendars_past.loc[selection_indx,'butterflyMean'] = np.nan
                             overnight_calendars_past.loc[selection_indx,'butterflyNoise'] = np.nan
 
-                        overnight_calendars.append(overnight_calendars_past[selection_indx])
+                        overnight_calendars = overnight_calendars.append(overnight_calendars_past[selection_indx])
                         break
 
     overnight_calendars.reset_index(drop=True, inplace=True)
     overnight_calendars['working_order_id'] = np.nan
-
 
     spread_ticker_list = list(set(overnight_calendars['back_spread_ticker']).union(overnight_calendars['front_spread_ticker']))
     back_spread_ticker_list = list(overnight_calendars['back_spread_ticker'])
@@ -150,8 +155,9 @@ def main():
     app.output_dir = ts.create_strategy_output_dir(strategy_class='ocs', report_date=report_date)
     app.log = lg.get_logger(file_identifier='ib_ocs',log_level='INFO')
     app.con = con
+    print('Emre')
 
-    app.connect()
+    app.connect(client_id=2)
     app.run()
 
 if __name__ == "__main__":
