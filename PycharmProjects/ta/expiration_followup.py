@@ -15,9 +15,9 @@ def get_portfolio_expirations(**kwargs):
     futures_indx = position_frame['instrument'] == 'F'
     position_frame.loc[futures_indx,'instrument'] = 'futures'
     position_frame.loc[~futures_indx,'instrument'] = 'options'
-    position_frame['tr_dte'] = position_frame.apply(lambda x: exp.get_days2_expiration(ticker=x['ticker'],
+    position_frame['tr_days_2roll'] = position_frame.apply(lambda x: exp.get_days2_roll(ticker=x['ticker'],
                                                                                    instrument=x['instrument'],
-                                                                                   date_to=kwargs['report_date'],con=con)['tr_dte'],axis=1)
+                                                                                   date_to=kwargs['report_date'],con=con)['tr_days_2roll'],axis=1)
 
     position_frame['alias'] = 'Portfolio'
 
@@ -39,9 +39,9 @@ def get_strategy_expiration(**kwargs):
     futures_indx = position_frame['instrument'] == 'F'
     position_frame.loc[futures_indx,'instrument'] = 'futures'
     position_frame.loc[~futures_indx,'instrument'] = 'options'
-    position_frame['tr_dte'] = position_frame.apply(lambda x: exp.get_days2_expiration(ticker=x['ticker'],
+    position_frame['tr_days_2roll'] = position_frame.apply(lambda x: exp.get_days2_roll(ticker=x['ticker'],
                                                                                    instrument=x['instrument'],
-                                                                                   date_to=kwargs['as_of_date'],con=con)['tr_dte'],axis=1)
+                                                                                   date_to=kwargs['as_of_date'],con=con)['tr_days_2roll'],axis=1)
     position_frame['alias'] = kwargs['alias']
 
     if 'con' not in kwargs.keys():
@@ -66,7 +66,7 @@ def get_expiration_report(**kwargs):
     expiration_list = [x for x in expiration_list if not x.empty]
 
     expiration_frame = pd.concat(expiration_list)
-    return expiration_frame.sort('tr_dte', ascending=True, inplace=False)
+    return expiration_frame.sort('tr_days_2roll', ascending=True, inplace=False)
 
 
 

@@ -10,7 +10,7 @@ def get_my_sql_connection(**kwargs):
     else:
         db_host = '127.0.0.1'
         db_user = 'ekocatulum'
-        db_pass = 'pompei1789'
+        db_pass = 'caesar1789'
         db_name = 'futures_master'
         con = mysql.connector.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
     return con

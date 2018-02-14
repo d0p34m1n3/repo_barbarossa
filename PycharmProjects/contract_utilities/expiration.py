@@ -329,6 +329,43 @@ def get_days2_expiration(**kwargs):
             'tr_dte': len(dts)-1}
 
 
+def get_days2_roll(**kwargs):
+
+    ticker = kwargs['ticker']
+    date_to = kwargs['date_to']
+    contract_specs = cmf.get_contract_specs(ticker)
+    ticker_head = contract_specs['ticker_head']
+    ticker_class = cmf.ticker_class[ticker_head]
+    ticker_year = contract_specs['ticker_year']
+    ticker_month_num = contract_specs['ticker_month_num']
+
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+    bday_us = CustomBusinessDay(calendar=get_calendar_4ticker_head(ticker_head))
+
+    if ticker_class == 'Metal':
+        if ticker_month_num == 1:
+            ticker_year_roll = ticker_year-1
+            ticker_month_roll = 12
+        else:
+            ticker_year_roll = ticker_year
+            ticker_month_roll = ticker_month_num-1
+        roll_datetime = dt.date(ticker_year_roll,ticker_month_roll,25)
+    else:
+        expiration_datetime = get_expiration_from_db(**kwargs)
+        roll_datetime = expiration_datetime-dt.timedelta(days=5)
+
+    if roll_datetime > datetime_to.date():
+        dts = pd.date_range(start=datetime_to, end=roll_datetime, freq=bday_us)
+        tr_days_2roll = len(dts)-1
+    else:
+        dts = pd.date_range(start=roll_datetime, end=datetime_to, freq=bday_us)
+        tr_days_2roll = -(len(dts)-1)
+
+    return {'roll_datetime': roll_datetime,
+            'cal_days_2roll': (roll_datetime-datetime_to.date()).days,
+            'tr_days_2roll': tr_days_2roll}
+
+
 def get_prev_ticker_year_month(ticker_year,ticker_month_num):
     if ticker_month_num == 1:
         ticker_month_num_prev = 12

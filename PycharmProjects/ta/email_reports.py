@@ -15,7 +15,7 @@ def send_hrsn_report(**kwargs):
     else:
         report_date = exp.doubledate_shift_bus_days()
 
-    ibo_dir = ts.create_strategy_output_dir(strategy_class='ibo', report_date=report_date)
+    ibo_dir = ts.create_strategy_output_dir(strategy_class='os', report_date=report_date)
     cov_data_integrity = ''
 
     try:
@@ -25,8 +25,8 @@ def send_hrsn_report(**kwargs):
         pass
 
     try:
-        expiration_report = ef.get_expiration_report(report_date=report_date)
-        expiration_report = expiration_report[expiration_report['tr_dte'] < 10]
+        expiration_report = ef.get_expiration_report(report_date=report_date, con=kwargs['con'])
+        expiration_report = expiration_report[expiration_report['tr_days_2roll'] < 5]
 
         if expiration_report.empty:
             expiration_text = 'No near expirations.'

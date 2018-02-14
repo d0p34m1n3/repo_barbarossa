@@ -87,7 +87,7 @@ def generate_db_strategy_from_alias(**kwargs):
     con = msu.get_my_sql_connection(**kwargs)
     cur = con.cursor()
 
-    for i in range(1, 10):
+    for i in range(1, 50):
 
         if i > 1:
             alias_modified = alias + '_' + str(i)
@@ -337,7 +337,7 @@ def select_strategies(**kwargs):
     if 'open_date_from' in kwargs.keys():
         open_date_from = kwargs['open_date_from']
     else:
-        open_date_from = 20160607
+        open_date_from = 20160907
 
     sql_query = sql_query + ' open_date>=' + str(open_date_from)
 

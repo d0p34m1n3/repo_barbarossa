@@ -10,6 +10,7 @@ import opportunity_constructs.futures_butterfly as fb
 import opportunity_constructs.overnight_calendar_spreads as ocs
 import contract_utilities.expiration as exp
 import ta.prepare_daily as prep
+import ta.underlying_proxy as up
 import ta.email_reports as er
 
 con = msu.get_my_sql_connection()
@@ -49,7 +50,7 @@ except Exception:
     pass
 
 try:
-    fsf.generate_outright_summary_formatted_output(report_date=folder_date)
+    fsf.generate_outright_summary_formatted_output(report_date=report_date)
 except Exception:
     pass
 
@@ -63,7 +64,12 @@ except Exception:
     pass
 
 try:
-    er.send_hrsn_report(report_date=report_date)
+    er.send_hrsn_report(report_date=report_date, con=con)
+except Exception:
+    pass
+
+try:
+    up.generate_underlying_proxy_report(report_date=report_date, con=con)
 except Exception:
     pass
 

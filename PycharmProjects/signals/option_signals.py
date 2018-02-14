@@ -493,6 +493,7 @@ def get_aligned_option_indicators(**kwargs):
 def calc_delta_vol_4ticker(**kwargs):
 
     delta_target = kwargs['delta_target']
+    del kwargs['delta_target']
     delta_max_deviation = 0.15
 
     skew_output = gop.get_options_price_from_db(column_names=['delta', 'imp_vol', 'strike', 'theta', 'cal_dte', 'tr_dte'], **kwargs)
@@ -510,17 +511,21 @@ def calc_delta_vol_4ticker(**kwargs):
 
     delta_band = [delta_target*x for x in [1-delta_max_deviation, 1+delta_max_deviation]]
 
-    skew_output = skew_output[(skew_output['delta'] <= max(delta_band)) & (skew_output['delta'] >= min(delta_band))]
+    skew_output_select = skew_output[(skew_output['delta'] <= max(delta_band)) & (skew_output['delta'] >= min(delta_band))]
 
-    if skew_output.empty:
-        return output_dict
+    if skew_output_select.empty:
+        delta_target = -(1-delta_target)
+        delta_band = [delta_target*x for x in [1-delta_max_deviation, 1+delta_max_deviation]]
+        skew_output_select = skew_output[(skew_output['delta'] <= max(delta_band)) & (skew_output['delta'] >= min(delta_band))]
+        if skew_output_select.empty:
+            return output_dict
 
-    skew_output['delta_diff'] = abs(skew_output['delta']-delta_target)
-    skew_output.sort('delta_diff', ascending=True, inplace=True)
+    skew_output_select['delta_diff'] = abs(skew_output_select['delta']-delta_target)
+    skew_output_select.sort('delta_diff', ascending=True, inplace=True)
 
-    output_dict['delta_vol'] = skew_output['imp_vol'].iloc[0]
-    output_dict['strike'] = skew_output['strike'].iloc[0]
-    output_dict['theta'] = skew_output['theta'].iloc[0]
+    output_dict['delta_vol'] = skew_output_select['imp_vol'].iloc[0]
+    output_dict['strike'] = skew_output_select['strike'].iloc[0]
+    output_dict['theta'] = skew_output_select['theta'].iloc[0]
 
     return output_dict
 

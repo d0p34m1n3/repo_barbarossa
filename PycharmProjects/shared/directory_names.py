@@ -23,6 +23,7 @@ extension_dict = {'presaved_futures_data': '/data/futures_data',
                   'backtest_results': '/backtest_results',
                   'daily': '/daily',
                   'log': '/logs',
+                  'man_positions': '/man_positions',
                   'python_file': '/PycharmProjects'}
 
 

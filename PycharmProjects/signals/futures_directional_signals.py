@@ -12,60 +12,94 @@ pd.options.mode.chained_assignment = None
 
 def get_cot_strategy_signals(**kwargs):
 
-    ticker = kwargs['ticker']
+    ticker_head = kwargs['ticker_head']
     date_to = kwargs['date_to']
     target_noise = 5000
 
-    #print(ticker)
-
-    contract_specs_out = cmi.get_contract_specs(ticker)
-    ticker_head = contract_specs_out['ticker_head']
-    ticker_class = contract_specs_out['ticker_class']
-
-    data_out = gfp.get_futures_price_preloaded(ticker=ticker)
-
-    data_out['change_5'] = data_out['close_price']-data_out['close_price'].shift(5)
-    data_out['change_10'] = data_out['close_price']-data_out['close_price'].shift(10)
-    data_out['change_20'] = data_out['close_price']-data_out['close_price'].shift(20)
-    data_out['change_40'] = data_out['close_price']-data_out['close_price'].shift(40)
-    data_out['change_60'] = data_out['close_price']-data_out['close_price'].shift(60)
-
+    ticker_class = cmi.ticker_class[ticker_head]
     datetime_to = cu.convert_doubledate_2datetime(date_to)
 
-    data_out = data_out[data_out['settle_date']<=datetime_to]
+    data_out = gfp.get_futures_price_preloaded(ticker_head=ticker_head)
+    data_out = data_out[data_out['settle_date'] <= datetime_to]
 
-    data_out_current = data_out[data_out['settle_date']==datetime_to]
+    data_out_front = data_out[data_out['tr_dte'] <= 60]
+    data_out_front.drop_duplicates(subset=['settle_date'], take_last=True, inplace=True)
 
-    daily_noise = np.std(data_out['change_1'].iloc[-60:])
-    average_volume = np.mean(data_out['volume'].iloc[-60:])
+    data_out_back = data_out[data_out['tr_dte'] > 60]
+    data_out_back.drop_duplicates(subset=['settle_date'], take_last=False, inplace=True)
 
-    change5 = data_out_current['change5'].iloc[0]
-    change10 = data_out_current['change10'].iloc[0]
-    change20 = data_out_current['change20'].iloc[0]
+    merged_data = pd.merge(data_out_front[['settle_date','tr_dte','close_price']],data_out_back[['tr_dte','close_price','settle_date','ticker','change_1']],how='inner',on='settle_date')
+    merged_data['const_mat']=((merged_data['tr_dte_y']-60)*merged_data['close_price_x']+
+                              (60-merged_data['tr_dte_x'])*merged_data['close_price_y'])/\
+                             (merged_data['tr_dte_y']-merged_data['tr_dte_x'])
 
-    normalized_pnl_5 = change5*target_noise/daily_noise
-    normalized_pnl_10 = change10*target_noise/daily_noise
-    normalized_pnl_20 = change20*target_noise/daily_noise
+    merged_data['const_mat_change_1'] = merged_data['const_mat']-merged_data['const_mat'].shift(1)
+    merged_data['const_mat_change_10'] = merged_data['const_mat']-merged_data['const_mat'].shift(10)
+    merged_data['const_mat_change_20'] = merged_data['const_mat']-merged_data['const_mat'].shift(20)
 
-    change_5_normalized = data_out_current['change_5'].iloc[0]/daily_noise
-    change_10_normalized = data_out_current['change_10'].iloc[0]/daily_noise
-    change_20_normalized = data_out_current['change_20'].iloc[0]/daily_noise
-    change_40_normalized = data_out_current['change_40'].iloc[0]/daily_noise
-    change_60_normalized = data_out_current['change_60'].iloc[0]/daily_noise
+    merged_data['const_mat_change_1_std'] = pd.rolling_std(merged_data['const_mat_change_1'], window=150, min_periods=75)
 
-    volume_5_normalized = np.mean(data_out['volume'].iloc[-5:])/average_volume
-    volume_10_normalized = np.mean(data_out['volume'].iloc[-10:])/average_volume
-    volume_20_normalized = np.mean(data_out['volume'].iloc[-20:])/average_volume
+    merged_data['const_mat_ma5'] = pd.rolling_mean(merged_data['const_mat'], window=5, min_periods=4)
+    merged_data['const_mat_ma10'] = pd.rolling_mean(merged_data['const_mat'], window=10, min_periods=8)
+    merged_data['const_mat_ma20'] = pd.rolling_mean(merged_data['const_mat'], window=20, min_periods=16)
+    merged_data['const_mat_ma40'] = pd.rolling_mean(merged_data['const_mat'], window=40, min_periods=32)
+    merged_data['const_mat_ma80'] = pd.rolling_mean(merged_data['const_mat'], window=80, min_periods=64)
+
+    merged_data['const_mat_ma5spread'] = (merged_data['const_mat']-merged_data['const_mat_ma5'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_ma10spread'] = (merged_data['const_mat']-merged_data['const_mat_ma10'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_ma20spread'] = (merged_data['const_mat']-merged_data['const_mat_ma20'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_ma40spread'] = (merged_data['const_mat']-merged_data['const_mat_ma40'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_ma80spread'] = (merged_data['const_mat']-merged_data['const_mat_ma80'])/merged_data['const_mat_change_1_std']
+
+    merged_data['const_mat_change1norm'] = (merged_data['const_mat'].shift(-1)-merged_data['const_mat'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_change2norm'] = (merged_data['const_mat'].shift(-2)-merged_data['const_mat'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_change5norm'] = (merged_data['const_mat'].shift(-5)-merged_data['const_mat'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_change10norm'] = (merged_data['const_mat'].shift(-10)-merged_data['const_mat'])/merged_data['const_mat_change_1_std']
+    merged_data['const_mat_change20norm'] = (merged_data['const_mat'].shift(-20)-merged_data['const_mat'])/merged_data['const_mat_change_1_std']
+
+    merged_data['const_mat_change_10_std'] = pd.rolling_std(merged_data['const_mat_change_10'], window=150, min_periods=75)
+    merged_data['const_mat_change_20_std'] = pd.rolling_std(merged_data['const_mat_change_20'], window=150, min_periods=75)
+
+    merged_data['const_mat_change_10_norm'] = merged_data['const_mat_change_10']/merged_data['const_mat_change_10_std']
+    merged_data['const_mat_change_20_norm'] = merged_data['const_mat_change_20']/merged_data['const_mat_change_20_std']
+
+    merged_data['const_mat_min5'] = pd.rolling_min(merged_data['const_mat'], window=5, min_periods=4)
+    merged_data['const_mat_min10'] = pd.rolling_min(merged_data['const_mat'], window=10, min_periods=8)
+    merged_data['const_mat_min20'] = pd.rolling_min(merged_data['const_mat'], window=20, min_periods=16)
+
+    merged_data['const_mat_max5'] = pd.rolling_max(merged_data['const_mat'], window=5, min_periods=4)
+    merged_data['const_mat_max10'] = pd.rolling_max(merged_data['const_mat'], window=10, min_periods=8)
+    merged_data['const_mat_max20'] = pd.rolling_max(merged_data['const_mat'], window=20, min_periods=16)
 
     cot_output = cot.get_cot_data(ticker_head=ticker_head,date_to=date_to)
 
     if ticker_class in ['FX','STIR','Index','Treasury']:
 
         cot_output['comm_net'] = cot_output['Dealer Longs']-cot_output['Dealer Shorts']
+        cot_output['comm_long'] = cot_output['Dealer Longs']
+        cot_output['comm_short'] = cot_output['Dealer Shorts']
         cot_output['spec_net'] = cot_output['Asset Manager Longs']-cot_output['Asset Manager Shorts']+cot_output['Leveraged Funds Longs']-cot_output['Leveraged Funds Shorts']
+        cot_output['spec_long'] = cot_output['Asset Manager Longs']+cot_output['Leveraged Funds Longs']
+        cot_output['spec_short'] = cot_output['Asset Manager Shorts']+cot_output['Leveraged Funds Shorts']
     else:
         cot_output['comm_net'] = cot_output['Producer/Merchant/Processor/User Longs']-cot_output['Producer/Merchant/Processor/User Shorts']
+        cot_output['comm_long'] = cot_output['Producer/Merchant/Processor/User Longs']
+        cot_output['comm_short'] = cot_output['Producer/Merchant/Processor/User Shorts']
         cot_output['spec_net'] = cot_output['Money Manager Longs']-cot_output['Money Manager Shorts']
+        cot_output['spec_long'] = cot_output['Money Manager Longs']
+        cot_output['spec_short'] = cot_output['Money Manager Shorts']
+
+    cot_output['spec_long_per'] = 100*(cot_output['spec_long'])/(cot_output['spec_long']+cot_output['spec_short'])
+    cot_output['spec_short_per'] = 100*(cot_output['spec_short'])/(cot_output['spec_long']+cot_output['spec_short'])
+
+    cot_output['spec_long_per_mean'] = pd.rolling_mean(cot_output['spec_long_per'],window=150,min_periods=75)
+    cot_output['spec_short_per_mean'] = pd.rolling_mean(cot_output['spec_short_per'],window=150,min_periods=75)
+
+    cot_output['spec_long_per_norm'] = cot_output['spec_long_per']-cot_output['spec_long_per_mean']
+    cot_output['spec_short_per_norm'] = cot_output['spec_short_per']-cot_output['spec_short_per_mean']
+
+    cot_output['spec_long_ma13'] = pd.rolling_mean(cot_output['spec_long'], window=13, min_periods=10)
+    cot_output['spec_short_ma13'] = pd.rolling_mean(cot_output['spec_short'], window=13, min_periods=10)
 
     cot_output['comm_net_change_1'] = cot_output['comm_net']-cot_output['comm_net'].shift(1)
     cot_output['comm_net_change_2'] = cot_output['comm_net']-cot_output['comm_net'].shift(2)
@@ -75,43 +109,170 @@ def get_cot_strategy_signals(**kwargs):
     cot_output['spec_net_change_2'] = cot_output['spec_net']-cot_output['spec_net'].shift(2)
     cot_output['spec_net_change_4'] = cot_output['spec_net']-cot_output['spec_net'].shift(4)
 
-    comm_net_change_1_avg = np.std(cot_output['comm_net_change_1'].iloc[-150:])
-    comm_net_change_2_avg = np.std(cot_output['comm_net_change_2'].iloc[-150:])
-    comm_net_change_4_avg = np.std(cot_output['comm_net_change_4'].iloc[-150:])
-    spec_net_change_1_avg = np.std(cot_output['spec_net_change_1'].iloc[-150:])
-    spec_net_change_2_avg = np.std(cot_output['spec_net_change_2'].iloc[-150:])
-    spec_net_change_4_avg = np.std(cot_output['spec_net_change_4'].iloc[-150:])
+    cot_output['comm_long_change_1'] = cot_output['comm_long']-cot_output['comm_long'].shift(1)
+    cot_output['comm_short_change_1'] = cot_output['comm_short']-cot_output['comm_short'].shift(1)
 
-    comm_net_change_1_normalized = cot_output['comm_net_change_1'].iloc[-1]/comm_net_change_1_avg
-    comm_net_change_2_normalized = cot_output['comm_net_change_2'].iloc[-1]/comm_net_change_2_avg
-    comm_net_change_4_normalized = cot_output['comm_net_change_4'].iloc[-1]/comm_net_change_4_avg
+    cot_output['comm_net_change_1_std'] = pd.rolling_std(cot_output['comm_net_change_1'], window=150, min_periods=75)
+    cot_output['comm_net_change_2_std'] = pd.rolling_std(cot_output['comm_net_change_2'], window=150, min_periods=75)
+    cot_output['comm_net_change_4_std'] = pd.rolling_std(cot_output['comm_net_change_4'], window=150, min_periods=75)
 
-    spec_net_change_1_normalized = cot_output['spec_net_change_1'].iloc[-1]/spec_net_change_1_avg
-    spec_net_change_2_normalized = cot_output['spec_net_change_2'].iloc[-1]/spec_net_change_2_avg
-    spec_net_change_4_normalized = cot_output['spec_net_change_4'].iloc[-1]/spec_net_change_4_avg
+    cot_output['spec_net_change_1_std'] = pd.rolling_std(cot_output['spec_net_change_1'], window=150, min_periods=75)
+    cot_output['spec_net_change_2_std'] = pd.rolling_std(cot_output['spec_net_change_2'], window=150, min_periods=75)
+    cot_output['spec_net_change_4_std'] = pd.rolling_std(cot_output['spec_net_change_4'], window=150, min_periods=75)
 
-    comm_z = (cot_output['comm_net'].iloc[-1]-np.mean(cot_output['comm_net'].iloc[-150:]))/np.std(cot_output['comm_net'].iloc[-150:])
-    spec_z = (cot_output['spec_net'].iloc[-1]-np.mean(cot_output['spec_net'].iloc[-150:]))/np.std(cot_output['spec_net'].iloc[-150:])
+    cot_output['comm_long_change_1_std'] = pd.rolling_std(cot_output['comm_long_change_1'], window=150, min_periods=75)
+    cot_output['comm_short_change_1_std'] = pd.rolling_std(cot_output['comm_short_change_1'], window=150, min_periods=75)
 
-    return {'success': True,
-            'change_5_normalized': change_5_normalized,
-            'change_10_normalized': change_10_normalized,
-            'change_20_normalized': change_20_normalized,
-            'change_40_normalized': change_40_normalized,
-            'change_60_normalized': change_60_normalized,
-            'volume_5_normalized': volume_5_normalized,
-            'volume_10_normalized': volume_10_normalized,
-            'volume_20_normalized': volume_20_normalized,
-            'comm_net_change_1_normalized': comm_net_change_1_normalized,
-            'comm_net_change_2_normalized': comm_net_change_2_normalized,
-            'comm_net_change_4_normalized': comm_net_change_4_normalized,
-            'spec_net_change_1_normalized': spec_net_change_1_normalized,
-            'spec_net_change_2_normalized': spec_net_change_2_normalized,
-            'spec_net_change_4_normalized': spec_net_change_4_normalized,
-            'comm_z': comm_z,'spec_z':spec_z,
-            'normalized_pnl_5': normalized_pnl_5,
-            'normalized_pnl_10': normalized_pnl_10,
-            'normalized_pnl_20': normalized_pnl_20}
+    cot_output['comm_net_change_1_norm'] = cot_output['comm_net_change_1']/cot_output['comm_net_change_1_std']
+    cot_output['comm_net_change_2_norm'] = cot_output['comm_net_change_2']/cot_output['comm_net_change_2_std']
+    cot_output['comm_net_change_4_norm'] = cot_output['comm_net_change_4']/cot_output['comm_net_change_4_std']
+
+    cot_output['spec_net_change_1_norm'] = cot_output['spec_net_change_1']/cot_output['spec_net_change_1_std']
+    cot_output['spec_net_change_2_norm'] = cot_output['spec_net_change_2']/cot_output['spec_net_change_2_std']
+    cot_output['spec_net_change_4_norm'] = cot_output['spec_net_change_4']/cot_output['spec_net_change_4_std']
+
+    cot_output['comm_long_change_1_norm'] = cot_output['comm_long_change_1']/cot_output['comm_long_change_1_std']
+    cot_output['comm_short_change_1_norm'] = cot_output['comm_short_change_1']/cot_output['comm_short_change_1_std']
+
+    cot_output['comm_net_mean'] = pd.rolling_mean(cot_output['comm_net'],window=150,min_periods=75)
+    cot_output['spec_net_mean'] = pd.rolling_mean(cot_output['spec_net'],window=150,min_periods=75)
+
+    cot_output['comm_net_std'] = pd.rolling_std(cot_output['comm_net'],window=150,min_periods=75)
+    cot_output['spec_net_std'] = pd.rolling_std(cot_output['spec_net'],window=150,min_periods=75)
+
+    cot_output['comm_z'] = (cot_output['comm_net']-cot_output['comm_net_mean'])/cot_output['comm_net_std']
+    cot_output['spec_z'] = (cot_output['spec_net']-cot_output['spec_net_mean'])/cot_output['spec_net_std']
+
+    cot_output['settle_date'] = cot_output.index
+    cot_output['settle_date'] = [x+dt.timedelta(days=3) for x in cot_output['settle_date']]
+
+    combined_data = pd.merge(merged_data,cot_output,how='left',on='settle_date')
+
+    combined_data['comm_net_change_1_norm'] = combined_data['comm_net_change_1_norm'].fillna(method='pad')
+    combined_data['comm_net_change_2_norm'] = combined_data['comm_net_change_2_norm'].fillna(method='pad')
+    combined_data['comm_net_change_4_norm'] = combined_data['comm_net_change_4_norm'].fillna(method='pad')
+
+    combined_data['spec_net_change_1_norm'] = combined_data['spec_net_change_1_norm'].fillna(method='pad')
+    combined_data['spec_net_change_2_norm'] = combined_data['spec_net_change_2_norm'].fillna(method='pad')
+    combined_data['spec_net_change_4_norm'] = combined_data['spec_net_change_4_norm'].fillna(method='pad')
+
+    combined_data['comm_z'] = combined_data['comm_z'].fillna(method='pad')
+    combined_data['spec_z'] = combined_data['spec_z'].fillna(method='pad')
+
+    position = 0
+    position_list = []
+    entry_index_list = []
+    exit_index_list = []
+    entry_price_list = []
+    exit_price_list = []
+
+    for i in range(len(combined_data.index)):
+
+        spec_change1_signal = combined_data['spec_net_change_1_norm'].iloc[i]
+        spec_change4_signal = combined_data['spec_net_change_4_norm'].iloc[i]
+        spec_z_signal = combined_data['spec_z'].iloc[i]
+        price_i = combined_data['const_mat'].iloc[i]
+
+        min_10 = combined_data['const_mat_min10'].iloc[i]
+        max_10 = combined_data['const_mat_max10'].iloc[i]
+        min_20 = combined_data['const_mat_min20'].iloc[i]
+        max_20 = combined_data['const_mat_max20'].iloc[i]
+
+        const_mat_change_10_norm = combined_data['const_mat_change_10_norm'].iloc[i]
+        const_mat_change_20_norm = combined_data['const_mat_change_20_norm'].iloc[i]
+
+        if i == len(combined_data.index)-1:
+            if position != 0:
+                exit_index_list.append(i)
+                exit_price_list.append(price_i)
+            break
+
+        price_i1 = combined_data['const_mat'].iloc[i+1]
+
+        if (position == 0) and (spec_z_signal>0.5) and (price_i==min_10):
+            position = 1
+            position_list.append(position)
+            entry_index_list.append(i)
+            entry_price_list.append(price_i1)
+        elif (position == 0) and (spec_z_signal<-0.5) and (price_i==max_10):
+            position = -1
+            position_list.append(position)
+            entry_index_list.append(i)
+            entry_price_list.append(price_i1)
+        elif (position == 1) and ((price_i==min_20)):
+            position = 0
+            exit_index_list.append(i)
+            exit_price_list.append(price_i1)
+        elif (position == -1) and ((price_i==max_20)):
+            position = 0
+            exit_index_list.append(i)
+            exit_price_list.append(price_i1)
+
+    trade_frame_1 = pd.DataFrame.from_items([('entry_index', entry_index_list),
+                                             ('exit_index', exit_index_list),
+                                             ('entry_price', entry_price_list),
+                                             ('exit_price', exit_price_list),
+                                             ('position',position_list)])
+
+    position = 0
+    position_list = []
+    entry_index_list = []
+    exit_index_list = []
+    entry_price_list = []
+    exit_price_list = []
+
+    for i in range(len(combined_data.index)):
+
+        spec_change1_signal = combined_data['spec_net_change_1_norm'].iloc[i]
+        spec_change4_signal = combined_data['spec_net_change_4_norm'].iloc[i]
+        spec_z_signal = combined_data['spec_z'].iloc[i]
+        price_i = combined_data['const_mat'].iloc[i]
+
+        min_10 = combined_data['const_mat_min10'].iloc[i]
+        max_10 = combined_data['const_mat_max10'].iloc[i]
+        min_20 = combined_data['const_mat_min20'].iloc[i]
+        max_20 = combined_data['const_mat_max20'].iloc[i]
+
+        const_mat_change_10_norm = combined_data['const_mat_change_10_norm'].iloc[i]
+        const_mat_change_20_norm = combined_data['const_mat_change_20_norm'].iloc[i]
+
+        if i == len(combined_data.index)-1:
+            if position != 0:
+                exit_index_list.append(i)
+                exit_price_list.append(price_i)
+            break
+
+        price_i1 = combined_data['const_mat'].iloc[i+1]
+
+        if (position == 0) and (spec_z_signal>0.75) and (price_i==min_10):
+            position = 1
+            position_list.append(position)
+            entry_index_list.append(i)
+            entry_price_list.append(price_i1)
+        elif (position == 0) and (spec_z_signal<-0.75) and (price_i==max_10):
+            position = -1
+            position_list.append(position)
+            entry_index_list.append(i)
+            entry_price_list.append(price_i1)
+        elif (position == 1) and ((price_i==min_20)):
+            position = 0
+            exit_index_list.append(i)
+            exit_price_list.append(price_i1)
+        elif (position == -1) and ((price_i==max_20)):
+            position = 0
+            exit_index_list.append(i)
+            exit_price_list.append(price_i1)
+
+    trade_frame_2 = pd.DataFrame.from_items([('entry_index', entry_index_list),
+                                             ('exit_index', exit_index_list),
+                                             ('entry_price', entry_price_list),
+                                             ('exit_price', exit_price_list),
+                                             ('position',position_list)])
+
+    trade_frame_1['pnl'] = trade_frame_1['position']*(trade_frame_1['exit_price']-trade_frame_1['entry_price'])
+    trade_frame_2['pnl'] = trade_frame_2['position']*(trade_frame_2['exit_price']-trade_frame_2['entry_price'])
+
+    return {'combined_data': combined_data, 'trade_frame_1': trade_frame_1, 'trade_frame_2': trade_frame_2}
 
 
 def get_contract_summary_stats(**kwargs):
