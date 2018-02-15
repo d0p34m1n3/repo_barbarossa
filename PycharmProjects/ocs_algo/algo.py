@@ -47,11 +47,11 @@ class Algo(subs.subscription):
     nonfinished_ask_quantity_list = []
     period_call_initiated_q = False
     min_avg_volume_limit = 100
-    bet_size = 120
-    total_traded_volume_max_before_user_confirmation = 30
+    bet_size = 240
+    total_traded_volume_max_before_user_confirmation = 90
     total_traded_volume_since_last_confirmation = 0
     total_volume_traded = 0
-    max_num_bets = 2
+    max_num_bets = 3
     num_bets = 0
     ticker_head_list = cmi.futures_butterfly_strategy_tickerhead_list
     theme_name_list = set([x + '_long' for x in ticker_head_list]).union(set([x + '_short' for x in ticker_head_list]))
@@ -262,6 +262,7 @@ class Algo(subs.subscription):
             overnight_calendars.loc[i, 'butterfly_z_current_a'] = (overnight_calendars.loc[i, 'normalized_butterfly_price_a'] -overnight_calendars.loc[i, 'butterflyMean']) / overnight_calendars.loc[i, 'butterflyNoise']
 
             ticker_head = overnight_calendars['tickerHead'].loc[i]
+            ticker_class = overnight_calendars['tickerClass'].loc[i]
             ticker1 = overnight_calendars['ticker1'].loc[i]
             ticker2 = overnight_calendars['ticker2'].loc[i]
 
@@ -287,8 +288,12 @@ class Algo(subs.subscription):
             z_score = overnight_calendars.loc[i,'butterfly_z_current']
             z_score_b = overnight_calendars.loc[i, 'butterfly_z_current_b']
             z_score_a = overnight_calendars.loc[i, 'butterfly_z_current_a']
+            z_score_s = overnight_calendars.loc[i, 'butterflyZ']
+            qCarry = overnight_calendars.loc[i, 'qCarry']
+
             target_quantity = overnight_calendars.loc[i,'target_quantity']
             dollar_noise100 = overnight_calendars.loc[i,'dollarNoise100']
+            holding_period = overnight_calendars.loc[i, 'holding_period']
             continue_q = 'n'
 
             total_position_long = self.ocs_portfolio.position_with_all_orders[ticker_head + '_long']
@@ -326,7 +331,7 @@ class Algo(subs.subscription):
 
 
             # new sell entry orders
-            if (z_score < -1) and (normalized_butterfly_price<butterfly_q25) and (min_avg_volume>=self.min_avg_volume_limit) and (total_position_short <= 0) and (working_position_short == 0) and (
+            if (z_score < -1) and (z_score<=z_score_s) and (qCarry<=-9) and (normalized_butterfly_price<butterfly_q25) and (min_avg_volume>=self.min_avg_volume_limit) and (total_position_short <= 0) and (working_position_short == 0) and (
                 self.num_bets < self.max_num_bets):
                 if self.total_traded_volume_since_last_confirmation+target_quantity < self.total_traded_volume_max_before_user_confirmation:
                     self.ocs_portfolio.order_send(ticker=ticker_head + '_short', qty=target_quantity)
@@ -337,7 +342,7 @@ class Algo(subs.subscription):
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0
 
-                    if (z_score_b<-1) and (normalized_butterfly_price_b<butterfly_q25) and (bid_quantity<(ask_quantity/2)) and (bid_ask_in_ticks<1.1):
+                    if (z_score_b<-1) and (z_score_b<=z_score_s) and (normalized_butterfly_price_b<butterfly_q25) and (bid_quantity<(ask_quantity/2)) and (bid_ask_in_ticks<1.1):
                         self.placeOrder(self.next_valid_id(), spread_contract, ib_api_trade.ComboLimitOrder('SELL', target_quantity, bid_price, False))
                     else:
                         self.placeOrder(self.next_valid_id(), spread_contract,ib_api_trade.ComboLimitOrder('SELL', target_quantity, ask_price, False))
@@ -348,7 +353,7 @@ class Algo(subs.subscription):
                     self.log.info(back_spread_ticker + ' is a sell, Spread Price: %.4f' % spread_price + ', Butterfly Price: %.4f' % butterfly_price + ', z_score: %.2f' % z_score + ', z_score_b: %.2f' % z_score_b)
 
             # new buy entry orders
-            if (z_score > 1)  and (normalized_butterfly_price>butterfly_q75)  and (min_avg_volume>=self.min_avg_volume_limit) and (ticker_head not in ['CL', 'HO', 'NG']) and (total_position_long <= 0) and (working_position_long == 0) and (self.num_bets < self.max_num_bets):
+            if (z_score > 1)  and (z_score>=z_score_s) and (qCarry>=19) and (normalized_butterfly_price>butterfly_q75)  and (min_avg_volume>=self.min_avg_volume_limit) and (ticker_head not in ['CL', 'HO', 'NG']) and (total_position_long <= 0) and (working_position_long == 0) and (self.num_bets < self.max_num_bets):
                 if self.total_traded_volume_since_last_confirmation+target_quantity < self.total_traded_volume_max_before_user_confirmation:
                     self.ocs_portfolio.order_send(ticker=ticker_head + '_long', qty=target_quantity)
                     self.ocs_alias_portfolio.order_send(ticker=back_spread_ticker + '_long', qty=target_quantity)
@@ -358,7 +363,7 @@ class Algo(subs.subscription):
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0
 
-                    if (z_score_a>1) and (normalized_butterfly_price_a>butterfly_q75) and (ask_quantity<(bid_quantity/2)) and (bid_ask_in_ticks<1.1):
+                    if (z_score_a>1) and (z_score_a>=z_score_s) and (normalized_butterfly_price_a>butterfly_q75) and (ask_quantity<(bid_quantity/2)) and (bid_ask_in_ticks<1.1):
                         self.placeOrder(self.next_valid_id(), spread_contract, ib_api_trade.ComboLimitOrder('BUY', target_quantity, ask_price, False))
                     else:
                         self.placeOrder(self.next_valid_id(), spread_contract, ib_api_trade.ComboLimitOrder('BUY', target_quantity, bid_price, False))
@@ -396,7 +401,14 @@ class Algo(subs.subscription):
             if (filled_alias_short>0) and (total_alias_short>0):
                 self.log.info('Monitor Existing Short Position: ' + back_spread_ticker + ', Spread Price: %.4f' % spread_price + ', Butterfly Price: %.4f' % butterfly_price + ', z_score: %.2f' % z_score)
 
-                if (z_score > 0) or (mth.isnan(z_score)):
+                # Livestock original holdings time: 14
+                # Ag, Energy original holding time: 28
+                if ((z_score > 0) and (z_score>=z_score_s) and (qCarry>-4)) or \
+                        ((ticker_class=='Livestock') and (holding_period>=75) and (z_score > 0)) or \
+                        ((ticker_head == 'LN') and (holding_period >= 14) and (z_score > 0)) or \
+                        ((ticker_head == 'FC') and (holding_period >= 14) and (z_score > 0)) or \
+                        ((ticker_class in ['Ag','Energy']) and (holding_period >= 75) and (z_score > 0)) or \
+                        (mth.isnan(z_score)):
                     self.log.info(back_spread_ticker + ' normalized, closing position')
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0
@@ -407,11 +419,16 @@ class Algo(subs.subscription):
                     self.ocs_alias_portfolio.order_send(ticker=back_spread_ticker + '_short', qty=-filled_alias_short)
                     self.ocs_risk_portfolio.order_send(ticker=ticker_head + '_short',qty=-filled_alias_short * dollar_noise100)
 
-            # before closing a short position, make sure there's actaully a position on the books, the first condition ensures that we avoid sending close orders repeatedly
+            # before closing a long position, make sure there's actaully a position on the books, the first condition ensures that we avoid sending close orders repeatedly
             if (filled_alias_long > 0) and (total_alias_long > 0):
                 self.log.info('Monitor Existing Long Position: ' + back_spread_ticker + ', Spread Price: %.4f' % spread_price + ', Butterfly Price: %.4f' % butterfly_price + ', z_score: %.2f' % z_score)
 
-                if (z_score < 0) or (mth.isnan(z_score)):
+                if ((z_score < 0) and (z_score<=z_score_s) and (qCarry<9)) or \
+                        ((ticker_class == 'Livestock') and (holding_period >= 75) and (z_score < 0)) or \
+                        ((ticker_head == 'LN') and (holding_period >= 14) and (z_score < 0)) or \
+                        ((ticker_head == 'FC') and (holding_period >= 14) and (z_score < 0)) or \
+                        ((ticker_class in ['Ag', 'Energy']) and (holding_period >= 75) and (z_score < 0)) or \
+                        (mth.isnan(z_score)):
                     self.log.info(back_spread_ticker + ' normalized, closing position')
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0
