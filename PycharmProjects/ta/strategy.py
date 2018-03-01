@@ -337,7 +337,7 @@ def select_strategies(**kwargs):
     if 'open_date_from' in kwargs.keys():
         open_date_from = kwargs['open_date_from']
     else:
-        open_date_from = 20170607
+        open_date_from = 20160907
 
     sql_query = sql_query + ' open_date>=' + str(open_date_from)
 
@@ -404,6 +404,8 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/arma/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'futures_directional':
          output_dir = strategy_output_folder + '/futures_directional/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'intraday_futures_experimental':
+         output_dir = strategy_output_folder + '/ife/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

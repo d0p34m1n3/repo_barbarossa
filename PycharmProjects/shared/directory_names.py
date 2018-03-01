@@ -6,10 +6,12 @@ import shared.calendar_utilities as cu
 
 root_home = r'C:\Users\kocat_000\quantFinance'
 root_work = r'C:\Research'
+root_quantgo = r'D:\Research'
 tt_fill_directory = r'C:\tt\datfiles\Export'
 
 
 extension_dict = {'presaved_futures_data': '/data/futures_data',
+                  'book_snapshot_data': '/data/book_snapshot',
                   'commitments_of_traders_data': '/data/fundamental_data/cot_data',
                   'intraday_ttapi_data': '/data/intraday_data/tt_api',
                   'intraday_ttapi_data_fixed_interval': '/data/intraday_data/tt_api_fixed_interval',
@@ -36,6 +38,8 @@ def get_directory_name(**kwargs):
 
     if computer_name == '601-TREKW71' or computer_name == '601-TREKW72':
         root_dir = root_work
+    elif computer_name == 'WIN-3G1R7L5NT4H':
+        root_dir = root_quantgo
     else:
         root_dir = root_home
 
