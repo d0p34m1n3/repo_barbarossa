@@ -132,7 +132,7 @@ def hedge_strategy_against_delta(**kwargs):
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     trade_frame['trade_quantity'] = -trade_frame['trade_quantity']
-    trade_frame['alias'] = 'delta_sep17'
+    trade_frame['alias'] = 'delta_jan18'
     tas.load_trades_2strategy(trade_frame=trade_frame,con=con)
 
     if 'con' not in kwargs.keys():
@@ -154,7 +154,7 @@ def strategy_hedge_report(**kwargs):
     hedge_frame = strategy_frame[hedge_indx]
 
     #hedge_frame = hedge_frame[(hedge_frame['alias'] == 'GCZ17J18VCS')|(hedge_frame['alias'] == 'GCV17J18VCS')]
-    hedge_frame = hedge_frame[(hedge_frame['alias'] == 'NGJ18H18VCS')]
+    hedge_frame = hedge_frame[(hedge_frame['alias'] == 'WZ18N18VCS')]
     #hedge_frame = hedge_frame[(hedge_frame['alias'] != 'CLZ17H18VCS')]
     [hedge_strategy_against_delta(alias=x, con=con) for x in hedge_frame['alias']]
 

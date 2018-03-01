@@ -144,7 +144,6 @@ def get_results_4strategy(**kwargs):
         pnl_per_tickerhead = pnl_output['pnl_per_tickerhead']
 
         for i in range(len(unique_tickerhead_list)):
-
             net_position_per_tickerhead = net_position[net_position['ticker_head'] == unique_tickerhead_list[i]]
             net_position_per_tickerhead.sort('tr_dte',ascending=True,inplace=True)
 
