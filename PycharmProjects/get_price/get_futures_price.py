@@ -108,15 +108,17 @@ def get_futures_price_preloaded(**kwargs):
         ticker_head = kwargs['ticker_head']
     else:
         ticker = kwargs['ticker']
-        ticker_head = cmi.get_contract_specs(ticker)['ticker_head']
+        contract_specs_output = cmi.get_contract_specs(ticker)
+        ticker_head = contract_specs_output['ticker_head']
+        file_ticker = cmi.mini_contract_dictionary.get(ticker_head, ticker_head) + contract_specs_output['ticker_month_str'] + str(contract_specs_output['ticker_year'])
 
     if 'futures_data_dictionary' in kwargs.keys():
         data_out = kwargs['futures_data_dictionary'][ticker_head]
     else:
         presaved_futures_data_folder = dn.get_directory_name(ext='presaved_futures_data')
-
-        if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
-            data_out = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
+        file_ticker_head = cmi.mini_contract_dictionary.get(ticker_head, ticker_head)
+        if os.path.isfile(presaved_futures_data_folder + '/' + file_ticker_head + '.pkl'):
+            data_out = pd.read_pickle(presaved_futures_data_folder + '/' + file_ticker_head + '.pkl')
         else:
             data_out = pd.DataFrame()
             return data_out
@@ -138,7 +140,7 @@ def get_futures_price_preloaded(**kwargs):
         data_out = data_out[data_out['settle_date']<=cu.convert_doubledate_2datetime(kwargs['settle_date_to'])]
 
     if 'ticker' in kwargs.keys():
-        data_out = data_out[data_out['ticker']==ticker]
+        data_out = data_out[data_out['ticker']==file_ticker]
 
     return data_out
 

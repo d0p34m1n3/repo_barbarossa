@@ -384,8 +384,8 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/vcs/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'scv':
          output_dir = strategy_output_folder + '/scv/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ifs':
-         output_dir = strategy_output_folder + '/ifs/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'itf':
+         output_dir = strategy_output_folder + '/itf/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'ics':
          output_dir = strategy_output_folder + '/ics/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'os':

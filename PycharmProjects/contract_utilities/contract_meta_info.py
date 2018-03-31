@@ -363,7 +363,7 @@ def get_ib_exchange_name(ticker_head):
         exchange = 'NYMEX'
     elif ticker_head in ['C', 'W', 'KW', 'S', 'SM', 'BO' ,'TU', 'FV', 'TY', 'US']:
         exchange = 'ECBOT'
-    elif ticker_head in ['LC', 'LN', 'FC', 'EC', 'BP', 'JY', 'AD', 'CD', 'ES', 'NQ']:
+    elif ticker_head in ['LC', 'LN', 'FC', 'EC', 'BP', 'JY', 'AD', 'CD', 'ES', 'NQ', 'ED']:
         exchange = 'GLOBEX'
     else:
         exchange = ''
@@ -406,6 +406,7 @@ contract_multiplier = {'LN': 400,
                        'EC': 125000,
                        'JY': 1.25,
                        'BP': 62500,
+                       'MEC': 12500,
                        'FV': 1000,
                        'TU': 2000,
                        'TY': 1000,
@@ -498,7 +499,11 @@ t_cost_ib = {'S': 2.81,
              'LC': 2.89,
              'CL': 2.36,
              'HO': 2.36,
-             'NG': 2.36}
+             'NG': 2.36,
+             'MEC': 0.33,
+             'NQ': 2.05}
+
+mini_contract_dictionary = {'MEC': 'EC'}
 
 def get_t_cost(**kwargs):
 
@@ -515,11 +520,14 @@ def get_t_cost(**kwargs):
 
 
 def get_contract_specs(ticker):
-    return {'ticker_head': ticker[:-5],
+
+    ticker_head = ticker[:-5]
+
+    return {'ticker_head': ticker_head,
             'ticker_year': int(ticker[-4:]),
             'ticker_month_str': ticker[-5],
             'ticker_month_num': letter_month_string.find(ticker[-5])+1,
-            'ticker_class': ticker_class[ticker[:-5]],
+            'ticker_class': ticker_class[mini_contract_dictionary.get(ticker_head,ticker_head)],
             'cont_indx': 100*int(ticker[-4:]) + letter_month_string.find(ticker[-5])+1}
 
 
