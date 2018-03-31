@@ -8,7 +8,7 @@ def get_crossover_duration(**kwargs):
     if 'boto_client' in kwargs.keys():
         boto_client = kwargs['boto_client']
     else:
-        boto_client = bt3.client('s3',aws_access_key_id=qgd.aws_access_key_id,aws_secret_access_key=qgd.aws_secret_access_key)
+        boto_client = qgd.get_boto_client()
 
     data_out = qgd.get_continuous_bar_data(ticker=kwargs['ticker'], date_to=kwargs['date_to'], num_days_back=20, boto_client=boto_client)
 

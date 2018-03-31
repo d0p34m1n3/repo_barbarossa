@@ -478,7 +478,7 @@ def get_bus_day_list(**kwargs):
 
     date_index = pd.date_range(start=datetime_from, end=datetime_to, freq=bday_us)
 
-    return [int(x.to_datetime().strftime('%Y%m%d')) for x in date_index]
+    return [int(x.to_pydatetime().strftime('%Y%m%d')) for x in date_index]
 
 
 

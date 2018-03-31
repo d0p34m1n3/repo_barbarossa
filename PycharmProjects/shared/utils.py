@@ -93,3 +93,17 @@ def read_text_file(**kwargs):
             results.append(line.strip())
 
     return results
+
+def read_config_file(**kwargs):
+    line_list = read_text_file(**kwargs)
+    line_out = line_list[0].split('&')
+
+    dictionary_out = {}
+
+    for i in range(len(line_out)):
+        split_out = line_out[i].split('=')
+        dictionary_out[split_out[0]] = split_out[1]
+
+    return dictionary_out
+
+

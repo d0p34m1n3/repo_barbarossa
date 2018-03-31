@@ -37,7 +37,7 @@ def get_result_sheet_4date(**kwargs):
     if 'boto_client' in kwargs.keys():
         boto_client = kwargs['boto_client']
     else:
-        boto_client = bt3.client('s3',aws_access_key_id=qgd.aws_access_key_id,aws_secret_access_key=qgd.aws_secret_access_key)
+        boto_client = qgd.get_boto_client()
 
     ticker_frame = get_tickers_4date(**kwargs)
 

@@ -3,15 +3,14 @@ import boto3 as bt3
 import pandas as pd
 import numpy as np
 import datetime as dt
+import pytz
 import contract_utilities.contract_meta_info as cmi
 import contract_utilities.expiration as exp
 import shared.directory_names as dn
+import shared.utils as su
 import ta.trade_fill_loader as tfl
 import math as m
 import os
-
-aws_access_key_id='AKIAJ3Z5XUAOJ5IS25BA'
-aws_secret_access_key='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'
 
 tickerhead_dict_from_db_2qg = {'LC': 'LE','LN': 'HE', 'FC': 'GF',
                                'C': 'ZC', 'S': 'ZS', 'SM': 'ZM', 'BO': 'ZL', 'W': 'ZW', 'KW': 'KE',
@@ -19,7 +18,20 @@ tickerhead_dict_from_db_2qg = {'LC': 'LE','LN': 'HE', 'FC': 'GF',
                                'TY': 'ZN', 'US': 'ZB', 'FV': 'ZF', 'TU': 'ZT'}
 
 price_multiplier = {'ED': 100,
-                    'JY': 1e5}
+                    'JY': 1e7}
+
+price_multiplier_old = {'LC': 1e-1, 'LN': 1e-1, 'FC': 1e-1,
+                        'C': 1e2, 'S': 1e2, 'SM': 1e1, 'W': 1e2, 'KW': 1e2,
+                        'EC': 1e-2, 'JY': 1e3, 'AD': 1e-2, 'CD': 1e-2, 'BP': 1e-2,
+                        'TY': 1e2, 'US': 1e2, 'FV': 1e2, 'TU': 1e2,
+                        'HO': 1e-2}
+
+def get_boto_client():
+    config_directory_name = dn.get_directory_name(ext='config')
+    config_out = su.read_config_file(file_name=config_directory_name + '/s3_credentials.txt')
+    return bt3.client('s3', aws_access_key_id=config_out['aws_access_key_id'],
+                             aws_secret_access_key=config_out['aws_secret_access_key'])
+
 
 def get_tick_data(**kwargs):
 
@@ -37,7 +49,7 @@ def get_tick_data(**kwargs):
     if 'boto_client' in kwargs.keys():
         boto_client = kwargs['boto_client']
     else:
-        boto_client = bt3.client('s3',aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+        boto_client = get_boto_client()
 
     utc_doubledate = kwargs['utc_doubledate']
     utc_year = m.floor(utc_doubledate/10000)
@@ -85,53 +97,96 @@ def get_book_snapshot(**kwargs):
     if len(data_out.index)==0:
         return pd.DataFrame(columns=['mid_p','buy_volume','sell_volume','volume'])
 
-    data_out['hour'] = data_out['LocalTime'] / 1e7
-    data_out['hour'] = data_out['hour'].apply(np.floor)
+    utc_year = m.floor(utc_doubledate / 10000)
 
-    data_out['minute'] = data_out['LocalTime'] / 1e5
-    data_out['minute'] = data_out['minute'].apply(np.floor)
-    data_out['minute'] = data_out['minute'] - 1e2 * data_out['hour']
+    if utc_year in [2017, 2018]:
+        p_multiplier = price_multiplier.get(ticker_head, 1)
+    else:
+        p_multiplier = price_multiplier_old.get(ticker_head, 1)
 
-    data_out['second'] = data_out['LocalTime'] / 1e3
-    data_out['second'] = data_out['second'].apply(np.floor)
-    data_out['second'] = data_out['second'] - 1e4 * data_out['hour']-1e2*data_out['minute']
 
-    data_out['year'] = data_out['LocalDate'] / 1e4
-    data_out['year'] = data_out['year'].apply(np.floor)
+    if 'LocalTime' in data_out.columns:
 
-    data_out['month'] = data_out['LocalDate'] / 1e2
-    data_out['month'] = data_out['month'].apply(np.floor)
-    data_out['month'] = data_out['month'] - 1e2 * data_out['year']
+        data_out['hour'] = data_out['LocalTime'] / 1e7
+        data_out['hour'] = data_out['hour'].apply(np.floor)
 
-    data_out['day'] = data_out['LocalDate'] - 1e4 * data_out['year'] - 1e2 * data_out['month']
+        data_out['minute'] = data_out['LocalTime'] / 1e5
+        data_out['minute'] = data_out['minute'].apply(np.floor)
+        data_out['minute'] = data_out['minute'] - 1e2 * data_out['hour']
 
-    data_out['date_time'] = [dt.datetime(int(data_out['year'].iloc[x]), int(data_out['month'].iloc[x]), int(data_out['day'].iloc[x]),
-                    int(data_out['hour'].iloc[x]), int(data_out['minute'].iloc[x]), int(data_out['second'].iloc[x])) for x in range(len(data_out.index))]
+        data_out['second'] = data_out['LocalTime'] / 1e3
+        data_out['second'] = data_out['second'].apply(np.floor)
+        data_out['second'] = data_out['second'] - 1e4 * data_out['hour']-1e2*data_out['minute']
+
+        data_out['year'] = data_out['LocalDate'] / 1e4
+        data_out['year'] = data_out['year'].apply(np.floor)
+
+        data_out['month'] = data_out['LocalDate'] / 1e2
+        data_out['month'] = data_out['month'].apply(np.floor)
+        data_out['month'] = data_out['month'] - 1e2 * data_out['year']
+
+        data_out['day'] = data_out['LocalDate'] - 1e4 * data_out['year'] - 1e2 * data_out['month']
+
+        data_out['date_time'] = [dt.datetime(int(data_out['year'].iloc[x]), int(data_out['month'].iloc[x]), int(data_out['day'].iloc[x]),
+                        int(data_out['hour'].iloc[x]), int(data_out['minute'].iloc[x]), int(data_out['second'].iloc[x])) for x in range(len(data_out.index))]
+
+    else:
+
+        data_out['hour_utc'] = data_out['Timestamp'] / 1e7
+        data_out['hour_utc'] = data_out['hour_utc'].apply(np.floor)
+
+        data_out['minute'] = data_out['Timestamp'] / 1e5
+        data_out['minute'] = data_out['minute'].apply(np.floor)
+        data_out['minute'] = data_out['minute'] - 1e2 * data_out['hour_utc']
+
+        data_out['second'] = data_out['Timestamp'] / 1e3
+        data_out['second'] = data_out['second'].apply(np.floor)
+        data_out['second'] = data_out['second'] - 1e4 * data_out['hour_utc'] - 1e2 * data_out['minute']
+
+        data_out['year'] = data_out['Date'] / 1e4
+        data_out['year'] = data_out['year'].apply(np.floor)
+
+        data_out['month'] = data_out['Date'] / 1e2
+        data_out['month'] = data_out['month'].apply(np.floor)
+        data_out['month'] = data_out['month'] - 1e2 * data_out['year']
+
+        data_out['day'] = data_out['Date'] - 1e4 * data_out['year'] - 1e2 * data_out['month']
+
+        data_out['date_time'] = [
+            dt.datetime(int(data_out['year'].iloc[x]), int(data_out['month'].iloc[x]), int(data_out['day'].iloc[x]),
+                        int(data_out['hour_utc'].iloc[x]), int(data_out['minute'].iloc[x]), int(data_out['second'].iloc[x]),
+                        tzinfo=pytz.utc).astimezone(pytz.timezone('US/Central')).replace(tzinfo=None)
+            for x in range(len(data_out.index))]
 
     merged_index = pd.date_range(start=data_out['date_time'].iloc[0].replace(second=0), end=data_out['date_time'].iloc[-1].replace(second=0), freq='S')
     data_out.set_index('date_time', inplace=True, drop=True)
 
-    bid_data = data_out[data_out['Type'] == 'QUOTE BID']
+    if 'Type' in data_out.columns:
+        type_column_name = 'Type'
+    elif 'EventType' in data_out.columns:
+        type_column_name = 'EventType'
+
+    bid_data = data_out[data_out[type_column_name] == 'QUOTE BID']
     bid_data = bid_data.groupby(bid_data.index).last()
     bid_data = bid_data.reindex(merged_index, method='pad')
 
-    ask_data = data_out[data_out['Type'] == 'QUOTE SELL']
+    ask_data = data_out[data_out[type_column_name] == 'QUOTE SELL']
     ask_data = ask_data.groupby(ask_data.index).last()
     ask_data = ask_data.reindex(merged_index, method='pad')
 
-    buy_trade_data = data_out[data_out['Type'] == 'TRADE AGRESSOR ON BUY']
+    buy_trade_data = data_out[data_out[type_column_name] == 'TRADE AGRESSOR ON BUY']
     buy_trade_data['CumQuantity'] = buy_trade_data['Quantity'].cumsum()
     buy_trade_data = buy_trade_data.groupby(buy_trade_data.index).last()
     buy_trade_data = buy_trade_data.reindex(merged_index, method='pad')
     buy_trade_data['Quantity'] = buy_trade_data['CumQuantity'].diff()
 
-    sell_trade_data = data_out[data_out['Type'] == 'TRADE AGRESSOR ON SELL']
+    sell_trade_data = data_out[data_out[type_column_name] == 'TRADE AGRESSOR ON SELL']
     sell_trade_data['CumQuantity'] = sell_trade_data['Quantity'].cumsum()
     sell_trade_data = sell_trade_data.groupby(sell_trade_data.index).last()
     sell_trade_data = sell_trade_data.reindex(merged_index, method='pad')
     sell_trade_data['Quantity'] = sell_trade_data['CumQuantity'].diff()
 
-    trade_data = data_out[data_out['Type'] == 'TRADE']
+    trade_data = data_out[data_out[type_column_name] == 'TRADE']
     trade_data['CumQuantity'] = trade_data['Quantity'].cumsum()
     trade_data = trade_data.groupby(trade_data.index).last()
     trade_data = trade_data.reindex(merged_index, method='pad')
@@ -140,11 +195,11 @@ def get_book_snapshot(**kwargs):
     book_snapshot = pd.DataFrame(index=merged_index)
 
     book_snapshot['bid_p'] = bid_data['Price']
-    book_snapshot['bid_p'] = book_snapshot['bid_p']*price_multiplier.get(ticker_head,1)
+    book_snapshot['bid_p'] = book_snapshot['bid_p']*p_multiplier
     book_snapshot['bid_q'] = bid_data['Quantity']
 
     book_snapshot['ask_p'] = ask_data['Price']
-    book_snapshot['ask_p'] = book_snapshot['ask_p'] * price_multiplier.get(ticker_head, 1)
+    book_snapshot['ask_p'] = book_snapshot['ask_p'] * p_multiplier
     book_snapshot['ask_q'] = ask_data['Quantity']
 
     book_snapshot['buy_volume'] = buy_trade_data['Quantity']
@@ -153,10 +208,10 @@ def get_book_snapshot(**kwargs):
 
     book_snapshot['mid_p'] = (book_snapshot['bid_p'] * book_snapshot['bid_q'] + book_snapshot['ask_p'] * book_snapshot['ask_q']) / (
             book_snapshot['bid_q'] + book_snapshot['ask_q'])
-    bar_data = book_snapshot['mid_p'].resample('5T').ohlc()
-    bar_data['buy_volume'] = book_snapshot['buy_volume'].resample('5T').sum()
-    bar_data['sell_volume'] = book_snapshot['sell_volume'].resample('5T').sum()
-    bar_data['volume'] = book_snapshot['volume'].resample('5T').sum()
+    bar_data = book_snapshot['mid_p'].resample(freq_str).ohlc()
+    bar_data['buy_volume'] = book_snapshot['buy_volume'].resample(freq_str).sum()
+    bar_data['sell_volume'] = book_snapshot['sell_volume'].resample(freq_str).sum()
+    bar_data['volume'] = book_snapshot['volume'].resample(freq_str).sum()
 
     bar_data['hour_minute'] = 100 * bar_data.index.hour + bar_data.index.minute
 
@@ -173,7 +228,7 @@ def get_continuous_bar_data(**kwargs):
     if 'boto_client' in kwargs.keys():
         boto_client = kwargs['boto_client']
     else:
-        boto_client = bt3.client('s3',aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+        boto_client = get_boto_client()
 
     date_list = [exp.doubledate_shift_bus_days(double_date=date_to, shift_in_days=x) for x in reversed(range(1, num_days_back))]
     date_list.append(date_to)
