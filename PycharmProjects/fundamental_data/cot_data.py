@@ -8,17 +8,45 @@ import pandas as pd
 
 presaved_cot_data_folder = dn.get_directory_name(ext='commitments_of_traders_data')
 
+db_2_quandl_dictionary = {'GC': '088691',
+                          'SI': '084691',
+                          'EC': '099741',
+                          'BP': '096742',
+                          'JY': '097741',
+                          'AD': '232741',
+                          'CD': '090741',
+                          'TU': '042601',
+                          'FV': '044601',
+                          'TY': '043602',
+                          'US': '020601',
+                          'ED': '132741',
+                          'ES': '13874A',
+                          'NQ': '209742',
+                          'CL': '067651',
+                          'HO': '022651',
+                          'RB': '111659',
+                          'NG': '023651',
+                          'C': '002602',
+                          'W': '001602',
+                          'KW': '001612',
+                          'S': '005602',
+                          'SM': '026603',
+                          'BO': '007601',
+                          'LN': '054642',
+                          'LC': '057642',
+                          'FC': '061641',
+                          'KC': '083731',
+                          'CT': '033661',
+                          'SB': '080732',
+                          'CC': '073732',
+                          'OJ': '040701'}
+
+
 def presave_cot_data_4ticker_head(**kwargs):
 
     ticker_head = kwargs['ticker_head']
 
-    if ticker_head == 'LN':
-        quandl_ticker ='CFTC/LH_FO_ALL'
-    elif ticker_head == 'B':
-    # cannot seem to locate brent
-        quandl_ticker ='CFTC/BZ_FO_ALL'
-    else:
-        quandl_ticker ='CFTC/' + ticker_head + '_FO_ALL'
+    quandl_ticker ='CFTC/' + db_2_quandl_dictionary[ticker_head] + '_FO_ALL'
 
     kwargs['quandl_ticker'] = quandl_ticker
     quandl_out = gdq.get_data(**kwargs)
@@ -27,9 +55,11 @@ def presave_cot_data_4ticker_head(**kwargs):
         data_out = quandl_out['data_out']
         data_out.to_pickle(presaved_cot_data_folder + '/' + ticker_head + '.pkl')
 
+
 def presave_cot_data():
 
     tickerhead_list = list(set(cmi.futures_butterfly_strategy_tickerhead_list + cmi.cme_futures_tickerhead_list))
+    tickerhead_list.remove('B')
     [presave_cot_data_4ticker_head(ticker_head=x) for x in tickerhead_list]
 
 
