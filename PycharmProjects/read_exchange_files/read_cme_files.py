@@ -8,10 +8,10 @@ import os.path
 def read_cme_settle_txt_files(**kwargs):
 
     file_name = kwargs['file_name']
+
     report_date = kwargs['report_date']
 
     options_data_dir = dn.get_dated_directory_extension(folder_date=report_date, ext='raw_options_data')
-
     if os.path.isfile(options_data_dir + '/' + file_name + '_formatted.pkl'):
         output_dictionary = pd.read_pickle(options_data_dir + '/' + file_name + '_formatted.pkl')
         return output_dictionary
@@ -107,7 +107,7 @@ def read_cme_settle_txt_files(**kwargs):
         month_strike_list.append(month_strike_column_filtered)
 
         total_volume_list.append((sum([int(volume_column[x]) if filter_2[x] else 0 for x in range(len(volume_column))])))
-
+    #return title_list
     title_frame = pd.DataFrame([process_title(x) for x in title_list])
 
     output_dictionary = {'decoded_data': decoded_data,
@@ -136,7 +136,6 @@ def read_cme_settle_txt_files(**kwargs):
 
 
 def process_title(title_input):
-
     title_list = title_input.split(' ')
 
     #print(title_input)
@@ -159,9 +158,11 @@ def process_title(title_input):
     elif title_list[0] == 'PY' and asset_type == 'options':
         ticker_head = 'C'
         title_indx = 2
-    elif 'SOYBEAN CRUSH' in title_input:
+    elif 'SOYBEAN CRUSH' in title_input and asset_type == 'options':
         ticker_head = 'crush'
         title_indx = title_list.index('BCO')+2
+    elif 'SOYBEAN CRUSH' in title_input and asset_type == 'futures':
+        ticker_head = 'crush'
     elif 'SOYBEANS' in title_input and asset_type == 'options':
         ticker_head = 'S'
         title_indx = title_list.index('SOYBEANS')
