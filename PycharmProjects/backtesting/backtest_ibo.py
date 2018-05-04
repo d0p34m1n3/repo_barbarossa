@@ -1,182 +1,156 @@
 
-import opportunity_constructs.intraday_breakouts as ibo
-import opportunity_constructs.utilities as opUtil
-import signals.intraday_futures_signals as ifs
-import contract_utilities.expiration as exp
+import get_price.quantgo_data as qd
+import get_price.get_futures_price as gfp
 import shared.calendar_utilities as cu
 import contract_utilities.contract_meta_info as cmi
-import ta.strategy as ts
-import datetime as dt
-import math as m
+import numpy as np
 import pandas as pd
-import os.path
+import ta.strategy as ts
+import os
+
+latest_trade_entry_hour_minute = 1100
+latest_livestock_exit_hour_minute = 1255
+latest_ag_exit_hour_minute = 1310
+latest_macro_exit_hour_minute = 1455
 
 
-def construct_ibo_portfolio_4date(**kwargs):
-    # date_to
+def get_latest_trade_exit_hour_minute(ticker_head):
 
-    ibo_output = ibo.generate_ibo_sheet_4date(**kwargs)
-    sheet_4date = ibo_output['sheet_4date']
-    cov_output = ibo_output['cov_output']
-    cov_data_integrity = cov_output['cov_data_integrity']
+    if ticker_head in ['LN', 'LC', 'FC']:
+        return latest_livestock_exit_hour_minute
+    elif ticker_head in ['C', 'S', 'SM', 'BO', 'W', 'KW']:
+        return latest_ag_exit_hour_minute
+    else:
+        return latest_macro_exit_hour_minute
 
-    if cov_data_integrity < 80:
-        return {'success': False}
+def get_results_4ticker(**kwargs):
 
-    cov_matrix = cov_output['cov_matrix']
-    sheet_4date['qty'] = sheet_4date['ticker_head'].apply(lambda x: round(1000/m.sqrt(cov_matrix[x][x])))
-    sheet_4date['pnl_scaled'] = sheet_4date['pnl']*sheet_4date['qty']
-
-    return {'success': True, 'sheet_4date': sheet_4date}
-
-
-def accumulated_ibo_performance(**kwargs):
-
-    date_list = exp.get_bus_day_list(date_from=20160915, date_to=kwargs['date_to']) #date_from = 20160701
-    result_list = []
-
-    for i in range(len(date_list)):
-        print(date_list[i])
-        out_frame = construct_ibo_portfolio_4date(date_to=date_list[i])
-
-        if out_frame['success']:
-            sheet_4date = out_frame['sheet_4date']
-            sheet_4date['trade_date'] = date_list[i]
-            result_list.append(sheet_4date)
-
-    merged_frame = pd.concat(result_list)
-    return merged_frame
-
-
-def backtest_continuous_ibo_4ticker(**kwargs):
-    # ticker, # date_to
-
-    date_to = kwargs['date_to']
     ticker = kwargs['ticker']
+    date_to = kwargs['date_to']
+
+    ticker_frame = gfp.get_futures_price_preloaded(ticker=ticker, settle_date_to=date_to)
+
+    ticker_frame['daily_range'] = ticker_frame['high_price'] - ticker_frame['low_price']
+    ticker_frame['min_range'] = ticker_frame['daily_range'].rolling(window=7, center=False).min()
+
+    if ticker_frame['daily_range'].iloc[-2]>ticker_frame['min_range'].iloc[-2]:
+        return {'trades_frame': pd.DataFrame(), 'daily_frame': pd.DataFrame()}
+
+    yesterdays_high = ticker_frame['high_price'].iloc[-2]
+    yesterdays_low = ticker_frame['low_price'].iloc[-2]
+
+    ticker_frame['close_diff'] = ticker_frame['close_price'].diff()
+    daily_sd = np.std(ticker_frame['close_diff'].iloc[-41:-1])
+
+    candle_frame = qd.get_continuous_bar_data(ticker=ticker, date_to=date_to, num_days_back=20)
 
     ticker_head = cmi.get_contract_specs(ticker)['ticker_head']
-    ticker_class = cmi.ticker_class[ticker_head]
+    tick_size = cmi.tick_size[ticker_head]
+    latest_trade_exit_hour_minute = get_latest_trade_exit_hour_minute(ticker_head)
 
-    signals_output = ifs.get_intraday_trend_signals(**kwargs)
-    daily_noise = signals_output['daily_noise']
+    candle_frame['ewma300'] = candle_frame['close'].ewm(span=300, min_periods=250, adjust=True, ignore_na=False).mean()
+    candle_frame['ewma50'] = candle_frame['close'].ewm(span=50, min_periods=40, adjust=True, ignore_na=False).mean()
+    candle_frame['datetime'] = [x.replace(hour=0, second=0, minute=0) for x in candle_frame.index]
 
-    date_list = [exp.doubledate_shift_bus_days(double_date=date_to, shift_in_days=x) for x in [-1,-2]]
+    candle_frame = candle_frame.dropna().reset_index(drop=True, inplace=False)
+    date_timeto = cu.convert_doubledate_2datetime(date_to)
 
-    intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=[ticker],
-                                       date_list=date_list)
+    daily_frame = candle_frame[(candle_frame['datetime'] == date_timeto)&(candle_frame['hour_minute'] >= 830)]
+    daily_frame.reset_index(drop=True, inplace=True)
 
-    intraday_data['mid_p'] = (intraday_data['c1']['best_bid_p']+intraday_data['c1']['best_ask_p'])/2
+    daily_frame['running_max'] = daily_frame['high'].rolling(window=20, min_periods=10, center=False).max()
 
-    intraday_data['time_stamp'] = [x.to_datetime() for x in intraday_data.index]
-    intraday_data['settle_date'] = intraday_data['time_stamp'].apply(lambda x: x.date())
-    intraday_data['hour_minute'] = [100*x.hour+x.minute for x in intraday_data['time_stamp']]
+    if len(daily_frame.index)==0:
+        return {'trades_frame': pd.DataFrame(), 'daily_frame': pd.DataFrame()}
 
-    entry_data = intraday_data[intraday_data['settle_date'] == cu.convert_doubledate_2datetime(date_list[-2]).date()]
-    exit_data = intraday_data[intraday_data['settle_date'] == cu.convert_doubledate_2datetime(date_list[-1]).date()]
+    trading_data = daily_frame
 
-    exit_morning_data = exit_data[(exit_data['hour_minute'] >= 930)&(exit_data['hour_minute'] <= 1000)]
-    exit_afternoon_data = exit_data[(exit_data['hour_minute'] >= 1230)&(exit_data['hour_minute'] <= 1300)]
-
-    end_hour = cmi.last_trade_hour_minute[ticker_head]
-    start_hour = cmi.first_trade_hour_minute[ticker_head]
-
-    if ticker_class in ['Ag']:
-        start_hour1 = dt.time(0, 45, 0, 0)
-        end_hour1 = dt.time(7, 45, 0, 0)
-        selection_indx = [x for x in range(len(entry_data.index)) if
-                          ((entry_data['time_stamp'].iloc[x].time() < end_hour1)
-                           and(entry_data['time_stamp'].iloc[x].time() >= start_hour1)) or
-                          ((entry_data['time_stamp'].iloc[x].time() < end_hour)
-                           and(entry_data['time_stamp'].iloc[x].time() >= start_hour))]
-
+    if daily_frame['ewma50'].iloc[0]>daily_frame['ewma300'].iloc[0]:
+        trend = 1
     else:
-        selection_indx = [x for x in range(len(entry_data.index)) if
-                          (entry_data.index[x].to_datetime().time() < end_hour)
-                          and(entry_data.index[x].to_datetime().time() >= start_hour)]
+        trend = -1
 
-    entry_data = entry_data.iloc[selection_indx]
+    current_position = 0
+    entry_price_list  = []
+    exit_price_list = []
+    entry_index_list = []
+    exit_index_list = []
+    direction_list = []
+    hour_minute_list = []
 
-    entry_data.reset_index(inplace=True,drop=True)
+    for i in range(len(trading_data.index)):
 
-    mean5 = signals_output['intraday_mean5']
-    std5 = signals_output['intraday_std5']
+        hour_minute = daily_frame['hour_minute'].iloc[i]
 
-    mean2 = signals_output['intraday_mean2']
-    std2 = signals_output['intraday_std2']
+        if (current_position==0) and (trading_data['close'].iloc[i]>=yesterdays_high) \
+                and (hour_minute<=latest_trade_entry_hour_minute):
+            current_position = 1
+            direction_list.append(current_position)
+            entry_price_list.append(trading_data['close'].iloc[i]+tick_size)
+            entry_index_list.append(i)
+            hour_minute_list.append(hour_minute)
 
-    mean1 = signals_output['intraday_mean1']
-    std1 = signals_output['intraday_std1']
+        if (current_position==0) and (trading_data['close'].iloc[i]<=yesterdays_low) \
+                and (hour_minute<=latest_trade_entry_hour_minute):
+            current_position = -1
+            direction_list.append(current_position)
+            entry_price_list.append(trading_data['close'].iloc[i]-tick_size)
+            entry_index_list.append(i)
+            hour_minute_list.append(hour_minute)
 
-    entry_data['z5'] = (entry_data['mid_p']-mean5)/std5
-    entry_data['z1'] = (entry_data['mid_p']-mean1)/std1
-    entry_data['z2'] = (entry_data['mid_p']-mean2)/std2
-    entry_data['z6'] = (entry_data['mid_p']-mean1)/std5
+        if (current_position>0) and ((hour_minute>=latest_trade_exit_hour_minute) or (i==len(trading_data.index)-1)):
+            exit_price_list.append(trading_data['open'].iloc[i] - tick_size)
+            exit_index_list.append(i)
+            break
 
-    entry_data_shifted60 = entry_data.shift(-60)
-    entry_data['mid_p_shifted'] = entry_data_shifted60['mid_p']
-    entry_data['delta60'] = (entry_data['mid_p_shifted']-entry_data['mid_p'])/daily_noise
+        if (current_position<0) and ((hour_minute>=latest_trade_exit_hour_minute) or (i==len(trading_data.index)-1)):
+            exit_price_list.append(trading_data['open'].iloc[i] + tick_size)
+            exit_index_list.append(i)
+            break
 
-    entry_data_shifted15 = entry_data.shift(-15)
-    entry_data['mid_p_shifted'] = entry_data_shifted15['mid_p']
-    entry_data['delta15'] = (entry_data['mid_p_shifted']-entry_data['mid_p'])/daily_noise
+    trades_frame = pd.DataFrame.from_items([('direction', direction_list),
+                                            ('hour_minute',hour_minute_list),
+                                            ('entry_price', entry_price_list),
+                                            ('exit_price', exit_price_list),
+                                            ('entry_index', entry_index_list),
+                                            ('exit_index', exit_index_list)])
 
-    entry_data_shifted_10 = entry_data.shift(10)
-    entry_data['mid_p_shifted'] = entry_data_shifted_10['mid_p']
-    entry_data['delta_10'] = (entry_data['mid_p']-entry_data['mid_p_shifted'])/daily_noise
-
-    entry_data_shifted_60 = entry_data.shift(60)
-    entry_data['mid_p_shifted'] = entry_data_shifted_60['mid_p']
-    entry_data['delta_60'] = (entry_data['mid_p']-entry_data['mid_p_shifted'])/daily_noise
-
-    entry_data_shifted_120 = entry_data.shift(120)
-    entry_data['mid_p_shifted'] = entry_data_shifted_120['mid_p']
-    entry_data['delta_120'] = (entry_data['mid_p']-entry_data['mid_p_shifted'])/daily_noise
-
-    entry_data_shifted_180 = entry_data.shift(180)
-    entry_data['mid_p_shifted'] = entry_data_shifted_180['mid_p']
-    entry_data['delta_180'] = (entry_data['mid_p']-entry_data['mid_p_shifted'])/daily_noise
-
-    entry_data['delta_morning'] = (exit_morning_data['mid_p'].mean() - entry_data['mid_p'])/daily_noise
-    entry_data['delta_afternoon'] = (exit_afternoon_data['mid_p'].mean() - entry_data['mid_p'])/daily_noise
-
-    entry_data['ewma10_50_spread'] = signals_output['ewma10_50_spread']
-    entry_data['ewma20_100_spread'] = signals_output['ewma20_100_spread']
-
-    return entry_data[entry_data['hour_minute']>=930]
+    trades_frame['pnl'] = (trades_frame['exit_price'] - trades_frame['entry_price']) * trades_frame['direction']
+    trades_frame['pnl_dollar'] = cmi.contract_multiplier[ticker_head] * trades_frame['pnl']
+    trades_frame['pnl_normalized'] = trades_frame['pnl'] / daily_sd
+    trades_frame['trend'] = trend
+    trades_frame['ticker_head'] = ticker_head
+    trades_frame['ticker'] = ticker
+    trades_frame['trade_date'] = date_to
 
 
-def backtest_continuous_ibo_4date(**kwargs):
+    return {'trades_frame': trades_frame, 'daily_frame': daily_frame}
 
-    date_to=kwargs['date_to']
+def get_results_4date(**kwargs):
 
+    date_to = kwargs['date_to']
     output_dir = ts.create_strategy_output_dir(strategy_class='ibo', report_date=date_to)
 
-    if os.path.isfile(output_dir + '/backtest_results_cont.pkl'):
-        backtest_results = pd.read_pickle(output_dir + '/backtest_results_cont.pkl')
-        return backtest_results
+    if os.path.isfile(output_dir + '/summary.pkl'):
+        trades_frame = pd.read_pickle(output_dir + '/summary.pkl')
+        return {'trades_frame': trades_frame,'success': True}
 
-    ibo_output = ibo.generate_ibo_sheet_4date(**kwargs)
-    sheet_4date = ibo_output['sheet_4date']
+    ticker_head_list = cmi.cme_futures_tickerhead_list
+    #ticker_head_list = ['ES', 'NQ']
 
-    backtest_results_list = []
+    data_list = [gfp.get_futures_price_preloaded(ticker_head=x, settle_date=date_to) for x in
+                 ticker_head_list]
 
-    for i in range(len(sheet_4date.index)):
+    ticker_frame = pd.concat(data_list)
+    ticker_frame = ticker_frame[~((ticker_frame['ticker_head'] == 'ED') & (ticker_frame['tr_dte'] < 250))]
 
-        backtest_resul4_4ticker = backtest_continuous_ibo_4ticker(ticker=sheet_4date['ticker'].iloc[i],date_to=date_to)
-        backtest_resul4_4ticker['ticker_head'] = sheet_4date['ticker_head'].iloc[i]
-        backtest_resul4_4ticker['ticker'] = sheet_4date['ticker'].iloc[i]
+    ticker_frame.sort_values(['ticker_head', 'volume'], ascending=[True, False], inplace=True)
+    ticker_frame.drop_duplicates(subset=['ticker_head'], keep='first', inplace=True)
 
-        backtest_results_list.append(backtest_resul4_4ticker)
+    result_list = [get_results_4ticker(ticker=x,date_to=date_to) for x in ticker_frame['ticker']]
+    trades_frame = pd.concat([x['trades_frame']  for x in result_list])
 
-    backtest_results = pd.concat(backtest_results_list)
-    backtest_results['report_date'] = date_to
+    trades_frame.to_pickle(output_dir + '/summary.pkl')
 
-    backtest_results.to_pickle(output_dir + '/backtest_results_cont.pkl')
-    return backtest_results
-
-
-
-
-
-
+    return {'trades_frame': trades_frame, 'success': True}
 

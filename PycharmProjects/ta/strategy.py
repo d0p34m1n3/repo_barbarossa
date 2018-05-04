@@ -57,7 +57,7 @@ def get_net_position_4strategy_alias(**kwargs):
 
     trades_frame = trades_frame[trades_frame['trade_date'] <= as_of_datetime]
 
-    trades_frame['full_ticker'] = [trades_frame['ticker'].iloc[x] if trades_frame['instrument'].iloc[x] in ['F', 'S'] else
+    trades_frame['full_ticker'] = [trades_frame['ticker'].iloc[x] if trades_frame['instrument'].iloc[x] in ['F','S'] else
                                    trades_frame['ticker'].iloc[x] + '_' + trades_frame['option_type'].iloc[x] + str(trades_frame['strike_price'].iloc[x])
                                    for x in range(len(trades_frame.index))]
 
@@ -410,6 +410,8 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/smrl/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'smrs':
          output_dir = strategy_output_folder + '/smrs/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'imacd':
+         output_dir = strategy_output_folder + '/imacd/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
