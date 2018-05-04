@@ -1,6 +1,7 @@
 
 from ibapi.contract import *
 import contract_utilities.contract_meta_info as cmi
+import stock_utilities.stock_meta_info as smi
 import decimal as dec
 import datetime as dt
 import shared.utils as su
@@ -70,6 +71,12 @@ def get_ib_contract_from_db_ticker(**kwargs):
         contract_out.right = kwargs['option_type']
         contract_out.strike = kwargs['strike']*dec.Decimal(ib_strike_multiplier_dictionary.get(ticker_head,1))
         contract_out.tradingClass = ib_option_trading_class_dictionary[ticker_head]
+
+    if sec_type=='S':
+        contract_out.secType = 'STK'
+        contract_out.symbol = ticker
+        contract_out.currency = 'USD'
+        contract_out.exchange = smi.get_ib_exchange_name(ticker)
 
     return contract_out
 

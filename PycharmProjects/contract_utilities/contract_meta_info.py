@@ -518,17 +518,38 @@ def get_t_cost(**kwargs):
 
     return t_cost_out
 
+def is_stockQ(ticker):
+
+    is_stock_Q = False
+
+    try:
+        int(ticker[-4:])
+    except:
+        is_stock_Q = True
+
+    return is_stock_Q
 
 def get_contract_specs(ticker):
 
-    ticker_head = ticker[:-5]
+    is_stock_Q = is_stockQ(ticker)
 
-    return {'ticker_head': ticker_head,
-            'ticker_year': int(ticker[-4:]),
-            'ticker_month_str': ticker[-5],
-            'ticker_month_num': letter_month_string.find(ticker[-5])+1,
-            'ticker_class': ticker_class[mini_contract_dictionary.get(ticker_head,ticker_head)],
-            'cont_indx': 100*int(ticker[-4:]) + letter_month_string.find(ticker[-5])+1}
+    if is_stock_Q:
+        output_dictionary = {'ticker_head': '',
+            'ticker_year': np.nan,
+            'ticker_month_str': '',
+            'ticker_month_num': np.nan,
+            'ticker_class': 'STOCK',
+            'cont_indx': np.nan}
+    else:
+        ticker_head = ticker[:-5]
+        output_dictionary = {'ticker_head': ticker_head,
+         'ticker_year': int(ticker[-4:]),
+         'ticker_month_str': ticker[-5],
+         'ticker_month_num': letter_month_string.find(ticker[-5]) + 1,
+         'ticker_class': ticker_class[mini_contract_dictionary.get(ticker_head, ticker_head)],
+         'cont_indx': 100 * int(ticker[-4:]) + letter_month_string.find(ticker[-5]) + 1}
+
+    return output_dictionary
 
 
 def get_month_seperation_from_cont_indx(cont_indx1, cont_indx2):

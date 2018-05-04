@@ -68,6 +68,8 @@ class ib_reconciler(subs.subscription):
                 contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i, 'ticker'],sec_type='OF',
                                                                         option_type=position_frame.loc[i, 'option_type'],
                                                                         strike=dec.Decimal(position_frame.loc[i, 'strike_price']))
+            elif position_frame.loc[i,'instrument'] == 'S':
+                contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i,'ticker'], sec_type='S')
 
             self.contractDetailReqIdDictionary[self.next_val_id] = i
             self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)

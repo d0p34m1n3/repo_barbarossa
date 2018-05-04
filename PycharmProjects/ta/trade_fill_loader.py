@@ -351,7 +351,10 @@ def get_formatted_manual_entry_fills(**kwargs):
 
     formatted_frame['instrument'] = 'O'
 
+
+
     formatted_frame.loc[formatted_frame['option_type'].isnull(),'instrument'] = 'F'
+    formatted_frame.loc[[cmi.is_stockQ(x) for x in formatted_frame['ticker']], 'instrument'] = 'S'
 
     option_type = formatted_frame['option_type']
     formatted_frame['option_type']= option_type.where(pd.notnull(option_type),None)

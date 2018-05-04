@@ -27,6 +27,7 @@ from ibapi.order_state import *
 from ibapi.execution import Execution
 from ibapi.execution import ExecutionFilter
 from ibapi.order_condition import *
+import ib_api_utils.execution as exec
 
 class Algo(subs.subscription):
 
@@ -38,6 +39,7 @@ class Algo(subs.subscription):
     ask_price_dictionary = {}
     bid_quantity_dictionary = {}
     ask_quantity_dictionary = {}
+    ib_contract_dictionary = {}
 
     high_price_dictionary = {}
     low_price_dictionary = {}
@@ -59,10 +61,18 @@ class Algo(subs.subscription):
     short_trade_possible_dictionary = {}
 
     stop_adjustment_possible_dictionary = {}
+    stop_direction_dictionary = {}
+    stop_price_dictionary = {}
+    stop_ticker_dictionary = {}
 
     trade_entry_price_dictionary = {}
 
     tick_size_dictionary = {}
+    daily_sd_dictionary = {}
+
+    working_order_id_dictionary = {}
+    order_filled_dictionary = {}
+    order_size_dictionary = {}
 
     current_high_price_dictionary = {}
     current_low_price_dictionary = {}
@@ -70,7 +80,7 @@ class Algo(subs.subscription):
     spread_contract_dictionary = {}
     order_filled_dictionary = {}
     nonfinished_contract_detail_ReqId_list = []
-    spread_ticker_list = []
+    ticker_list = []
     price_request_dictionary = {'spread': [] ,'outright': []}
     nonfinished_bid_price_list = []
     nonfinished_ask_price_list = []
@@ -83,10 +93,12 @@ class Algo(subs.subscription):
     total_traded_volume_max_before_user_confirmation = 90
     total_traded_volume_since_last_confirmation = 0
     total_volume_traded = 0
-    max_num_bets = 3
+    max_num_bets = 1
     num_bets = 0
     realized_pnl = 0
     total_contracts_traded = 0
+    max_total_contracts_traded = 10
+    db_alias = ''
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
@@ -223,22 +235,27 @@ class Algo(subs.subscription):
             file.write(str(orderId) + ',' + str(permId)+ ',' + str(parentId)+ ',' + str(filled)+ ',' + str(avgFillPrice))
             file.write('\n')
 
-        overnight_calendars = self.overnight_calendars
-        selection_index = overnight_calendars['working_order_id'] == orderId
+        ticker_str = ''
+        for x,y in self.working_order_id_dictionary.items():
+            if y==orderId:
+                ticker_str = x
 
-        if sum(selection_index)==0:
+        if len(ticker_str)==0:
             return
 
-        back_spread_ticker = overnight_calendars.loc[selection_index, 'back_spread_ticker'].values[0]
-        ticker_head = overnight_calendars.loc[selection_index, 'tickerHead'].values[0]
-        dollar_noise100 = overnight_calendars.loc[selection_index, 'dollarNoise100'].values[0]
+        working_alias_long = self.alias_portfolio.position_with_working_orders[ticker_str + '_long']
+        working_alias_short = self.alias_portfolio.position_with_working_orders[ticker_str + '_short']
 
-        working_alias_long = self.ocs_alias_portfolio.position_with_working_orders[back_spread_ticker + '_long']
-        working_alias_short = self.ocs_alias_portfolio.position_with_working_orders[back_spread_ticker + '_short']
-
-        theme_name = ''
         alias_portfolio_name = ''
         trade_quantity = 0
+
+        if remaining==0:
+            self.stop_direction_dictionary.pop(orderId,None)
+            self.stop_price_dictionary.pop(orderId,None)
+            self.stop_ticker_dictionary.pop(ticker_str,None)
+
+        if (status == 'Cancelled') & (filled==0):
+            self.num_bets -= 1
 
         if filled==0 or (filled==self.order_filled_dictionary[orderId]):
             return
@@ -247,25 +264,19 @@ class Algo(subs.subscription):
         self.order_filled_dictionary[orderId] = filled
 
         if working_alias_long>0:
-            alias_portfolio_name = back_spread_ticker + '_long'
-            theme_name = ticker_head + '_long'
+            alias_portfolio_name = ticker_str + '_long'
             trade_quantity = filled_change
         elif working_alias_short>0:
-            alias_portfolio_name = back_spread_ticker + '_short'
-            theme_name = ticker_head + '_short'
+            alias_portfolio_name = ticker_str + '_short'
             trade_quantity = filled_change
         elif working_alias_long<0:
-            alias_portfolio_name = back_spread_ticker + '_long'
-            theme_name = ticker_head + '_long'
+            alias_portfolio_name = ticker_str + '_long'
             trade_quantity = -filled_change
         elif working_alias_short<0:
-            alias_portfolio_name = back_spread_ticker + '_short'
-            theme_name = ticker_head + '_short'
+            alias_portfolio_name = ticker_str + '_short'
             trade_quantity = -filled_change
 
-        self.ocs_portfolio.order_fill(ticker=theme_name, qty=trade_quantity)
-        self.ocs_alias_portfolio.order_fill(ticker=alias_portfolio_name, qty=trade_quantity)
-        self.ocs_risk_portfolio.order_fill(ticker=theme_name, qty=trade_quantity * dollar_noise100)
+        self.alias_portfolio.order_fill(ticker=alias_portfolio_name, qty=trade_quantity)
 
         #print('Order filled!')
         #total_alias = self.ocs_alias_portfolio.position_with_all_orders[alias_portfolio_name]
@@ -279,47 +290,23 @@ class Algo(subs.subscription):
         try:
             self.log.info('ExecDetails: ' + str(reqId) + ', ' + contract.symbol + ', ' +  contract.secType + ', ' + contract.currency + ', ' + str(execution.execId) + ', ' + str(execution.orderId) + ', ' + str(execution.shares))
 
-            if contract.secType!='BAG':
-                ticker = ib_contract.get_db_ticker_from_ib_contract(ib_contract=contract,contract_id_dictionary=self.contractIDDictionary)
+            ticker = ib_contract.get_db_ticker_from_ib_contract(ib_contract=contract,contract_id_dictionary=self.contractIDDictionary)
 
-                with open(self.output_dir + '/fillsDetail.csv', 'a') as file:
-                    file.write(str(execution.orderId) + ',' + str(execution.execId) + ',' + str(ticker) + ',' + str(execution.price) + ',' + str(execution.shares) + ',' + str(execution.side))
-                    file.write('\n')
+            if execution.side=='BOT':
+                trade_quantity = execution.shares
+            elif execution.side=='SLD':
+                trade_quantity = -execution.shares
 
-                overnight_calendars = self.overnight_calendars
-                selection_index = overnight_calendars['working_order_id']==execution.orderId
-                strategy_alias = overnight_calendars.loc[selection_index,'alias'].values[0]
+            trade_frame = pd.DataFrame.from_items([('alias', [self.db_alias]),
+                                               ('ticker', [ticker]),
+                                               ('option_type', [None]),
+                                               ('strike_price', [np.nan]),
+                                               ('trade_price', [execution.price]),
+                                               ('trade_quantity', [trade_quantity]),
+                                               ('instrument', ['F']),
+                                               ('real_tradeQ', [True])])
 
-                if execution.side=='BOT':
-                    trade_quantity = execution.shares
-                elif execution.side=='SLD':
-                    trade_quantity = -execution.shares
-
-
-                if strategy_alias in self.open_strategy_list:
-                    strategy_alias_2write = strategy_alias
-
-                else:
-
-                    db_strategy_output = ts.generate_db_strategy_from_alias(alias=strategy_alias,con=self.con,description_string='strategy_class=ocs&betSize=' + str(self.bet_size) +
-                                                                                                        '&ticker1=' +overnight_calendars.loc[selection_index,'ticker1'].values[0] +
-                                                                                                        '&ticker2=' +overnight_calendars.loc[selection_index, 'ticker2'].values[0])
-
-                    strategy_alias_2write = db_strategy_output['alias']
-                    overnight_calendars.loc[selection_index, 'alias'] = strategy_alias_2write
-                    self.open_strategy_list.append(strategy_alias_2write)
-                    self.overnight_calendars = overnight_calendars
-
-                trade_frame = pd.DataFrame.from_items([('alias', [strategy_alias_2write]),
-                                                   ('ticker', [ticker]),
-                                                   ('option_type', [None]),
-                                                   ('strike_price', [np.nan]),
-                                                   ('trade_price', [execution.price]),
-                                                   ('trade_quantity', [trade_quantity]),
-                                                   ('instrument', ['F']),
-                                                   ('real_tradeQ', [True])])
-
-                ts.load_trades_2strategy(trade_frame=trade_frame, con=self.con)
+            ts.load_trades_2strategy(trade_frame=trade_frame, con=self.con)
         except Exception:
             self.log.error('execDetails failed', exc_info=True)
 
@@ -350,6 +337,13 @@ class Algo(subs.subscription):
 
         for i in range(len(ticker_list)):
             mid_price = self.calculate_mid_price(ticker_list[i])
+            bid_price = self.bid_price_dictionary[ticker_list[i]]
+            ask_price = self.ask_price_dictionary[ticker_list[i]]
+
+            bid_quantity = self.bid_quantity_dictionary[ticker_list[i]]
+            ask_quantity = self.ask_quantity_dictionary[ticker_list[i]]
+            tick_size = self.tick_size_dictionary[ticker_list[i]]
+
             candle_frame = self.candle_frame_dictionary[ticker_list[i]]
 
             ticker_head = self.ticker_head_dictionary[ticker_list[i]]
@@ -362,6 +356,8 @@ class Algo(subs.subscription):
             total_alias_short = alias_portfolio.position_with_all_orders[ticker_list[i] + '_short']
             working_alias_short = alias_portfolio.position_with_working_orders[ticker_list[i] + '_short']
             filled_alias_short = alias_portfolio.position_with_filled_orders[ticker_list[i] + '_short']
+
+            order_quantity = 1
 
             if candle_end_q:
 
@@ -426,9 +422,8 @@ class Algo(subs.subscription):
                 if ((ewma300D>0)|(william>=-20))&self.short_trade_possible_dictionary[ticker_list[i]]:
                     self.short_trade_possible_dictionary[ticker_list[i]]=False
 
-                if (total_alias_long==0) and (total_alias_short==0) and (ewma300D>0) and (william_1<=-80) and (william>-80) and (datetime_now<=self.latest_trade_entry_datetime):
-                    self.long_breakout_price_dictionary[ticker_list[i]] = high_price
-                    self.long_trade_possible_dictionary[ticker_list[i]] = True
+                if (total_alias_long==0) and (total_alias_short==0) and (ewma300D>0) and (william_1<=-80) and (william>-80) and \
+                        (datetime_now<=self.latest_trade_entry_datetime):
 
                     for j in range(len(candle_frame.index)):
                         if j==0:
@@ -437,12 +432,16 @@ class Algo(subs.subscription):
                             swing_low = candle_frame['low_price'].iloc[-1-j]
                         elif candle_frame['low_price'].iloc[-1-j]>swing_low:
                             break
-                    self.long_stop_price_dictionary[ticker_list[i]] = swing_low
-                    self.log.info('Long trade possible for ' + ticker_list[i] + ', breakout price: ' + str(self.long_breakout_price_dictionary[ticker_list[i]]) + ', stop price: ' + str(self.long_stop_price_dictionary[ticker_list[i]]))
 
-                if (total_alias_long==0) and (total_alias_short==0) and (ewma300D<0) and (william_1>=-20) and (william<-20) and (datetime_now<=self.latest_trade_entry_datetime):
-                    self.short_breakout_price_dictionary[ticker_list[i]] = low_price
-                    self.short_trade_possible_dictionary[ticker_list[i]] = True
+                    if high_price-swing_low<0.5*self.daily_sd_dictionary[ticker_list[i]]:
+
+                        self.long_breakout_price_dictionary[ticker_list[i]] = high_price
+                        self.long_trade_possible_dictionary[ticker_list[i]] = True
+                        self.long_stop_price_dictionary[ticker_list[i]] = swing_low
+                        self.log.info('Long trade possible for ' + ticker_list[i] + ', breakout price: ' + str(self.long_breakout_price_dictionary[ticker_list[i]]) + ', stop price: ' + str(self.long_stop_price_dictionary[ticker_list[i]]))
+
+                if (total_alias_long==0) and (total_alias_short==0) and (ewma300D<0) and (william_1>=-20) and (william<-20) and \
+                        (datetime_now<=self.latest_trade_entry_datetime):
 
                     for j in range(len(candle_frame.index)):
                         if j==0:
@@ -451,8 +450,13 @@ class Algo(subs.subscription):
                             swing_high = candle_frame['high_price'].iloc[-1-j]
                         elif candle_frame['high_price'].iloc[-1-j]<swing_high:
                             break
-                    self.short_stop_price_dictionary[ticker_list[i]] = swing_high
-                    self.log.info('Short trade possible for ' + ticker_list[i] + ', breakout price: ' + str(self.short_breakout_price_dictionary[ticker_list[i]]) + ', stop price: ' + str(self.short_stop_price_dictionary[ticker_list[i]]))
+
+                    if swing_high-low_price<0.5*self.daily_sd_dictionary[ticker_list[i]]:
+
+                        self.short_breakout_price_dictionary[ticker_list[i]] = low_price
+                        self.short_trade_possible_dictionary[ticker_list[i]] = True
+                        self.short_stop_price_dictionary[ticker_list[i]] = swing_high
+                        self.log.info('Short trade possible for ' + ticker_list[i] + ', breakout price: ' + str(self.short_breakout_price_dictionary[ticker_list[i]]) + ', stop price: ' + str(self.short_stop_price_dictionary[ticker_list[i]]))
 
                 if (total_alias_long>0) and (self.stop_adjustment_possible_dictionary[ticker_list[i]]) \
                     and (candle_frame['close_price'].iloc[-1]<candle_frame['ma5'].iloc[-1]) and (candle_frame['close_price'].iloc[-2]<candle_frame['ma5'].iloc[-2]):
@@ -464,26 +468,35 @@ class Algo(subs.subscription):
                     self.short_stop_price_dictionary[ticker_list[i]] = candle_frame['high_price'].iloc[-2:].max()
                     self.log.info('Short stop for ' + ticker_list[i] + ' is adjusted to ' + str(self.short_stop_price_dictionary[ticker_list[i]]))
 
+                    # cancel working long entry orders to ensure correct accounting
+
+                if (working_alias_long > 0) and (total_alias_long > 0) and ((william > -50) | (william < -95)):
+                    self.cancelOrder(int(self.working_order_id_dictionary[ticker_list[i]]))
+                    self.log.info(ticker_list[i] + '_long opportunity is missed and entry order is cancelled')
+                    alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=-working_alias_long)
+                    self.working_order_id_dictionary[ticker_list[i]] = np.nan
+
+                if (working_alias_short > 0) and (total_alias_short > 0) and ((william < -50) | (william > -5)):
+                    self.cancelOrder(int(self.working_order_id_dictionary[ticker_list[i]]))
+                    self.log.info(ticker_list[i] + '_short opportunity is missed and entry order is cancelled')
+                    alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=-working_alias_short)
+                    self.working_order_id_dictionary[ticker_list[i]] = np.nan
+
                 if total_alias_long>0:
                     self.log.info('Running Pnl for ' + ticker_list[i] + ' long is: ' + str(self.contract_multiplier_dictionary[ticker_list[i]]*total_alias_long*(self.bid_price_dictionary[ticker_list[i]]-self.trade_entry_price_dictionary[ticker_list[i]])))
                 if total_alias_short>0:
                     self.log.info('Running Pnl for ' + ticker_list[i] + ' short is: ' + str(self.contract_multiplier_dictionary[ticker_list[i]] * total_alias_short *(self.trade_entry_price_dictionary[ticker_list[i]]-self.ask_price_dictionary[ticker_list[i]])))
 
-                self.log.info(ticker_list[i] + ' ewma300D: ' + str(ewma300D))
-                self.log.info(ticker_list[i] + ' william: ' + str(william))
-                self.log.info(ticker_list[i] + ' william_1: ' + str(william_1))
-                #self.log.info(ticker_list[i] + ' close: ' + str(candle_frame['close_price'].iloc[-1]))
-                #self.log.info(ticker_list[i] + ' high: ' + str(candle_frame['high_price'].iloc[-1]))
-                #self.log.info(ticker_list[i] + ' low: ' + str(candle_frame['low_price'].iloc[-1]))
-
-
+                #self.log.info(ticker_list[i] + ' ewma300D: ' + str(ewma300D))
+                #self.log.info(ticker_list[i] + ' william: ' + str(william))
+                #self.log.info(ticker_list[i] + ' william_1: ' + str(william_1))
 
             # new long trade
 
-            if (self.long_trade_possible_dictionary[ticker_list[i]]) & (mid_price>self.long_breakout_price_dictionary[ticker_list[i]]+self.tick_size_dictionary[ticker_list[i]]):
+            if (self.total_contracts_traded<=self.max_total_contracts_traded)&(self.long_trade_possible_dictionary[ticker_list[i]]) & (mid_price>self.long_breakout_price_dictionary[ticker_list[i]]+self.tick_size_dictionary[ticker_list[i]]) and (self.num_bets<self.max_num_bets):
 
-                alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=1)
-                alias_portfolio.order_fill(ticker=ticker_list[i] + '_long', qty=1)
+                alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=order_quantity)
+
                 self.trade_entry_price_dictionary[ticker_list[i]] = self.ask_price_dictionary[ticker_list[i]]
 
                 self.long_target_price_dictionary[ticker_list[i]] = self.trade_entry_price_dictionary[ticker_list[i]]+ 1*(self.trade_entry_price_dictionary[ticker_list[i]]-self.long_stop_price_dictionary[ticker_list[i]])
@@ -491,12 +504,21 @@ class Algo(subs.subscription):
                               ', Stop Price: ' + str(self.long_stop_price_dictionary[ticker_list[i]]) + ', ' + ', Target Price: ' + str(self.long_target_price_dictionary[ticker_list[i]]))
                 self.long_trade_possible_dictionary[ticker_list[i]] = False
                 self.long_breakout_price_dictionary[ticker_list[i]] = np.nan
+                self.num_bets += 1
+                self.working_order_id_dictionary[ticker_list[i]] = self.next_val_id
+                self.order_filled_dictionary[self.next_val_id] = 0
+                self.order_size_dictionary[self.next_val_id] = order_quantity
+
+                limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size, direction=1)
+
+                self.placeOrder(self.next_valid_id(), self.ib_contract_dictionary[ticker_list[i]], ib_api_trade.LimitOrder('BUY', order_quantity, limit_price))
+                self.total_contracts_traded += order_quantity
 
             # new short trade
-            if (self.short_trade_possible_dictionary[ticker_list[i]]) & (mid_price < self.short_breakout_price_dictionary[ticker_list[i]] - self.tick_size_dictionary[ticker_list[i]]):
+            if (self.total_contracts_traded<=self.max_total_contracts_traded)&(self.short_trade_possible_dictionary[ticker_list[i]]) & (mid_price < self.short_breakout_price_dictionary[ticker_list[i]] - self.tick_size_dictionary[ticker_list[i]]) and (self.num_bets<self.max_num_bets):
 
-                alias_portfolio.order_send(ticker=ticker_list[i] + '_short', qty=1)
-                alias_portfolio.order_fill(ticker=ticker_list[i] + '_short', qty=1)
+                alias_portfolio.order_send(ticker=ticker_list[i] + '_short', qty=order_quantity)
+
                 self.trade_entry_price_dictionary[ticker_list[i]] = self.bid_price_dictionary[ticker_list[i]]
 
                 self.short_target_price_dictionary[ticker_list[i]] = self.trade_entry_price_dictionary[ticker_list[i]] + 1 * (self.trade_entry_price_dictionary[ticker_list[i]] - self.short_stop_price_dictionary[ticker_list[i]])
@@ -504,33 +526,63 @@ class Algo(subs.subscription):
                               ', Stop Price: ' + str(self.short_stop_price_dictionary[ticker_list[i]]) + ', ' + ', Target Price: ' + str(self.short_target_price_dictionary[ticker_list[i]]))
                 self.short_trade_possible_dictionary[ticker_list[i]] = False
                 self.short_breakout_price_dictionary[ticker_list[i]] = np.nan
+                self.num_bets += 1
+                self.working_order_id_dictionary[ticker_list[i]] = self.next_val_id
+                self.order_filled_dictionary[self.next_val_id] = 0
+                self.order_size_dictionary[self.next_val_id] = order_quantity
+
+                limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size, direction=-1)
+
+                self.placeOrder(self.next_valid_id(), self.ib_contract_dictionary[ticker_list[i]], ib_api_trade.LimitOrder('SELL', order_quantity, limit_price))
+                self.total_contracts_traded += order_quantity
 
             # long trade stop out
-            if ((total_alias_long>0) & ((mid_price<=self.long_stop_price_dictionary[ticker_list[i]]-self.tick_size_dictionary[ticker_list[i]]) or (datetime_now>=latest_trade_exit_datetime))):
+            if (self.total_contracts_traded<=self.max_total_contracts_traded)&((total_alias_long>0) & (filled_alias_long > 0)&((mid_price<=self.long_stop_price_dictionary[ticker_list[i]]-self.tick_size_dictionary[ticker_list[i]]) or (datetime_now>=latest_trade_exit_datetime))):
 
                 realized_pnl = self.contract_multiplier_dictionary[ticker_list[i]]*total_alias_long*(self.bid_price_dictionary[ticker_list[i]]-self.trade_entry_price_dictionary[ticker_list[i]])
                 self.log.info('Closed ' + ticker_list[i] + ' long with realized pnl: ' + str(realized_pnl))
 
                 self.realized_pnl += realized_pnl
-                self.total_contracts_traded += 2*total_alias_long
+                self.total_contracts_traded += total_alias_long
 
-                alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=-total_alias_long)
-                alias_portfolio.order_fill(ticker=ticker_list[i] + '_long', qty=-total_alias_long)
+                alias_portfolio.order_send(ticker=ticker_list[i] + '_long', qty=-filled_alias_long)
+                self.working_order_id_dictionary[ticker_list[i]] = self.next_val_id
+                self.order_filled_dictionary[self.next_val_id] = 0
+                self.order_size_dictionary[self.next_val_id] = filled_alias_long
+
+
+                limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size, direction=-1)
+                self.stop_direction_dictionary[self.next_val_id] = -1
+                self.stop_price_dictionary[self.next_val_id] = limit_price
+                self.stop_ticker_dictionary[ticker_list[i]] = self.next_val_id
+
+                self.placeOrder(self.next_valid_id(), self.ib_contract_dictionary[ticker_list[i]],ib_api_trade.LimitOrder('SELL', filled_alias_long, limit_price))
+
                 self.stop_adjustment_possible_dictionary[ticker_list[i]] = False
                 self.trade_entry_price_dictionary[ticker_list[i]] = np.nan
                 self.long_target_price_dictionary[ticker_list[i]] = np.nan
                 self.long_stop_price_dictionary[ticker_list[i]] = np.nan
 
+
             # short trade stop out
-            if ((total_alias_short>0) & ((mid_price>=self.short_stop_price_dictionary[ticker_list[i]]+self.tick_size_dictionary[ticker_list[i]]) or (datetime_now>=latest_trade_exit_datetime))):
+            if (self.total_contracts_traded<=self.max_total_contracts_traded)&((total_alias_short>0) & (filled_alias_short>0) &((mid_price>=self.short_stop_price_dictionary[ticker_list[i]]+self.tick_size_dictionary[ticker_list[i]]) or (datetime_now>=latest_trade_exit_datetime))):
 
                 realized_pnl = self.contract_multiplier_dictionary[ticker_list[i]] * total_alias_short *(self.trade_entry_price_dictionary[ticker_list[i]]-self.ask_price_dictionary[ticker_list[i]])
                 self.log.info('Closed ' + ticker_list[i] + ' short with realized pnl: ' + str(realized_pnl))
                 self.realized_pnl += realized_pnl
-                self.total_contracts_traded += 2 * total_alias_short
+                self.total_contracts_traded += total_alias_short
 
-                alias_portfolio.order_send(ticker=ticker_list[i] + '_short', qty=-total_alias_short)
-                alias_portfolio.order_fill(ticker=ticker_list[i] + '_short', qty=-total_alias_short)
+                alias_portfolio.order_send(ticker=ticker_list[i] + '_short', qty=-filled_alias_short)
+                self.working_order_id_dictionary[ticker_list[i]] = self.next_val_id
+                self.order_filled_dictionary[self.next_val_id] = 0
+                self.order_size_dictionary[self.next_val_id] = filled_alias_short
+
+                limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size, direction=1)
+                self.stop_direction_dictionary[self.next_val_id] = 1
+                self.stop_price_dictionary[self.next_val_id] = limit_price
+                self.stop_ticker_dictionary[ticker_list[i]] = self.next_val_id
+                self.placeOrder(self.next_valid_id(), self.ib_contract_dictionary[ticker_list[i]],ib_api_trade.LimitOrder('BUY', filled_alias_short, limit_price))
+
                 self.stop_adjustment_possible_dictionary[ticker_list[i]] = False
                 self.trade_entry_price_dictionary[ticker_list[i]] = np.nan
                 self.short_target_price_dictionary[ticker_list[i]] = np.nan
@@ -544,6 +596,25 @@ class Algo(subs.subscription):
                 self.stop_adjustment_possible_dictionary[ticker_list[i]] = True
                 self.log.info('Target is reached for short trade: ' + ticker_list[i])
 
+            # Update Stop Orders
+            if ticker_list[i] in self.stop_ticker_dictionary:
+                order_id = self.stop_ticker_dictionary[ticker_list[i]]
+                order_direction = self.stop_direction_dictionary[order_id]
+                order_price = self.stop_price_dictionary[order_id]
+                order_size = self.order_size_dictionary[order_id]
+
+                if (order_direction>0)&(int(round((bid_price-order_price)/tick_size))>=2):
+                    self.log.info(ticker_list[i] + ' stop price is being adjusted')
+                    limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size, direction=order_direction)
+                    # this part might have to be adjusted, what's the correct quentity if order is already partially executed?
+                    self.placeOrder(order_id, self.ib_contract_dictionary[ticker_list[i]], ib_api_trade.LimitOrder('BUY', order_size, limit_price))
+                    self.stop_price_dictionary[order_id] = limit_price
+                elif (order_direction<0)&(int(round((order_price-ask_price)/tick_size))>=2):
+                    self.log.info(ticker_list[i] + ' stop price is being adjusted')
+                    limit_price = exec.get_midprice(bid_price=bid_price, ask_price=ask_price, bid_quantity=bid_quantity,ask_quantity=ask_quantity, tick_size=tick_size,direction=order_direction)
+                    # this part might have to be adjusted, what's the correct quentity if order is already partially executed?
+                    self.placeOrder(order_id, self.ib_contract_dictionary[ticker_list[i]],ib_api_trade.LimitOrder('SELL', order_size, limit_price))
+                    self.stop_price_dictionary[order_id] = limit_price
 
         thr.Timer(10, self.periodic_call).start()
 
@@ -574,9 +645,7 @@ class Algo(subs.subscription):
             self.open_price_dictionary[ticker_list[i]] = []
             self.bar_date_dictionary[ticker_list[i]] = []
 
-
-
-            outright_ib_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=ticker_list[i], sec_type='F')
+            outright_ib_contract = self.ib_contract_dictionary[ticker_list[i]]
             self.bar_data_ReqId_dictionary[self.next_val_id] = ticker_list[i]
             self.log.info('req id: ' + str(self.next_val_id) + ', outright_ticker:' + str(ticker_list[i]));
 
@@ -614,9 +683,8 @@ class Algo(subs.subscription):
             self.stop_adjustment_possible_dictionary[ticker_list[i]] = False
             self.trade_entry_price_dictionary[ticker_list[i]] = np.nan
 
-
-
             outright_ib_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=ticker_list[i], sec_type='F')
+            self.ib_contract_dictionary[ticker_list[i]] = outright_ib_contract
             self.market_data_ReqId_dictionary[self.next_val_id] = ticker_list[i]
             self.log.info('req id: ' + str(self.next_val_id) + ', outright_ticker:' + str(ticker_list[i]));
             self.reqMktData(self.next_valid_id(), outright_ib_contract, "", False, False, [])

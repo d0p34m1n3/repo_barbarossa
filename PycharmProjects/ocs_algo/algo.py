@@ -47,7 +47,8 @@ class Algo(subs.subscription):
     nonfinished_ask_quantity_list = []
     period_call_initiated_q = False
     min_avg_volume_limit = 100
-    bet_size = 240
+    bet_size = 90
+    # bet_size of 240 caused a $10,000 drawdown
     total_traded_volume_max_before_user_confirmation = 90
     total_traded_volume_since_last_confirmation = 0
     total_volume_traded = 0
@@ -265,6 +266,7 @@ class Algo(subs.subscription):
             ticker_class = overnight_calendars['tickerClass'].loc[i]
             ticker1 = overnight_calendars['ticker1'].loc[i]
             ticker2 = overnight_calendars['ticker2'].loc[i]
+            trDte1 = overnight_calendars['trDte1'].loc[i]
 
             spread_contract = self.spread_contract_dictionary[back_spread_ticker]
             spread_price = overnight_calendars.loc[i,'back_spread_price']
@@ -295,6 +297,14 @@ class Algo(subs.subscription):
             dollar_noise100 = overnight_calendars.loc[i,'dollarNoise100']
             holding_period = overnight_calendars.loc[i, 'holding_period']
             continue_q = 'n'
+
+            pnl_frame = self.pnl_frame
+            position_select = pnl_frame['alias'] == overnight_calendars.loc[i, 'alias']
+
+            if sum(position_select) ==0:
+                realized_pnl = 0
+            else:
+                realized_pnl = pnl_frame['total_pnl'].loc[position_select].values[0]
 
             total_position_long = self.ocs_portfolio.position_with_all_orders[ticker_head + '_long']
             working_position_long = self.ocs_portfolio.position_with_working_orders[ticker_head + '_long']
@@ -403,12 +413,10 @@ class Algo(subs.subscription):
 
                 # Livestock original holdings time: 14
                 # Ag, Energy original holding time: 28
-                if ((z_score > 0) and (z_score>=z_score_s) and (qCarry>-4)) or \
-                        ((ticker_class=='Livestock') and (holding_period>=75) and (z_score > 0)) or \
-                        ((ticker_head == 'LN') and (holding_period >= 14) and (z_score > 0)) or \
-                        ((ticker_head == 'FC') and (holding_period >= 14) and (z_score > 0)) or \
-                        ((ticker_class in ['Ag','Energy']) and (holding_period >= 75) and (z_score > 0)) or \
-                        (mth.isnan(z_score)):
+                if ((z_score > 0) and (z_score>=z_score_s) and ((qCarry>-4) or (trDte1<20))) or \
+                        ((ticker_class=='Livestock') and (holding_period>=14) and (z_score > 0) and (z_score>=z_score_s) and (realized_pnl>0)) or \
+                        ((ticker_class in ['Ag','Energy']) and (holding_period>=28) and (z_score > 0) and (z_score>=z_score_s) and (realized_pnl>0)) or \
+                        (trDte1<15) or (mth.isnan(z_score)):
                     self.log.info(back_spread_ticker + ' normalized, closing position')
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0
@@ -423,12 +431,10 @@ class Algo(subs.subscription):
             if (filled_alias_long > 0) and (total_alias_long > 0):
                 self.log.info('Monitor Existing Long Position: ' + back_spread_ticker + ', Spread Price: %.4f' % spread_price + ', Butterfly Price: %.4f' % butterfly_price + ', z_score: %.2f' % z_score)
 
-                if ((z_score < 0) and (z_score<=z_score_s) and (qCarry<9)) or \
-                        ((ticker_class == 'Livestock') and (holding_period >= 75) and (z_score < 0)) or \
-                        ((ticker_head == 'LN') and (holding_period >= 14) and (z_score < 0)) or \
-                        ((ticker_head == 'FC') and (holding_period >= 14) and (z_score < 0)) or \
-                        ((ticker_class in ['Ag', 'Energy']) and (holding_period >= 75) and (z_score < 0)) or \
-                        (mth.isnan(z_score)):
+                if ((z_score < 0) and (z_score<=z_score_s) and ((qCarry<9) or (trDte1<20))) or \
+                        ((ticker_class == 'Livestock') and (holding_period >= 14) and (z_score < 0) and (z_score<=z_score_s) and (realized_pnl>0)) or \
+                        ((ticker_class in ['Ag', 'Energy']) and (holding_period >= 28) and (z_score < 0) and (z_score<=z_score_s) and (realized_pnl>0)) or \
+                        (trDte1 < 15) or (mth.isnan(z_score)):
                     self.log.info(back_spread_ticker + ' normalized, closing position')
                     overnight_calendars.loc[i, 'working_order_id'] = self.next_val_id
                     self.order_filled_dictionary[self.next_val_id] = 0

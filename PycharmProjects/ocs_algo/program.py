@@ -7,6 +7,7 @@ import copy as cpy
 import ta.trade_fill_loader as tfl
 import ta.strategy as ts
 import ta.position_manager as pm
+import ta.portfolio_manager as tpm
 import contract_utilities.contract_meta_info as cmi
 import contract_utilities.expiration as exp
 import api_utils.portfolio as aup
@@ -155,6 +156,7 @@ def main():
     app.output_dir = ts.create_strategy_output_dir(strategy_class='ocs', report_date=report_date)
     app.log = lg.get_logger(file_identifier='ib_ocs',log_level='INFO')
     app.con = con
+    app.pnl_frame = tpm.get_daily_pnl_snapshot(as_of_date=report_date)
     print('Emre')
 
     app.connect(client_id=2)

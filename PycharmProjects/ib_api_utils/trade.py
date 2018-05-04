@@ -16,3 +16,23 @@ def ComboLimitOrder(action: str, quantity: float, limitPrice: float,
 
     # ! [combolimit]
     return order
+
+def LimitOrder(action: str, quantity: float, limitPrice: float):
+
+    order = Order()
+    order.action = action
+    order.orderType = "LMT"
+    order.totalQuantity = quantity
+    order.lmtPrice = limitPrice
+
+    return order
+
+def MarketOrder(action: str, quantity: float):
+
+    order = Order()
+    order.action = action
+    order.orderType = "MKT"
+    order.totalQuantity = quantity
+
+    return order
+

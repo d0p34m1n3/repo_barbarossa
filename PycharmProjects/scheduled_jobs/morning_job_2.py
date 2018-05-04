@@ -13,6 +13,7 @@ import formats.strategy_followup_formats as sff
 import contract_utilities.expiration as exp
 import formats.risk_pnl_formats as rpf
 import ta.prepare_daily as prep
+import save_ib_data.program as sib
 
 con = msu.get_my_sql_connection()
 report_date = exp.doubledate_shift_bus_days()
@@ -68,6 +69,14 @@ try:
 except Exception:
     log.error('generate_ocs_formatted_output failed', exc_info=True)
     quit()
+
+try:
+    log.info('save_ib_data...')
+    sib.save_ib_data()
+except Exception:
+    log.error('save_ib_data failed', exc_info=True)
+    quit()
+
 
 con.close()
 

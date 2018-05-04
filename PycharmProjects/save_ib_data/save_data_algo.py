@@ -98,8 +98,10 @@ class Algo(subs.subscription):
                                          ('high_price', self.high_price_dictionary[ticker_str]),
                                          ('volume', self.volume_dictionary[ticker_str])])
 
-        if os.path.isfile(self.output_dir + '/' + ticker_str + '.pkl'):
-            old_data = pd.read_pickle(self.output_dir + '/' + ticker_str + '.pkl')
+        file_name = self.output_dir + '/' + ticker_str + '.pkl'
+
+        if os.path.isfile(file_name):
+            old_data = pd.read_pickle(file_name)
             candle_frame['frame_indx'] = 1
             old_data['frame_indx'] = 0
             merged_data = pd.concat([old_data, candle_frame], ignore_index=True)
@@ -108,9 +110,17 @@ class Algo(subs.subscription):
             candle_frame = merged_data.drop('frame_indx', 1, inplace=False)
             candle_frame.reset_index(drop=True,inplace=True)
 
-        candle_frame.to_pickle(self.output_dir + '/' + ticker_str + '.pkl')
+        candle_frame.to_pickle(file_name)
+        file_name = self.output_dir + '/' + ticker_str + '.xlsx'
 
+        try:
+            os.remove(file_name)
+        except OSError:
+            pass
 
+        writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
+        candle_frame.to_excel(writer, sheet_name='sheet1')
+        writer.save()
 
         if ticker_str in self.nonfinished_historical_data_list:
             self.nonfinished_historical_data_list.remove(ticker_str)
