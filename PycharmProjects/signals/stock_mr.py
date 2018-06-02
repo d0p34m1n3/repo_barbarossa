@@ -88,7 +88,7 @@ def get_stock_mrl_signals(**kwargs):
     output_dictionary['trend_success'] = 1
 
     data_out = ti.get_adx(data_frame_input=price_data, period=7)
-    output_dictionary['adx7'] = data_out['ADX'].iloc[-1]
+    output_dictionary['adx7'] = data_out['adx_7'].iloc[-1]
 
     if output_dictionary['adx7']<=45:
         return output_dictionary
@@ -96,7 +96,7 @@ def get_stock_mrl_signals(**kwargs):
     output_dictionary['adx_success'] = 1
 
     data_out = ti.get_atr(data_frame_input=price_data, period=10,percent_q=True)
-    output_dictionary['atr_percent10'] = data_out['ATR'].iloc[-1]
+    output_dictionary['atr_percent10'] = data_out['atr_10'].iloc[-1]
 
     if output_dictionary['atr_percent10']<=4:
         return output_dictionary
@@ -106,7 +106,7 @@ def get_stock_mrl_signals(**kwargs):
     price_data['change_1'] = price_data['close'].diff(1)
 
     data_out = ti.rsi(data_frame_input=price_data,change_field='change_1',period=3)
-    output_dictionary['rsi3'] = data_out['rsi'].iloc[-1]
+    output_dictionary['rsi3'] = data_out['rsi_3'].iloc[-1]
 
     if output_dictionary['rsi3']>=30:
         return output_dictionary
@@ -114,7 +114,7 @@ def get_stock_mrl_signals(**kwargs):
     output_dictionary['rsi_success'] = 1
 
     data_out = ti.get_atr(data_frame_input=price_data, period=10, percent_q=False)
-    output_dictionary['atr10'] = data_out['ATR'].iloc[-1]
+    output_dictionary['atr10'] = data_out['atr_10'].iloc[-1]
 
     return output_dictionary
 
@@ -181,7 +181,7 @@ def get_stock_mrs_signals(**kwargs):
             price_data['close'].iloc[:split_index_list[i]] / price_data['split_coefficient'].iloc[split_index_list[i]]
 
     data_out = ti.get_adx(data_frame_input=price_data, period=7)
-    output_dictionary['adx7'] = data_out['ADX'].iloc[-1]
+    output_dictionary['adx7'] = data_out['adx_7'].iloc[-1]
 
     if output_dictionary['adx7']<=50:
         return output_dictionary
@@ -189,7 +189,7 @@ def get_stock_mrs_signals(**kwargs):
     output_dictionary['adx_success'] = 1
 
     data_out = ti.get_atr(data_frame_input=price_data, period=10,percent_q=True)
-    output_dictionary['atr_percent10'] = data_out['ATR'].iloc[-1]
+    output_dictionary['atr_percent10'] = data_out['atr_10'].iloc[-1]
 
     if output_dictionary['atr_percent10']<=5:
         return output_dictionary
@@ -199,7 +199,7 @@ def get_stock_mrs_signals(**kwargs):
     price_data['change_1'] = price_data['close'].diff(1)
 
     data_out = ti.rsi(data_frame_input=price_data,change_field='change_1',period=3)
-    output_dictionary['rsi3'] = data_out['rsi'].iloc[-1]
+    output_dictionary['rsi3'] = data_out['rsi_3'].iloc[-1]
 
     if output_dictionary['rsi3']<=85:
         return output_dictionary
@@ -207,7 +207,7 @@ def get_stock_mrs_signals(**kwargs):
     output_dictionary['rsi_success'] = 1
 
     data_out = ti.get_atr(data_frame_input=price_data, period=10, percent_q=False)
-    output_dictionary['atr10'] = data_out['ATR'].iloc[-1]
+    output_dictionary['atr10'] = data_out['atr_10'].iloc[-1]
 
     return output_dictionary
 

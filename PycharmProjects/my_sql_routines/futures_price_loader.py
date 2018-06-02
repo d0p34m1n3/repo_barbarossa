@@ -1,7 +1,7 @@
 __author__ = 'kocat_000'
 
 import sys
-import quandl.get_data_quandl as gdq
+import quandl_data.get_data_quandl as gdq
 import my_sql_routines.my_sql_utilities as msu
 import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
@@ -74,16 +74,16 @@ def load_price_data_4ticker(load_price_data_input):
     tuples = [tuple([data_vendor_id, symbol_id,
                      contract_specs_output['ticker_head'],
                      contract_specs_output['ticker_month_num'],
-                     x[date_indx].to_datetime().date(),
-                     (expiration_date-x[date_indx].to_datetime().date()).days,
-                     len([y for y in dts if y > x[date_indx].to_datetime().date()]),
+                     x[date_indx].to_pydatetime().date(),
+                     (expiration_date-x[date_indx].to_pydatetime().date()).days,
+                     len([y for y in dts if y > x[date_indx].to_pydatetime().date()]),
                      now, now,
-                     None if np.isnan(x[open_indx]) else price_multiplier*x[open_indx],
-                     None if np.isnan(x[high_indx]) else price_multiplier*x[high_indx],
-                     None if np.isnan(x[low_indx]) else price_multiplier*x[low_indx],
-                     None if np.isnan(x[settle_indx]) else price_multiplier*x[settle_indx],
-                     None if np.isnan(x[volume_indx]) else x[volume_indx],
-                     None if np.isnan(x[interest_indx]) else x[interest_indx]]) for x in price_data.values]
+                     None if pd.isnull(x[open_indx]) else price_multiplier*x[open_indx],
+                     None if pd.isnull(x[high_indx]) else price_multiplier*x[high_indx],
+                     None if pd.isnull(x[low_indx]) else price_multiplier*x[low_indx],
+                     None if pd.isnull(x[settle_indx]) else price_multiplier*x[settle_indx],
+                     None if pd.isnull(x[volume_indx]) else x[volume_indx],
+                     None if pd.isnull(x[interest_indx]) else x[interest_indx]]) for x in price_data.values]
 
     column_str = "data_vendor_id, symbol_id, ticker_head, ticker_month, price_date,cal_dte, tr_dte, created_date,last_updated_date, open_price, high_price, low_price, close_price, volume, open_interest"
     insert_str = ("%s, " * 15)[:-2]
@@ -158,6 +158,7 @@ def update_futures_price_database(**kwargs):
     load_price_data_input['con'] = con
 
     for i in range(len(contract_list)):
+        #print(contract_list[i][1])
         load_price_data_input['symbol_id'] = contract_list[i][0]
         load_price_data_input['data_vendor_id'] = 1
         load_price_data_input['ticker'] = contract_list[i][1]
@@ -214,7 +215,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
 
         contract_frame = pd.DataFrame(contract_list, columns=['symbol_id', 'ticker', 'expiration_date'])
         merged_frame = pd.merge(contract_frame,settle_frame, how='inner', on='ticker')
-        merged_frame.sort('expiration_date', ascending=True, inplace=True)
+        merged_frame.sort_values('expiration_date', ascending=True, inplace=True)
 
         column_names = merged_frame.columns.tolist()
 
@@ -235,7 +236,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
                      x[ticker_month_indx],
                      run_datetime.date(),
                     (x[expiration_indx]-run_datetime.date()).days,
-                     len([y for y in dts if y.to_datetime().date() < x[expiration_indx]]),
+                     len([y for y in dts if y.to_pydatetime().date() < x[expiration_indx]]),
                      now, now,
                      None if np.isnan(x[open_indx]) else x[open_indx],
                      None if np.isnan(x[high_indx]) else x[high_indx],

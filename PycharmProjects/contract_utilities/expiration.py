@@ -125,7 +125,7 @@ def get_options_expiration(ticker):
                 dts = bu_dts
                 exp_indx = -6
 
-    return dts[exp_indx].to_datetime()
+    return dts[exp_indx].to_pydatetime()
 
 
 def get_expiration_from_db(**kwargs):
@@ -297,7 +297,7 @@ def get_futures_expiration(ticker):
         exp_indx = -15
 
 
-    return dts[exp_indx].to_datetime()
+    return dts[exp_indx].to_pydatetime()
 
 
 def get_futures_days2_expiration(expiration_input):

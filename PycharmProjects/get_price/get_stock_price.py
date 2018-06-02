@@ -21,5 +21,11 @@ def get_stock_price_preloaded(**kwargs):
         elif isinstance(settle_date,dt.datetime):
             data_out = data_out[data_out['settle_datetime'] == settle_date]
 
+    if 'settle_date_from' in kwargs.keys():
+        data_out = data_out[data_out['settle_datetime']>=cu.convert_doubledate_2datetime(kwargs['settle_date_from'])]
+
+    if 'settle_date_to' in kwargs.keys():
+        data_out = data_out[data_out['settle_datetime']<=cu.convert_doubledate_2datetime(kwargs['settle_date_to'])]
+
     return data_out
 

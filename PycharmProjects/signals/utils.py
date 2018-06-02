@@ -134,16 +134,16 @@ def get_bus_dates_from_agg_method_and_contracts_back(**kwargs):
     elif aggregation_method == 1:
         cal_date_list = [ref_datetime - relativedelta(months=x) for x in range(1, contracts_back+1)]
 
-    bday_us = CustomBusinessDay(expcalendar=exp.get_calendar_4ticker_head(const.reference_tickerhead_4business_calendar))
+    bday_us = CustomBusinessDay(calendar=exp.get_calendar_4ticker_head(const.reference_tickerhead_4business_calendar))
 
     if 'shift_bus_days' in kwargs.keys():
         shift_bus_days = kwargs['shift_bus_days']
         if shift_bus_days >= 0:
-            bus_date_list = [pd.date_range(x, periods=shift_bus_days+1, freq=bday_us)[shift_bus_days].to_datetime() for x in cal_date_list]
+            bus_date_list = [pd.date_range(x, periods=shift_bus_days+1, freq=bday_us)[shift_bus_days].to_pydatetime() for x in cal_date_list]
         elif shift_bus_days < 0:
-            bus_date_list = [pd.date_range(start=x-relativedelta(days=(max(m.ceil(-shift_bus_days*7/5)+5, -shift_bus_days+5))), end=x, freq=bday_us)[shift_bus_days-1].to_datetime() for x in cal_date_list]
+            bus_date_list = [pd.date_range(start=x-relativedelta(days=(max(m.ceil(-shift_bus_days*7/5)+5, -shift_bus_days+5))), end=x, freq=bday_us)[shift_bus_days-1].to_pydatetime() for x in cal_date_list]
     else:
-        bus_date_list = [pd.date_range(x, periods=1, freq=bday_us)[0].to_datetime() for x in cal_date_list]
+        bus_date_list = [pd.date_range(x, periods=1, freq=bday_us)[0].to_pydatetime() for x in cal_date_list]
 
     return bus_date_list
 
@@ -180,7 +180,7 @@ def get_rolling_futures_price(**kwargs):
     futures_dataframe = gfp.get_futures_price_preloaded(**kwargs)
 
     futures_dataframe = futures_dataframe[futures_dataframe['cal_dte'] < 270]
-    futures_dataframe.sort(['cont_indx', 'settle_date'], ascending=[True,True], inplace=True)
+    futures_dataframe.sort_values(['cont_indx', 'settle_date'], ascending=[True,True], inplace=True)
 
     grouped = futures_dataframe.groupby('cont_indx')
     shifted = grouped.shift(1)
@@ -188,8 +188,8 @@ def get_rolling_futures_price(**kwargs):
     futures_dataframe['log_return'] = np.log(futures_dataframe['close_price']/shifted['close_price'])
 
     futures_dataframe['tr_dte_diff'] = abs(roll_tr_dte_aim-futures_dataframe['tr_dte'])
-    futures_dataframe.sort(['settle_date','tr_dte_diff'], ascending=[True,True], inplace=True)
-    futures_dataframe.drop_duplicates('settle_date', inplace=True, take_last=False)
+    futures_dataframe.sort_values(['settle_date','tr_dte_diff'], ascending=[True,True], inplace=True)
+    futures_dataframe.drop_duplicates('settle_date', inplace=True,keep='first')
 
     return futures_dataframe
 

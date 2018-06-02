@@ -315,7 +315,7 @@ def get_results_4strategy(**kwargs):
             result_output = {'success': True, 'time_held': time_held, 'dollar_noise': np.nan , 'notes': 'check position'}
         else:
             strategy_position['cont_indx'] = [cmi.get_contract_specs(x)['cont_indx'] for x in strategy_position['ticker']]
-            strategy_position.sort('cont_indx',ascending=True,inplace=True)
+            strategy_position.sort_values('cont_indx',ascending=True,inplace=True)
 
             ocs_output = ocs.generate_overnight_spreads_sheet_4date(date_to=date_to)
             overnight_calendars = ocs_output['overnight_calendars']

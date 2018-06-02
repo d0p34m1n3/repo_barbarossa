@@ -1,5 +1,11 @@
 
 
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    import statsmodels.api
+
+
 import shared.log as lg
 log = lg.get_logger(file_identifier='evening_job_2',log_level='INFO')
 
@@ -19,6 +25,7 @@ import formats.futures_strategy_formats as fsf
 import formats.intraday_futures_strategy_formats as ifsf
 import contract_utilities.expiration as exp
 import ta.prepare_daily as prep
+import get_price.save_stock_data as ssd
 
 commodity_address = 'ftp://ftp.cmegroup.com/pub/settle/stlags'
 equity_address = 'ftp://ftp.cmegroup.com/pub/settle/stleqt'
@@ -114,5 +121,11 @@ try:
     prep.prepare_strategy_daily(strategy_class='scv', report_date=folder_date)
 except Exception:
     log.error('generate_scv_sheet failed', exc_info=True)
+
+try:
+    log.info('save stock data')
+    ssd.save_stock_data(settle_date=folder_date)
+except Exception:
+    log.error('save_stock_data failed', exc_info=True)
 
 con.close()

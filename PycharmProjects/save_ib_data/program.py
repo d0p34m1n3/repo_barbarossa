@@ -37,6 +37,7 @@ def save_ib_data(**kwargs):
     datetime_now = dt.datetime.now()
     report_date = exp.doubledate_shift_bus_days()
 
+
     ticker_head_list = cmi.cme_futures_tickerhead_list
 
     data_list = [gfp.get_futures_price_preloaded(ticker_head=x, settle_date=report_date) for x in ticker_head_list]
@@ -44,8 +45,8 @@ def save_ib_data(**kwargs):
     ticker_frame = ticker_frame[~((ticker_frame['ticker_head']=='ED')&(ticker_frame['tr_dte']<250))]
     ticker_frame = ticker_frame[~((ticker_frame['ticker_head']=='GC')|(ticker_frame['ticker_head']=='SI'))]
 
-    ticker_frame.sort(['ticker_head', 'volume'], ascending=[True, False], inplace=True)
-    ticker_frame.drop_duplicates(subset=['ticker_head'], take_last=False, inplace=True)
+    ticker_frame.sort_values(['ticker_head', 'volume'], ascending=[True, False], inplace=True)
+    ticker_frame.drop_duplicates(subset=['ticker_head'], keep='first', inplace=True)
 
     app.ticker_list = list(ticker_frame['ticker'])
     app.output_dir = sd.get_directory_name(ext='ib_data')
@@ -54,10 +55,12 @@ def save_ib_data(**kwargs):
 
     app.connect(client_id=5)
 
-    try:
-        app.run()
-    except:
-        pass
+    app.run()
+
+    #try:
+    #    app.run()
+    #except:
+    #    pass
 
 
 

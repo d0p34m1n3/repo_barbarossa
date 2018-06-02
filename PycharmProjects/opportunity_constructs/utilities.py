@@ -7,6 +7,7 @@ import contract_utilities.contract_meta_info as cmi
 import get_price.get_futures_price as gfp
 import shared.calendar_utilities as cu
 import pandas as pd
+import numpy as np
 import contract_utilities.expiration as exp
 import reformat_intraday_data.reformat_ttapi_intraday_data as rid
 import datetime as dt
@@ -152,8 +153,9 @@ def get_aligned_futures_data(**kwargs):
 
     if get_uniqe_data:
         aligned_dataframe['tr_dte_match'] = abs(aligned_dataframe['c1']['tr_dte']-tr_dte_list[0])
-        aligned_dataframe.sort(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
-        aligned_dataframe.drop_duplicates('settle_date',inplace=True)
+        aligned_dataframe.sort_values(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
+        unique_index = np.unique(aligned_dataframe['settle_date'], return_index=True)[1]
+        aligned_dataframe = aligned_dataframe.iloc[unique_index]
 
     success = True
 

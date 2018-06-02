@@ -5,7 +5,7 @@ sys.path.append(r'C:\Users\kocat_000\quantFinance\PycharmProjects\contract_utili
 import contract_utilities.contract_meta_info as cmi
 import shared.calendar_utilities as cu
 import pandas as pd
-import Quandl as qndl
+import quandl as qndl
 
 quandl_database = {'LN': 'CME',
                    'LC': 'CME',

@@ -16,7 +16,7 @@ def get_overnight_spreads_4date(**kwargs):
     kwargs['date_from'] = cu.doubledate_shift(date_to,6)
     futures_dataframe = cl.generate_futures_list_dataframe(**kwargs)
 
-    futures_dataframe.sort(['ticker','settle_date'],ascending=[True,True],inplace=True)
+    futures_dataframe.sort_values(['ticker','settle_date'],ascending=[True,True],inplace=True)
     grouped = futures_dataframe.groupby(['ticker'])
 
     mean_frame = pd.DataFrame()
@@ -40,7 +40,7 @@ def get_overnight_spreads_4date(**kwargs):
     for ticker_head_i in unique_ticker_heads:
         ticker_head_data = futures_dataframe[futures_dataframe['ticker_head'] == ticker_head_i]
 
-        ticker_head_data.sort(['ticker_year','ticker_month'], ascending=[True, True], inplace=True)
+        ticker_head_data.sort_values(['ticker_year','ticker_month'], ascending=[True, True], inplace=True)
 
         if len(ticker_head_data.index) >= 2:
             tuples = tuples + [(ticker_head_data.index[i], ticker_head_data.index[i+1]) for i in range(len(ticker_head_data.index)-1)]

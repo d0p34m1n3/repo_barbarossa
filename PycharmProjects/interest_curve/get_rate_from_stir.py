@@ -37,7 +37,7 @@ def get_simple_rate(**kwargs):
         price_frame = gfp.get_futures_price_preloaded(ticker_head=ticker_head, settle_date=as_of_date)
         price_frame = price_frame[price_frame['close_price'].notnull()]
 
-        price_frame.sort('tr_dte', ascending=True, inplace=True)
+        price_frame.sort_values('tr_dte', ascending=True, inplace=True)
         price_frame['exp_date'] = [exp.get_futures_expiration(x) for x in price_frame['ticker']]
         price_frame['implied_rate'] = 100-price_frame['close_price']
         price_frame.to_pickle(file_name)
@@ -60,13 +60,13 @@ def get_simple_rate(**kwargs):
 
     if price_frame_first.empty:
         first_rate = price_frame_middle['implied_rate'].iloc[0]
-        first_period = (price_frame_middle['exp_date'].iloc[0].to_datetime()-datetime_from).days
+        first_period = (price_frame_middle['exp_date'].iloc[0].to_pydatetime()-datetime_from).days
     else:
         first_rate = price_frame_first['implied_rate'].iloc[-1]
-        first_period = (price_frame_middle['exp_date'].iloc[0].to_datetime()-datetime_from).days
+        first_period = (price_frame_middle['exp_date'].iloc[0].to_pydatetime()-datetime_from).days
 
     last_rate = price_frame_middle['implied_rate'].iloc[-1]
-    last_period = (datetime_to-price_frame_middle['exp_date'].iloc[-1].to_datetime()).days
+    last_period = (datetime_to-price_frame_middle['exp_date'].iloc[-1].to_pydatetime()).days
 
     middle_discount = [1+(price_frame_middle['implied_rate'].iloc[x]*
         (price_frame_middle['cal_dte'].iloc[x+1]-price_frame_middle['cal_dte'].iloc[x])/36500) for x in range(len(price_frame_middle.index)-1)]

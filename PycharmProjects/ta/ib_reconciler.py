@@ -1,4 +1,9 @@
 
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    import statsmodels.api
+
 import ib_api_utils.subscription as subs
 import my_sql_routines.my_sql_utilities as msu
 import ta.portfolio_manager as tpm

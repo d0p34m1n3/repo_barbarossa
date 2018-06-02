@@ -1,5 +1,5 @@
 
-import quandl.get_data_quandl as gdq
+import quandl_data.get_data_quandl as gdq
 import shared.directory_names as dn
 import contract_utilities.contract_meta_info as cmi
 import shared.calendar_utilities as cu

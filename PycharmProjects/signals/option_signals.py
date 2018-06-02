@@ -14,6 +14,8 @@ import copy as cpy
 import shared.statistics as stats
 import datetime as dt
 
+import warnings
+warnings.filterwarnings("ignore", message="invalid value encountered in sign")
 
 def get_vcs_signals(**kwargs):
 
@@ -452,7 +454,7 @@ def get_aligned_option_indicators(**kwargs):
                                      'impVol': 'imp_vol',
                                      'close2CloseVol20': 'close2close_vol20'}, inplace=True)
 
-        aligned_data.sort(['settle_date', 'ticker_year', 'ticker_month'], ascending=[True,True,True],inplace=True)
+        aligned_data.sort_values(['settle_date', 'ticker_year', 'ticker_month'], ascending=[True,True,True],inplace=True)
         aligned_data.drop_duplicates(['settle_date','ticker_year','ticker_month'],inplace=True)
         aligned_data['old_aligned'] = True
 
@@ -482,9 +484,10 @@ def get_aligned_option_indicators(**kwargs):
     merged_dataframe = pd.concat(data_frame_list, axis=1, join='inner',keys=['c'+ str(x+1) for x in range(len(ticker_list))])
     merged_dataframe['abs_tr_dte_diff'] = abs(merged_dataframe['c1']['tr_dte']-tr_dte_list[0])
     merged_dataframe['settle_date'] = merged_dataframe['c1']['settle_date']
-    merged_dataframe.sort(['settle_date', 'abs_tr_dte_diff'], ascending=[True,True], inplace=False)
-    merged_dataframe.drop_duplicates('settle_date', inplace=True, take_last=False)
+    merged_dataframe.sort_values(['settle_date', 'abs_tr_dte_diff'], ascending=[True,True], inplace=False)
 
+    unique_index = np.unique(merged_dataframe['settle_date'], return_index=True)[1]
+    merged_dataframe = merged_dataframe.iloc[unique_index]
     merged_dataframe.index = merged_dataframe.index.droplevel(1)
 
     return {'hist': merged_dataframe, 'current': current_data, 'success': True}
@@ -521,7 +524,7 @@ def calc_delta_vol_4ticker(**kwargs):
             return output_dict
 
     skew_output_select['delta_diff'] = abs(skew_output_select['delta']-delta_target)
-    skew_output_select.sort('delta_diff', ascending=True, inplace=True)
+    skew_output_select.sort_values('delta_diff', ascending=True, inplace=True)
 
     output_dict['delta_vol'] = skew_output_select['imp_vol'].iloc[0]
     output_dict['strike'] = skew_output_select['strike'].iloc[0]
@@ -551,7 +554,6 @@ def calc_volume_interest_4ticker(**kwargs):
 def calc_realized_vol_4options_ticker(**kwargs):
 
     ticker = kwargs['ticker']
-    print(ticker)
     contract_specs_output = cmi.get_contract_specs(ticker)
 
     if contract_specs_output['ticker_class'] in ['Index', 'FX', 'Metal']:
@@ -645,7 +647,7 @@ def get_option_ticker_indicators(**kwargs):
         if x in column_names:
             data_frame_output[x] = data_frame_output[x].astype('float64')
 
-    return data_frame_output.sort(['ticker_head','settle_date', 'tr_dte'], ascending=[True, True,True], inplace=False)
+    return data_frame_output.sort_values(['ticker_head','settle_date', 'tr_dte'], ascending=[True, True,True], inplace=False)
 
 
 

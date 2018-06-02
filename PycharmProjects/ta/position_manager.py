@@ -15,7 +15,7 @@ def get_ocs_position(**kwargs):
         return {'empty_position_q':empty_position_q, 'correct_position_q': correct_position_q, 'scale': scale,'sorted_position': net_position}
 
     net_position['cont_indx'] = [cmi.get_contract_specs(x)['cont_indx'] for x in net_position['ticker']]
-    net_position.sort('cont_indx', ascending=True, inplace=True)
+    net_position.sort_values('cont_indx', ascending=True, inplace=True)
 
     if (len(net_position.index) == 2) & (net_position['qty'].sum() == 0):
         correct_position_q = True

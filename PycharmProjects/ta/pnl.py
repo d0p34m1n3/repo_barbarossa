@@ -294,7 +294,7 @@ def get_strategy_pnl(**kwargs):
     alias = kwargs['alias']
     con = msu.get_my_sql_connection(**kwargs)
 
-    #print(alias)
+    print(alias)
 
     strategy_info = ts.get_strategy_info_from_alias(alias=alias, con=con)
 
@@ -350,8 +350,10 @@ def get_strategy_pnl(**kwargs):
                                                               stock_data_dictionary=stock_data_dictionary) for x in
                                   bus_day_after_nan_list]
             for i in range(len(bus_day_after_nan_list)):
-                index_val = bus_day_list.index(bus_day_after_nan_list[i])
-                pnl_path[index_val] = pnl_path_after_nan[i]
+
+                if bus_day_after_nan_list[i] in bus_day_list:
+                    index_val = bus_day_list.index(bus_day_after_nan_list[i])
+                    pnl_path[index_val] = pnl_path_after_nan[i]
 
         pnl_frame = pd.DataFrame(pnl_path)
         pnl_frame['settle_date'] = bus_day_list

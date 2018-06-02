@@ -18,7 +18,6 @@ import shared.directory_names as dn
 def update_options_price_database_from_cme_files_4ticker(**kwargs):
 
     ticker = kwargs['ticker']
-
     contract_specs_output = cmi.get_contract_specs(ticker)
     ticker_head = contract_specs_output['ticker_head']
     ticker_month_num = contract_specs_output['ticker_month_num']
@@ -53,7 +52,7 @@ def update_options_price_database_from_cme_files_4ticker(**kwargs):
     else:
         bday_us = CustomBusinessDay(calendar=exp.get_calendar_4ticker_head(ticker_head))
         dts = pd.date_range(start=settle_datetime, end=expiration_date, freq=bday_us)
-        tr_dte = len([x for x in dts if x.to_datetime().date() < expiration_date])
+        tr_dte = len([x for x in dts if x.to_pydatetime().date() < expiration_date])
 
     data_vendor_id = 2
     now = dt.datetime.now()
@@ -127,7 +126,6 @@ def update_options_price_database_from_cme_files(**kwargs):
 
         ticker = options_frame['ticker'].iloc[i]
         expiration_date = options_frame['expiration_date'].iloc[i]
-        print(ticker)
 
         update_options_price_database_from_cme_files_4ticker(ticker=ticker,
                                                              expiration_date=expiration_date,

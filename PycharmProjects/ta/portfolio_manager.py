@@ -31,7 +31,7 @@ def get_daily_pnl_snapshot(**kwargs):
     strategy_frame['total_pnl'] = [x['total_pnl'] for x in pnl_output]
 
     strategy_frame = strategy_frame[['alias','daily_pnl','total_pnl']]
-    strategy_frame.sort('daily_pnl',ascending=False,inplace=True)
+    strategy_frame.sort_values('daily_pnl',ascending=False,inplace=True)
     strategy_frame.loc[max(strategy_frame.index)+1] = ['TOTAL', strategy_frame['daily_pnl'].sum(), strategy_frame['total_pnl'].sum()]
 
     strategy_frame.to_pickle(ta_output_dir + '/portfolio_pnl.pkl')

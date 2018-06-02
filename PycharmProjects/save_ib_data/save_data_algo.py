@@ -71,20 +71,18 @@ class Algo(subs.subscription):
             if len(self.nonfinished_contract_detail_ReqId_list)==0:
                 self.request_historical_bar_data()
 
-    def historicalData(self, reqId: TickerId, date: str, open: float, high: float,
-        low: float, close: float, volume: int, barCount: int,
-        WAP: float, hasGaps: int):
+    def historicalData(self, reqId:int, bar: BarData):
 
         #print("HistoricalData. ", self.bar_data_ReqId_dictionary[reqId], " Date:", date, "Open:", open,"High:", high, "Low:", low, "Close:", close, "Volume:", volume,"Count:", barCount, "WAP:", WAP)
 
         ticker_str = self.bar_data_ReqId_dictionary[reqId]
 
-        self.low_price_dictionary[ticker_str].append(low)
-        self.high_price_dictionary[ticker_str].append(high)
-        self.close_price_dictionary[ticker_str].append(close)
-        self.open_price_dictionary[ticker_str].append(open)
-        self.volume_dictionary[ticker_str].append(volume)
-        self.bar_date_dictionary[ticker_str].append(dt.datetime.strptime(date, '%Y%m%d %H:%M:%S'))
+        self.low_price_dictionary[ticker_str].append(bar.low)
+        self.high_price_dictionary[ticker_str].append(bar.high)
+        self.close_price_dictionary[ticker_str].append(bar.close)
+        self.open_price_dictionary[ticker_str].append(bar.open)
+        self.volume_dictionary[ticker_str].append(bar.volume)
+        self.bar_date_dictionary[ticker_str].append(dt.datetime.strptime(bar.date, '%Y%m%d %H:%M:%S'))
 
 
 
@@ -105,8 +103,8 @@ class Algo(subs.subscription):
             candle_frame['frame_indx'] = 1
             old_data['frame_indx'] = 0
             merged_data = pd.concat([old_data, candle_frame], ignore_index=True)
-            merged_data.sort(['bar_datetime', 'frame_indx'], ascending=[True, False], inplace=True)
-            merged_data.drop_duplicates(subset=['bar_datetime'], take_last=False, inplace=True)
+            merged_data.sort_values(['bar_datetime', 'frame_indx'], ascending=[True, False], inplace=True)
+            merged_data.drop_duplicates(subset=['bar_datetime'], keep='first', inplace=True)
             candle_frame = merged_data.drop('frame_indx', 1, inplace=False)
             candle_frame.reset_index(drop=True,inplace=True)
 
@@ -156,4 +154,4 @@ class Algo(subs.subscription):
             self.bar_data_ReqId_dictionary[self.next_val_id] = ticker_list[i]
             print('req id: ' + str(self.next_val_id) + ', outright_ticker:' + str(ticker_list[i]));
 
-            self.reqHistoricalData(reqId=self.next_valid_id(), contract=outright_ib_contract,endDateTime= '', durationStr=self.durationStr, barSizeSetting='5 mins', whatToShow='TRADES', useRTH=0, formatDate=1,chartOptions=[])
+            self.reqHistoricalData(reqId=self.next_valid_id(), contract=outright_ib_contract,endDateTime= '', durationStr=self.durationStr, barSizeSetting='5 mins', whatToShow='TRADES', useRTH=0, formatDate=1,chartOptions=[],keepUpToDate=False)

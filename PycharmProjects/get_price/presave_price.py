@@ -349,7 +349,7 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
 
     if os.path.isfile(presaved_futures_data_folder + '/' + ticker_head + '.pkl'):
         old_data = pd.read_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')
-        last_available_date = int(old_data['settle_date'].max().to_datetime().strftime('%Y%m%d'))
+        last_available_date = int(old_data['settle_date'].max().to_pydatetime().strftime('%Y%m%d'))
         date_from = cu.doubledate_shift(last_available_date, 60)
         data4_tickerhead = gfp.get_futures_price_4ticker(ticker_head=ticker_head, date_from=date_from, con=con)
     else:
@@ -405,8 +405,8 @@ def generate_and_update_futures_data_file_4tickerhead(**kwargs):
         clean_data['frame_indx'] = 1
         old_data['frame_indx'] = 0
         merged_data = pd.concat([old_data,clean_data],ignore_index=True)
-        merged_data.sort(['cont_indx', 'settle_date', 'frame_indx'], ascending=[True, True, False], inplace=True)
-        merged_data.drop_duplicates(subset=['settle_date', 'cont_indx'], take_last=False, inplace=True)
+        merged_data.sort_values(['cont_indx', 'settle_date', 'frame_indx'], ascending=[True, True, False], inplace=True)
+        merged_data.drop_duplicates(subset=['settle_date', 'cont_indx'],keep='first', inplace=True)
         data4_tickerhead = merged_data.drop('frame_indx', 1, inplace=False)
 
     data4_tickerhead.to_pickle(presaved_futures_data_folder + '/' + ticker_head + '.pkl')

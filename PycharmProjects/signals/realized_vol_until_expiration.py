@@ -114,7 +114,8 @@ def get_past_realized_vol_until_expiration(**kwargs):
 
         for i in data_frame_out.index:
             ticker_data = gfp.get_futures_price_preloaded(ticker=data_frame_out['ticker'].loc[i], **get_futures_price_input)
-            ticker_data.sort('settle_date', ascending=True, inplace=True)
+            ticker_data.sort_values('settle_date', ascending=True, inplace=True)
+            ticker_data = ticker_data[ticker_data['close_price']!=0]
             shifted = ticker_data.shift(1)
 
             ticker_data['log_return'] = np.log(ticker_data['close_price']/shifted['close_price'])
@@ -150,7 +151,7 @@ def forecast_realized_vol_until_expiration(**kwargs):
         clean_vol_frame['real_vol_diff'] = abs(clean_vol_frame['real_vol20']-real_vol20_current)
         clean_vol_frame['forecast_multiplier'] = clean_vol_frame['real_vol_till_expiration']/clean_vol_frame['real_vol20']
 
-        clean_vol_frame.sort('real_vol_diff',ascending=True,inplace=True)
+        clean_vol_frame.sort_values('real_vol_diff',ascending=True,inplace=True)
 
         num_relevant_obs = max(round(len(clean_vol_frame.index)/5), 10)
 

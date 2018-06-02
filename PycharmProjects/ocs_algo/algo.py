@@ -47,8 +47,9 @@ class Algo(subs.subscription):
     nonfinished_ask_quantity_list = []
     period_call_initiated_q = False
     min_avg_volume_limit = 100
-    bet_size = 90
-    # bet_size of 240 caused a $10,000 drawdown
+    bet_size = 130
+    # bet_size of 240 caused a $12,736 drawdown
+    # increased size %44 on June 1st 2018
     total_traded_volume_max_before_user_confirmation = 90
     total_traded_volume_since_last_confirmation = 0
     total_volume_traded = 0

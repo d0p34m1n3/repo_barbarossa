@@ -214,8 +214,9 @@ def load_trades_2strategy(**kwargs):
     real_tradeQ_indx = column_names.index('real_tradeQ')
     strategy_id_indx = column_names.index('strategy_id')
 
-    tuples = [tuple([x[ticker_indx],x[option_type_indx],
-                     None if np.isnan(x[strike_price_indx]) else x[strike_price_indx],
+    tuples = [tuple([x[ticker_indx],
+                     None if pd.isnull(x[option_type_indx]) else x[option_type_indx],
+                     None if pd.isnull(x[strike_price_indx]) else x[strike_price_indx],
                       x[strategy_id_indx],x[trade_price_indx], x[trade_quantity_indx],
               trade_date,x[instrument_indx], x[real_tradeQ_indx],now_time,now_time]) for x in trade_frame.values]
 
@@ -337,7 +338,7 @@ def select_strategies(**kwargs):
     if 'open_date_from' in kwargs.keys():
         open_date_from = kwargs['open_date_from']
     else:
-        open_date_from = 20170107
+        open_date_from = 20160907
 
     sql_query = sql_query + ' open_date>=' + str(open_date_from)
 

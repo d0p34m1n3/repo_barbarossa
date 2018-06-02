@@ -91,8 +91,8 @@ def save_stock_data(**kwargs):
                     new_data['settle_datetime'] = [dt.datetime.strptime(x, '%Y-%m-%d') for x in new_data['settle_date']]
 
                     merged_data = pd.concat([old_data, new_data], ignore_index=True)
-                    merged_data.sort(['settle_date', 'frame_indx'], ascending=[True, False], inplace=True)
-                    merged_data.drop_duplicates(subset=['settle_date'], take_last=False, inplace=True)
+                    merged_data.sort_values(['settle_date', 'frame_indx'], ascending=[True, False], inplace=True)
+                    merged_data.drop_duplicates(subset=['settle_date'],keep='first', inplace=True)
                     merged_data = merged_data.drop('frame_indx', 1, inplace=False)
                     merged_data.reset_index(drop=True, inplace=True)
                     merged_data.to_pickle(file_name)
