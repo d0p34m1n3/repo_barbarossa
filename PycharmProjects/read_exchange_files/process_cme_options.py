@@ -159,6 +159,8 @@ def process_cme_options_4ticker(**kwargs):
                                       (cmi.option_cabinet_values[ticker_head] if x[0] == 'CAB' else np.NaN) for x in splited_strings]
 
     elif ticker_head in ['GC', 'SI', 'CL', 'NG', 'RB', 'HO']:
+        settle_frame['settle'] = settle_frame['settle'].replace('', None)
+        settle_frame = settle_frame[~pd.isnull(settle_frame['settle'])]
         settle_frame['settle'] = settle_frame['settle'].astype('float64')
 
     settle_frame['volume'] = settle_frame['volume'].replace('', 0)

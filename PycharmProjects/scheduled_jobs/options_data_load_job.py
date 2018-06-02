@@ -68,22 +68,23 @@ try:
     fpl.update_futures_price_database_from_cme_file(con=con, settle_date=folder_date)
     pp.generate_and_update_futures_data_files(ticker_head_list='cme_futures')
 except Exception:
-    pass
+    quit()
 
 try:
     opl.update_options_price_database_from_cme_files(con=con, settle_date=folder_date)
 except Exception:
-    pass
+    quit()
+
 
 try:
     ogl.update_options_greeks_4date(con=con, settle_date=folder_date)
 except Exception:
-    pass
+    quit()
 
 try:
     osl.load_ticker_signals_4settle_date(con=con, settle_date=folder_date)
 except Exception:
-    pass
+    quit()
 
 try:
     vcs.generate_vcs_sheet_4date(con=con,date_to=folder_date)
