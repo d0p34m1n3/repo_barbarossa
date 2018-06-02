@@ -411,8 +411,8 @@ def create_strategy_output_dir(**kwargs):
          output_dir = strategy_output_folder + '/smrl/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'smrs':
          output_dir = strategy_output_folder + '/smrs/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'imacd':
-         output_dir = strategy_output_folder + '/imacd/' + cu.get_directory_extension(report_date)
+    elif strategy_class == 'ibo':
+         output_dir = strategy_output_folder + '/ibo/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
