@@ -95,7 +95,7 @@ def get_book_snapshot(**kwargs):
     data_out = get_tick_data(**kwargs)
 
     if len(data_out.index)==0:
-        return pd.DataFrame(columns=['mid_p','buy_volume','sell_volume','volume'])
+        return pd.DataFrame(columns=['mid_p','buy_volume','sell_volume','volume', 'hour_minute'])
 
     utc_year = m.floor(utc_doubledate / 10000)
 

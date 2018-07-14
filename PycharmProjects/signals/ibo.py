@@ -1,5 +1,6 @@
 
 import numpy as np
+import contract_utilities.contract_meta_info as cmi
 
 def get_poi(**kwargs):
 
@@ -46,7 +47,9 @@ def get_time_filter(**kwargs):
     ticker_head = kwargs['ticker_head']
     section_no = kwargs['section_no']
 
-    if ticker_head in ['CL']:
+    ticker_class = cmi.ticker_class[ticker_head]
+
+    if ticker_class in ['Energy', 'Treasury', 'Metal', 'FX', 'Index', 'STIR']:
         if section_no==1:
             start_hour_minute = 830
             end_hour_minute = 1045
@@ -56,6 +59,16 @@ def get_time_filter(**kwargs):
         elif section_no==3:
             start_hour_minute = 1300
             end_hour_minute = 1515
+    elif ticker_class in ['Livestock', 'Ag']:
+        if section_no==1:
+            start_hour_minute = 830
+            end_hour_minute = 1000
+        elif section_no==2:
+            start_hour_minute = 1000
+            end_hour_minute = 1130
+        elif section_no==3:
+            start_hour_minute = 1130
+            end_hour_minute = 1245
 
     return {'start_hour_minute': start_hour_minute, 'end_hour_minute': end_hour_minute}
 
