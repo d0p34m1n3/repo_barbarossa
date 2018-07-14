@@ -134,7 +134,7 @@ def get_strike_4current_delta(**kwargs):
 
     call_data['delta_abs_centered'] = abs(call_data['delta'] - call_delta_target)
 
-    call_data.sort('delta_abs_centered', ascending=True, inplace=True)
+    call_data.sort_values('delta_abs_centered', ascending=True, inplace=True)
 
     strike_at_settle = (call_data['strike'].iloc[0] * call_data['delta_abs_centered'].iloc[1] + call_data['strike'].iloc[1]*call_data['delta_abs_centered'].iloc[0])/\
                        (call_data['delta_abs_centered'].iloc[0] + call_data['delta_abs_centered'].iloc[1])
@@ -143,7 +143,7 @@ def get_strike_4current_delta(**kwargs):
     strike_current_approximate = underlying_current_price + strike_offset
 
     call_data['strike_diff'] = abs(call_data['strike'] - strike_current_approximate)
-    call_data.sort('strike_diff', ascending=True, inplace=True)
+    call_data.sort_values('strike_diff', ascending=True, inplace=True)
     strike_current = call_data['strike'].iloc[0]
 
     if 'con' not in kwargs.keys():

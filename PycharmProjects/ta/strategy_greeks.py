@@ -18,6 +18,12 @@ def get_greeks_4strategy_4date(**kwargs):
         as_of_date = exp.doubledate_shift_bus_days()
 
     position_frame = tas.get_net_position_4strategy_alias(alias=alias,as_of_date=as_of_date,con=con)
+
+    if position_frame.empty:
+        if 'con' not in kwargs.keys():
+            con.close()
+        return {'ticker_portfolio': pd.DataFrame(columns=['total_oev', 'theta','dollar_vega','ticker']), 'strike_portfolio': pd.DataFrame(), 'options_position': pd.DataFrame()}
+
     options_frame = position_frame[position_frame['instrument'] == 'O']
 
     if options_frame.empty:

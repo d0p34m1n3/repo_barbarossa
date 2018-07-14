@@ -2,8 +2,10 @@
 import shared.email as se
 import contract_utilities.expiration as exp
 import shared.directory_names as dn
+import shared.calendar_utilities as cu
 import ta.strategy as ts
 import ta.expiration_followup as ef
+import signals.dual_momentum as dm
 
 
 def send_hrsn_report(**kwargs):
@@ -39,4 +41,45 @@ def send_hrsn_report(**kwargs):
                                   email_text='cov_data_integrity: ' + cov_data_integrity + "\r\n" + expiration_text,
                                   attachment_list = [daily_dir + '/' + 'pnl_' + str(report_date) + '.xlsx', daily_dir +
                                                      '/' + 'followup_' + str(report_date) + '.xlsx'])
+
+
+def send_dual_momentum_report(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output = dm.get_signals_4date(report_date=report_date)
+
+    if not output['success']:
+        email_text = 'Report Failed!'
+    else:
+        performance_dictionary = output['performance_dictionary']
+
+        ivv = performance_dictionary['IVV']
+        veu = performance_dictionary['VEU']
+        bil = performance_dictionary['BIL']
+
+        if ivv>=max(veu, bil):
+            recommended_ticker = 'IVV'
+        elif (veu>ivv) and (ivv>bil):
+            recommended_ticker = 'VEU'
+        else:
+            recommended_ticker = 'AGG'
+
+        email_text = 'US Stocks: ' + '% 3.2f' % ivv + "\r\n" \
+                     + 'World Stocks: ' + '% 3.2f' % veu + "\r\n" \
+                     + 'T-Bills: ' + ' % 3.2f' % bil + "\r\n" \
+                     + "\r\n" \
+                     + 'Recommended Ticker: ' + recommended_ticker
+
+    se.send_email_with_attachment(subject='Dual Momentum Results On ' +
+                                          cu.convert_datestring_format({'date_string': str(report_date),
+                                                                        'format_from':'yyyymmdd',
+                                                                        'format_to':'yyyy-mm-dd'}),email_text=email_text)
+
+
+
+
 

@@ -53,15 +53,17 @@ def get_symbol_frame(**kwargs):
 
 def save_stock_data(**kwargs):
 
-    settle_date = kwargs['settle_date']
+    if 'symbol_list' in kwargs.keys():
+        symbol_list = kwargs['symbol_list']
+    elif 'settle_date' in kwargs.keys():
+        settle_date = kwargs['settle_date']
+        other_frame = get_symbol_frame(frame_type='other', settle_date=settle_date)
+        nasdaq_frame = get_symbol_frame(frame_type='nasdaq', settle_date=settle_date)
 
-    other_frame = get_symbol_frame(frame_type='other', settle_date=settle_date)
-    nasdaq_frame = get_symbol_frame(frame_type='nasdaq', settle_date=settle_date)
+        other_frame = other_frame[['$' not in x and '.' not in x for x in other_frame['ACT Symbol']]]
+        nasdaq_frame = nasdaq_frame[['$' not in x and '.' not in x for x in nasdaq_frame['Symbol']]]
 
-    other_frame = other_frame[['$' not in x and '.' not in x for x in other_frame['ACT Symbol']]]
-    nasdaq_frame = nasdaq_frame[['$' not in x and '.' not in x for x in nasdaq_frame['Symbol']]]
-
-    symbol_list = list(set(list(nasdaq_frame['Symbol'].unique()) + list(other_frame['ACT Symbol'].unique())))
+        symbol_list = list(set(list(nasdaq_frame['Symbol'].unique()) + list(other_frame['ACT Symbol'].unique())))
 
     file_dir = dn.get_directory_name(ext='drop_box_trading')
     file_name = file_dir + '/apiKeys.txt'

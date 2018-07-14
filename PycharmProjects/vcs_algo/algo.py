@@ -39,6 +39,20 @@ class Algo(subs.subscription):
     underlying_prices_accumulated_Q = False
     imp_vols_calculated_Q = False
 
+    order_alias_dictionary = {}
+
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str):
+        super().orderStatus(orderId, status, filled, remaining,avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld)
+        print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
+        "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
+        "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
+        lastFillPrice, "ClientId:", clientId, "WhyHeld:", whyHeld)
+
+        if status == 'Submitted':
+            with open(self.trade_file, 'a') as file:
+                file.write(str(orderId) + ',,0,'  + str(self.order_alias_dictionary[orderId]) + ',strategy_class=vcs&betsize='+ str(self.vcs_risk_parameter))
+                file.write('\n')
+
     def tickPrice(self, reqId: TickerId, tickType: TickType, price: float,attrib: TickAttrib):
         super().tickPrice(reqId, tickType, price, attrib)
 
@@ -260,6 +274,7 @@ class Algo(subs.subscription):
                 continue_q = input('Continue? (y/n): ')
 
                 if continue_q == 'y':
+                    self.order_alias_dictionary[self.next_val_id] = vcs_pairs.loc[i,'alias']
                     self.placeOrder(self.next_valid_id(), spread_contract,ib_api_trade.ComboLimitOrder(trade_decision, quantity, order_price, False))
 
 

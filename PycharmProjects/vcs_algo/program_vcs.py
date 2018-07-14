@@ -81,12 +81,16 @@ def main():
     vcs_pairs['current_strike1'] = np.nan
     vcs_pairs['current_strike2'] = np.nan
 
+    ta_folder = dn.get_dated_directory_extension(folder_date=todays_date, ext='ta')
+
     app.vcs_pairs = vcs_pairs
     app.con = con
     app.futures_data_dictionary = futures_data_dictionary
     app.report_date = report_date
     app.todays_date = todays_date
     app.log = lg.get_logger(file_identifier='vcs', log_level='INFO')
+    app.trade_file = ta_folder + '/trade_dir.csv'
+    app.vcs_risk_parameter = vcs_risk_parameter
     app.connect(client_id=3)
     app.run()
 

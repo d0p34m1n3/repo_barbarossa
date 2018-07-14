@@ -2,6 +2,7 @@
 from ibapi.contract import *
 import contract_utilities.contract_meta_info as cmi
 import stock_utilities.stock_meta_info as smi
+import shared.calendar_utilities as cu
 import decimal as dec
 import datetime as dt
 import shared.utils as su
@@ -83,9 +84,30 @@ def get_ib_contract_from_db_ticker(**kwargs):
 def get_db_ticker_from_ib_contract(**kwargs):
 
     ib_contract = kwargs['ib_contract']
-    contract_id_dictionary = kwargs['contract_id_dictionary']
 
-    return su.get_key_in_dictionary(dictionary_input=contract_id_dictionary,value=ib_contract.conId)
+    if 'contract_id_dictionary' in kwargs.keys():
+        contract_id_dictionary = kwargs['contract_id_dictionary']
+        return su.get_key_in_dictionary(dictionary_input=contract_id_dictionary, value=ib_contract.conId)
+
+    contract_output = {}
+
+    sec_type = ib_contract.secType
+
+    ticker_head = conversion_from_ib_ticker_head[ib_contract.symbol]
+    local_symbol_out = ib_contract.localSymbol.split(' ')
+    contract_month_str = local_symbol_out[0][-2]
+
+    date_now = cu.get_doubledate()
+    contract_year_str = str(m.floor(date_now/100000)) + local_symbol_out[0][-1]
+    contract_output['ticker'] = ticker_head + contract_month_str + contract_year_str
+
+
+    if sec_type=='FOP':
+        contract_output['option_type'] = ib_contract.right
+        contract_output['strike'] = round(ib_contract.strike/ib_strike_multiplier_dictionary.get(ticker_head, 1),4)
+
+    return contract_output
+
 
 def main():
     print(get_ib_contract_from_db_ticker(ticker='BOZ2017',sec_type='F'))

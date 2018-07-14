@@ -14,6 +14,7 @@ import contract_utilities.expiration as exp
 import formats.risk_pnl_formats as rpf
 import ta.prepare_daily as prep
 import save_ib_data.program as sib
+import math as m
 
 con = msu.get_my_sql_connection()
 report_date = exp.doubledate_shift_bus_days()
@@ -42,11 +43,12 @@ except Exception:
     quit()
 
 try:
-    log.info('generate_ocs_followup_report...')
-    sff.generate_ocs_followup_report(as_of_date=report_date, con=con, broker='ib')
+    log.info('generate_followup_report...')
+    writer_out = sff.generate_vcs_followup_report(as_of_date=report_date, con=con)
+    sff.generate_ocs_followup_report(as_of_date=report_date, con=con, broker='ib',writer=writer_out)
     prep.move_from_dated_folder_2daily_folder(ext='ta', file_name='followup', folder_date=report_date)
 except Exception:
-    log.error('generate_ocs_followup_report', exc_info=True)
+    log.error('generate_followup_report', exc_info=True)
     quit()
 
 try:
@@ -75,6 +77,15 @@ try:
     sib.save_ib_data()
 except Exception:
     log.error('save_ib_data failed', exc_info=True)
+    quit()
+
+try:
+    log.info('generate dual momentum report...')
+    report_date_2 = exp.doubledate_shift_bus_days(shift_in_days=-2)
+    if m.floor(report_date_2/100)!=m.floor(report_date/100):
+        er.send_dual_momentum_report(report_date=report_date)
+except Exception:
+    log.error('generate dual momentum report failed', exc_info=True)
     quit()
 
 

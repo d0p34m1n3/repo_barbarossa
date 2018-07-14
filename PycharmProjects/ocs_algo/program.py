@@ -13,6 +13,7 @@ import contract_utilities.expiration as exp
 import api_utils.portfolio as aup
 import shared.utils as su
 import shared.calendar_utilities as cu
+import shared.directory_names as dn
 import numpy as np
 import pandas as pd
 import math as mth
@@ -32,6 +33,11 @@ import shared.log as lg
 
 def main():
     app = algo.Algo()
+
+    admin_dir = dn.get_directory_name(ext='admin')
+    risk_file_out = su.read_text_file(file_name=admin_dir + '/RiskParameter.txt')
+    app.bet_size = float(risk_file_out[0])
+
     con = msu.get_my_sql_connection()
     date_now = cu.get_doubledate()
     report_date = exp.doubledate_shift_bus_days()
@@ -155,6 +161,7 @@ def main():
     app.ticker_list = list(set(overnight_calendars['ticker1']).union(overnight_calendars['ticker2']).union(set(overnight_calendars['ticker1L'])).union(set(overnight_calendars['ticker2L'])))
     app.output_dir = ts.create_strategy_output_dir(strategy_class='ocs', report_date=report_date)
     app.log = lg.get_logger(file_identifier='ib_ocs',log_level='INFO')
+
     app.con = con
     app.pnl_frame = tpm.get_daily_pnl_snapshot(as_of_date=report_date)
     print('Emre')
