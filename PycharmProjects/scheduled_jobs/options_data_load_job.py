@@ -1,4 +1,14 @@
 
+
+
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    import h5py
+
+import shared.log as lg
+log = lg.get_logger(file_identifier='evening_job',log_level='INFO')
+
 import shared.directory_names as dn
 import shared.downloads as sd
 import shared.calendar_utilities as cu
@@ -65,30 +75,40 @@ with open(options_data_dir + '/nymex_options.pkl', 'wb') as handle:
 con = msu.get_my_sql_connection()
 
 try:
+    log.info('update_futures_price_database')
     fpl.update_futures_price_database_from_cme_file(con=con, settle_date=folder_date)
     pp.generate_and_update_futures_data_files(ticker_head_list='cme_futures')
 except Exception:
+    log.error('update_futures_price_database failed', exc_info=True)
     quit()
 
 try:
+    log.info('update_options_price_database')
     opl.update_options_price_database_from_cme_files(con=con, settle_date=folder_date)
 except Exception:
+    log.error('update_options_price_database failed', exc_info=True)
     quit()
 
 
 try:
+    log.info('update_options_greeks')
     ogl.update_options_greeks_4date(con=con, settle_date=folder_date)
 except Exception:
+    log.error('update_options_greeks failed', exc_info=True)
     quit()
 
 try:
+    log.info('load_ticker_signals')
     osl.load_ticker_signals_4settle_date(con=con, settle_date=folder_date)
 except Exception:
+    log.error('load_ticker_signals failed', exc_info=True)
     quit()
 
 try:
+    log.info('generate_vcs_sheet')
     vcs.generate_vcs_sheet_4date(con=con,date_to=folder_date)
 except Exception:
+    log.error('generate_vcs_sheet failed', exc_info=True)
     pass
 
 try:
@@ -98,14 +118,18 @@ except Exception:
     pass
 
 try:
+    log.info('generate_scv_sheet')
     osf.generate_scv_formatted_output(report_date=folder_date)
     prep.prepare_strategy_daily(strategy_class='scv', report_date=folder_date)
 except Exception:
+    log.error('generate_scv_sheet failed', exc_info=True)
     pass
 
 try:
+    log.info('generate_ifs')
     fsf.generate_ifs_formatted_output(report_date=folder_date)
 except Exception:
+    log.error('generate_ifs failed', exc_info=True)
     pass
 
 con.close()

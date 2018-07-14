@@ -94,6 +94,8 @@ def get_futures_butterfly_signals(**kwargs):
 
     price_ratio_current = linear_interp_price2_current/price_2
 
+
+
     q = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values, 'clean_num_obs': max(100, round(3*len(price_ratio.values)/4))})
     qf = stats.get_quantile_from_number({'x': price_ratio_current, 'y': price_ratio.values[-40:], 'clean_num_obs': 30})
 
@@ -120,8 +122,12 @@ def get_futures_butterfly_signals(**kwargs):
                             -2*current_data['c2']['close_price']\
                               +current_data['c3']['close_price']
 
+    #return {'yield1': yield1, 'yield2': yield2, 'yield1_current':yield1_current, 'yield2_current': yield2_current}
+
     yield_regress_output = stats.get_regression_results({'x':yield2, 'y':yield1,'x_current': yield2_current, 'y_current': yield1_current,
                                                          'clean_num_obs': max(100, round(3*len(yield1.values)/4))})
+
+
     yield_regress_output_last5_years = stats.get_regression_results({'x':yield2_last5_years, 'y':yield1_last5_years,
                                                                      'x_current': yield2_current, 'y_current': yield1_current,
                                                                      'clean_num_obs': max(100, round(3*len(yield1_last5_years.values)/4))})
@@ -133,12 +139,12 @@ def get_futures_butterfly_signals(**kwargs):
 
         recent_zscore_list = [(yield1[-40+i]-yield_regress_output['alpha']-yield_regress_output['beta']*yield2[-40+i])/yield_regress_output['residualstd'] for i in range(40)]
 
-        bf_qz_frame = pd.DataFrame.from_items([('bf_price', butterfly_price.values[-40:]),
-                                           ('q',recent_quantile_list),
-                                           ('zscore', recent_zscore_list)])
+        bf_qz_frame = pd.DataFrame.from_dict({'bf_price': butterfly_price.values[-40:],
+                                              'q': recent_quantile_list,
+                                              'zscore': recent_zscore_list})
 
         bf_qz_frame = np.round(bf_qz_frame, 8)
-        bf_qz_frame.drop_duplicates(['bf_price'], take_last=True, inplace=True)
+        bf_qz_frame.drop_duplicates(['bf_price'], keep='last', inplace=True)
 
     # return bf_qz_frame
 
@@ -187,7 +193,12 @@ def get_futures_butterfly_signals(**kwargs):
     residuals = yield1-yield_regress_output['alpha']-yield_regress_output['beta']*yield2
 
     regime_change_ind = (residuals[last5_years_indx].mean()-residuals.mean())/residuals.std()
-    contract_seasonality_ind = (residuals[aligned_data['c1']['ticker_month'] == current_data['c1']['ticker_month']].mean()-residuals.mean())/residuals.std()
+
+    seasonal_residuals = residuals[aligned_data['c1']['ticker_month'] == current_data['c1']['ticker_month']]
+    seasonal_clean_residuals = seasonal_residuals[np.isfinite(seasonal_residuals)]
+    clean_residuals = residuals[np.isfinite(residuals)]
+
+    contract_seasonality_ind = (seasonal_clean_residuals.mean()-clean_residuals.mean())/clean_residuals.std()
 
     yield1_quantile_list = stats.get_number_from_quantile(y=yield1, quantile_list=[10, 90])
     yield2_quantile_list = stats.get_number_from_quantile(y=yield2, quantile_list=[10, 90])
@@ -407,34 +418,34 @@ def get_futures_spread_carry_signals(**kwargs):
     reward_risk = [5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*abs(downside[x+1])) if carry[x]>0
       else 5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
 
-    return pd.DataFrame.from_items([('ticker1',ticker1_list),
-                                    ('ticker2',ticker2_list),
-                                    ('ticker1L', [''] + ticker1_list[:-1]),
-                                    ('ticker2L', [''] + ticker2_list[:-1]),
-                         ('ticker_head',cmi.get_contract_specs(ticker_list[0])['ticker_head']),
-                         ('front_tr_dte',front_tr_dte),
-                         ('carry',[np.NAN]+carry),
-                         ('q_carry',[np.NAN]+q_carry),
-                         ('q_carry_average',q_carry_average),
-                         ('butterfly_q',[np.NAN]+butterfly_q_list),
-                         ('butterfly_z',[np.NAN]+butterfly_z_list),
-                         ('reward_risk',[np.NAN]+reward_risk),
-                         ('price',price_current_list),
-                         ('butterfly_q10', [np.NAN]+butterfly_q10),
-                         ('butterfly_q25', [np.NAN]+butterfly_q25),
-                         ('butterfly_q35', [np.NAN] + butterfly_q35),
-                         ('butterfly_q50', [np.NAN] + butterfly_q50),
-                         ('butterfly_q65', [np.NAN] + butterfly_q65),
-                         ('butterfly_q75', [np.NAN] + butterfly_q75),
-                         ('butterfly_q90', [np.NAN] + butterfly_q90),
-                         ('butterfly_mean', [np.NAN]+butterfly_mean_list),
-                         ('butterfly_noise', [np.NAN]+butterfly_noise_list),
-                         ('q',q_list),
-                         ('upside',upside),
-                         ('downside',downside),
-                         ('change5',change5),
-                         ('change10',change10),
-                         ('change20',change20)])
+    return pd.DataFrame.from_dict({'ticker1': ticker1_list,
+                                    'ticker2': ticker2_list,
+                                    'ticker1L': [''] + ticker1_list[:-1],
+                                    'ticker2L': [''] + ticker2_list[:-1],
+                         'ticker_head': cmi.get_contract_specs(ticker_list[0])['ticker_head'],
+                         'front_tr_dte': front_tr_dte,
+                         'carry': [np.NAN]+carry,
+                         'q_carry': [np.NAN]+q_carry,
+                         'q_carry_average': q_carry_average,
+                         'butterfly_q': [np.NAN]+butterfly_q_list,
+                         'butterfly_z': [np.NAN]+butterfly_z_list,
+                         'reward_risk': [np.NAN]+reward_risk,
+                         'price': price_current_list,
+                         'butterfly_q10': [np.NAN]+butterfly_q10,
+                         'butterfly_q25': [np.NAN]+butterfly_q25,
+                         'butterfly_q35': [np.NAN] + butterfly_q35,
+                         'butterfly_q50': [np.NAN] + butterfly_q50,
+                         'butterfly_q65': [np.NAN] + butterfly_q65,
+                         'butterfly_q75': [np.NAN] + butterfly_q75,
+                         'butterfly_q90': [np.NAN] + butterfly_q90,
+                         'butterfly_mean': [np.NAN]+butterfly_mean_list,
+                         'butterfly_noise': [np.NAN]+butterfly_noise_list,
+                         'q': q_list,
+                         'upside': upside,
+                         'downside': downside,
+                         'change5': change5,
+                         'change10': change10,
+                         'change20': change20})
 
 
 def get_pca_seasonality_adjustments(**kwargs):

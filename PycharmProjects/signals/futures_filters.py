@@ -113,7 +113,7 @@ def get_curve_pca_filters(**kwargs):
 
     daily_report_filtered = data_frame_input[(data_frame_input['tr_dte_front'] > 80) & (data_frame_input['monthSpread'] == 1)]
 
-    daily_report_filtered.sort('z', ascending=True, inplace=True)
+    daily_report_filtered.sort_values('z', ascending=True, inplace=True)
     num_contract_4side = round(len(daily_report_filtered.index)/4)
 
     if 'long1' in filter_list:

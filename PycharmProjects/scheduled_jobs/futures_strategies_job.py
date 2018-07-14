@@ -1,5 +1,10 @@
 __author__ = 'kocat_000'
 
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    import h5py
+
 import formats.futures_strategy_formats as fsf
 import formats.strategy_followup_formats as sff
 import formats.risk_pnl_formats as rpf
@@ -11,6 +16,8 @@ import opportunity_constructs.overnight_calendar_spreads as ocs
 import contract_utilities.expiration as exp
 import ta.prepare_daily as prep
 import ta.underlying_proxy as up
+import fundamental_data.cot_data as cot
+import datetime as dt
 import ta.email_reports as er
 
 con = msu.get_my_sql_connection()
@@ -70,6 +77,12 @@ except Exception:
 
 try:
     up.generate_underlying_proxy_report(report_date=report_date, con=con)
+except Exception:
+    pass
+
+try:
+    if dt.datetime.today().weekday() == 5:
+        cot.presave_cot_data()
 except Exception:
     pass
 

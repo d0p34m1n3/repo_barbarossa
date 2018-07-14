@@ -34,7 +34,7 @@ def get_rolling_curve_data(**kwargs):
         panel_data = panel_data[panel_data['ticker_month'] % month_separation == 0]
 
     panel_data = panel_data[np.isfinite(panel_data['close_price'])]
-    sorted_data = panel_data.sort(['settle_date', 'tr_dte'], ascending=[True, True])
+    sorted_data = panel_data.sort_values(['settle_date', 'tr_dte'], ascending=[True, True])
 
     filtered_data = sorted_data.groupby('settle_date').filter(lambda x:len(x)>=num_contracts)
 

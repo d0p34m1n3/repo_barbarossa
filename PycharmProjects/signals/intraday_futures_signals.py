@@ -27,6 +27,9 @@ def get_intraday_spread_signals(**kwargs):
     ticker_list = kwargs['ticker_list']
     date_to = kwargs['date_to']
 
+    #print(ticker_list)
+
+
     ticker_list = [x for x in ticker_list if x is not None]
     ticker_head_list = [cmi.get_contract_specs(x)['ticker_head'] for x in ticker_list]
     ticker_class_list = [cmi.ticker_class[x] for x in ticker_head_list]
@@ -123,6 +126,20 @@ def get_intraday_spread_signals(**kwargs):
     intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=ticker_list,
                                        date_list=date_list)
 
+    if len(intraday_data.index)==0:
+        return {'downside': downside, 'upside': upside,'intraday_data': intraday_data,'trading_data': intraday_data,
+            'spread_weight': spread_weights[1], 'portfolio_weight':portfolio_weights[1],
+            'z': np.nan,'recent_trend': np.nan,
+            'intraday_mean10': np.nan, 'intraday_std10': np.nan,
+            'intraday_mean5': np.nan, 'intraday_std5': np.nan,
+            'intraday_mean2': np.nan, 'intraday_std2': np.nan,
+            'intraday_mean1': np.nan, 'intraday_std1': np.nan,
+            'aligned_output': aligned_output, 'spread_settle': spread_settle,
+            'data_last5_years': data_last5_years,
+            'ma_spread_lowL': np.nan,'ma_spread_highL': np.nan,
+            'ma_spread_low': np.nan,'ma_spread_high': np.nan,
+            'intraday_sharp': np.nan}
+
     intraday_data['time_stamp'] = [x.to_datetime() for x in intraday_data.index]
     intraday_data['settle_date'] = intraday_data['time_stamp'].apply(lambda x: x.date())
 
@@ -191,11 +208,15 @@ def get_intraday_spread_signals(**kwargs):
     num_positives = sum(intraday_tail['spread'] > intraday_data['spread'].mean())
     num_negatives = sum(intraday_tail['spread'] < intraday_data['spread'].mean())
 
-    recent_trend = 100*(num_positives-num_negatives)/(num_positives+num_negatives)
+    if num_positives+num_negatives!=0:
+        recent_trend = 100*(num_positives-num_negatives)/(num_positives+num_negatives)
+    else:
+        recent_trend = np.nan
 
     intraday_data_shifted = intraday_data.groupby('settle_date').shift(-60)
     intraday_data['spread_shifted'] = intraday_data_shifted['spread']
     intraday_data['delta60'] = intraday_data['spread_shifted']-intraday_data['spread']
+
     intraday_data['ewma10'] = pd.ewma(intraday_data['spread'], span=10)
     intraday_data['ewma50'] = pd.ewma(intraday_data['spread'], span=50)
     intraday_data['ewma200'] = pd.ewma(intraday_data['spread'], span=200)
@@ -270,6 +291,11 @@ def get_intraday_outright_covariance(**kwargs):
     date_list = [exp.doubledate_shift_bus_days(double_date=date_to,shift_in_days=x) for x in reversed(range(1,num_days_back_4intraday))]
     date_list.append(date_to)
     intraday_data = opUtil.get_aligned_futures_data_intraday(contract_list=liquid_futures_frame['ticker'].values,date_list=date_list)
+
+    if len(intraday_data.index)==0:
+        return {'cov_matrix': pd.DataFrame(), 'cov_data_integrity': 0}
+
+
     intraday_data['time_stamp'] = [x.to_datetime() for x in intraday_data.index]
     intraday_data['hour_minute'] = [100*x.hour+x.minute for x in intraday_data['time_stamp']]
     intraday_data = intraday_data.resample('30min',how='last')

@@ -116,7 +116,7 @@ def get_historical_risk_4open_strategies(**kwargs):
 
     strategy_risk_frame['alias'] = strategy_frame['alias']
     strategy_risk_frame['downside'] = [x['downside'] for x in historical_risk_output]
-    strategy_risk_frame.sort('downside', ascending=True, inplace=True)
+    strategy_risk_frame.sort_values('downside', ascending=True, inplace=True)
 
     ticker_head_list = su.flatten_list([list(x['ticker_head_based_pnl_5_change'].keys()) for x in historical_risk_output if x['downside'] != 0])
     unique_ticker_head_list = list(set(ticker_head_list))
@@ -133,7 +133,7 @@ def get_historical_risk_4open_strategies(**kwargs):
     ticker_head_risk_frame['tickerHead'] = unique_ticker_head_list
     ticker_head_risk_frame['downside'] = [(x[0]+x[1])/2 for x in percentile_vector]
 
-    ticker_head_risk_frame.sort('downside', ascending=True, inplace=True)
+    ticker_head_risk_frame.sort_values('downside', ascending=True, inplace=True)
 
     strategy_risk_frame['downside'] = strategy_risk_frame['downside'].round()
     ticker_head_risk_frame['downside'] = ticker_head_risk_frame['downside'].round()

@@ -65,7 +65,7 @@ def get_curve_pca_report(**kwargs):
                                         month_separation=6,
                                         date_to=date_to)
 
-        if datetime_to != rolling_data_monthly[0].index[-1].to_datetime() or datetime_to != rolling_data_semiannual[0].index[-1].to_datetime():
+        if datetime_to != rolling_data_monthly[0].index[-1].to_pydatetime() or datetime_to != rolling_data_semiannual[0].index[-1].to_pydatetime():
             return {'pca_results': pd.DataFrame(), 'success': False}
 
         rolling_data_merged = pd.concat(rolling_data_semiannual, axis=1)
@@ -120,20 +120,20 @@ def get_curve_pca_report(**kwargs):
 
     residuals = yield_data-pca_out['model_fit']
 
-    pca_results = pd.DataFrame.from_items([('ticker1',ticker1_list),
-                             ('ticker2',ticker2_list),
-                             ('monthSpread',month_spread),
-                             ('tr_dte_front', tr_dte_data[-1]),
-                             ('ticker_month_front', ticker_month_data[-1]),
-                             ('residuals',residuals[-1]),
-                             ('price',price_list),
-                             ('yield',yield_data[-1]),
-                             ('z', (residuals[-1]-residuals.mean(axis=0))/residuals.std(axis=0)),
-                             ('factor_load1',pca_out['loadings'][0]),
-                             ('factor_load2',pca_out['loadings'][1]),
-                             ('change5', change5_data[-1]),
-                             ('change10', change10_data[-1]),
-                             ('change20', change20_data[-1])])
+    pca_results = pd.DataFrame.from_dict({'ticker1': ticker1_list,
+                             'ticker2': ticker2_list,
+                             'monthSpread': month_spread,
+                             'tr_dte_front': tr_dte_data[-1],
+                             'ticker_month_front': ticker_month_data[-1],
+                             'residuals': residuals[-1],
+                             'price': price_list,
+                             'yield': yield_data[-1],
+                             'z': (residuals[-1]-residuals.mean(axis=0))/residuals.std(axis=0),
+                             'factor_load1': pca_out['loadings'][0],
+                             'factor_load2': pca_out['loadings'][1],
+                             'change5': change5_data[-1],
+                             'change10': change10_data[-1],
+                             'change20': change20_data[-1]})
 
     # notice that this date_to needs to me removed once we are done with backtesting
     seasonality_adjustment = fs.get_pca_seasonality_adjustments(ticker_head=ticker_head,date_to=date_to)

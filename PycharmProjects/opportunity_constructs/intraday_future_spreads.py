@@ -93,7 +93,7 @@ def get_spreads_4date(**kwargs):
 
     output_frame['spread_description'] = output_frame.apply(lambda x: x['ticker_head1']+ '_' +x['ticker_head2'] if x['ticker_head3'] is None else x['ticker_head1']+ '_' +x['ticker_head2'] + '_' + x['ticker_head3'] , axis=1)
     output_frame['min_volume'] = output_frame.apply(lambda x: min(x['volume1'],x['volume2']) if x['ticker_head3'] is None else min(x['volume1'],x['volume2'],x['volume3']),axis=1)
-    output_frame.sort(['spread_description','min_volume'],ascending=[True, False],inplace=True)
+    output_frame.sort_values(['spread_description','min_volume'],ascending=[True, False],inplace=True)
     output_frame.drop_duplicates('spread_description',inplace=True)
     output_frame.reset_index(drop=True,inplace=True)
 

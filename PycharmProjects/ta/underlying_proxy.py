@@ -43,7 +43,7 @@ def get_underlying_proxy_ticker(**kwargs):
     last_day_data = last_day_data[last_day_data['tr_days_2roll'] >= 10]
     last_day_data.reset_index(drop=True, inplace=True)
 
-    last_day_data.sort('volume', ascending=False, inplace=True)
+    last_day_data.sort_values('volume', ascending=False, inplace=True)
 
     proxy_ticker = last_day_data['ticker'].iloc[0]
 

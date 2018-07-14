@@ -64,7 +64,7 @@ def generate_futures_butterfly_followup_report(**kwargs):
                                              'QF_initial': 'QFInitial','total_pnl': 'TotalPnl',
                                              'downside': 'Downside','recommendation':'Recommendation'}, inplace=True)
 
-    butterfly_followup_frame.sort('QF', ascending=False,inplace=True)
+    butterfly_followup_frame.sort_values('QF', ascending=False,inplace=True)
 
     butterfly_followup_frame['Z1'] = butterfly_followup_frame['Z1'].round(2)
 
@@ -173,7 +173,7 @@ def generate_vcs_followup_report(**kwargs):
     vcs_followup_frame['short_oev'] = vcs_followup_frame['short_oev'].round(1)
     vcs_followup_frame['net_theta'] = vcs_followup_frame['net_theta'].round(1)
 
-    vcs_followup_frame.sort('total_pnl', ascending=False, inplace=True)
+    vcs_followup_frame.sort_values('total_pnl', ascending=False, inplace=True)
     vcs_followup_frame.reset_index(drop=True,inplace=True)
     vcs_followup_frame.loc[len(vcs_followup_frame.index)] = ['TOTAL', None, None, None, None, vcs_followup_frame['net_theta'].sum(),
                                                              None, None, None, vcs_followup_frame['total_pnl'].sum(), None]
@@ -248,9 +248,12 @@ def generate_ocs_followup_report(**kwargs):
     ocs_followup_frame.loc[max(ocs_followup_frame.index)+1] = ['WEEKLY PERFORMANCE',np.nan,np.nan, np.nan, pnl_past_week,'']
     ocs_followup_frame.loc[max(ocs_followup_frame.index)+1] = ['MONTHLY PERFORMANCE',np.nan,np.nan, np.nan, pnl_past_month,'']
 
+    ocs_followup_frame['total_pnl'] = ocs_followup_frame['total_pnl'].astype(int)
+
     ocs_followup_frame.to_excel(writer, sheet_name='ocs')
     worksheet_ocs = writer.sheets['ocs']
     worksheet_ocs.freeze_panes(1, 0)
+    worksheet_ocs.set_column('B:B', 26)
 
     worksheet_ocs.autofilter(0, 0, len(ocs_followup_frame.index),
                               len(ocs_followup_frame.columns))

@@ -1,5 +1,10 @@
 __author__ = 'kocat_000'
 
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    import h5py
+
 import get_price.get_futures_price as gfp
 import signals.futures_signals as fs
 import shared.calendar_utilities as cu

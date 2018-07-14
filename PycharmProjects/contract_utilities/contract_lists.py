@@ -178,7 +178,7 @@ def get_liquid_outright_futures_frame(**kwargs):
     selection_indx = [data_frame_out_filtered['ticker_head'].iloc[x] in ticker_head_list for x in range(num_contracts)]
     data_frame_out_filtered2 = data_frame_out_filtered[selection_indx]
 
-    data_frame_out_filtered2.sort(['ticker_head','Volume'],ascending=[True, False],inplace=True)
+    data_frame_out_filtered2.sort_values(['ticker_head','Volume'],ascending=[True, False],inplace=True)
     return data_frame_out_filtered2.drop_duplicates('ticker_head')
 
 

@@ -68,9 +68,9 @@ def get_past_realized_vol_until_expiration(**kwargs):
     if 'con' not in kwargs.keys():
         con.close()
 
-    data_frame_out = pd.DataFrame.from_items([('date_from', report_date_list), ('date_to', exp_date_list),
-                                              ('observed_real_vol_date_from', observed_real_vol_date_from),
-                                              ('observed_real_vol_date_to', observed_real_vol_date_to)])
+    data_frame_out = pd.DataFrame.from_dict({'date_from': report_date_list, 'date_to': exp_date_list,
+                                              'observed_real_vol_date_from': observed_real_vol_date_from,
+                                              'observed_real_vol_date_to': observed_real_vol_date_to})
 
     selection_indx = data_frame_out['date_to'] < datetime_to
     data_frame_out = data_frame_out[selection_indx]

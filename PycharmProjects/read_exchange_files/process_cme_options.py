@@ -56,15 +56,15 @@ def process_cme_options_4ticker(**kwargs):
         selected_call_indx = selected_frame_call.index[0]
         selected_put_indx = selected_frame_put.index[0]
 
-        call_dataframe = pd.DataFrame.from_items([('strike', month_strike_list[selected_call_indx]),
-                                                  ('settle', settle_list[selected_call_indx]),
-                                                  ('volume', volume_filtered_list[selected_call_indx]),
-                                                  ('interest', interest_filtered_list[selected_call_indx])])
+        call_dataframe = pd.DataFrame.from_dict({'strike': month_strike_list[selected_call_indx],
+                                                  'settle': settle_list[selected_call_indx],
+                                                  'volume': volume_filtered_list[selected_call_indx],
+                                                  'interest': interest_filtered_list[selected_call_indx]})
 
-        put_dataframe = pd.DataFrame.from_items([('strike', month_strike_list[selected_put_indx]),
-                                                  ('settle', settle_list[selected_put_indx]),
-                                                  ('volume', volume_filtered_list[selected_put_indx]),
-                                                  ('interest', interest_filtered_list[selected_put_indx])])
+        put_dataframe = pd.DataFrame.from_dict({'strike': month_strike_list[selected_put_indx],
+                                                  'settle': settle_list[selected_put_indx],
+                                                  'volume': volume_filtered_list[selected_put_indx],
+                                                  'interest': interest_filtered_list[selected_put_indx]})
 
         call_dataframe['option_type'] = 'C'
         put_dataframe['option_type'] = 'P'

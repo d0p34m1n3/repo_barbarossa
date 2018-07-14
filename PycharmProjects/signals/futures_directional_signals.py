@@ -1,14 +1,190 @@
 
 import get_price.get_futures_price as gfp
 import contract_utilities.contract_meta_info as cmi
+import opportunity_constructs.utilities as opUtil
+import signals.technical_indicators as ti
+import shared.calendar_utilities as cu
+import shared.statistics as stats
 import statsmodels.api as sm
 import fundamental_data.cot_data as cot
-import shared.calendar_utilities as cu
 import numpy as np
 import pandas as pd
 import datetime as dt
 pd.options.mode.chained_assignment = None
 
+
+def get_fm_signals(**kwargs):
+
+    ticker_head = kwargs['ticker_head']
+    date_to = kwargs['date_to']
+
+    #print(ticker_head)
+
+    ticker_class = cmi.ticker_class[ticker_head]
+
+    datetime_to = cu.convert_doubledate_2datetime(date_to)
+
+    date5_years_ago = cu.doubledate_shift(date_to,5*365)
+    datetime5_years_ago = cu.convert_doubledate_2datetime(date5_years_ago)
+
+    data_out = gfp.get_futures_price_preloaded(ticker_head=ticker_head,settle_date_to=datetime_to)
+
+    data4day = data_out[data_out['settle_date']==datetime_to]
+    data4day = data4day[data4day['tr_dte']>=20]
+
+    if len(data4day.index)<2:
+        return {'ticker': '', 'comm_net': np.nan, 'spec_net': np.nan,
+            'comm_cot_index_slow': np.nan, 'comm_cot_index_fast': np.nan, 'trend_direction': np.nan,'curve_slope': np.nan,
+            'rsi_3': np.nan, 'rsi_7': np.nan, 'rsi_14': np.nan,
+            'change1': np.nan,
+            'change1_instant': np.nan,
+            'change5': np.nan,
+            'change10': np.nan,
+            'change20': np.nan,
+            'change1_dollar': np.nan,
+            'change1_instant_dollar': np.nan,
+            'change5_dollar': np.nan,
+            'change10_dollar': np.nan,
+            'change20_dollar': np.nan}
+
+    data4day.sort_values('volume', ascending=False, inplace=True)
+    data4day = data4day.iloc[:2]
+
+    data4day.sort_values('tr_dte',ascending=True,inplace=True)
+
+    ticker1 = data4day['ticker'].iloc[0]
+    ticker2 = data4day['ticker'].iloc[1]
+
+    tr_dte_list = [data4day['tr_dte'].iloc[0], data4day['tr_dte'].iloc[1]]
+
+    amcb_output = opUtil.get_aggregation_method_contracts_back({'ticker_head': ticker_head, 'ticker_class': cmi.ticker_class[ticker_head]})
+    aggregation_method = amcb_output['aggregation_method']
+    contracts_back = amcb_output['contracts_back']
+
+    futures_data_dictionary = {ticker_head: data_out}
+
+    aligned_output = opUtil.get_aligned_futures_data(contract_list=[ticker1,ticker2],
+                                                          tr_dte_list=tr_dte_list,
+                                                          aggregation_method=aggregation_method,
+                                                          contracts_back=contracts_back,
+                                                          date_to=date_to,
+                                                          futures_data_dictionary=futures_data_dictionary,
+                                                          use_last_as_current=False)
+
+    aligned_data = aligned_output['aligned_data']
+    current_data = aligned_output['current_data']
+
+    yield1_current = 100*(current_data['c1']['close_price']-current_data['c2']['close_price'])/current_data['c2']['close_price']
+    yield1 = 100*(aligned_data['c1']['close_price']-aligned_data['c2']['close_price'])/aligned_data['c2']['close_price']
+
+    last5_years_indx = aligned_data['settle_date']>=datetime5_years_ago
+
+    yield1_last5_years = yield1[last5_years_indx]
+    curve_slope = stats.get_quantile_from_number({'x':yield1_current,'y': yield1_last5_years})
+
+    ticker_head_data = gfp.get_futures_price_preloaded(ticker_head=ticker_head)
+    ticker_head_data = ticker_head_data[ticker_head_data['settle_date'] <= datetime_to]
+
+    if ticker_class in ['Index', 'FX', 'Metal', 'Treasury', 'STIR']:
+
+        merged_data = ticker_head_data[ticker_head_data['tr_dte'] >= 10]
+        merged_data.sort_values(['settle_date', 'tr_dte'],ascending=True,inplace=True)
+        merged_data.drop_duplicates(subset=['settle_date'], keep='first', inplace=True)
+
+        merged_data['ma200'] = merged_data['close_price'].rolling(200).mean()
+        merged_data['ma200_10'] = merged_data['ma200']-merged_data['ma200'].shift(10)
+    else:
+        data_out_front = ticker_head_data[ticker_head_data['tr_dte'] <= 60]
+        data_out_front.drop_duplicates(subset=['settle_date'], keep='last', inplace=True)
+
+        data_out_back = ticker_head_data[ticker_head_data['tr_dte'] > 60]
+        data_out_back.drop_duplicates(subset=['settle_date'], keep='last', inplace=True)
+
+        merged_data = pd.merge(data_out_front[['settle_date','tr_dte','close_price']],data_out_back[['tr_dte','close_price','settle_date','ticker','change_1']],how='inner',on='settle_date')
+        merged_data['const_mat']=((merged_data['tr_dte_y']-60)*merged_data['close_price_x']+
+                                  (60-merged_data['tr_dte_x'])*merged_data['close_price_y'])/\
+                                 (merged_data['tr_dte_y']-merged_data['tr_dte_x'])
+
+        merged_data['ma200'] = merged_data['const_mat'].rolling(200).mean()
+        merged_data['ma200_10'] = merged_data['ma200']-merged_data['ma200'].shift(10)
+
+    merged_data = merged_data[merged_data['settle_date']==datetime_to]
+
+    if len(merged_data.index) == 0:
+        trend_direction = np.nan
+    elif merged_data['ma200_10'].iloc[0]>=0:
+        trend_direction = 1
+    else:
+        trend_direction = -1
+
+    ticker_data = gfp.get_futures_price_preloaded(ticker=ticker2,settle_date_to=datetime_to)
+
+    ticker_data = ti.rsi(data_frame_input=ticker_data, change_field='change_1', period=3)
+    ticker_data = ti.rsi(data_frame_input=ticker_data, change_field='change_1', period=7)
+    ticker_data = ti.rsi(data_frame_input=ticker_data, change_field='change_1', period=14)
+
+    cot_output = cot.get_cot_data(ticker_head=ticker_head, date_to=date_to)
+
+    daily_noise = np.std(ticker_data['change_1'].iloc[-60:])
+
+    if len(cot_output.index)>0:
+
+        if ticker_class in ['FX','STIR','Index','Treasury']:
+
+            cot_output['comm_long'] = cot_output['Asset Manager Longs']+cot_output['Dealer Longs']
+            cot_output['comm_short'] = cot_output['Asset Manager Shorts']+cot_output['Dealer Shorts']
+            cot_output['comm_net'] = cot_output['comm_long']-cot_output['comm_short']
+
+            cot_output['spec_long'] = cot_output['Leveraged Funds Longs']
+            cot_output['spec_short'] = cot_output['Leveraged Funds Shorts']
+            cot_output['spec_net'] = cot_output['spec_long']-cot_output['spec_short']
+
+        else:
+            cot_output['comm_long'] = cot_output['Producer/Merchant/Processor/User Longs']+cot_output['Swap Dealer Longs']
+            cot_output['comm_short'] = cot_output['Producer/Merchant/Processor/User Shorts']+cot_output['Swap Dealer Shorts']
+            cot_output['comm_net'] = cot_output['comm_long']-cot_output['comm_short']
+            cot_output['spec_long'] = cot_output['Money Manager Longs']+cot_output['Other Reportable Longs']
+            cot_output['spec_short'] = cot_output['Money Manager Shorts']+cot_output['Other Reportable Shorts']
+            cot_output['spec_net'] = cot_output['spec_long']-cot_output['spec_short']
+
+        if (datetime_to-cot_output['settle_date'].iloc[-1]).days>=10:
+            comm_net = np.nan
+            spec_net = np.nan
+        else:
+            comm_net = cot_output['comm_net'].iloc[-1]
+            spec_net = cot_output['spec_net'].iloc[-1]
+
+        comm_net_min_slow = cot_output['comm_net'].iloc[-156:].min()
+        comm_net_max_slow = cot_output['comm_net'].iloc[-156:].max()
+
+        comm_cot_index_slow = 100*(comm_net-comm_net_min_slow)/(comm_net_max_slow-comm_net_min_slow)
+
+        comm_net_min_fast = cot_output['comm_net'].iloc[-52:].min()
+        comm_net_max_fast = cot_output['comm_net'].iloc[-52:].max()
+
+        comm_cot_index_fast = 100*(comm_net-comm_net_min_fast)/(comm_net_max_fast-comm_net_min_fast)
+
+    else:
+        comm_net = np.nan
+        spec_net = np.nan
+        comm_cot_index_slow = np.nan
+        comm_cot_index_fast = np.nan
+
+    contract_multiplier = cmi.contract_multiplier[ticker_head]
+
+    return {'ticker': ticker2, 'comm_net': comm_net, 'spec_net': spec_net,
+            'comm_cot_index_slow': comm_cot_index_slow, 'comm_cot_index_fast': comm_cot_index_fast, 'trend_direction': trend_direction,'curve_slope': curve_slope,
+            'rsi_3': ticker_data['rsi_3'].iloc[-1], 'rsi_7': ticker_data['rsi_7'].iloc[-1], 'rsi_14': ticker_data['rsi_14'].iloc[-1],
+            'change1': ticker_data['change1'].iloc[-1]/daily_noise,
+            'change1_instant': ticker_data['change1_instant'].iloc[-1]/daily_noise,
+            'change5': ticker_data['change5'].iloc[-1]/daily_noise,
+            'change10': ticker_data['change10'].iloc[-1]/daily_noise,
+            'change20': ticker_data['change20'].iloc[-1]/daily_noise,
+            'change1_dollar': ticker_data['change1'].iloc[-1]*contract_multiplier,
+            'change1_instant_dollar': ticker_data['change1_instant'].iloc[-1]*contract_multiplier,
+            'change5_dollar': ticker_data['change5'].iloc[-1]*contract_multiplier,
+            'change10_dollar': ticker_data['change10'].iloc[-1]*contract_multiplier,
+            'change20_dollar': ticker_data['change20'].iloc[-1]*contract_multiplier}
 
 def get_cot_strategy_signals(**kwargs):
 
@@ -23,10 +199,10 @@ def get_cot_strategy_signals(**kwargs):
     data_out = data_out[data_out['settle_date'] <= datetime_to]
 
     data_out_front = data_out[data_out['tr_dte'] <= 60]
-    data_out_front.drop_duplicates(subset=['settle_date'], take_last=True, inplace=True)
+    data_out_front.drop_duplicates(subset=['settle_date'], keep='last', inplace=True)
 
     data_out_back = data_out[data_out['tr_dte'] > 60]
-    data_out_back.drop_duplicates(subset=['settle_date'], take_last=False, inplace=True)
+    data_out_back.drop_duplicates(subset=['settle_date'], keep='last', inplace=True)
 
     merged_data = pd.merge(data_out_front[['settle_date','tr_dte','close_price']],data_out_back[['tr_dte','close_price','settle_date','ticker','change_1']],how='inner',on='settle_date')
     merged_data['const_mat']=((merged_data['tr_dte_y']-60)*merged_data['close_price_x']+
@@ -89,17 +265,12 @@ def get_cot_strategy_signals(**kwargs):
         cot_output['spec_long'] = cot_output['Money Manager Longs']
         cot_output['spec_short'] = cot_output['Money Manager Shorts']
 
-    cot_output['spec_long_per'] = 100*(cot_output['spec_long'])/(cot_output['spec_long']+cot_output['spec_short'])
-    cot_output['spec_short_per'] = 100*(cot_output['spec_short'])/(cot_output['spec_long']+cot_output['spec_short'])
 
     cot_output['spec_long_per_mean'] = pd.rolling_mean(cot_output['spec_long_per'],window=150,min_periods=75)
     cot_output['spec_short_per_mean'] = pd.rolling_mean(cot_output['spec_short_per'],window=150,min_periods=75)
 
-    cot_output['spec_long_per_norm'] = cot_output['spec_long_per']-cot_output['spec_long_per_mean']
-    cot_output['spec_short_per_norm'] = cot_output['spec_short_per']-cot_output['spec_short_per_mean']
 
-    cot_output['spec_long_ma13'] = pd.rolling_mean(cot_output['spec_long'], window=13, min_periods=10)
-    cot_output['spec_short_ma13'] = pd.rolling_mean(cot_output['spec_short'], window=13, min_periods=10)
+
 
     cot_output['comm_net_change_1'] = cot_output['comm_net']-cot_output['comm_net'].shift(1)
     cot_output['comm_net_change_2'] = cot_output['comm_net']-cot_output['comm_net'].shift(2)
@@ -208,71 +379,7 @@ def get_cot_strategy_signals(**kwargs):
             exit_index_list.append(i)
             exit_price_list.append(price_i1)
 
-    trade_frame_1 = pd.DataFrame.from_items([('entry_index', entry_index_list),
-                                             ('exit_index', exit_index_list),
-                                             ('entry_price', entry_price_list),
-                                             ('exit_price', exit_price_list),
-                                             ('position',position_list)])
-
-    position = 0
-    position_list = []
-    entry_index_list = []
-    exit_index_list = []
-    entry_price_list = []
-    exit_price_list = []
-
-    for i in range(len(combined_data.index)):
-
-        spec_change1_signal = combined_data['spec_net_change_1_norm'].iloc[i]
-        spec_change4_signal = combined_data['spec_net_change_4_norm'].iloc[i]
-        spec_z_signal = combined_data['spec_z'].iloc[i]
-        price_i = combined_data['const_mat'].iloc[i]
-
-        min_10 = combined_data['const_mat_min10'].iloc[i]
-        max_10 = combined_data['const_mat_max10'].iloc[i]
-        min_20 = combined_data['const_mat_min20'].iloc[i]
-        max_20 = combined_data['const_mat_max20'].iloc[i]
-
-        const_mat_change_10_norm = combined_data['const_mat_change_10_norm'].iloc[i]
-        const_mat_change_20_norm = combined_data['const_mat_change_20_norm'].iloc[i]
-
-        if i == len(combined_data.index)-1:
-            if position != 0:
-                exit_index_list.append(i)
-                exit_price_list.append(price_i)
-            break
-
-        price_i1 = combined_data['const_mat'].iloc[i+1]
-
-        if (position == 0) and (spec_z_signal>0.75) and (price_i==min_10):
-            position = 1
-            position_list.append(position)
-            entry_index_list.append(i)
-            entry_price_list.append(price_i1)
-        elif (position == 0) and (spec_z_signal<-0.75) and (price_i==max_10):
-            position = -1
-            position_list.append(position)
-            entry_index_list.append(i)
-            entry_price_list.append(price_i1)
-        elif (position == 1) and ((price_i==min_20)):
-            position = 0
-            exit_index_list.append(i)
-            exit_price_list.append(price_i1)
-        elif (position == -1) and ((price_i==max_20)):
-            position = 0
-            exit_index_list.append(i)
-            exit_price_list.append(price_i1)
-
-    trade_frame_2 = pd.DataFrame.from_items([('entry_index', entry_index_list),
-                                             ('exit_index', exit_index_list),
-                                             ('entry_price', entry_price_list),
-                                             ('exit_price', exit_price_list),
-                                             ('position',position_list)])
-
-    trade_frame_1['pnl'] = trade_frame_1['position']*(trade_frame_1['exit_price']-trade_frame_1['entry_price'])
-    trade_frame_2['pnl'] = trade_frame_2['position']*(trade_frame_2['exit_price']-trade_frame_2['entry_price'])
-
-    return {'combined_data': combined_data, 'trade_frame_1': trade_frame_1, 'trade_frame_2': trade_frame_2}
+    return {'combined_data': combined_data}
 
 
 def get_contract_summary_stats(**kwargs):

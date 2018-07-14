@@ -22,6 +22,7 @@ def get_overnight_spreads_4date(**kwargs):
     mean_frame = pd.DataFrame()
     mean_frame['averege_volume'] = grouped['volume'].mean()
     mean_frame['ticker'] = grouped['ticker'].last()
+    mean_frame.index.names = ['ticker_index' if x is 'ticker' else x for x in mean_frame.index.names]
 
     mean_frame['averege_volume'] = mean_frame['averege_volume'].round()
 

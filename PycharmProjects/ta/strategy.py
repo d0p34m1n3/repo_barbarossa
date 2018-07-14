@@ -35,6 +35,8 @@ def generate_db_strategy_from_strategy_sheet(**kwargs):
             strategy_alias = strategy['tickerHead'] + strategy['ticker2'][-5:] + strategy['ticker3'][-5:] + \
                        strategy['ticker1'][-5:] + strategy['ticker2'][-5:]
 
+        strategy = strategy[['ticker1','ticker2','ticker3','trDte1','trDte2','trDte3','agg','cBack','Q','QF','z1']]
+
     description_string = 'strategy_class=' + strategy_class + '&' + \
                           conv.convert_from_dictionary_to_string(dictionary_input=strategy)
 
@@ -377,42 +379,10 @@ def create_strategy_output_dir(**kwargs):
 
     if strategy_class == 'futures_butterfly':
         output_dir = strategy_output_folder + '/futures_butterfly/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'curve_pca':
-         output_dir = strategy_output_folder + '/curve_pca/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'spread_carry':
-         output_dir = strategy_output_folder + '/spread_carry/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'vcs':
-         output_dir = strategy_output_folder + '/vcs/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'scv':
-         output_dir = strategy_output_folder + '/scv/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ics':
-         output_dir = strategy_output_folder + '/ics/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'os':
-         output_dir = strategy_output_folder + '/os/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ts':
-         output_dir = strategy_output_folder + '/ts/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'itt':
-         output_dir = strategy_output_folder + '/itt/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ocs':
-         output_dir = strategy_output_folder + '/ocs/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ofs':
-         output_dir = strategy_output_folder + '/ofs/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'cot':
-         output_dir = strategy_output_folder + '/cot/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'arma':
-         output_dir = strategy_output_folder + '/arma/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'futures_directional':
-         output_dir = strategy_output_folder + '/futures_directional/' + cu.get_directory_extension(report_date)
     elif strategy_class == 'intraday_futures_experimental':
          output_dir = strategy_output_folder + '/ife/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'itf':
-         output_dir = strategy_output_folder + '/itf/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'smrl':
-         output_dir = strategy_output_folder + '/smrl/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'smrs':
-         output_dir = strategy_output_folder + '/smrs/' + cu.get_directory_extension(report_date)
-    elif strategy_class == 'ibo':
-         output_dir = strategy_output_folder + '/ibo/' + cu.get_directory_extension(report_date)
+    else:
+        output_dir = strategy_output_folder + '/' + strategy_class + '/' + cu.get_directory_extension(report_date)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

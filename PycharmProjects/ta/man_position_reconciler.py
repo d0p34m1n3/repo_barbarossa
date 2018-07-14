@@ -20,6 +20,7 @@ conversion_from_man_ticker_head = {'06': 'SM',
                                    'LN': 'LN',
                                    '39': 'SI',
                                    '27': 'SB',
+                                   '21': 'TY',
                                    '43': 'KC',
                                    '96': 'OJ',
                                    'CY': 'CC',
@@ -65,7 +66,7 @@ def load_and_convert_man_position_file(**kwargs):
                                for x in range(len(man_frame.index))]
 
     man_frame.rename(columns={'Strike': 'strike_price', 'OptionType': 'option_type', 'NetQty': 'qty'}, inplace=True)
-    man_frame['strike_price'] = man_frame['strike_multiplier']*man_frame['strike_price']
+    man_frame['strike_price'] = round(man_frame['strike_multiplier']*man_frame['strike_price'],4)
 
     man_frame['instrumet'] = 'F'
     option_indx = (man_frame['option_type'] == 'C')|(man_frame['option_type'] == 'P')

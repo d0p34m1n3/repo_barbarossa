@@ -153,6 +153,7 @@ def get_aligned_futures_data(**kwargs):
 
     if get_uniqe_data:
         aligned_dataframe['tr_dte_match'] = abs(aligned_dataframe['c1']['tr_dte']-tr_dte_list[0])
+        aligned_dataframe.index.names = ['settle_date_index' if x is 'settle_date' else x for x in aligned_dataframe.index.names]
         aligned_dataframe.sort_values(['settle_date','tr_dte_match'],ascending=[True,True],inplace=True)
         unique_index = np.unique(aligned_dataframe['settle_date'], return_index=True)[1]
         aligned_dataframe = aligned_dataframe.iloc[unique_index]

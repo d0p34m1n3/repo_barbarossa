@@ -178,6 +178,7 @@ def rsi(**kwargs):
     period = kwargs['period']
 
     if len(data_frame_input.index)<period:
+        data_frame_input['rsi_' + str(period)] = np.nan
         return data_frame_input
 
     data_frame_input['gains'] = data_frame_input[change_field]

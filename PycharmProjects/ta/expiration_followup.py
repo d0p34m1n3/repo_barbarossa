@@ -65,8 +65,8 @@ def get_expiration_report(**kwargs):
 
     expiration_list = [x for x in expiration_list if not x.empty]
 
-    expiration_frame = pd.concat(expiration_list)
-    return expiration_frame.sort('tr_days_2roll', ascending=True, inplace=False)
+    expiration_frame = pd.concat(expiration_list,sort=True)
+    return expiration_frame.sort_values('tr_days_2roll', ascending=True, inplace=False)
 
 
 

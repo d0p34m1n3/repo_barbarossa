@@ -385,14 +385,14 @@ def get_aligned_option_indicators(**kwargs):
         volume_list.append(ticker_data['volume'].iloc[0])
         open_interest_list.append(ticker_data['open_interest'].iloc[0])
 
-    current_data = pd.DataFrame.from_items([('ticker',ticker_list),
-                             ('tr_dte', tr_dte_list),
-                             ('cal_dte', cal_dte_list),
-                             ('imp_vol', imp_vol_list),
-                             ('theta', theta_list),
-                             ('close2close_vol20', close2close_vol20_list),
-                             ('volume', volume_list),
-                             ('open_interest', open_interest_list)])
+    current_data = pd.DataFrame.from_dict({'ticker': ticker_list,
+                             'tr_dte': tr_dte_list,
+                             'cal_dte': cal_dte_list,
+                             'imp_vol': imp_vol_list,
+                             'theta': theta_list,
+                             'close2close_vol20': close2close_vol20_list,
+                             'volume': volume_list,
+                             'open_interest': open_interest_list})
 
     current_data['settle_date'] = last_available_settle
     current_data.set_index('ticker', drop=True, inplace=True)
@@ -484,6 +484,8 @@ def get_aligned_option_indicators(**kwargs):
     merged_dataframe = pd.concat(data_frame_list, axis=1, join='inner',keys=['c'+ str(x+1) for x in range(len(ticker_list))])
     merged_dataframe['abs_tr_dte_diff'] = abs(merged_dataframe['c1']['tr_dte']-tr_dte_list[0])
     merged_dataframe['settle_date'] = merged_dataframe['c1']['settle_date']
+
+    merged_dataframe.index.names = ['settle_date_index' if x is 'settle_date' else x for x in merged_dataframe.index.names]
     merged_dataframe.sort_values(['settle_date', 'abs_tr_dte_diff'], ascending=[True,True], inplace=False)
 
     unique_index = np.unique(merged_dataframe['settle_date'], return_index=True)[1]

@@ -294,8 +294,6 @@ def get_strategy_pnl(**kwargs):
     alias = kwargs['alias']
     con = msu.get_my_sql_connection(**kwargs)
 
-    print(alias)
-
     strategy_info = ts.get_strategy_info_from_alias(alias=alias, con=con)
 
     if 'as_of_date' in kwargs.keys():
@@ -402,7 +400,8 @@ def get_strategy_pnl(**kwargs):
                  pnl_path[index_val] = pnl_path_after_nan[i]
 
         pnl_per_tickerhead_list = [x['pnl_per_tickerhead'] for x in pnl_path]
-        pnl_per_tickerhead = pd.concat(pnl_per_tickerhead_list, axis=1)
+
+        pnl_per_tickerhead = pd.concat(pnl_per_tickerhead_list, axis=1, sort=True)
         pnl_per_tickerhead = pnl_per_tickerhead[['pnl_total']]
         pnl_per_tickerhead = pnl_per_tickerhead.transpose()
 

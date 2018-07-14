@@ -145,7 +145,7 @@ def get_results_4strategy(**kwargs):
 
         for i in range(len(unique_tickerhead_list)):
             net_position_per_tickerhead = net_position[net_position['ticker_head'] == unique_tickerhead_list[i]]
-            net_position_per_tickerhead.sort('tr_dte',ascending=True,inplace=True)
+            net_position_per_tickerhead.sort_values('tr_dte',ascending=True,inplace=True)
 
             selected_spread = spread_report[(spread_report['ticker1'] == net_position_per_tickerhead['ticker'].values[0]) &
                              (spread_report['ticker2'] == net_position_per_tickerhead['ticker'].values[1])]
@@ -231,8 +231,8 @@ def get_results_4strategy(**kwargs):
             if (not short_portfolio.empty) & (not long_portfolio.empty):
                 long_short_ratio = 100*long_oev/short_oev
 
-                long_portfolio.sort('total_oev', ascending=False, inplace=True)
-                short_portfolio.sort('total_oev', ascending=False, inplace=True)
+                long_portfolio.sort_values('total_oev', ascending=False, inplace=True)
+                short_portfolio.sort_values('total_oev', ascending=False, inplace=True)
 
                 long_ticker = long_portfolio['ticker'].iloc[0]
                 short_ticker = short_portfolio['ticker'].iloc[0]
@@ -274,7 +274,7 @@ def get_results_4strategy(**kwargs):
 
             trades_frame = ts.get_trades_4strategy_alias(**kwargs)
             trades_frame_options = trades_frame[trades_frame['instrument'] == 'O']
-            last_adjustment_days_ago = len(exp.get_bus_day_list(date_to=date_to,datetime_from=max(trades_frame_options['trade_date']).to_datetime()))
+            last_adjustment_days_ago = len(exp.get_bus_day_list(date_to=date_to,datetime_from=max(trades_frame_options['trade_date']).to_pydatetime()))
 
             if favQMove >= 10 and last_adjustment_days_ago > 10:
                 recommendation = 'STOP-ratio normalized'

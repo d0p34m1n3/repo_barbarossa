@@ -153,7 +153,7 @@ def strategy_hedge_report(**kwargs):
     hedge_indx = [x in ['vcs', 'scv','optionInventory'] for x in strategy_class_list]
     hedge_frame = strategy_frame[hedge_indx]
 
-    hedge_frame = hedge_frame[(hedge_frame['alias'] == 'SMZ18V18VCS')|(hedge_frame['alias'] == 'WZ18N18VCS')]
+    #hedge_frame = hedge_frame[(hedge_frame['alias'] == 'SMZ18V18VCS')|(hedge_frame['alias'] == 'WZ18N18VCS')]
     #hedge_frame = hedge_frame[(hedge_frame['alias'] == 'WZ18N18VCS')]
     #hedge_frame = hedge_frame[(hedge_frame['alias'] != 'CLZ17H18VCS')]
     [hedge_strategy_against_delta(alias=x, con=con) for x in hedge_frame['alias']]
