@@ -162,13 +162,13 @@ def strategy_hedge_report(**kwargs):
     hedge_indx = [x in ['vcs', 'scv','optionInventory'] for x in strategy_class_list]
     hedge_frame = strategy_frame[hedge_indx]
 
-    #hedge_frame = hedge_frame[(hedge_frame['alias'] == 'WZ18N18VCS')]
+    #hedge_frame = hedge_frame[(hedge_frame['alias'] == 'BPX2018_short_scv')]
     #hedge_frame = hedge_frame[(hedge_frame['alias'] != 'CLZ17H18VCS')]
 
     if 'intraday_price_frame' in kwargs.keys():
         [hedge_strategy_against_delta(alias=x, intraday_price_frame=kwargs['intraday_price_frame'], delta_alias=kwargs['delta_alias'], con=con) for x in hedge_frame['alias']]
     else:
-        [hedge_strategy_against_delta(alias=x, delta_alias=delta_alias, con=con) for x in hedge_frame['alias']]
+        [hedge_strategy_against_delta(alias=x, delta_alias=kwargs['delta_alias'], con=con) for x in hedge_frame['alias']]
 
     if 'con' not in kwargs.keys():
         con.close()

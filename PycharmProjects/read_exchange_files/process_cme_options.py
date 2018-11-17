@@ -28,6 +28,8 @@ def process_cme_options_4ticker(**kwargs):
         else:
             data_read_out = rcf.read_cme_settle_txt_files(file_name=file_name, report_date=report_date)
 
+
+
         title_frame = data_read_out['title_frame']
         settle_list = data_read_out['settle_list']
         month_strike_list = data_read_out['month_strike_list']
@@ -159,7 +161,7 @@ def process_cme_options_4ticker(**kwargs):
                                       (cmi.option_cabinet_values[ticker_head] if x[0] == 'CAB' else np.NaN) for x in splited_strings]
 
     elif ticker_head in ['GC', 'SI', 'CL', 'NG', 'RB', 'HO']:
-        settle_frame['settle'] = settle_frame['settle'].replace('', None)
+        settle_frame['settle'] = settle_frame['settle'].replace([''], [None])
         settle_frame = settle_frame[~pd.isnull(settle_frame['settle'])]
         settle_frame['settle'] = settle_frame['settle'].astype('float64')
 

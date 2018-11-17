@@ -340,7 +340,7 @@ def select_strategies(**kwargs):
     if 'open_date_from' in kwargs.keys():
         open_date_from = kwargs['open_date_from']
     else:
-        open_date_from = 20160907
+        open_date_from = 20170901
 
     sql_query = sql_query + ' open_date>=' + str(open_date_from)
 

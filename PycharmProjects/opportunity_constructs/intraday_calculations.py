@@ -35,9 +35,9 @@ def get_intraday_vcs(**kwargs):
     q = vcs_output['q']
     q1 = vcs_output['q1']
 
-    filter_out = of.get_vcs_filters(data_frame_input=pd.DataFrame.from_items([('tickerHead', [ticker_head]),
-                                                                              ('tickerClass', [ticker_class]),
-                                                                              ('Q', [q]), ('Q1', [q1])]), filter_list=['long2', 'short2'])
+    filter_out = of.get_vcs_filters(data_frame_input=pd.DataFrame.from_dict({'tickerHead': [ticker_head],
+                                                                             'tickerClass': [ticker_class],
+                                                                              'Q': [q], 'Q1': [q1]}), filter_list=['long2', 'short2'])
 
     if filter_out['selected_frame'].empty:
         validQ = False

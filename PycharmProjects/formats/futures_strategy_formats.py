@@ -5,6 +5,7 @@ import opportunity_constructs.futures_butterfly as fb
 import opportunity_constructs.intraday_future_spreads as ifs
 import opportunity_constructs.overnight_calendar_spreads as ocs
 import opportunity_constructs.outright_contract_summary as out_cs
+import opportunity_constructs.spread_carry as sc
 import opportunity_constructs.curve_pca as cpc
 import signals.futures_filters as ff
 import shared.directory_names as dn
@@ -58,6 +59,22 @@ def generate_futures_butterfly_formatted_output(**kwargs):
 
     worksheet_all.autofilter(0, 0, len(butterflies_w_selected_columns.index),
                                    len(butterflies_w_selected_columns.columns))
+
+
+def generate_spread_carry_formatted_output(**kwargs):
+
+    if 'report_date' in kwargs.keys():
+        report_date = kwargs['report_date']
+    else:
+        report_date = exp.doubledate_shift_bus_days()
+
+    output_dir = ts.create_strategy_output_dir(strategy_class='spread_carry', report_date=report_date)
+
+    spread_carry_output = sc.generate_spread_carry_sheet_4date(report_date=report_date)
+    spread_report = spread_carry_output['spread_report']
+
+    writer = pd.ExcelWriter(output_dir + '/' + futil.get_xls_file_name('spread_carry') + '.xlsx', engine='xlsxwriter')
+    spread_report.to_excel(writer, sheet_name='summary')
 
 
 def generate_curve_pca_formatted_output(**kwargs):

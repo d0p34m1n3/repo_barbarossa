@@ -32,8 +32,9 @@ def get_vcs_panel_plot(**kwargs):
     x_tick_values = [cmi.letter_month_string[int(hist['c1']['ticker_month'].values[x])-1]+
                      str(front_contract_year.values[x]) for x in new_index if contract_change_indx[x]]
 
+
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['c1']['imp_vol']/hist['c2']['imp_vol'])
+    plt.plot(range(len(hist.index)),hist['c1']['imp_vol']/hist['c2']['imp_vol'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('atmVolRatio')
     plt.grid()
@@ -45,21 +46,21 @@ def get_vcs_panel_plot(**kwargs):
     hist['fwd_vol_adj'] = fwd_vol_adj
 
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['fwd_vol_adj'])
+    plt.plot(range(len(hist.index)),hist['fwd_vol_adj'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('Fwd Vol')
     plt.grid()
     plt.show()
 
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['c1']['close2close_vol20']/hist['c2']['close2close_vol20'])
+    plt.plot(range(len(hist.index)),hist['c1']['close2close_vol20']/hist['c2']['close2close_vol20'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('realVolRatio')
     plt.grid()
     plt.show()
 
     plt.figure(figsize=(16, 7))
-    plt.plot(hist['c1']['imp_vol']/hist['c1']['close2close_vol20'])
+    plt.plot(range(len(hist.index)),hist['c1']['imp_vol']/hist['c1']['close2close_vol20'])
     plt.xticks(x_tick_locations,x_tick_values)
     plt.ylabel('atmRealVolRatio')
     plt.grid()
@@ -67,28 +68,28 @@ def get_vcs_panel_plot(**kwargs):
 
     if diagnostics_q:
         plt.figure(figsize=(16, 7))
-        plt.plot(hist['c1']['ticker_year'])
+        plt.plot(range(len(hist.index)),hist['c1']['ticker_year'])
         plt.xticks(x_tick_locations,x_tick_values)
         plt.ylabel('ticker_year')
         plt.grid()
         plt.show()
 
         plt.figure(figsize=(16, 7))
-        plt.plot(hist['c1']['tr_dte']-hist['c2']['tr_dte'])
+        plt.plot(range(len(hist.index)),hist['c1']['tr_dte']-hist['c2']['tr_dte'])
         plt.xticks(x_tick_locations,x_tick_values)
         plt.ylabel('tr dte diff')
         plt.grid()
         plt.show()
 
         plt.figure(figsize=(16, 7))
-        plt.plot(hist['c1']['tr_dte'])
+        plt.plot(range(len(hist.index)),hist['c1']['tr_dte'])
         plt.xticks(x_tick_locations,x_tick_values)
         plt.ylabel('tr dte')
         plt.grid()
         plt.show()
 
         plt.figure(figsize=(16, 7))
-        plt.plot(hist['c1']['ticker_month'])
+        plt.plot(range(len(hist.index)),hist['c1']['ticker_month'])
         plt.xticks(x_tick_locations,x_tick_values)
         plt.ylabel('ticker_month')
         plt.grid()

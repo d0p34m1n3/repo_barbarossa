@@ -39,6 +39,11 @@ fsf.generate_futures_butterfly_formatted_output()
 prep.prepare_strategy_daily(strategy_class='futures_butterfly')
 
 try:
+    fsf.generate_spread_carry_formatted_output(report_date=report_date)
+except Exception:
+    pass
+
+try:
     fsf.generate_curve_pca_formatted_output()
     prep.prepare_strategy_daily(strategy_class='curve_pca')
 except Exception:

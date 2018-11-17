@@ -160,6 +160,8 @@ PRIMARY KEY (`id`),
 UNIQUE KEY `ticker_day` (`ticker`,`price_date`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+ALTER TABLE `option_ticker_indicators` MODIFY `close2close_vol20` decimal(6,3) NULL
+
 
 
 CREATE TABLE `strategy` (

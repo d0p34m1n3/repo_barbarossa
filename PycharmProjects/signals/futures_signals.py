@@ -411,9 +411,14 @@ def get_futures_spread_carry_signals(**kwargs):
     carry = [contract_multiplier*(price_current_list[x]-price_current_list[x+1]) for x in range(len(q_list)-1)]
     q_carry = [q_list[x]-q_list[x+1] for x in range(len(q_list)-1)]
 
-    q_average = np.mean(q_list)
+    q_average = np.cumsum(q_list)/range(1, len(q_list)+1)
+    q_series = pd.Series(q_list)
+    q_min = q_series.cummin().values
+    q_max = q_series.cummax().values
+    q_carry_average = [q_average[x]-q_list[x+1] for x in range(len(q_list)-1)]
+    q_carry_max = [q_max[x]-q_list[x+1] for x in range(len(q_list)-1)]
+    q_carry_min = [q_min[x]-q_list[x+1] for x in range(len(q_list)-1)]
 
-    q_carry_average = [q_list[x]-q_average for x in range(len(q_list))]
 
     reward_risk = [5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*abs(downside[x+1])) if carry[x]>0
       else 5*carry[x]/((front_tr_dte[x+1]-front_tr_dte[x])*upside[x+1]) for x in range(len(carry))]
@@ -424,13 +429,17 @@ def get_futures_spread_carry_signals(**kwargs):
                                     'ticker2L': [''] + ticker2_list[:-1],
                          'ticker_head': cmi.get_contract_specs(ticker_list[0])['ticker_head'],
                          'front_tr_dte': front_tr_dte,
+                         'front_tr_dteL': [np.NAN] + front_tr_dte[:-1],
                          'carry': [np.NAN]+carry,
                          'q_carry': [np.NAN]+q_carry,
-                         'q_carry_average': q_carry_average,
+                         'q_carry_average': [np.NAN]+q_carry_average,
+                         'q_carry_max' : [np.NAN] + q_carry_max,
+                         'q_carry_min' : [np.NAN] + q_carry_min,
                          'butterfly_q': [np.NAN]+butterfly_q_list,
                          'butterfly_z': [np.NAN]+butterfly_z_list,
                          'reward_risk': [np.NAN]+reward_risk,
                          'price': price_current_list,
+                         'priceL': [np.NAN] + price_current_list[:-1],
                          'butterfly_q10': [np.NAN]+butterfly_q10,
                          'butterfly_q25': [np.NAN]+butterfly_q25,
                          'butterfly_q35': [np.NAN] + butterfly_q35,
@@ -443,6 +452,8 @@ def get_futures_spread_carry_signals(**kwargs):
                          'q': q_list,
                          'upside': upside,
                          'downside': downside,
+                         'upsideL': [np.NAN] + upside[:-1],
+                         'downsideL': [np.NAN] + downside[:-1],
                          'change5': change5,
                          'change10': change10,
                          'change20': change20})

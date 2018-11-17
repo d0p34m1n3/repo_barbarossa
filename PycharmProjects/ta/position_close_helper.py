@@ -78,15 +78,15 @@ def calc_intraday_structure_pnl_from_prices(**kwargs):
     qty = kwargs['qty']
 
     if structure_type == 'straddle_spread':
-        option_frame = pd.DataFrame.from_items([('ticker', [ticker_list[0], ticker_list[0], ticker_list[1], ticker_list[1]]),
-                                                ('option_type', ['C', 'P', 'C', 'P']),
-                                                ('strike_price', [strike_list[0], strike_list[0], strike_list[1],strike_list[1]]),
-                                                ('qty', [-1, -1, 1, 1])])
+        option_frame = pd.DataFrame.from_dict({'ticker': [ticker_list[0], ticker_list[0], ticker_list[1], ticker_list[1]],
+                                               'option_type': ['C', 'P', 'C', 'P'],
+                                               'strike_price': [strike_list[0], strike_list[0], strike_list[1],strike_list[1]],
+                                               'qty': [-1, -1, 1, 1]})
     elif structure_type == 'straddle':
-        option_frame = pd.DataFrame.from_items([('ticker', [ticker_list[0], ticker_list[0]]),
-                                                ('option_type', ['C', 'P']),
-                                                ('strike_price', [strike_list[0], strike_list[0]]),
-                                                ('qty', [1, 1])])
+        option_frame = pd.DataFrame.from_dict({'ticker': [ticker_list[0], ticker_list[0]],
+                                               'option_type': ['C', 'P'],
+                                                'strike_price': [strike_list[0], strike_list[0]],
+                                                'qty': [1, 1]})
 
     option_price_output = [gop.get_options_price_from_db(ticker=option_frame['ticker'].iloc[x],
                                   strike=option_frame['strike_price'].iloc[x],

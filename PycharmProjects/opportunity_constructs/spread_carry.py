@@ -42,7 +42,7 @@ def get_spread_carry_4tickerhead(**kwargs):
     if 'min_tr_dte' in kwargs.keys():
         min_tr_dte = kwargs['min_tr_dte']
     else:
-        min_tr_dte = 10
+        min_tr_dte = 15
 
     if 'futures_data_dictionary' in kwargs.keys():
         futures_data_dictionary = kwargs['futures_data_dictionary']

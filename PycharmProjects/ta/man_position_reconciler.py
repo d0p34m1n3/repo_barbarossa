@@ -35,9 +35,10 @@ conversion_from_man_ticker_head = {'06': 'SM',
                                    'ED': 'ED',
                                    'ES': 'ES',
                                    'EU': 'EC',
+                                   'GU': 'BP',
                                    'BC': 'B'}
 
-man_strike_multiplier = {'C': 100, 'S': 100, 'W': 100}
+man_strike_multiplier = {'C': 100, 'S': 100, 'W': 100, 'BP': 0.01}
 
 
 def load_and_convert_man_position_file(**kwargs):

@@ -189,6 +189,8 @@ def update_futures_price_database_from_cme_file(**kwargs):
     now = datetime.datetime.now()
     run_datetime = cu.convert_doubledate_2datetime(run_date)
 
+    print(ticker_head_list)
+
     for ticker_head in ticker_head_list:
         print(ticker_head)
 
@@ -201,6 +203,7 @@ def update_futures_price_database_from_cme_file(**kwargs):
 
         cme_output = pcf.process_cme_futures_4tickerhead(ticker_head=ticker_head, report_date=run_date)
         settle_frame = cme_output['settle_frame']
+
         if settle_frame.empty:
             continue
 
