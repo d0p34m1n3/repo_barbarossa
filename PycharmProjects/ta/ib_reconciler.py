@@ -24,8 +24,8 @@ class ib_reconciler(subs.subscription):
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
-        self.position_frame.loc[self.contractDetailReqIdDictionary[reqId],'con_id'] = contractDetails.summary.conId
-        self.position_frame.loc[self.contractDetailReqIdDictionary[reqId], 'ib_symbol'] = contractDetails.summary.localSymbol
+        self.position_frame.loc[self.contractDetailReqIdDictionary[reqId],'con_id'] = contractDetails.contract.conId
+        self.position_frame.loc[self.contractDetailReqIdDictionary[reqId], 'ib_symbol'] = contractDetails.contract.localSymbol
 
     def contractDetailsEnd(self, reqId: int):
             super().contractDetailsEnd(reqId)
@@ -72,7 +72,7 @@ class ib_reconciler(subs.subscription):
             elif position_frame.loc[i,'instrument'] == 'O':
                 contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i, 'ticker'],sec_type='OF',
                                                                         option_type=position_frame.loc[i, 'option_type'],
-                                                                        strike=dec.Decimal(position_frame.loc[i, 'strike_price']))
+                                                                        strike=float(position_frame.loc[i, 'strike_price']))
             elif position_frame.loc[i,'instrument'] == 'S':
                 contract_i = ib_contract.get_ib_contract_from_db_ticker(ticker=position_frame.loc[i,'ticker'], sec_type='S')
 

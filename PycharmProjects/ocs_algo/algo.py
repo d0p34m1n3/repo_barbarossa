@@ -18,6 +18,7 @@ import pandas as pd
 import math as mth
 import threading as thr
 import datetime as dt
+import time as tm
 from ibapi.contract import *
 from ibapi.common import *
 from ibapi.ticktype import *
@@ -51,10 +52,13 @@ class Algo(subs.subscription):
     # bet_size of 240 caused a $12,736 drawdown
     # increased size %44 on June 1st 2018
     # increased size %8 on July 2nd 2018
+    # increased size %10 (150->165) on October 1st 2018
+    # increase size by %15 (165->190) on November 1st 2018
     total_traded_volume_max_before_user_confirmation = 90
     total_traded_volume_since_last_confirmation = 0
     total_volume_traded = 0
     max_num_bets = 3
+    num_messages = 0
     num_bets = 0
     ticker_head_list = cmi.futures_butterfly_strategy_tickerhead_list
     theme_name_list = set([x + '_long' for x in ticker_head_list]).union(set([x + '_short' for x in ticker_head_list]))
@@ -63,7 +67,7 @@ class Algo(subs.subscription):
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
-        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.summary.conId
+        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.contract.conId
 
     def contractDetailsEnd(self, reqId: int):
             super().contractDetailsEnd(reqId)
@@ -108,8 +112,8 @@ class Algo(subs.subscription):
         print("OpenOrder. ID:", orderId, contract.symbol, contract.secType,
         "@", contract.exchange, ":", order.action, order.orderType,order.totalQuantity, orderState.status)
 
-    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str):
-        super().orderStatus(orderId, status, filled, remaining,avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld)
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str, mktCapPrice: float):
+        super().orderStatus(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
         print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
         "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
         "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
@@ -477,6 +481,11 @@ class Algo(subs.subscription):
         self.nonfinished_ask_quantity_list.extend(spread_ticker_list)
 
         for i in range(len(spread_ticker_list)):
+
+            if self.num_messages>=30:
+                tm.sleep(2)
+                self.num_messages = 0
+
             split_out = spread_ticker_list[i].split("-")
             ticker1 = split_out[0]
             ticker2 = split_out[1]
@@ -513,6 +522,7 @@ class Algo(subs.subscription):
             self.market_data_ReqId_dictionary[self.next_val_id] = spread_ticker_list[i]
             self.log.info('req id: ' + str(self.next_val_id) + ', spread_ticker:' + str(spread_ticker_list[i]));
             self.reqMktData(self.next_valid_id(), spread_contract, "", False, False, [])
+            self.num_messages += 1
             self.spread_contract_dictionary[spread_ticker_list[i]] = spread_contract
 
     def request_outright_market_data(self):
@@ -525,8 +535,14 @@ class Algo(subs.subscription):
         self.nonfinished_ask_quantity_list.extend(outright_ticker_list)
 
         for i in range(len(outright_ticker_list)):
+
+            if self.num_messages>=30:
+                tm.sleep(2)
+                self.num_messages = 0
+
             outright_ib_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=outright_ticker_list[i], sec_type='F')
             self.market_data_ReqId_dictionary[self.next_val_id] = outright_ticker_list[i]
             self.log.info('req id: ' + str(self.next_val_id) + ', outright_ticker:' + str(outright_ticker_list[i]));
             self.reqMktData(self.next_valid_id(), outright_ib_contract, "", False, False, [])
+            self.num_messages += 1
 

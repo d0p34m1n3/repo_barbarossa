@@ -43,7 +43,7 @@ class Algo(subs.subscription):
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
-        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.summary.conId
+        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.contract.conId
         contract_specs_output = cmi.get_contract_specs(self.contractDetailReqIdDictionary[reqId])
 
     def contractDetailsEnd(self, reqId: int):
@@ -54,14 +54,14 @@ class Algo(subs.subscription):
                 self.request_spread_market_data()
                 self.request_outright_market_data()
 
-    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str):
-        super().orderStatus(orderId, status, filled, remaining,avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld)
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str, mktCapPrice: float):
+        super().orderStatus(orderId, status, filled, remaining,avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
         print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
         "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
         "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
         lastFillPrice, "ClientId:", clientId, "WhyHeld:", whyHeld)
 
-        if status == 'Submitted':
+        if status in ['Submitted','PreSubmitted']:
             with open(self.trade_file, 'a') as file:
                 file.write(str(orderId) + ',' + self.order_ticker_dictionary[orderId] + ',' + str(self.order_urgency_dictionary[orderId]) + ',delta_hedge')
                 file.write('\n')

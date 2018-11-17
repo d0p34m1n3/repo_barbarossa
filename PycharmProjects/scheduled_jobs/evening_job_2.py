@@ -36,8 +36,8 @@ comex_options_csv_address = 'ftp://ftp.cmegroup.com/pub/settle/comex_option.csv'
 nymex_futures_csv_address = 'ftp://ftp.cmegroup.com/pub/settle/nymex_future.csv'
 nymex_options_csv_address = 'ftp://ftp.cmegroup.com/pub/settle/nymex_option.csv'
 
-folder_date = cu.get_doubledate()
-#folder_date = exp.doubledate_shift_bus_days()
+#folder_date = cu.get_doubledate()
+folder_date = exp.doubledate_shift_bus_days()
 
 options_data_dir = dn.get_dated_directory_extension(folder_date=folder_date, ext='raw_options_data')
 
@@ -123,9 +123,10 @@ except Exception:
     log.error('generate_scv_sheet failed', exc_info=True)
 
 try:
-    log.info('save stock data')
-    ssd.save_stock_data(settle_date=folder_date)
+    log.info('save stock list')
+    ssd.get_symbol_frame(frame_type='other', settle_date=folder_date)
+    ssd.get_symbol_frame(frame_type='nasdaq', settle_date=folder_date)
 except Exception:
-    log.error('save_stock_data failed', exc_info=True)
+    log.error('save stock list failed', exc_info=True)
 
 con.close()

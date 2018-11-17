@@ -37,12 +37,18 @@ class Algo(subs.subscription):
     nonfinished_bid_iv_list = []
     nonfinished_ask_iv_list = []
     underlying_prices_accumulated_Q = False
+    option_prices_accumulated_Q = False
     imp_vols_calculated_Q = False
+    option_chains_requested_Q = False
+    strike_dictionary = {}
 
     order_alias_dictionary = {}
+    option_ticker_list = []
+    call_option_contract_dictionary = {}
+    put_option_contract_dictionary = {}
 
-    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str):
-        super().orderStatus(orderId, status, filled, remaining,avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld)
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,remaining: float, avgFillPrice: float, permId: int,parentId: int, lastFillPrice: float, clientId: int,whyHeld: str, mktCapPrice: float):
+        super().orderStatus(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId,whyHeld, mktCapPrice)
         print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
         "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
         "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
@@ -97,58 +103,81 @@ class Algo(subs.subscription):
                                               call_delta_target=0.5,
                                               con=self.con,futures_data_dictionary=self.futures_data_dictionary)
 
-                    print('id:' + str(self.next_val_id) + ', ' + vcs_pairs.loc[i, 'ticker' + str(j)] + ', ' + str(vcs_pairs.loc[i, 'current_strike' + str(j)]))
-                    call_option_ticker_string = vcs_pairs.loc[i, 'ticker' + str(j)] + '_C_' + str(vcs_pairs.loc[i, 'current_strike' + str(j)])
-                    self.market_data_ReqId_dictionary[self.next_val_id] = call_option_ticker_string
-                    self.nonfinished_bid_price_list.append(call_option_ticker_string)
-                    self.nonfinished_ask_price_list.append(call_option_ticker_string)
-                    ib_call_option_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=vcs_pairs.loc[i, 'ticker' + str(j)],sec_type='OF', option_type='C', strike=dec.Decimal(vcs_pairs.loc[i, 'current_strike' + str(j)]))
-                    vcs_pairs.loc[i, 'call_val_id' + str(j)] = self.next_val_id
-                    self.reqMktData(self.next_valid_id(), ib_call_option_contract, "", False, False, [])
+            strike_frame1 = pd.DataFrame()
+            strike_frame1['ticker'] = vcs_pairs['ticker1']
+            strike_frame1['strike'] = vcs_pairs['current_strike1']
 
-                    put_option_ticker_string = vcs_pairs.loc[i, 'ticker' + str(j)] + '_P_' + str(vcs_pairs.loc[i, 'current_strike' + str(j)])
-                    self.market_data_ReqId_dictionary[self.next_val_id] = put_option_ticker_string
-                    self.nonfinished_bid_price_list.append(put_option_ticker_string)
-                    self.nonfinished_ask_price_list.append(put_option_ticker_string)
-                    ib_put_option_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=vcs_pairs.loc[i, 'ticker' + str(j)],sec_type='OF', option_type='P',strike=dec.Decimal(vcs_pairs.loc[i, 'current_strike' + str(j)]))
-                    vcs_pairs.loc[i, 'put_val_id' + str(j)] = self.next_val_id
-                    self.reqMktData(self.next_valid_id(), ib_put_option_contract, "", False, False, [])
+            strike_frame2 = pd.DataFrame()
+            strike_frame2['ticker'] = vcs_pairs['ticker2']
+            strike_frame2['strike'] = vcs_pairs['current_strike2']
 
-        if (len(self.nonfinished_bid_price_list) == 0) & (len(self.nonfinished_ask_price_list) == 0) & (self.underlying_prices_accumulated_Q) & (not self.imp_vols_calculated_Q):
+            strike_frame = pd.concat([strike_frame1,strike_frame2])
+            strike_frame.drop_duplicates(keep='first',inplace=True)
+
+            self.strike_dictionary = dict(zip(strike_frame['ticker'], strike_frame['strike']))
+
+
+        if (len(self.nonfinished_bid_price_list) == 0) & (len(self.nonfinished_ask_price_list) == 0) & (self.underlying_prices_accumulated_Q) & (not self.option_chains_requested_Q):
+            print('requesting option chains')
+            self.req_option_chains()
+            self.option_chains_requested_Q = True
+
+        if (len(self.nonfinished_bid_price_list) == 0) & (len(self.nonfinished_ask_price_list) == 0) & (self.underlying_prices_accumulated_Q) &(self.option_prices_accumulated_Q) & (not self.imp_vols_calculated_Q):
+            print('calculating implied vols')
             self.imp_vols_calculated_Q = True
-            self.get_contract_ids()
+            self.calc_imp_vols()
 
-    def get_contract_ids(self):
-        vcs_pairs = self.vcs_pairs
-        for i in range(len(vcs_pairs.index)):
-            for j in [1, 2]:
-                if np.isnan(vcs_pairs.loc[i, 'current_strike' + str(j)]):
-                    continue
+    def req_option_prices(self):
 
-                call_option_ticker_string = vcs_pairs.loc[i, 'ticker' + str(j)] + '_C_' + str(vcs_pairs.loc[i, 'current_strike' + str(j)])
-                ib_call_option_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=vcs_pairs.loc[i, 'ticker' + str(j)], sec_type='OF', option_type='C',strike=dec.Decimal(vcs_pairs.loc[i, 'current_strike' + str(j)]))
-                self.contractDetailReqIdDictionary[self.next_val_id] = call_option_ticker_string
-                self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)
-                self.reqContractDetails(self.next_valid_id(), ib_call_option_contract)
-                put_option_ticker_string = vcs_pairs.loc[i, 'ticker' + str(j)] + '_P_' + str(vcs_pairs.loc[i, 'current_strike' + str(j)])
-                ib_put_option_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=vcs_pairs.loc[i, 'ticker' + str(j)], sec_type='OF', option_type='P',strike=dec.Decimal(vcs_pairs.loc[i, 'current_strike' + str(j)]))
-                self.contractDetailReqIdDictionary[self.next_val_id] = put_option_ticker_string
-                self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)
-                self.reqContractDetails(self.next_valid_id(), ib_put_option_contract)
+
+
+       for i in range(len(self.option_ticker_list)):
+           option_ticker = self.option_ticker_list[i]
+           call_option_contract = self.call_option_contract_dictionary[option_ticker]
+           call_option_ticker_string = option_ticker + '_C_' + str(call_option_contract.strike)
+           self.market_data_ReqId_dictionary[self.next_val_id] = call_option_ticker_string
+           self.nonfinished_bid_price_list.append(call_option_ticker_string)
+           self.nonfinished_ask_price_list.append(call_option_ticker_string)
+           print(call_option_ticker_string)
+           self.reqMktData(self.next_valid_id(), call_option_contract, "", False, False, [])
+
+           put_option_contract = self.put_option_contract_dictionary[option_ticker]
+           put_option_ticker_string = option_ticker + '_P_' + str(put_option_contract.strike)
+           self.market_data_ReqId_dictionary[self.next_val_id] = put_option_ticker_string
+           self.nonfinished_bid_price_list.append(put_option_ticker_string)
+           self.nonfinished_ask_price_list.append(put_option_ticker_string)
+           print(put_option_ticker_string)
+           self.reqMktData(self.next_valid_id(), put_option_contract, "", False, False, [])
+
+       self.option_prices_accumulated_Q = True
+
+
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
-        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.summary.conId
+
+        option_ticker = self.contractDetailReqIdDictionary[reqId]
+
+        if self.strike_dictionary[option_ticker] == contractDetails.contract.strike:
+            full_ticker = option_ticker + '_' + contractDetails.contract.right + '_' + str(contractDetails.contract.strike)
+            self.contractIDDictionary[full_ticker] = contractDetails.contract.conId
+
+            if contractDetails.contract.right=='C':
+                self.call_option_contract_dictionary[option_ticker] = contractDetails.contract
+            elif contractDetails.contract.right=='P':
+                self.put_option_contract_dictionary[option_ticker] = contractDetails.contract
+
 
     def contractDetailsEnd(self, reqId: int):
         super().contractDetailsEnd(reqId)
         self.nonfinished_contract_detail_ReqId_list.remove(reqId)
         if len(self.nonfinished_contract_detail_ReqId_list)==0:
-            self.calc_imp_vols()
+            self.req_option_prices()
 
     def calc_imp_vols(self):
 
         vcs_pairs = self.vcs_pairs
+        vcs_pairs['validQ'] = False
         print('YYYYUUUUUPPPP!')
 
         for i in range(len(vcs_pairs.index)):
@@ -277,6 +306,18 @@ class Algo(subs.subscription):
                     self.order_alias_dictionary[self.next_val_id] = vcs_pairs.loc[i,'alias']
                     self.placeOrder(self.next_valid_id(), spread_contract,ib_api_trade.ComboLimitOrder(trade_decision, quantity, order_price, False))
 
+    def req_option_chains(self):
+
+        vcs_pairs = self.vcs_pairs
+
+        self.option_ticker_list = list(set(vcs_pairs['ticker1'].unique()) | (set(vcs_pairs['ticker2'].unique())))
+
+        for i in range(len(self.option_ticker_list)):
+            self.contractDetailReqIdDictionary[self.next_val_id] = self.option_ticker_list[i]
+            ib_option_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=self.option_ticker_list[i], sec_type='OF')
+            self.nonfinished_contract_detail_ReqId_list.append(self.next_val_id)
+            print('id:' + str(self.next_val_id) + ', ' + self.option_ticker_list[i])
+            self.reqContractDetails(self.next_valid_id(), ib_option_contract)
 
     def main_run(self):
 
@@ -286,11 +327,9 @@ class Algo(subs.subscription):
         self.nonfinished_bid_price_list.extend(proxy_ticker_list)
         self.nonfinished_ask_price_list.extend(proxy_ticker_list)
 
+
         for i in range(len(proxy_ticker_list)):
             print('id:' + str(self.next_val_id) + ', ' + proxy_ticker_list[i])
             self.market_data_ReqId_dictionary[self.next_val_id] = proxy_ticker_list[i]
             outright_ib_contract = ib_contract.get_ib_contract_from_db_ticker(ticker=proxy_ticker_list[i],sec_type='F')
             self.reqMktData(self.next_valid_id(), outright_ib_contract, "", False, False, [])
-
-
-        print('emre')

@@ -6,6 +6,7 @@ import shared.converters as sc
 import shared.calendar_utilities as cu
 import signals.futures_signals as fs
 import signals.options_filters as of
+import signals.stock_pairs_trading as spt
 import contract_utilities.expiration as exp
 import pandas as pd
 import numpy as np
@@ -14,8 +15,11 @@ import get_price.get_futures_price as gfp
 import opportunity_constructs.spread_carry as osc
 import opportunity_constructs.vcs as ovcs
 import opportunity_constructs.overnight_calendar_spreads as ocs
+import get_price.get_stock_price as gsp
 import ta.strategy_greeks as sg
 import ta.portfolio_manager as tpm
+import pandas_datareader.data as pweb
+import datetime as dt
 
 
 def get_results_4strategy(**kwargs):
@@ -329,6 +333,28 @@ def get_results_4strategy(**kwargs):
                 dollar_noise = np.nan
 
             result_output = {'success': True, 'time_held': time_held, 'dollar_noise': dollar_noise , 'notes': 'hold'}
+
+    elif strategy_class == 'skpt':
+
+        long_ticker = strategy_position.loc[strategy_position['qty'] > 0, 'ticker'].iloc[0]
+        short_ticker = strategy_position.loc[strategy_position['qty'] < 0, 'ticker'].iloc[0]
+
+        long_data = gsp.get_stock_price_preloaded(ticker=long_ticker, data_source='iex', settle_date_to=date_to)
+        short_data = gsp.get_stock_price_preloaded(ticker=short_ticker, data_source='iex', settle_date_to=date_to)
+        merged_data = pd.merge(long_data[['close', 'settle_datetime']], short_data[['close', 'settle_datetime']], how='inner', on='settle_datetime')
+        merged_data.set_index('settle_datetime', drop=True, inplace=True)
+
+        intaday_output_long = pweb.DataReader(long_ticker, 'iex-tops')
+        intaday_output_short = pweb.DataReader(short_ticker, 'iex-tops')
+        merged_data = merged_data.append(pd.DataFrame({'close_x': intaday_output_long.iloc[4].values[0],
+                                                       'close_y': intaday_output_short.iloc[4].values[0]}, index=[dt.datetime.now()]))
+
+        signal_output = spt.backtest(merged_data, 'close_x', 'close_y')
+
+
+        return {'long_ticker': long_ticker, 'short_ticker': short_ticker,
+                'zScoreC': signal_output['data_frame']['zScore'].iloc[-1],
+                'zScore': signal_output['data_frame']['zScore'].iloc[-2]}
 
     else:
         result_output = {'success': False}

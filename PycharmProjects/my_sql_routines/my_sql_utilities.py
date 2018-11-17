@@ -12,7 +12,7 @@ def get_my_sql_connection(**kwargs):
         db_user = 'ekocatulum'
         db_pass = 'caesar1789'
         db_name = 'futures_master'
-        con = mysql.connector.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
+        con = mysql.connector.connect(user=db_user, password=db_pass, host=db_host, database=db_name,auth_plugin='mysql_native_password')
     return con
 
 

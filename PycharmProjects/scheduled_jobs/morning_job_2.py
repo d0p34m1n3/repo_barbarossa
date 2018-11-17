@@ -13,6 +13,7 @@ import formats.strategy_followup_formats as sff
 import contract_utilities.expiration as exp
 import formats.risk_pnl_formats as rpf
 import ta.prepare_daily as prep
+import ta.email_reports as er
 import save_ib_data.program as sib
 import math as m
 

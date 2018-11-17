@@ -154,6 +154,9 @@ def generate_vcs_followup_report(**kwargs):
     vcs_indx = [x == 'vcs' for x in strategy_class_list]
     vcs_frame = strategy_frame[vcs_indx]
 
+    if len(vcs_frame.index)==0:
+        return writer
+
     results = [sf.get_results_4strategy(alias=vcs_frame['alias'].iloc[x],
                                         strategy_info_output=vcs_frame.iloc[x])
                for x in range(len(vcs_frame.index))]

@@ -62,7 +62,7 @@ class Algo(subs.subscription):
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
-        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.summary.conId
+        self.contractIDDictionary[self.contractDetailReqIdDictionary[reqId]] = contractDetails.contract.conId
 
     def contractDetailsEnd(self, reqId: int):
             super().contractDetailsEnd(reqId)
@@ -84,17 +84,15 @@ class Algo(subs.subscription):
         self.volume_dictionary[ticker_str].append(bar.volume)
         self.bar_date_dictionary[ticker_str].append(dt.datetime.strptime(bar.date, '%Y%m%d %H:%M:%S'))
 
-
-
     def historicalDataEnd(self, reqId: int, start: str, end: str):
         super().historicalDataEnd(reqId, start, end)
         ticker_str = self.bar_data_ReqId_dictionary[reqId]
-        candle_frame = pd.DataFrame.from_items([('bar_datetime', self.bar_date_dictionary[ticker_str]),
-                                         ('open_price', self.open_price_dictionary[ticker_str]),
-                                         ('close_price', self.close_price_dictionary[ticker_str]),
-                                         ('low_price', self.low_price_dictionary[ticker_str]),
-                                         ('high_price', self.high_price_dictionary[ticker_str]),
-                                         ('volume', self.volume_dictionary[ticker_str])])
+        candle_frame = pd.DataFrame.from_dict({'bar_datetime': self.bar_date_dictionary[ticker_str],
+                                               'open_price': self.open_price_dictionary[ticker_str],
+                                               'close_price': self.close_price_dictionary[ticker_str],
+                                               'low_price': self.low_price_dictionary[ticker_str],
+                                               'high_price': self.high_price_dictionary[ticker_str],
+                                               'volume': self.volume_dictionary[ticker_str]})
 
         file_name = self.output_dir + '/' + ticker_str + '.pkl'
 
